@@ -1,0 +1,9 @@
+Django==2.2.10
+django-environ
+django-extensions
+python-docx
+python-dateutil
+rules
+django-simple-history
+djangorestframework
+django-filter

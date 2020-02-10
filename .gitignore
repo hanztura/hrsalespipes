@@ -1,0 +1,11 @@
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+local.sqlite3
+test.sqlite3
+media
+*.sass-cache/
+
+docs/_build/
