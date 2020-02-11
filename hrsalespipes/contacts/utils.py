@@ -11,8 +11,8 @@ class ContactModel(TimeStampedModel):
         abstract = True
 
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    name = models.CharField(max_length=100)
-    contact_number = models.CharField(max_length=32, blank=True)
+    name = models.CharField(max_length=100, unique=True)
+    contact_number = models.TextField(max_length=32, blank=True)
     alternate_contact_number = models.CharField(max_length=32, blank=True)
     whatsapp_link = models.URLField(blank=True)
     email_address = models.EmailField(blank=True)
