@@ -1,0 +1,114 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock title %} | HRSalesPipes</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  {% if debug %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendor/materialdesignicons.min.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "vendor/vuetify/vuetify.min.css" %}">
+  {% else %}
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  {% endif %}
+
+  {% block headblock %}{% endblock headblock %}
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <script defer src='{% static "vendor/fontawesome.js" %}'></script>
+<body>
+  <div id="app">
+    <v-app id="inspire">
+      <v-navigation-drawer
+        v-model="drawer"
+        app>
+        <v-list dense>
+          <v-list-item link>
+            <v-list-item-action>
+              <v-icon>fas fa-home</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Dashboard</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link>
+            <v-list-item-action>
+              <v-icon>fas fa-suitcase</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Jobs</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link>
+            <v-list-item-action>
+              <v-icon>fas fa-dollar-sign</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Pipeline</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link>
+            <v-list-item-action>
+              <v-icon>fas fa-address-book</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Contacts</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link>
+            <v-list-item-action>
+              <v-icon>fas fa-cog</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Settings</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+
+      <v-app-bar
+        app
+        color="indigo"
+        dark>
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-toolbar-title>HRSalesPipes</v-toolbar-title>
+      </v-app-bar>
+
+      <v-content>
+        {% block content %}{% endblock content %}
+      </v-content>
+      <v-footer
+        color="indigo"
+        app
+      >
+        <span class="white--text">&copy; 2020 X of Y Business and IT Services. All rights reserved.</span>
+      </v-footer>
+    </v-app>
+  </div>
+
+  {% if debug %}
+    <script src="{% static "vendor/vue/vue.js" %}"></script>
+    <script src="{% static "vendor/vuetify/vuetify.js" %}"></script>
+  {% else %}
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  {% endif %}
+  {% block script %}
+  <script>
+    new Vue({
+      el: '#inspire',
+      vuetify: new Vuetify(),
+
+      props: {
+        source: String,
+      },
+      data: () => ({
+        drawer: null,
+      }),
+    });
+  </script>
+  {% endblock script %}
+</body>
+</html>

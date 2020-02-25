@@ -19,6 +19,7 @@ class CandidateCreateModelForm(ModelForm):
 class CandidateUpdateModelForm(CandidateCreateModelForm):
 
     class Meta:
+        model = Candidate
         fields = [
             'name',
             'contact_number',
