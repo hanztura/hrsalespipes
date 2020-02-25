@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from .utils import ContactModel
 
@@ -41,6 +42,10 @@ class Candidate(ContactModel):
     notice_period = models.CharField(max_length=100, blank=True)
     candidate_owner = models.ForeignKey(User, on_delete=models.PROTECT)
     notes = models.TextField(blank=True)
+
+    def get_absolute_url(self):
+        return reverse('contacts:candidates_edit', args=[str(self.id), ])
+
 
 
 class Client(ContactModel):

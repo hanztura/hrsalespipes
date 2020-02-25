@@ -1,0 +1,80 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+Candidates - New
+{% endblock title %}
+
+{% block content %}
+  <v-container
+    class="fill-height"
+    fluid>
+    <h1>Create a new candidate</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <form method="post">
+          {% csrf_token %}
+          <v-text-field
+            label="Name"
+            outlined
+            name="name"
+            required>
+          </v-text-field>
+
+          <v-text-field
+            label="Contact Number"
+            outlined
+            name="contact_number">
+          </v-text-field>
+
+          <v-text-field
+            label="Whatsapp Link"
+            outlined
+            name="whatsapp_link">
+          </v-text-field>
+
+          <v-text-field
+            label="Email Address"
+            outlined
+            name="email_address"
+            type="email">
+          </v-text-field>
+
+          <v-autocomplete
+            v-model="locations"
+            :items="items"
+            dense
+            label="Location"
+            outlined
+            v-model.lazy="location">
+          </v-autocomplete>
+          <input type="hidden" name="location" v-model="location">
+          <v-input>
+          <v-btn block color="success" type="submit">Save</v-btn>
+          </v-input>
+        </form>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock content %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      items: [
+        'Philippines',
+        'UAE',
+      ],
+      locations: null,
+      location: '',
+    })
+
+  });
+</script>  
+{% endblock script %}

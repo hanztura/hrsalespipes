@@ -1,0 +1,243 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+{{ object.name }} - Update Candidate
+{% endblock title %}
+
+{% block content %}
+  <v-container
+    class="fill-height"
+    fluid>
+    <h1>{{ object.name }} - Update Candidate</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <form method="post" id="form--candidate">
+          {% csrf_token %}
+            <v-tabs
+              v-model="tab"
+              fixed-tabs>
+              <v-tab
+                v-for="tab in tabs"
+                :key="tab">
+                [[ tab ]]
+              </v-tab>
+            </v-tabs>
+
+            <v-tabs-items v-model="tab">
+              <v-tab-item>
+                <v-text-field
+                  label="Name"
+                  outlined
+                  name="name"
+                  required
+                  value="{{ object.name }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Contact Number"
+                  outlined
+                  name="contact_number"
+                  value="{{ object.contact_number }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Alternate Contact Number"
+                  outlined
+                  name="alternate_contact_number"
+                  value="{{ object.alternate_contact_number }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Email Address"
+                  outlined
+                  name="email_address"
+                  type="email"
+                  value="{{ object.email_address }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Whatsapp Link"
+                  outlined
+                  name="whatsapp_link"
+                  value="{{ object.whatsapp_link }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Skype ID"
+                  outlined
+                  name="skype_id"
+                  value="{{ object.skype_id }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="MS Teams ID"
+                  outlined
+                  name="ms_teams_id"
+                  value="{{ object.ms_teams_id }}">
+                </v-text-field>
+
+                <v-autocomplete
+                  :items="locations"
+                  dense
+                  label="Location"
+                  outlined
+                  v-model.lazy="location"
+                  name="location">
+                </v-autocomplete>
+              </v-tab-item> <!-- Basic -->
+
+              <v-tab-item>
+                <v-text-field
+                  label="Positiion"
+                  outlined
+                  name="current_previous_position"
+                  value="{{ object.current_previous_position }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Company"
+                  outlined
+                  name="current_previous_company"
+                  value="{{ object.current_previous_company }}">
+                </v-text-field>
+
+                <v-textarea
+                  name="current_previous_salary_and_benefits"
+                  label="Salary and Benefits"
+                  outlined
+                  value="{{ object.current_previous_salary_and_benefits }}">
+                  </v-textarea>
+
+                <v-textarea
+                  name="motivation_for_leaving"
+                  label="Motivation for leaving"
+                  outlined
+                  value="{{ object.motivation_for_leaving }}"
+                ></v-textarea>
+              </v-tab-item>  <!-- Work history -->
+
+              <v-tab-item>
+
+                <v-autocomplete
+                  :items="nationalities"
+                  dense
+                  label="Nationality"
+                  outlined
+                  name="nationality"
+                  v-model.lazy="nationality">
+                </v-autocomplete>
+
+                <v-textarea
+                  name="languages"
+                  label="Languages"
+                  outlined
+                  value="{{ object.languages }}"
+                ></v-textarea>
+
+                <v-text-field
+                  label="Preferred Location"
+                  outlined
+                  name="preferred_location"
+                  value="{{ object.preferred_location }}">
+                </v-text-field>
+
+                <v-select
+                  :items="civilStatusChoices"
+                  label="Civil Status"
+                  name="civil_status"
+                  outlined
+                  value="{{ object.civil_status }}"></v-select>
+
+                <v-select
+                  :items="genders"
+                  label="Gender"
+                  name="gender"
+                  outlined
+                  value="{{ object.gender }}"></v-select>
+
+                <v-textarea
+                  name="dependents"
+                  label="Dependents"
+                  outlined
+                  value="{{ object.dependents }}"
+                ></v-textarea>
+
+                <v-text-field
+                  label="Highest Educational Qualificaiton"
+                  outlined
+                  name="highest_educational_qualification"
+                  value="{{ object.highest_educational_qualification }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Date of Birth"
+                  outlined
+                  name="date_of_birth"
+                  type="date"
+                  value="{{ object.date_of_birth|date:"Y-m-d" }}">
+                </v-text-field>
+              </v-tab-item>  <!-- Personal -->
+
+              <v-tab-item>
+                
+              </v-tab-item>  <!-- Others -->
+            </v-tabs-items>
+
+            <v-input>
+              <v-btn block color="success" type="submit">Save</v-btn>
+            </v-input>
+        </form>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock content %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+    delimiters: ['[[', ']]'],
+
+    props: {
+      source: String,
+    },
+
+    data: () => ({
+      drawer: null,
+      tab: null,
+      tabs: [
+        'Basic',
+        'Current/Previous Work',
+        'Personal',
+        'Others'
+      ],
+      locations: [
+        'Philippines',
+        'UAE',
+      ],
+      location: '{{ object.location }}',
+      nationalities: [
+        'Filipino',
+        'etc',
+      ],
+      nationality: '{{ object.nationality }}',
+      civilStatusChoices: [
+        {value: 'S', text: 'Single'},
+        {value: 'M', text: 'Married'},
+        {value: 'W', text: 'Widowed'},
+        {value: 'D', text: 'Divorced'},
+        {value: 'Se', text: 'Separated'},
+      ],
+      genders: [
+        {value: 'F', text: 'Female'},
+        {value: 'M', text: 'Male'},
+      ]
+    })
+
+  });
+</script>  
+{% endblock script %}
