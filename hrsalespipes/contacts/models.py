@@ -18,9 +18,9 @@ class Candidate(ContactModel):
         ('Se', 'Separated'))
 
     # work history
-    current_previous_position = models.CharField(max_length=200, blank=True)
-    current_previous_company = models.CharField(max_length=200, blank=True)
-    current_previous_salary_and_benefits = models.TextField(blank=True)
+    current_previous_position = models.CharField(max_length=200, blank=True, verbose_name='position')
+    current_previous_company = models.CharField(max_length=200, blank=True, verbose_name='company')
+    current_previous_salary_and_benefits = models.TextField(blank=True, verbose_name='salary and benefits')
     motivation_for_leaving = models.TextField(blank=True)
 
     # personal details
