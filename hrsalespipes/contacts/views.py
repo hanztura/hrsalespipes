@@ -1,8 +1,11 @@
+import json
+
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView
 
 from .forms import CandidateCreateModelForm, CandidateUpdateModelForm
 from .models import Candidate
+from system.models import VisaStatus
 
 
 class CandidateCreateView(CreateView):
@@ -19,6 +22,17 @@ class CandidateUpdateView(UpdateView):
     model = Candidate
     form_class = CandidateUpdateModelForm
     template_name = 'contacts/candidate_update_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        visa_status_objects = VisaStatus.objects.all()
+        visa_status_objects = [{'value': data.pk, 'text': data.name}
+                               for data in visa_status_objects]
+        visa_status_objects = json.dumps(visa_status_objects)
+
+        context['visa_status_objects'] = visa_status_objects
+        return context
 
 
 class CandidateDetailView(DetailView):

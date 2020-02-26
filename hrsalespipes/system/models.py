@@ -15,6 +15,10 @@ class Setting(SingletonModel):
 
 
 class VisaStatus(models.Model):
+
+    class Meta:
+        verbose_name_plural = 'Visa Status'
+
     name = models.CharField(max_length=128)
 
     def __str__(self):
