@@ -19,20 +19,23 @@ Candidates - New
             label="Name"
             outlined
             name="name"
-            required>
+            required
+            value="{{ form.name.value|default_if_none:'' }}">
           </v-text-field>
 
           <v-text-field
             label="Contact Number"
             outlined
-            name="contact_number">
+            name="contact_number"
+            value="{{ form.contact_number.value|default_if_none:'' }}">
           </v-text-field>
 
           <v-text-field
             label="Email Address"
             outlined
             name="email_address"
-            type="email">
+            type="email"
+            value="{{ form.email_address.value|default_if_none:'' }}">
           </v-text-field>
 
           <v-autocomplete
