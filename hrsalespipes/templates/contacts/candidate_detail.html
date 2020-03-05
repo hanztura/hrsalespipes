@@ -4,9 +4,8 @@
 Candidate Detail - {{ object.name }}
 {% endblock title %}
 
-{% block content %}
+{% block subcontent %}
   <v-container
-    class="fill-height"
     fluid>
     <h1>{{ object.name }} - Candidate Detail</h1>
     <v-row
@@ -39,11 +38,11 @@ Candidate Detail - {{ object.name }}
                     </tr>
                     <tr>
                       <th>Email Address:</th>
-                      <td>{{ object.email_address }}</td>
+                      <td><a href="mailto:{{ object.email_address }}">{{ object.email_address }}</a></td>
                     </tr>
                     <tr>
                       <th>Whatsapp Link:</th>
-                      <td>{{ object.whatsapp_link }}</td>
+                      <td><a href="{{ object.whatsapp_link }}">Click here to send WhatsApp Message</a></td>
                     </tr>
                     <tr>
                       <th>Skype ID:</th>
@@ -56,32 +55,6 @@ Candidate Detail - {{ object.name }}
                     <tr>
                       <th>Location:</th>
                       <td>{{ object.location }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </v-simple-table>
-            </v-tab-item>
-
-            <v-tab-item>
-              <v-simple-table
-                dense>
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Positiion:</th>
-                      <td>{{ object.current_previous_position }}</td>
-                    </tr>
-                    <tr>
-                      <th>Company:</th>
-                      <td>{{ object.current_previous_company }}</td>
-                    </tr>
-                    <tr>
-                      <th>Salary and Benefits:</th>
-                      <td>{{ object.current_previous_salary_and_benefits }}</td>
-                    </tr>
-                    <tr>
-                      <th>Motivation for leaving:</th>
-                      <td>{{ object.motivation_for_leaving }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -136,6 +109,32 @@ Candidate Detail - {{ object.name }}
                 <table>
                   <tbody>
                     <tr>
+                      <th>Positiion:</th>
+                      <td>{{ object.current_previous_position }}</td>
+                    </tr>
+                    <tr>
+                      <th>Company:</th>
+                      <td>{{ object.current_previous_company }}</td>
+                    </tr>
+                    <tr>
+                      <th>Salary and Benefits:</th>
+                      <td>{{ object.current_previous_salary_and_benefits }}</td>
+                    </tr>
+                    <tr>
+                      <th>Motivation for leaving:</th>
+                      <td>{{ object.motivation_for_leaving }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </v-simple-table>
+            </v-tab-item>
+
+            <v-tab-item>
+              <v-simple-table
+                dense>
+                <table>
+                  <tbody>
+                    <tr>
                       <th>Visa Status:</th>
                       <td>{{ object.visa_status }}</td>
                     </tr>
@@ -175,7 +174,7 @@ Candidate Detail - {{ object.name }}
       </v-col>
     </v-row>
   </v-container>  
-{% endblock content %}
+{% endblock subcontent %}
 
 {% block script %}
 <script>
@@ -190,11 +189,32 @@ Candidate Detail - {{ object.name }}
 
     data: () => ({
       drawer: null,
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: '/',
+        },
+        {
+          text: 'Contacts',
+          disabled: false,
+          href: '{% url "contacts:index" %}',
+        },
+        {
+          text: 'Candidates',
+          disabled: false,
+          href: '{% url "contacts:candidates_list" %}',
+        },
+        {
+          text: '{{ object.name }}',
+          disabled: true,
+        },
+      ],
       tab: null,
       tabs: [
-        'Basic',
-        'Current/Previous Work',
+        'Contact Details',
         'Personal',
+        'Current/Previous Work',
         'Others'
       ],
       locations: [

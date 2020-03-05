@@ -1,0 +1,72 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+Candidates - List
+{% endblock title %}
+
+{% block subcontent %}
+  <h1>Candidates List</h1>
+  <v-container
+    fluid>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12">
+        <v-btn absolute right color="primary" href="{% url 'contacts:candidates_new' %}">New</v-btn>
+      </v-col>
+      <v-col cols="12">
+        <v-simple-table
+          dense>
+          <table>
+            <thead>
+              <th>Name</th>
+              <th>Email Address</th>
+              <th>Contact No.</th>
+            </thead>
+            <tbody>
+              {% for candidate in object_list %}
+              <tr>
+                <td><a href="{% url 'contacts:candidates_detail' candidate.pk %}">{{ candidate.name }}</a></td>
+                <td>{{ contact.email_address }}</td>
+                <td>{{ contact.contact_number}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </v-simple-table>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: '/',
+        },
+        {
+          text: 'Contacts',
+          disabled: false,
+          href: '{% url "contacts:index" %}',
+        },
+        {
+          text: 'Candidates',
+          disabled: true,
+          href: '{% url "contacts:candidates_list" %}',
+        },
+      ],
+    })
+
+  });
+</script>  
+{% endblock script %}

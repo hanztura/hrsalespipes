@@ -1,11 +1,16 @@
 import json
 
 from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
+from django.views.generic.base import TemplateView
 
 from .forms import CandidateCreateModelForm, CandidateUpdateModelForm
 from .models import Candidate
 from system.models import VisaStatus
+
+
+class ContactsTemplatView(TemplateView):
+    template_name = 'contacts/contacts.html'
 
 
 class CandidateCreateView(CreateView):
@@ -42,3 +47,7 @@ class CandidateDetailView(DetailView):
         queryset = super().get_queryset(**kwargs)
         queryset = queryset.select_related('visa_status', 'candidate_owner')
         return queryset
+
+
+class CandidateListView(ListView):
+    model = Candidate

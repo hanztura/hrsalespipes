@@ -1,1 +1,9 @@
 {% extends "base.html" %}
+
+{% block content %}
+  <div>
+    <v-breadcrumbs :items="breadcrumbs" divider=">"></v-breadcrumbs>
+  </div>
+  
+  {% block subcontent %}{% endblock subcontent %}  
+{% endblock content %}

@@ -4,9 +4,8 @@
 {{ object.name }} - Update Candidate
 {% endblock title %}
 
-{% block content %}
+{% block subcontent %}
   <v-container
-    class="fill-height"
     fluid>
     <h1>{{ object.name }} - Update Candidate</h1>
     <v-row
@@ -53,13 +52,6 @@
                   name="email_address"
                   type="email"
                   value="{{ form.email_address.value }}">
-                </v-text-field>
-
-                <v-text-field
-                  label="Whatsapp Link"
-                  outlined
-                  name="whatsapp_link"
-                  value="{{ form.whatsapp_link.value }}">
                 </v-text-field>
 
                 <v-text-field
@@ -240,7 +232,7 @@
       </v-col>
     </v-row>
   </v-container>  
-{% endblock content %}
+{% endblock subcontent %}
 
 {% block script %}
 <script>
@@ -255,6 +247,32 @@
 
     data: () => ({
       drawer: null,
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: '/',
+        },
+        {
+          text: 'Contacts',
+          disabled: false,
+          href: '{% url "contacts:index" %}',
+        },
+        {
+          text: 'Candidates',
+          disabled: false,
+          href: '{% url "contacts:candidates_list" %}',
+        },
+        {
+          text: '{{ object.name }}',
+          disabled: false,
+          href: '{% url "contacts:candidates_detail" object.pk %}',
+        },
+        {
+          text: 'Edit',
+          disabled: true,
+        }
+      ],
       tab: null,
       tabs: [
         'Contact Details',
@@ -294,7 +312,10 @@
         this.visaStatusChoices = JSON.parse(data);
 
         let defaultValue = document.getElementById('visa_status').getAttribute('data-default-value');
-        this.visaStatus = Number(defaultValue);
+        defaultValue = Number(defaultValue);
+        if (defaultValue || defaultValue == 0) {
+          this.visaStatus = defaultValue;
+        }
       },
     },
 

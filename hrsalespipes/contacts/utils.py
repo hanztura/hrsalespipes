@@ -22,3 +22,24 @@ class ContactModel(TimeStampedModel):
 
     def __str_(self):
         return self.name
+
+
+class FormCleanContactNumber:
+
+    def clean_contact_number(self):
+        contact_number = self.cleaned_data['contact_number']
+        if contact_number[0] == '0':
+            contact_number = contact_number[1:]
+
+        return contact_number
+
+    def clean(self):
+        cleaned_data = super().clean()
+        contact_number = cleaned_data.get('contact_number', '')
+
+        if contact_number:
+            whatsapp_link = 'https://api.WhatsApp.com/send?phone={}'
+            whatsapp_link = whatsapp_link.format(contact_number)
+            cleaned_data['whatsapp_link'] = whatsapp_link
+
+        return cleaned_data

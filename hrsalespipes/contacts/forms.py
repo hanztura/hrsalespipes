@@ -1,9 +1,10 @@
 from django.forms import ModelForm
 
 from .models import Candidate
+from .utils import FormCleanContactNumber
 
 
-class CandidateCreateModelForm(ModelForm):
+class CandidateCreateModelForm(FormCleanContactNumber, ModelForm):
 
     class Meta:
         model = Candidate

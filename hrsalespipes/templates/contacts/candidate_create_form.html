@@ -4,11 +4,10 @@
 Candidates - New
 {% endblock title %}
 
-{% block content %}
+{% block subcontent %}
   <v-container
-    class="fill-height"
     fluid>
-    <h1>Create a new candidate</h1>
+    <h1>New Candidate</h1>
     <v-row
       align="center"
       justify="center"
@@ -27,12 +26,6 @@ Candidates - New
             label="Contact Number"
             outlined
             name="contact_number">
-          </v-text-field>
-
-          <v-text-field
-            label="Whatsapp Link"
-            outlined
-            name="whatsapp_link">
           </v-text-field>
 
           <v-text-field
@@ -58,7 +51,7 @@ Candidates - New
       </v-col>
     </v-row>
   </v-container>  
-{% endblock content %}
+{% endblock subcontent %}
 
 {% block script %}
 <script>
@@ -67,6 +60,28 @@ Candidates - New
     vuetify: new Vuetify(),
 
     data: () => ({
+      drawer: null,
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: '/',
+        },
+        {
+          text: 'Contacts',
+          disabled: false,
+          href: '{% url "contacts:index" %}',
+        },
+        {
+          text: 'Candidates',
+          disabled: false,
+          href: '{% url "contacts:candidates_list" %}',
+        },
+        {
+          text: 'New',
+          disabled: true,
+        }
+      ],
       items: [
         'Philippines',
         'UAE',
