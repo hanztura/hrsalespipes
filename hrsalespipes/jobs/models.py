@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 
 from django_extensions.db.models import TimeStampedModel
 
@@ -32,11 +33,15 @@ class Job(TimeStampedModel):
     potential_income = models.DecimalField(
         max_digits=8,
         decimal_places=2,
+        null=True,
         blank=True,
         verbose_name=settings.JOB_POTENTIAL_INCOME_ALIAS)
 
     def __str__(self):
         return self.reference_number
+
+    def get_absolute_url(self):
+        return reverse('jobs:edit', args=[str(self.pk), ])
 
 
 class JobCandidate(TimeStampedModel):

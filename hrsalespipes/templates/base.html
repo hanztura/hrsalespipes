@@ -56,7 +56,7 @@
               v-else
               :key="item.title"
               v-model="item.active"
-              no-action>
+              :href="item.href">
               <v-list-item-icon>
                 <v-icon>[[ item.action ]]</v-icon>
               </v-list-item-icon>
@@ -102,14 +102,17 @@
         {
           action: 'fas fa-home',
           title: 'Dashboard',
+          href: '/',
         },
         {
           action: 'fas fa-suitcase',
           title: 'Jobs',
+          href: '{% url "jobs:list" %}',
         },
         {
           action: 'fas fa-dollar-sign',
           title: 'Pipeline',
+          href: '#',
         },
         {
           action: 'fas fa-address-book',
@@ -129,6 +132,7 @@
         {
           action: 'fas fa-cog',
           title: 'Settings',
+          href: '#',
         },
       ];
   

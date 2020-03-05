@@ -1,0 +1,75 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+Jobs - List
+{% endblock title %}
+
+{% block subcontent %}
+  <h1>Jobs List</h1>
+  <v-container
+    fluid>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12">
+        <v-btn absolute right color="primary" href="{% url 'jobs:new' %}">New</v-btn>
+      </v-col>
+      <v-col cols="12">
+        <v-simple-table
+          dense>
+          <table>
+            <thead>
+              <th>Reference #</th>
+              <th>Date</th>
+              <th>Client</th>
+              <th>Position</th>
+              <th>Location</th>
+              <th>Consultant</th>
+              <th>Potential Income</th>
+            </thead>
+            <tbody>
+              {% for object in object_list %}
+              <tr>
+                <td><a href="{% url 'jobs:edit' object.pk %}">{{ object.reference_number }}</a></td>
+                <td>{{ object.date }}</td>
+                <td>{{ object.client.name }}</td>
+                <td>{{ object.position }}</td>
+                <td>{{ object.location }}</td>
+                <td>{{ object.consultant }}</td>
+                <td>{{ object.potential_income|default_if_none:0 }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </v-simple-table>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: '/',
+        },
+        {
+          text: 'Jobs',
+          disabled: true,
+          href: '{% url "jobs:list" %}',
+        },
+      ],
+    })
+
+  });
+</script>  
+{% endblock script %}

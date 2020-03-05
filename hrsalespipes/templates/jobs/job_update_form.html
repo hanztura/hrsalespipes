@@ -1,0 +1,149 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+{{ object.reference_number }} - Update Job
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>{{ object.reference_number }} - Update Job</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" id="dataClientChoices" value="{{ clients }}">
+          <input type="hidden" id="dataConsultantChoices" value="{{ users }}">
+          {% for error in form.errors %}
+            <v-list-item>{{ error }}</v-list-item>
+          {% endfor %}
+
+          <v-text-field
+            label="{{ form.reference_number.label }}"
+            outlined
+            name="reference_number"
+            required
+            value="{{ form.reference_number.value|default_if_none:'' }}">
+          </v-text-field>
+
+          <v-text-field
+            label="{{ form.date.label }}"
+            outlined
+            name="date"
+            required
+            type="date"
+            value="{{ form.date.value|date:'Y-m-d' }}">
+          </v-text-field>
+
+          <v-autocomplete
+            :items="clients"
+            label="Client"
+            v-model.lazy="client"
+            name='client'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
+          <v-text-field
+            label="Position"
+            outlined
+            name="position"
+            required
+            value="{{ form.position.value|default_if_none:'' }}">
+          </v-text-field>
+
+          <v-text-field
+            label="{{ form.location.label }}"
+            outlined
+            name="location"
+            required
+            value="{{ form.location.value|default_if_none:'' }}">
+          </v-text-field>
+
+          <v-autocomplete
+            :items="consultants"
+            label="Consultant"
+            v-model.lazy="consultant"
+            name='consultant'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
+          <v-text-field
+            label="{{ form.potential_income.label }}"
+            outlined
+            name="potential_income"
+            required
+            type="number"
+            value="{{ form.potential_income.value|default_if_none:0 }}">
+          </v-text-field>
+
+          <v-input>
+            <v-btn block color="success" type="submit">Save</v-btn>
+          </v-input>
+        </form>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: '/',
+        },
+        {
+          text: 'Jobs',
+          disabled: false,
+          href: '{% url "jobs:list" %}',
+        },
+        {
+          text: '{{ object.reference_number }}',
+          disabled: false,
+          href: '{% url "jobs:detail" object.pk %}',
+        },
+        {
+          text: 'Edit',
+          disabled: true,
+        }
+      ],
+      clients: [],
+      client: '{{ form.client.value|default_if_none:"" }}',
+      consultants: [],
+      consultant: '{{ form.consultant.value|default_if_none:"" }}',
+    }),
+
+    methods: {
+      setClientsChoices: function() {
+        let data = document.getElementById('dataClientChoices').value;
+        this.clients = JSON.parse(data);
+      },
+
+      setConsultantChoices: function() {
+        let data = document.getElementById('dataConsultantChoices').value;
+        this.consultants = JSON.parse(data);
+      },
+    },
+
+    beforeMount(){
+      this.setClientsChoices();
+      this.setConsultantChoices();
+    },
+
+  });
+</script>  
+{% endblock script %}

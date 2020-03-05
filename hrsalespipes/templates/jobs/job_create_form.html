@@ -1,0 +1,99 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+Jobs - New
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>New Job</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" id="dataClientChoices" value="{{ clients }}">
+          {% for error in form.errors %}
+            <v-list-item>{{ error }}</v-list-item>
+          {% endfor %}
+
+          <v-text-field
+            label="{{ form.reference_number.label }}"
+            outlined
+            name="reference_number"
+            required
+            value="{{ form.reference_number.value|default_if_none:'' }}">
+          </v-text-field>
+
+          <v-autocomplete
+            :items="clients"
+            label="Client"
+            v-model.lazy="client"
+            name='client'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
+          <v-text-field
+            label="Position"
+            outlined
+            name="position"
+            required
+            value="{{ form.position.value|default_if_none:'' }}">
+          </v-text-field>
+
+          <v-input>
+            <v-btn block color="success" type="submit">Save</v-btn>
+          </v-input>
+        </form>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: '/',
+        },
+        {
+          text: 'Jobs',
+          disabled: false,
+          href: '{% url "jobs:list" %}',
+        },
+        {
+          text: 'New',
+          disabled: true,
+        }
+      ],
+      clients: [],
+      client: '{{ form.client.value }}',
+    }),
+
+    methods: {
+      setClientsChoices: function() {
+        let data = document.getElementById('dataClientChoices').value;
+        this.clients = JSON.parse(data);
+      },
+    },
+
+    beforeMount(){
+      this.setClientsChoices();
+    },
+
+  });
+</script>  
+{% endblock script %}

@@ -22,6 +22,7 @@ from debug_toolbar import urls as debug_toolbar_urls
 
 urlpatterns = [
     path('contacts/', include('contacts.urls')),
+    path('jobs/', include('jobs.urls')),
 
     path(settings.ADMIN_URL, admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
