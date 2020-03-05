@@ -5,8 +5,9 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
 
 from .forms import ( ClientCreateModelForm, ContactCreateModelForm,
-                     CandidateUpdateModelForm, ClientUpdateModelForm)
-from .models import Candidate, Client
+                     CandidateUpdateModelForm, ClientUpdateModelForm,
+                     SupplierModelForm)
+from .models import Candidate, Client, Supplier
 from system.models import VisaStatus
 
 
@@ -72,3 +73,23 @@ class ClientUpdateView(UpdateView):
 
 class ClientDetailView(DetailView):
     model = Client
+
+
+class SupplierCreateView(CreateView):
+    model = Supplier
+    form_class = SupplierModelForm
+    template_name = 'contacts/supplier_create_form.html'
+
+
+class SupplierListView(ListView):
+    model = Supplier
+
+
+class SupplierUpdateView(UpdateView):
+    model = Supplier
+    form_class = SupplierModelForm
+    template_name = 'contacts/supplier_update_form.html'
+
+
+class SupplierDetailView(DetailView):
+    model = Supplier

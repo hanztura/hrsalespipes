@@ -3,7 +3,8 @@ from django.urls import path
 from .views import (
     CandidateCreateView, CandidateUpdateView, CandidateDetailView,
     CandidateListView, ContactsTemplatView, ClientCreateView, ClientListView,
-    ClientUpdateView, ClientDetailView)
+    ClientUpdateView, ClientDetailView, SupplierCreateView, SupplierDetailView,
+    SupplierListView, SupplierUpdateView)
 
 app_name = 'contacts'
 urlpatterns = [
@@ -22,6 +23,13 @@ urlpatterns = [
     path('clients/<str:pk>/', ClientDetailView.as_view(),
          name='clients_detail'),
     path('clients/', ClientListView.as_view(), name='clients_list'),
+
+    path('suppliers/new/', SupplierCreateView.as_view(), name='suppliers_new'),
+    path('suppliers/edit/<str:pk>/',
+         SupplierUpdateView.as_view(), name='suppliers_edit'),
+    path('suppliers/<str:pk>/',
+         SupplierDetailView.as_view(), name='suppliers_detail'),
+    path('suppliers/', SupplierListView.as_view(), name='suppliers_list'),
 
     path('', ContactsTemplatView.as_view(), name='index'),
 ]

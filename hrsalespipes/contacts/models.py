@@ -66,3 +66,6 @@ class Supplier(ContactModel):
 
     class Meta:
         abstract = False
+
+    def get_absolute_url(self):
+        return reverse('contacts:suppliers_edit', args=[str(self.id), ])

@@ -35,14 +35,3 @@ class FormCleanContactNumber:
             pass
 
         return contact_number
-
-    def clean(self):
-        cleaned_data = super().clean()
-        contact_number = cleaned_data.get('contact_number', '')
-
-        if contact_number:
-            whatsapp_link = 'https://api.WhatsApp.com/send?phone={}'
-            whatsapp_link = whatsapp_link.format(contact_number)
-            cleaned_data['whatsapp_link'] = whatsapp_link
-
-        return cleaned_data

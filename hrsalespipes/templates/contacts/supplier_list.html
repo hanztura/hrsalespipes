@@ -1,11 +1,11 @@
 {% extends "contacts/base.html" %}
 
 {% block title %}
-Clients - List
+Suppliers - List
 {% endblock title %}
 
 {% block subcontent %}
-  <h1>Clients List</h1>
+  <h1>Suppliers List</h1>
   <v-container
     fluid>
     <v-row
@@ -13,7 +13,7 @@ Clients - List
       justify="center"
     >
       <v-col cols="12">
-        <v-btn absolute right color="primary" href="{% url 'contacts:clients_new' %}">New</v-btn>
+        <v-btn absolute right color="primary" href="{% url 'contacts:suppliers_new' %}">New</v-btn>
       </v-col>
       <v-col cols="12">
         <v-simple-table
@@ -25,15 +25,15 @@ Clients - List
               <th>Contact No.</th>
             </thead>
             <tbody>
-              {% for client in object_list %}
+              {% for supplier in object_list %}
               <tr>
-                <td><a href="{% url 'contacts:clients_detail' client.pk %}">{{ client.name }}</a></td>
+                <td><a href="{% url 'contacts:suppliers_detail' supplier.pk %}">{{ supplier.name }}</a></td>
                 <td>
-                  {% if client.email_address %}
-                    <a href="mailto:{{ client.email_address }}">{{ client.email_address }}</a>
+                  {% if supplier.email_address %}
+                    <a href="mailto:{{ supplier.email_address }}">{{ supplier.email_address }}</a>
                   {% endif %}
                 </td>
-                <td>{{ client.contact_number}}</td>
+                <td>{{ supplier.contact_number}}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -64,7 +64,7 @@ Clients - List
           href: '{% url "contacts:index" %}',
         },
         {
-          text: 'Clients',
+          text: 'Suppliers',
           disabled: true,
         },
       ],

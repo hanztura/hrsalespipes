@@ -1,0 +1,149 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+{{ object.name }} - Update Supplier
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>{{ object.name }} - Update Supplier</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <form method="post">
+          {% csrf_token %}
+          {% for error in form.errors %}
+            <v-list-item>{{ error }}</v-list-item>
+          {% endfor %}
+            <v-tabs
+              v-model="tab"
+              fixed-tabs>
+              <v-tab
+                v-for="tab in tabs"
+                :key="tab">
+                [[ tab ]]
+              </v-tab>
+            </v-tabs>
+
+            <v-tabs-items v-model="tab">
+              <v-tab-item>
+                <v-text-field
+                  label="Name"
+                  outlined
+                  name="name"
+                  required
+                  value="{{ form.name.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Contact Number"
+                  outlined
+                  name="contact_number"
+                  value="{{ form.contact_number.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Alternate Contact Number"
+                  outlined
+                  name="alternate_contact_number"
+                  value="{{ form.alternate_contact_number.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Email Address"
+                  outlined
+                  name="email_address"
+                  type="email"
+                  value="{{ form.email_address.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Skype ID"
+                  outlined
+                  name="skype_id"
+                  value="{{ form.skype_id.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="MS Teams ID"
+                  outlined
+                  name="ms_teams_id"
+                  value="{{ form.ms_teams_id.value }}">
+                </v-text-field>
+
+                <v-autocomplete
+                  :items="locations"
+                  dense
+                  label="Location"
+                  outlined
+                  v-model.lazy="location"
+                  name="location">
+                </v-autocomplete>
+              </v-tab-item> <!-- Basic -->
+            </v-tabs-items>
+
+            <v-input>
+              <v-btn block color="success" type="submit">Save</v-btn>
+            </v-input>
+        </form>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+    delimiters: ['[[', ']]'],
+
+    props: {
+      source: String,
+    },
+
+    data: () => ({
+      drawer: null,
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: '/',
+        },
+        {
+          text: 'Contacts',
+          disabled: false,
+          href: '{% url "contacts:index" %}',
+        },
+        {
+          text: 'Suppliers',
+          disabled: false,
+          href: '{% url "contacts:suppliers_list" %}',
+        },
+        {
+          text: '{{ object.name }}',
+          disabled: false,
+          href: '{% url "contacts:suppliers_detail" object.pk %}',
+        },
+        {
+          text: 'Edit',
+          disabled: true,
+        }
+      ],
+      tab: null,
+      tabs: [
+        'Contact Details',
+      ],
+      locations: [
+        'Philippines',
+        'UAE',
+      ],
+      location: '{{ form.location.value }}',
+    }),
+
+  });
+</script>  
+{% endblock script %}

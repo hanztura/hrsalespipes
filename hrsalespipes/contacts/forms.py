@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from .models import Candidate, Client
+from .models import Candidate, Client, Supplier
 from .utils import FormCleanContactNumber
 
 
@@ -87,5 +87,21 @@ class ClientCreateModelForm(FormCleanContactNumber, ModelForm):
             'contact_number',
             'whatsapp_link',
             'email_address',
+            'location',
+        ]
+
+
+class SupplierModelForm(FormCleanContactNumber, ModelForm):
+
+    class Meta:
+        model = Supplier
+        fields = [
+            'name',
+            'contact_number',
+            'alternate_contact_number',
+            'email_address',
+            'whatsapp_link',
+            'skype_id',
+            'ms_teams_id',
             'location',
         ]
