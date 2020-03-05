@@ -1,0 +1,222 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+{{ object.name }} - Update Client
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>{{ object.name }} - Update Client</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <form method="post">
+          {% csrf_token %}
+          {% for error in form.errors %}
+            <v-list-item>{{ error }}</v-list-item>
+          {% endfor %}
+            <v-tabs
+              v-model="tab"
+              fixed-tabs>
+              <v-tab
+                v-for="tab in tabs"
+                :key="tab">
+                [[ tab ]]
+              </v-tab>
+            </v-tabs>
+
+            <v-tabs-items v-model="tab">
+              <v-tab-item>
+                <v-text-field
+                  label="Name"
+                  outlined
+                  name="name"
+                  required
+                  value="{{ form.name.value }}">
+                </v-text-field>
+
+                <v-autocomplete
+                  :items="industries"
+                  label="Industry"
+                  v-model.lazy="industry"
+                  name="industry"
+                  dense
+                  outlined
+                  required>
+                </v-autocomplete>
+
+                <v-autocomplete
+                  :items="locations"
+                  dense
+                  label="Location"
+                  outlined
+                  v-model.lazy="location"
+                  name="location">
+                </v-autocomplete>
+
+                <v-text-field
+                  label="Contact Number"
+                  outlined
+                  name="contact_number"
+                  value="{{ form.contact_number.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Alternate Contact Number"
+                  outlined
+                  name="alternate_contact_number"
+                  value="{{ form.alternate_contact_number.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Email Address"
+                  outlined
+                  name="email_address"
+                  type="email"
+                  value="{{ form.email_address.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Skype ID"
+                  outlined
+                  name="skype_id"
+                  value="{{ form.skype_id.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="MS Teams ID"
+                  outlined
+                  name="ms_teams_id"
+                  value="{{ form.ms_teams_id.value }}">
+                </v-text-field>
+              </v-tab-item> <!-- Basic -->
+
+              <v-tab-item>
+
+                <v-textarea
+                  name="initial_approach"
+                  label="Initial Approach"
+                  outlined
+                  value="{{ form.initial_approach.value }}"
+                ></v-textarea>
+
+                <v-textarea
+                  name="meeting_arranged"
+                  label="Meeting Arranged"
+                  outlined
+                  value="{{ form.meeting_arranged.value }}"
+                ></v-textarea>
+
+                <v-text-field
+                  label="Agreement Terms"
+                  outlined
+                  name="agreement_terms"
+                  value="{{ form.agreement_terms.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Agreement Fee"
+                  outlined
+                  type='number'
+                  name="agreement_fee"
+                  value="{{ form.agreement_fee.value }}">
+                </v-text-field>
+
+                <v-textarea
+                  name="refund_scheme"
+                  label="Refund Scheme"
+                  outlined
+                  value="{{ form.refund_scheme.value }}"
+                ></v-textarea>
+
+                <v-text-field
+                  label="Validity"
+                  outlined
+                  type='date'
+                  name="validity"
+                  value="{{ form.validity.value }}">
+                </v-text-field>
+                
+              </v-tab-item> <!-- Others -->
+            </v-tabs-items>
+
+            <v-input>
+              <v-btn block color="success" type="submit">Save</v-btn>
+            </v-input>
+        </form>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+    delimiters: ['[[', ']]'],
+
+    props: {
+      source: String,
+    },
+
+    data: () => ({
+      drawer: null,
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: '/',
+        },
+        {
+          text: 'Contacts',
+          disabled: false,
+          href: '{% url "contacts:index" %}',
+        },
+        {
+          text: 'Clients',
+          disabled: false,
+          href: '{% url "contacts:clients_list" %}',
+        },
+        {
+          text: '{{ object.name }}',
+          disabled: false,
+          href: '{% url "contacts:clients_detail" object.pk %}',
+        },
+        {
+          text: 'Edit',
+          disabled: true,
+        }
+      ],
+      tab: null,
+      tabs: [
+        'Contact Details',
+        'Others'
+      ],
+      locations: [
+        'Philippines',
+        'UAE',
+      ],
+      location: '{{ form.location.value }}',
+      industries: [
+        'Retail ',
+        'Government',
+        'Interior Design',
+        'Legal ',
+        'Investment',
+        'Consultancy',
+        'Healthcare',
+        'FMCG',
+        'Trading ',
+        'Defence',
+        'Oil & Gas',
+      ],
+      industry: '{{ form.industry.value }}',
+    }),
+
+  });
+</script>  
+{% endblock script %}

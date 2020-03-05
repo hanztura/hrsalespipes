@@ -1,13 +1,13 @@
 {% extends "contacts/base.html" %}
 
 {% block title %}
-Candidates - New
+Clients - New
 {% endblock title %}
 
 {% block subcontent %}
   <v-container
     fluid>
-    <h1>New Candidate</h1>
+    <h1>New Client</h1>
     <v-row
       align="center"
       justify="center"
@@ -15,6 +15,9 @@ Candidates - New
       <v-col cols="12" class="text-center">
         <form method="post">
           {% csrf_token %}
+          {% for error in form.errors %}
+            <v-list-item>{{ error }}</v-list-item>
+          {% endfor %}
           <v-text-field
             label="Name"
             outlined
@@ -44,9 +47,9 @@ Candidates - New
             dense
             label="Location"
             outlined
-            v-model.lazy="location">
+            v-model.lazy="location"
+            name='location'>
           </v-autocomplete>
-          <input type="hidden" name="location" v-model="location">
           <v-input>
           <v-btn block color="success" type="submit">Save</v-btn>
           </v-input>
@@ -76,9 +79,9 @@ Candidates - New
           href: '{% url "contacts:index" %}',
         },
         {
-          text: 'Candidates',
+          text: 'Clients',
           disabled: false,
-          href: '{% url "contacts:candidates_list" %}',
+          href: '{% url "contacts:clients_list" %}',
         },
         {
           text: 'New',
@@ -90,7 +93,7 @@ Candidates - New
         'UAE',
       ],
       locations: null,
-      location: '',
+      location: '{{ form.location.value }}',
     })
 
   });

@@ -47,7 +47,6 @@ class Candidate(ContactModel):
         return reverse('contacts:candidates_edit', args=[str(self.id), ])
 
 
-
 class Client(ContactModel):
     industry = models.CharField(max_length=64)
     location = models.CharField(max_length=64, blank=False)
@@ -58,6 +57,9 @@ class Client(ContactModel):
         max_digits=2, decimal_places=2, blank=True, null=True)
     refund_scheme = models.TextField(blank=True)
     validity = models.DateField(null=True, blank=True)
+
+    def get_absolute_url(self):
+        return reverse('contacts:clients_edit', args=[str(self.id), ])
 
 
 class Supplier(ContactModel):

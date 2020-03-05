@@ -42,7 +42,11 @@ Candidate Detail - {{ object.name }}
                     </tr>
                     <tr>
                       <th>Whatsapp Link:</th>
-                      <td><a href="{{ object.whatsapp_link }}">Click here to send WhatsApp Message</a></td>
+                      <td>
+                        {% if object.whatsapp_link %}
+                          <a href="{{ object.whatsapp_link }}">Click here to send WhatsApp Message</a>
+                        {% endif %}
+                      </td>
                     </tr>
                     <tr>
                       <th>Skype ID:</th>

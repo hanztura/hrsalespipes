@@ -28,8 +28,11 @@ class FormCleanContactNumber:
 
     def clean_contact_number(self):
         contact_number = self.cleaned_data['contact_number']
-        if contact_number[0] == '0':
-            contact_number = contact_number[1:]
+        try:
+            if contact_number[0] == '0':
+                contact_number = contact_number[1:]
+        except Exception as e:
+            pass
 
         return contact_number
 

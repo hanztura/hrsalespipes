@@ -1,10 +1,10 @@
 from django.forms import ModelForm
 
-from .models import Candidate
+from .models import Candidate, Client
 from .utils import FormCleanContactNumber
 
 
-class CandidateCreateModelForm(FormCleanContactNumber, ModelForm):
+class ContactCreateModelForm(FormCleanContactNumber, ModelForm):
 
     class Meta:
         model = Candidate
@@ -17,7 +17,7 @@ class CandidateCreateModelForm(FormCleanContactNumber, ModelForm):
         ]
 
 
-class CandidateUpdateModelForm(CandidateCreateModelForm):
+class CandidateUpdateModelForm(ContactCreateModelForm):
 
     class Meta:
         model = Candidate
@@ -51,4 +51,41 @@ class CandidateUpdateModelForm(CandidateCreateModelForm):
             'notice_period',
             'candidate_owner',
             'notes',
+        ]
+
+
+class ClientUpdateModelForm(ContactCreateModelForm):
+
+    class Meta:
+        model = Client
+        fields = [
+            'name',
+            'contact_number',
+            'alternate_contact_number',
+            'email_address',
+            'whatsapp_link',
+            'skype_id',
+            'ms_teams_id',
+
+            'industry',
+            'location',
+            'initial_approach',
+            'meeting_arranged',
+            'agreement_terms',
+            'agreement_fee',
+            'refund_scheme',
+            'validity',
+        ]
+
+
+class ClientCreateModelForm(FormCleanContactNumber, ModelForm):
+
+    class Meta:
+        model = Client
+        fields = [
+            'name',
+            'contact_number',
+            'whatsapp_link',
+            'email_address',
+            'location',
         ]

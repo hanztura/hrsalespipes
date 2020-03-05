@@ -4,8 +4,9 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
 
-from .forms import CandidateCreateModelForm, CandidateUpdateModelForm
-from .models import Candidate
+from .forms import ( ClientCreateModelForm, ContactCreateModelForm,
+                     CandidateUpdateModelForm, ClientUpdateModelForm)
+from .models import Candidate, Client
 from system.models import VisaStatus
 
 
@@ -15,7 +16,7 @@ class ContactsTemplatView(TemplateView):
 
 class CandidateCreateView(CreateView):
     model = Candidate
-    form_class = CandidateCreateModelForm
+    form_class = ContactCreateModelForm
     template_name = 'contacts/candidate_create_form.html'
 
     def form_valid(self, form):
@@ -51,3 +52,23 @@ class CandidateDetailView(DetailView):
 
 class CandidateListView(ListView):
     model = Candidate
+
+
+class ClientCreateView(CreateView):
+    model = Client
+    form_class = ClientCreateModelForm
+    template_name = 'contacts/client_create_form.html'
+
+
+class ClientListView(ListView):
+    model = Client
+
+
+class ClientUpdateView(UpdateView):
+    model = Client
+    form_class = ClientUpdateModelForm
+    template_name = 'contacts/client_update_form.html'
+
+
+class ClientDetailView(DetailView):
+    model = Client
