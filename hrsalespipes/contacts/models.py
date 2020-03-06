@@ -69,3 +69,16 @@ class Supplier(ContactModel):
 
     def get_absolute_url(self):
         return reverse('contacts:suppliers_edit', args=[str(self.id), ])
+
+
+class Employee(ContactModel):
+
+    class Meta:
+        abstract = False
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.PROTECT,
+        related_name='as_employee',
+        null=True,
+        blank=True)

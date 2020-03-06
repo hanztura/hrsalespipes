@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # 'django_filters',
 
     'system',
+    'commissions',
     'contacts',
     'jobs',
     'salespipes',
