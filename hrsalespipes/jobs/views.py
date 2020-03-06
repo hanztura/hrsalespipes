@@ -7,10 +7,11 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
 from .forms import (JobCreateModelForm, JobUpdateModelForm,
-                    JobCandidateCreateModelForm, JobCandidateUpdateModelForm)
-from .models import Job, JobCandidate, Status
+                    JobCandidateCreateModelForm, JobCandidateUpdateModelForm,
+                    InterviewModelForm)
+from .models import Job, JobCandidate, Status, Interview
 from contacts.models import Client, Candidate
-from system.models import User
+from system.models import User, InterviewMode
 
 
 class JobCreateView(CreateView):
@@ -158,5 +159,87 @@ class JobCandidateDetailView(DetailView):
     model = JobCandidate
 
     def get_queryset(self):
-        q = super().get_queryset().select_related('candidate', 'job', 'status')
+        q = super().get_queryset()
+        q = q.prefetch_related('candidate', 'job', 'status', 'interviews')
         return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['interviews'] = self.object.interviews.all()
+        return context
+
+
+class InterviewCreateView(CreateView):
+    model = Interview
+    form_class = InterviewModelForm
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+
+        job_candidate = self.kwargs['candidate_pk']
+        job_candidate = JobCandidate.objects.select_related(
+            'job', 'candidate').get(pk=job_candidate)
+        self.job_candidate = job_candidate
+
+    def form_valid(self, form):
+        form.instance.job_candidate = self.job_candidate
+
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        modes = InterviewMode.objects.all()
+        modes = [{'value': str(data.pk), 'text': data.name}
+                 for data in modes]
+        modes = json.dumps(modes)
+
+        status_choices = [{'value': data[0], 'text': data[1]}
+                          for data in Interview.STATUS_CHOICES]
+        status_choices = json.dumps(status_choices)
+
+        context['modes'] = modes
+        context['status_choices'] = status_choices
+        context['job_candidate'] = self.job_candidate
+        context['form_mode'] = 'New'
+        return context
+
+    def get_success_url(self):
+        return reverse(
+            'jobs:candidates_detail',
+            args=[str(self.job_candidate.job_id), str(self.job_candidate.pk)])
+
+
+class InterviewUpdateView(UpdateView):
+    model = Interview
+    form_class = InterviewModelForm
+
+    def get_object(self):
+        pk = self.kwargs['pk']
+        q = Interview.objects.select_related(
+            'job_candidate', 'job_candidate__candidate', 'job_candidate__job').get(pk=pk)
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        modes = InterviewMode.objects.all()
+        modes = [{'value': str(data.pk), 'text': data.name}
+                 for data in modes]
+        modes = json.dumps(modes)
+
+        status_choices = [{'value': data[0], 'text': data[1]}
+                          for data in Interview.STATUS_CHOICES]
+        status_choices = json.dumps(status_choices)
+
+        context['modes'] = modes
+        context['status_choices'] = status_choices
+        context['job_candidate'] = self.object.job_candidate
+        context['form_mode'] = 'Edit'
+        return context
+
+    def get_success_url(self):
+        return reverse(
+            'jobs:candidates_detail',
+            args=[str(self.object.job_candidate.job_id),
+                  str(self.object.job_candidate.pk)])

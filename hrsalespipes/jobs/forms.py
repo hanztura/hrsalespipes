@@ -2,7 +2,7 @@ import datetime
 
 from django.forms import ModelForm
 
-from .models import Job, JobCandidate
+from .models import Job, JobCandidate, Interview
 
 
 class JobCreateModelForm(ModelForm):
@@ -55,3 +55,19 @@ class JobCandidateUpdateModelForm(ModelForm):
             'tentative_date_of_joining',
             'actual_income',
         ]
+
+
+class InterviewModelForm(ModelForm):
+
+    class Meta:
+        model = Interview
+        fields = [
+            'mode',
+            'date',
+            'status',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['date'].initial = datetime.date.today()

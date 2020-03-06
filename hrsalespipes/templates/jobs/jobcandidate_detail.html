@@ -24,8 +24,7 @@
 
           <v-tabs-items v-model="tab">
             <v-tab-item>
-              <v-simple-table
-                dense>
+              <v-simple-table>
                 <table>
                   <tbody>
                     <tr>
@@ -72,6 +71,42 @@
                 block
                 color="primary"
                 href="{% url 'jobs:candidates_edit' object.job_id object.pk %}">Edit</v-btn>
+
+            </v-tab-item>
+
+            <v-tab-item>
+              <v-simple-table>
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="text-center">Date</th>
+                      <th class="text-center">Mode</th>
+                      <th class="text-center">Status</th>
+                      <th class="text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for interview in interviews %}
+                    <tr>
+                      <td>{{ interview.date }}</td>
+                      <td>{{ interview.mode }}</td>
+                      <td>{{ interview.status }}</td>
+                      <td>
+                        <v-btn
+                          href="{% url 'jobs:interviews_edit' object.job_id object.pk interview.pk %}"
+                          text>edit</v-btn>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </v-simple-table>
+
+              <v-btn
+                absolute
+                right
+                color="primary"
+                href="{% url 'jobs:interviews_new' object.job_id object.pk %}">Add an interview</v-btn>
 
             </v-tab-item>
           </v-tabs-items>

@@ -1,0 +1,130 @@
+{% extends "jobs/base.html" %}
+
+{% block title %}
+{{ form_mode }} Interview - {{ job_candidate.candidate.name }} Job Candidate
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>{{ form_mode }} Interview - {{ job_candidate.candidate.name }} Job Candidate</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" id="dataModesChoices" value="{{ modes }}">
+          <input type="hidden" id="dataStatusChoices" value="{{ status_choices }}">
+          {% for error in form.errors %}
+            <v-list-item>{{ error }}</v-list-item>
+          {% endfor %}
+
+          <v-text-field
+            label="{{ form.date.label }}"
+            outlined
+            name="date"
+            required
+            type="date"
+            value="{{ form.date.value|date:'Y-m-d' }}">
+          </v-text-field>
+
+          <v-autocomplete
+            :items="modes"
+            label="Mode"
+            v-model.lazy="mode"
+            name='mode'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
+          <v-autocomplete
+            :items="statusChoices"
+            label="Status"
+            v-model.lazy="status"
+            name='status'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
+          <v-input>
+            <v-btn block color="success" type="submit">Save</v-btn>
+          </v-input>
+        </form>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: '/',
+        },
+        {
+          text: 'Jobs',
+          disabled: false,
+          href: '{% url "jobs:list" %}',
+        },
+        {
+          text: '{{ job_candidate.job.reference_number }}',
+          disabled: false,
+          href: '{% url "jobs:detail" job_candidate.job.pk %}',
+        },
+        {
+          text: 'Candidates',
+          disabled: false,
+          href: '#'
+        },
+        {
+          text: '{{ job_candidate.candidate.name }}',
+          disabled: false,
+          href: '{% url "jobs:candidates_detail" job_candidate.job_id job_candidate.pk %}',
+        },
+        {
+          text: 'Interviews',
+          disabled: false,
+          href: '#'
+        },
+        {
+          text: '{{ form_mode }}',
+          disabled: true,
+        }
+      ],
+      modes: [],
+      mode: '{{ form.mode.value }}',
+      statusChoices: [],
+      status: '{{ form.status.value }}',
+    }),
+
+    methods: {
+      setModeChoices: function() {
+        let data = document.getElementById('dataModesChoices').value;
+        this.modes = JSON.parse(data);
+      },
+      setStatusChoices: function() {
+        let data = document.getElementById('dataStatusChoices').value;
+        this.statusChoices = JSON.parse(data);
+      },
+    },
+
+    beforeMount(){
+      this.setModeChoices();
+      this.setStatusChoices();
+    },
+
+  });
+</script>  
+{% endblock script %}
