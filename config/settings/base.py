@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'system',
     'contacts',
     'jobs',
+    'salespipes',
 ]
 
 MIDDLEWARE = [
