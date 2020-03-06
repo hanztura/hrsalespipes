@@ -64,7 +64,7 @@ Job Detail - {{ object.reference_number }}
               <v-btn
                 block
                 color="primary"
-                href="{% url 'contacts:suppliers_edit' object.pk %}">Edit</v-btn>
+                href="{% url 'jobs:edit' object.pk %}">Edit</v-btn>
 
             </v-tab-item>
 
@@ -104,6 +104,11 @@ Job Detail - {{ object.reference_number }}
                   </tbody>
                 </table>
               </v-simple-table>
+
+              <v-btn
+                color="primary"
+                block
+                href="{% url 'jobs:candidates_new' object.pk %}">Add a candidate</v-btn>
 
             </v-tab-item>
           </v-tabs-items>

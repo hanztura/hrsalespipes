@@ -2,6 +2,7 @@ import datetime
 import json
 
 from django.conf import settings
+from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
@@ -71,7 +72,9 @@ class JobDetailView(DetailView):
 
     def get_queryset(self):
         q = super().get_queryset()
-        q = q.prefetch_related('consultant', 'candidates', 'candidates__candidate')
+        q = q.prefetch_related(
+            'consultant', 'candidates', 'candidates__candidate',
+            'candidates__status')
         return q
 
     def get_context_data(self, **kwargs):
@@ -113,6 +116,11 @@ class JobCandidateCreateView(CreateView):
         context['job'] = self.job
         return context
 
+    def get_success_url(self):
+        return reverse(
+            'jobs:candidates_edit',
+            args=[str(self.object.job_id), str(self.object.pk)])
+
 
 class JobCandidateUpdateView(UpdateView):
     model = JobCandidate
@@ -150,5 +158,5 @@ class JobCandidateDetailView(DetailView):
     model = JobCandidate
 
     def get_queryset(self):
-        q = super().get_queryset().select_related('candidate', 'job')
+        q = super().get_queryset().select_related('candidate', 'job', 'status')
         return q

@@ -16,8 +16,7 @@ Jobs - List
         <v-btn absolute right color="primary" href="{% url 'jobs:new' %}">New</v-btn>
       </v-col>
       <v-col cols="12">
-        <v-simple-table
-          dense>
+        <v-simple-table>
           <table>
             <thead>
               <th>Reference #</th>
@@ -31,7 +30,7 @@ Jobs - List
             <tbody>
               {% for object in object_list %}
               <tr>
-                <td><a href="{% url 'jobs:edit' object.pk %}">{{ object.reference_number }}</a></td>
+                <td><a href="{% url 'jobs:detail' object.pk %}">{{ object.reference_number }}</a></td>
                 <td>{{ object.date }}</td>
                 <td>{{ object.client.name }}</td>
                 <td>{{ object.position }}</td>
