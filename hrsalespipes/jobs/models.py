@@ -14,6 +14,7 @@ class Status(models.Model):
     name = models.CharField(max_length=100)
     probability = models.DecimalField(
         max_digits=2, decimal_places=2, blank=True, null=True)
+    is_default = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -50,18 +51,32 @@ class JobCandidate(TimeStampedModel):
     candidate = models.ForeignKey(
         Candidate, on_delete=models.PROTECT, related_name='jobs')
     registration_date = models.DateField()
-    status = models.ForeignKey(Status, on_delete=models.PROTECT)
-    cv_date_shared = models.DateField(blank=True)
+    status = models.ForeignKey(
+        Status,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True)
+    cv_date_shared = models.DateField(null=True, blank=True)
     remarks = models.TextField(blank=True)
     salary_offered_currency = models.CharField(max_length=3, blank=True)
     salary_offered = models.DecimalField(
-        max_digits=8, decimal_places=2, blank=True)
-    tentative_date_of_joining = models.DateField(blank=True)
+        max_digits=8,
+        decimal_places=2,
+        default=0,
+        null=True,
+        blank=True)
+    tentative_date_of_joining = models.DateField(null=True, blank=True)
     actual_income = models.DecimalField(
         max_digits=8,
         decimal_places=2,
+        default=0,
+        null=True,
         blank=True,
         verbose_name=settings.JOB_CANDIDATE_ACTUAL_INCOME_ALIAS)
+
+    def get_absolute_url(self):
+        return reverse('jobs:detail',
+                       args=[str(self.job_id)])
 
 
 class Interview(models.Model):

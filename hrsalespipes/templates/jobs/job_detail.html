@@ -1,4 +1,4 @@
-{% extends "contacts/base.html" %}
+{% extends "jobs/base.html" %}
 
 {% block title %}
 Job Detail - {{ object.reference_number }}
@@ -17,15 +17,16 @@ Job Detail - {{ object.reference_number }}
           v-model="tab"
           fixed-tabs>
           <v-tab
-            v-for="tab in tabs"
-            :key="tab">
-            [[ tab ]]
+            v-for="tabItem in tabs"
+            :key="tabItem"
+            :href="'#' + tabItem"
+            :target="tabItem">
+            [[ tabItem ]]
           </v-tab>
 
           <v-tabs-items v-model="tab">
-            <v-tab-item>
-              <v-simple-table
-                dense>
+            <v-tab-item id="Details">
+              <v-simple-table>
                 <table>
                   <tbody>
                     <tr>
@@ -64,6 +65,45 @@ Job Detail - {{ object.reference_number }}
                 block
                 color="primary"
                 href="{% url 'contacts:suppliers_edit' object.pk %}">Edit</v-btn>
+
+            </v-tab-item>
+
+            <v-tab-item id="Candidates">
+              <v-simple-table>
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="text-center">Candidate</th>
+                      <th class="text-center">Registration Date</th>
+                      <th class="text-center">Status</th>
+                      <th class="text-center">Salary Offered</th>
+                      <th class="text-center">Tentative date of joining</th>
+                      <th class="text-center">NFI</th>
+                      <th class="text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for candidate in candidates %}
+                    <tr>
+                      <td>{{ candidate.candidate.name }}</td>
+                      <td>{{ candidate.registration_date }}</td>
+                      <td>{{ candidate.status }}</td>
+                      <td>{{ candidate.salary_offered_currency }} {{ candidate.salary_offered }}</td>
+                      <td>{{ candidate.tentative_date_of_joining }}</td>
+                      <td>{{ candidate.actual_income|default_if_none:0 }}</td>
+                      <td>
+                        <v-btn
+                          href="{% url 'jobs:candidates_detail' object.pk candidate.pk %}"
+                          text>view</v-btn>
+                        <v-btn
+                          href="{% url 'jobs:candidates_edit' object.pk candidate.pk %}"
+                          text>edit</v-btn>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </v-simple-table>
 
             </v-tab-item>
           </v-tabs-items>

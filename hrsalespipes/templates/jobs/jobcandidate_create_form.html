@@ -1,13 +1,13 @@
 {% extends "jobs/base.html" %}
 
 {% block title %}
-Jobs - New
+Job Candidates - New
 {% endblock title %}
 
 {% block subcontent %}
   <v-container
     fluid>
-    <h1>New Job</h1>
+    <h1>New Job Candidate</h1>
     <v-row
       align="center"
       justify="center"
@@ -15,36 +15,20 @@ Jobs - New
       <v-col cols="12" class="text-center">
         <form method="post">
           {% csrf_token %}
-          <input type="hidden" id="dataClientChoices" value="{{ clients }}">
+          <input type="hidden" id="dataCandidateChoices" value="{{ candidates }}">
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
 
-          <v-text-field
-            label="{{ form.reference_number.label }}"
-            outlined
-            name="reference_number"
-            required
-            value="{{ form.reference_number.value|default_if_none:'' }}">
-          </v-text-field>
-
           <v-autocomplete
-            :items="clients"
-            label="Client"
-            v-model.lazy="client"
-            name='client'
+            :items="candidates"
+            label="Candidate"
+            v-model.lazy="candidate"
+            name='candidate'
             dense
             outlined
             required>
           </v-autocomplete>
-
-          <v-text-field
-            label="Position"
-            outlined
-            name="position"
-            required
-            value="{{ form.position.value|default_if_none:'' }}">
-          </v-text-field>
 
           <v-input>
             <v-btn block color="success" type="submit">Save</v-btn>
@@ -75,23 +59,33 @@ Jobs - New
           href: '{% url "jobs:list" %}',
         },
         {
+          text: '{{ job.reference_number }}',
+          disabled: false,
+          href: '{% url "jobs:detail" job.pk %}',
+        },
+        {
+          text: 'Candidates',
+          disabled: false,
+          href: '#'
+        },
+        {
           text: 'New',
           disabled: true,
         }
       ],
-      clients: [],
-      client: '{{ form.client.value }}',
+      candidates: [],
+      candidate: '{{ form.candidate.value }}',
     }),
 
     methods: {
-      setClientsChoices: function() {
-        let data = document.getElementById('dataClientChoices').value;
-        this.clients = JSON.parse(data);
+      setCandidateChoices: function() {
+        let data = document.getElementById('dataCandidateChoices').value;
+        this.candidates = JSON.parse(data);
       },
     },
 
     beforeMount(){
-      this.setClientsChoices();
+      this.setCandidateChoices();
     },
 
   });
