@@ -1,0 +1,114 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+Job Detail - {{ object.reference_number }}
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>{{ object.reference_number }} - Job Detail</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <v-tabs
+          v-model="tab"
+          fixed-tabs>
+          <v-tab
+            v-for="tab in tabs"
+            :key="tab">
+            [[ tab ]]
+          </v-tab>
+
+          <v-tabs-items v-model="tab">
+            <v-tab-item>
+              <v-simple-table
+                dense>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>{{ JOB_REFERENCE_NUMBER_ALIAS }}:</th>
+                      <td>{{ object.reference_number }}</td>
+                    </tr>
+                    <tr>
+                      <th>Date:</th>
+                      <td>{{ object.date }}</td>
+                    </tr>
+                    <tr>
+                      <th>Client:</th>
+                      <td>{{ object.client.name }}</td>
+                    </tr>
+                    <tr>
+                      <th>Position:</th>
+                      <td>{{ object.position }}</td>
+                    </tr>
+                    <tr>
+                      <th>Consultant:</th>
+                      <td>{{ object.consultant }}</td>
+                    </tr>
+                    <tr>
+                      <th>Location:</th>
+                      <td>{{ object.location }}</td>
+                    </tr>
+                    <tr>
+                      <th>{{ JOB_POTENTIAL_INCOME_ALIAS }}:</th>
+                      <td>{{ object.potential_income }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </v-simple-table>
+
+              <v-btn
+                block
+                color="primary"
+                href="{% url 'contacts:suppliers_edit' object.pk %}">Edit</v-btn>
+
+            </v-tab-item>
+          </v-tabs-items>
+        </v-tabs>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+    delimiters: ['[[', ']]'],
+
+    props: {
+      source: String,
+    },
+
+    data: () => ({
+      drawer: null,
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: '/',
+        },
+        {
+          text: 'Jobs',
+          disabled: false,
+          href: '{% url "jobs:list" %}',
+        },
+        {
+          text: '{{ object.reference_number }}',
+        },
+      ],
+      tab: null,
+      tabs: [
+        'Details',
+        'Candidates',
+        'Pipeline'
+      ],
+    })
+
+  });
+</script>  
+{% endblock script %}

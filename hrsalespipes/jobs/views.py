@@ -1,6 +1,7 @@
 import datetime
 import json
 
+from django.conf import settings
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
@@ -66,3 +67,9 @@ class JobListView(ListView):
 
 class JobDetailView(DetailView):
     model = Job
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['JOB_POTENTIAL_INCOME_ALIAS'] = settings.JOB_POTENTIAL_INCOME_ALIAS
+        context['JOB_REFERENCE_NUMBER_ALIAS'] = settings.JOB_REFERENCE_NUMBER_ALIAS
+        return context
