@@ -35,7 +35,6 @@ Jobs - List
                 <td>{{ object.client.name }}</td>
                 <td>{{ object.position }}</td>
                 <td>{{ object.location }}</td>
-                <td>{{ object.consultant }}</td>
                 <td>{{ object.potential_income|default_if_none:0 }}</td>
               </tr>
               {% endfor %}

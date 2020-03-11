@@ -5,7 +5,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
 from .forms import PipelineCreateModelForm, PipelineModelForm
-from .models import Pipeline
+from .models import Pipeline, Status
 from jobs.models import Job
 
 
@@ -44,7 +44,13 @@ class PipelineUpdateView(UpdateView):
                 for data in jobs]
         jobs = json.dumps(jobs)
 
+        status_objects = Status.objects.all()
+        status_objects = [{'value': str(data.pk), 'text': data.name}
+                          for data in status_objects]
+        status_objects = json.dumps(status_objects)
+
         context['jobs'] = jobs
+        context['status_objects'] = status_objects
         return context
 
 

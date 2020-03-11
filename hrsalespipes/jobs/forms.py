@@ -25,7 +25,6 @@ class JobUpdateModelForm(ModelForm):
             'date',
             'client',
             'position',
-            'consultant',
             'location',
             'potential_income',
         ]
@@ -54,6 +53,7 @@ class JobCandidateUpdateModelForm(ModelForm):
             'salary_offered',
             'tentative_date_of_joining',
             'actual_income',
+            'associate',
         ]
 
 

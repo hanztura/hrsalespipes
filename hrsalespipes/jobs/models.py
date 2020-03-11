@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from django_extensions.db.models import TimeStampedModel
 
-from contacts.models import Candidate, Client
+from contacts.models import Candidate, Client, Employee
 from system.models import User, InterviewMode
 
 
@@ -29,7 +29,6 @@ class Job(TimeStampedModel):
     date = models.DateField(verbose_name=settings.JOB_DATE_ALIAS)
     client = models.ForeignKey(Client, on_delete=models.PROTECT)
     position = models.CharField(max_length=100)
-    consultant = models.ForeignKey(User, on_delete=models.PROTECT)
     location = models.CharField(max_length=64, blank=True)
     potential_income = models.DecimalField(
         max_digits=8,
@@ -73,6 +72,10 @@ class JobCandidate(TimeStampedModel):
         null=True,
         blank=True,
         verbose_name=settings.JOB_CANDIDATE_ACTUAL_INCOME_ALIAS)
+    associate = models.ForeignKey(
+        Employee,
+        on_delete=models.PROTECT,
+        related_name='as_associate')
 
     def get_absolute_url(self):
         return reverse('jobs:detail',

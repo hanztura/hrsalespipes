@@ -79,28 +79,36 @@ Job Detail - {{ object.reference_number }}
                       <th class="text-center">Salary Offered</th>
                       <th class="text-center">Tentative date of joining</th>
                       <th class="text-center">NFI</th>
+                      <th class="text-center">Associate</th>
                       <th class="text-center">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {% for candidate in candidates %}
-                    <tr>
-                      <td>{{ candidate.candidate.name }}</td>
-                      <td>{{ candidate.registration_date }}</td>
-                      <td>{{ candidate.status }}</td>
-                      <td>{{ candidate.salary_offered_currency }} {{ candidate.salary_offered }}</td>
-                      <td>{{ candidate.tentative_date_of_joining }}</td>
-                      <td>{{ candidate.actual_income|default_if_none:0 }}</td>
-                      <td>
-                        <v-btn
-                          href="{% url 'jobs:candidates_detail' object.pk candidate.pk %}"
-                          text>view</v-btn>
-                        <v-btn
-                          href="{% url 'jobs:candidates_edit' object.pk candidate.pk %}"
-                          text>edit</v-btn>
-                      </td>
-                    </tr>
-                    {% endfor %}
+                    {% if candidates %}
+                      {% for candidate in candidates %}
+                      <tr>
+                        <td>{{ candidate.candidate.name }}</td>
+                        <td>{{ candidate.registration_date }}</td>
+                        <td>{{ candidate.status }}</td>
+                        <td>{{ candidate.salary_offered_currency }} {{ candidate.salary_offered }}</td>
+                        <td>{{ candidate.tentative_date_of_joining }}</td>
+                        <td>{{ candidate.actual_income|default_if_none:0 }}</td>
+                        <td>{{ candidate.associate.name }}</td>
+                        <td>
+                          <v-btn
+                            href="{% url 'jobs:candidates_detail' object.pk candidate.pk %}"
+                            text>view</v-btn>
+                          <v-btn
+                            href="{% url 'jobs:candidates_edit' object.pk candidate.pk %}"
+                            text>edit</v-btn>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    {% else %}
+                      <tr>
+                        <td colspan="8">No data yet. <a href="{% url 'jobs:candidates_new' object.pk %}">Add now</a>.</td>
+                      </tr>
+                    {% endif %}
                   </tbody>
                 </table>
               </v-simple-table>

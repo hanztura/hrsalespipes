@@ -17,6 +17,7 @@
           {% csrf_token %}
           <input type="hidden" id="dataCandidateChoices" value="{{ candidates }}">
           <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
+          <input type="hidden" id="dataAssociateChoices" value="{{ employees }}">
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
@@ -96,6 +97,16 @@
             value="{{ form.actual_income.value|default_if_none:0 }}">
           </v-text-field>
 
+          <v-autocomplete
+            :items="associates"
+            label="Associate"
+            v-model.lazy="associate"
+            name='associate'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
           <v-input>
             <v-btn block color="success" type="submit">Save</v-btn>
           </v-input>
@@ -135,30 +146,34 @@
           href: '#'
         },
         {
-          text: 'New',
+          text: '{{ object.candidate.name }}',
+          disabled: false,
+          href: '{% url "jobs:candidates_detail" job.pk object.pk %}',
+        },
+        {
+          text: 'Edit',
           disabled: true,
         }
       ],
       candidates: [],
       candidate: '{{ form.candidate.value }}',
       statusChoices: [],
-      status: '{{ form.status.value }}'
+      status: '{{ form.status.value }}',
+      associates: [],
+      associate: '{{ form.associate.value }}'
     }),
 
     methods: {
-      setCandidateChoices: function() {
-        let data = document.getElementById('dataCandidateChoices').value;
-        this.candidates = JSON.parse(data);
-      },
-      setStatusChoices: function() {
-        let data = document.getElementById('dataStatusChoices').value;
-        this.statusChoices = JSON.parse(data);
-      },
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      }
     },
 
     beforeMount(){
-      this.setCandidateChoices();
-      this.setStatusChoices();
+      this.setDataChoices('dataCandidateChoices', 'candidates');
+      this.setDataChoices('dataStatusChoices', 'statusChoices');
+      this.setDataChoices('dataAssociateChoices', 'associates');
     },
 
   });

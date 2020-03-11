@@ -10,7 +10,7 @@ from .forms import (JobCreateModelForm, JobUpdateModelForm,
                     JobCandidateCreateModelForm, JobCandidateUpdateModelForm,
                     InterviewModelForm)
 from .models import Job, JobCandidate, Status, Interview
-from contacts.models import Client, Candidate
+from contacts.models import Client, Candidate, Employee
 from system.models import User, InterviewMode
 
 
@@ -20,7 +20,6 @@ class JobCreateView(CreateView):
     template_name = 'jobs/job_create_form.html'
 
     def form_valid(self, form):
-        form.instance.consultant = self.request.user
         form.instance.date = datetime.date.today()
 
         return super().form_valid(form)
@@ -55,7 +54,6 @@ class JobUpdateView(UpdateView):
         users = json.dumps(users)
 
         context['clients'] = clients
-        context['users'] = users
         return context
 
 
@@ -64,7 +62,7 @@ class JobListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.select_related('consultant', 'client')
+        queryset = queryset.select_related('client')
         return queryset
 
 
@@ -74,8 +72,8 @@ class JobDetailView(DetailView):
     def get_queryset(self):
         q = super().get_queryset()
         q = q.prefetch_related(
-            'consultant', 'candidates', 'candidates__candidate',
-            'candidates__status')
+            'candidates', 'candidates__candidate',
+            'candidates__status', 'candidates__associate')
         return q
 
     def get_context_data(self, **kwargs):
@@ -101,6 +99,7 @@ class JobCandidateCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.job = self.job
+        form.instance.associate = self.request.user.as_employee
         form.instance.registration_date = datetime.date.today()
 
         return super().form_valid(form)
@@ -146,11 +145,17 @@ class JobCandidateUpdateView(UpdateView):
                           for data in status_objects]
         status_objects = json.dumps(status_objects)
 
+        employees = Employee.objects.all()
+        employees = [{'value': str(data.pk), 'text': data.name}
+                     for data in employees]
+        employees = json.dumps(employees)
+
         job = self.kwargs['job_pk']
         job = Job.objects.get(pk=job)
 
         context['candidates'] = candidates
         context['status_objects'] = status_objects
+        context['employees'] = employees
         context['job'] = job
         return context
 
@@ -160,7 +165,8 @@ class JobCandidateDetailView(DetailView):
 
     def get_queryset(self):
         q = super().get_queryset()
-        q = q.prefetch_related('candidate', 'job', 'status', 'interviews')
+        q = q.prefetch_related(
+            'candidate', 'job', 'status', 'interviews', 'associate')
         return q
 
     def get_context_data(self, **kwargs):

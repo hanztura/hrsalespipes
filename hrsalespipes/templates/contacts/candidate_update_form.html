@@ -13,8 +13,9 @@
       justify="center"
     >
       <v-col cols="12" class="text-center">
-        <input type="hidden" id="dataVisaStatusChoices" value="{{ visa_status_objects }}">
         <form method="post" id="form--candidate">
+          <input type="hidden" id="dataVisaStatusChoices" value="{{ visa_status_objects }}">
+          <input type="hidden" id="dataCandidateOwnerChoices" value="{{ employees }}">
           {% csrf_token %}
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
@@ -209,12 +210,15 @@
                   value="{{ form.notice_period.value }}">
                 </v-text-field>
 
-                <v-text-field
+                <v-autocomplete
+                  name='candidate_owner'
+                  :items="employees"
+                  dense
                   label="Candidate Owner"
                   outlined
-                  name="candidate_owner"
-                  value="{{ form.candidate_owner.value }}">
-                </v-text-field>
+                  required
+                  v-model.lazy="candidateOwner">
+                </v-autocomplete>
 
                 <v-textarea
                   name="notes"
@@ -302,7 +306,9 @@
         {value: 'M', text: 'Male'},
       ],
       visaStatusChoices: [],
-      visaStatus: ''
+      visaStatus: '',
+      employees: [],
+      candidateOwner: '{{ form.candidate_owner.value }}',
     }),
 
     methods: {
@@ -317,10 +323,15 @@
           this.visaStatus = defaultValue;
         }
       },
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      }
     },
 
     beforeMount(){
       this.setVisaStatusChoices();
+      this.setDataChoices('dataCandidateOwnerChoices', 'employees');
     },
 
   });

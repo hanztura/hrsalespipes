@@ -16,7 +16,6 @@
         <form method="post">
           {% csrf_token %}
           <input type="hidden" id="dataClientChoices" value="{{ clients }}">
-          <input type="hidden" id="dataConsultantChoices" value="{{ users }}">
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
@@ -63,16 +62,6 @@
             required
             value="{{ form.location.value|default_if_none:'' }}">
           </v-text-field>
-
-          <v-autocomplete
-            :items="consultants"
-            label="Consultant"
-            v-model.lazy="consultant"
-            name='consultant'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
 
           <v-text-field
             label="{{ form.potential_income.label }}"
@@ -123,8 +112,6 @@
       ],
       clients: [],
       client: '{{ form.client.value|default_if_none:"" }}',
-      consultants: [],
-      consultant: '{{ form.consultant.value|default_if_none:"" }}',
     }),
 
     methods: {
@@ -132,16 +119,10 @@
         let data = document.getElementById('dataClientChoices').value;
         this.clients = JSON.parse(data);
       },
-
-      setConsultantChoices: function() {
-        let data = document.getElementById('dataConsultantChoices').value;
-        this.consultants = JSON.parse(data);
-      },
     },
 
     beforeMount(){
       this.setClientsChoices();
-      this.setConsultantChoices();
     },
 
   });

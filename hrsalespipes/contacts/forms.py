@@ -14,6 +14,7 @@ class ContactCreateModelForm(FormCleanContactNumber, ModelForm):
             'whatsapp_link',
             'email_address',
             'location',
+            'candidate_owner',
         ]
 
 
@@ -52,6 +53,11 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
             'candidate_owner',
             'notes',
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['candidate_owner'].required = True
 
 
 class ClientUpdateModelForm(ContactCreateModelForm):

@@ -16,20 +16,21 @@ Candidates - List
         <v-btn absolute right color="primary" href="{% url 'contacts:candidates_new' %}">New</v-btn>
       </v-col>
       <v-col cols="12">
-        <v-simple-table
-          dense>
+        <v-simple-table>
           <table>
             <thead>
               <th>Name</th>
               <th>Email Address</th>
               <th>Contact No.</th>
+              <th>Owner</th>
             </thead>
             <tbody>
               {% for candidate in object_list %}
               <tr>
                 <td><a href="{% url 'contacts:candidates_detail' candidate.pk %}">{{ candidate.name }}</a></td>
-                <td>{{ contact.email_address }}</td>
-                <td>{{ contact.contact_number}}</td>
+                <td>{{ candidate.email_address }}</td>
+                <td>{{ candidate.contact_number }}</td>
+                <td>{{ candidate.candidate_owner }}</td>
               </tr>
               {% endfor %}
             </tbody>

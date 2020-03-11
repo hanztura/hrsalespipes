@@ -1,5 +1,6 @@
 from enum import Enum
 
+from django.conf import settings
 from django.db import models
 
 from contacts.models import Employee
@@ -7,11 +8,25 @@ from salespipes.models import Pipeline
 
 
 class Rate(models.Model):
+
+    class ROLE_TYPE(Enum):
+        # one is the lowest level compared to two and three
+        # others is a commission created with 0 amount by default
+        one = ('one', settings.COMMISSION_RATE_ROLE_TYPE_ONE_ALIAS)
+        two = ('two', settings.COMMISSION_RATE_ROLE_TYPE_TWO_ALIAS)
+        three = ('three', settings.COMMISSION_RATE_ROLE_TYPE_THREE_ALIAS)
+        others = ('others', settings.COMMISSION_RATE_ROLE_TYPE_OTHERS_ALIAS)
+
     name = models.CharField(max_length=100)
     straight_rate = models.DecimalField(
         max_digits=3,
         decimal_places=2,
         default=0)
+    role_type = models.CharField(
+        max_length=100,
+        choices=[x.value for x in ROLE_TYPE],
+        unique=True,
+        null=True)
 
     def __str__(self):
         return self.name
@@ -55,40 +70,16 @@ class RateDetail(models.Model):
     rate_value = models.DecimalField(max_digits=10, decimal_places=2)
 
 
-class Role(models.Model):
-    name = models.CharField(max_length=100)
-    rate = models.ForeignKey(
-        Rate,
-        on_delete=models.PROTECT,
-        related_name='roles')
-    is_commission_individual = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.name
-
-
-class EmployeeRole(models.Model):
-    employee = models.OneToOneField(
-        Employee,
-        on_delete=models.PROTECT,
-        related_name='roles')
-    role = models.ForeignKey(
-        Role,
-        on_delete=models.PROTECT,
-        related_name='employees')
-
-
 class Commission(models.Model):
     date = models.DateField()
     pipeline = models.ForeignKey(
         Pipeline,
         on_delete=models.PROTECT,
         related_name='commissions')
-    role = models.ForeignKey(
-        Role,
-        on_delete=models.PROTECT,
-        related_name='role_commissions')
     employee = models.ForeignKey(
         Employee,
         on_delete=models.PROTECT,
         related_name='employee_commissions')
+    rate_used = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    is_paid = models.BooleanField(default=False)
