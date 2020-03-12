@@ -1,5 +1,7 @@
 import json
 
+from django.contrib.auth.mixins import (
+    PermissionRequiredMixin, LoginRequiredMixin)
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
@@ -11,7 +13,7 @@ from .models import Candidate, Client, Supplier, Employee
 from system.models import VisaStatus
 
 
-class ContactsTemplatView(TemplateView):
+class ContactsTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'contacts/contacts.html'
 
 

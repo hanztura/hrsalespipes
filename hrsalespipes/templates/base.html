@@ -74,7 +74,32 @@
         color="indigo"
         dark>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+
         <v-toolbar-title>HRSalesPipes</v-toolbar-title>
+
+        <v-spacer></v-spacer>
+
+        {% if user.is_authenticated %}
+        <v-menu
+        left
+        bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+            <v-icon>fas fa-user-circle</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item>
+            <v-list-item-title>Hi {{ user.username }}!</v-list-item-title>
+          </v-list-item>
+          <v-list-item
+            href="{% url 'system:logout' %}">
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+        {% endif %}
       </v-app-bar>
 
       <v-content>

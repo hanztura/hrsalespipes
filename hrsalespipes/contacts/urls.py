@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import (
     CandidateCreateView, CandidateUpdateView, CandidateDetailView,
-    CandidateListView, ContactsTemplatView, ClientCreateView, ClientListView,
+    CandidateListView, ContactsTemplateView, ClientCreateView, ClientListView,
     ClientUpdateView, ClientDetailView, SupplierCreateView, SupplierDetailView,
     SupplierListView, SupplierUpdateView)
 
@@ -31,5 +31,5 @@ urlpatterns = [
          SupplierDetailView.as_view(), name='suppliers_detail'),
     path('suppliers/', SupplierListView.as_view(), name='suppliers_list'),
 
-    path('', ContactsTemplatView.as_view(), name='index'),
+    path('', ContactsTemplateView.as_view(), name='index'),
 ]
