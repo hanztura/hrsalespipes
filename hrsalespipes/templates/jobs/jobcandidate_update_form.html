@@ -124,12 +124,7 @@
 
     data: () => ({
       drawer: null,
-      breadcrumbs: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          href: '/',
-        },
+      subBreadcrumbs: [
         {
           text: 'Jobs',
           disabled: false,
@@ -174,6 +169,7 @@
       this.setDataChoices('dataCandidateChoices', 'candidates');
       this.setDataChoices('dataStatusChoices', 'statusChoices');
       this.setDataChoices('dataAssociateChoices', 'associates');
+      this.updateBreadcrumbs();
     },
 
   });

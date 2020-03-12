@@ -91,12 +91,7 @@ Supplier Detail - {{ object.name }}
 
     data: () => ({
       drawer: null,
-      breadcrumbs: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          href: '/',
-        },
+      subBreadcrumbs: [
         {
           text: 'Contacts',
           disabled: false,
@@ -116,7 +111,11 @@ Supplier Detail - {{ object.name }}
       tabs: [
         'Contact Details',
       ],
-    })
+    }),
+
+    mounted(){
+      this.updateBreadcrumbs();
+    }
 
   });
 </script>  

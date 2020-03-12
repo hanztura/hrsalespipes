@@ -139,12 +139,7 @@ Job Detail - {{ object.reference_number }}
 
     data: () => ({
       drawer: null,
-      breadcrumbs: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          href: '/',
-        },
+      subBreadcrumbs: [
         {
           text: 'Jobs',
           disabled: false,
@@ -160,7 +155,11 @@ Job Detail - {{ object.reference_number }}
         'Candidates',
         'Pipeline'
       ],
-    })
+    }),
+
+    mounted() {
+      this.updateBreadcrumbs();
+    }
 
   });
 </script>  

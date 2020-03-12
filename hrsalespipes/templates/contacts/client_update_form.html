@@ -164,12 +164,7 @@
 
     data: () => ({
       drawer: null,
-      breadcrumbs: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          href: '/',
-        },
+      subBreadcrumbs: [
         {
           text: 'Contacts',
           disabled: false,
@@ -215,6 +210,10 @@
       ],
       industry: '{{ form.industry.value }}',
     }),
+
+    mounted(){
+      this.updateBreadcrumbs();
+    }
 
   });
 </script>  

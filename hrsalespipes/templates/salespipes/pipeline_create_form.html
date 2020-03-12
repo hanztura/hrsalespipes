@@ -47,12 +47,7 @@ Pipeline - New
 
     data: () => ({
       drawer: null,
-      breadcrumbs: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          href: '/',
-        },
+      subBreadcrumbs: [
         {
           text: 'Pipeline',
           disabled: false,
@@ -75,6 +70,7 @@ Pipeline - New
 
     beforeMount(){
       this.setJobChoices();
+      this.updateBreadcrumbs();
     },
 
   });

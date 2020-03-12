@@ -49,12 +49,7 @@ Candidates - List
 
     data: () => ({
       drawer: null,
-      breadcrumbs: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          href: '/',
-        },
+      subBreadcrumbs: [
         {
           text: 'Contacts',
           disabled: false,
@@ -66,7 +61,11 @@ Candidates - List
           href: '{% url "contacts:candidates_list" %}',
         },
       ],
-    })
+    }),
+
+    mounted(){
+      this.updateBreadcrumbs();
+    }
 
   });
 </script>  

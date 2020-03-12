@@ -1,0 +1,32 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}
+Dashboard
+{% endblock title %}
+
+
+{% block subcontent %}
+  <h1>Dashboard</h1>
+  <v-container
+    fluid>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12">
+        <h2>Contacts</h2>
+        <v-btn color="primary" href="{% url 'contacts:candidates_list' %}">Candidates</v-btn>
+        <v-btn color="primary" href="{% url 'contacts:clients_list' %}">Clients</v-btn>
+        <v-btn color="primary" href="{% url 'contacts:suppliers_list' %}">Suppliers</v-btn>
+      </v-col>
+      <v-col cols="12">
+        <h2>Jobs</h2>
+        <v-btn color="primary" href="{% url 'jobs:list' %}">Jobs</v-btn>
+      </v-col>
+      <v-col cols="12">
+        <h2>Pipeline</h2>
+        <v-btn color="primary" href="{% url 'salespipes:list' %}">Pipeline</v-btn>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}

@@ -16,8 +16,7 @@ Suppliers - List
         <v-btn absolute right color="primary" href="{% url 'contacts:suppliers_new' %}">New</v-btn>
       </v-col>
       <v-col cols="12">
-        <v-simple-table
-          dense>
+        <v-simple-table>
           <table>
             <thead>
               <th>Name</th>
@@ -52,12 +51,7 @@ Suppliers - List
 
     data: () => ({
       drawer: null,
-      breadcrumbs: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          href: '/',
-        },
+      subBreadcrumbs: [
         {
           text: 'Contacts',
           disabled: false,
@@ -68,7 +62,11 @@ Suppliers - List
           disabled: true,
         },
       ],
-    })
+    }),
+
+    mounted(){
+      this.updateBreadcrumbs();
+    }
 
   });
 </script>  

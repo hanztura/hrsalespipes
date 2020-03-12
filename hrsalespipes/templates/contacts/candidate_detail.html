@@ -193,12 +193,7 @@ Candidate Detail - {{ object.name }}
 
     data: () => ({
       drawer: null,
-      breadcrumbs: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          href: '/',
-        },
+      subBreadcrumbs: [
         {
           text: 'Contacts',
           disabled: false,
@@ -242,7 +237,11 @@ Candidate Detail - {{ object.name }}
         {value: 'F', text: 'Female'},
         {value: 'M', text: 'Male'},
       ]
-    })
+    }),
+
+    mounted(){
+      this.updateBreadcrumbs();
+    }
 
   });
 </script>  

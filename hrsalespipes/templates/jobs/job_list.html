@@ -54,19 +54,18 @@ Jobs - List
 
     data: () => ({
       drawer: null,
-      breadcrumbs: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          href: '/',
-        },
+      subBreadcrumbs: [
         {
           text: 'Jobs',
           disabled: true,
           href: '{% url "jobs:list" %}',
         },
       ],
-    })
+    }),
+
+    mounted() {
+      this.updateBreadcrumbs();
+    }
 
   });
 </script>  

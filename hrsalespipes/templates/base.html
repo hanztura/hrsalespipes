@@ -102,7 +102,7 @@
         {
           action: 'fas fa-home',
           title: 'Dashboard',
-          href: '/',
+          href: '{% url "dashboard:index" %}',
         },
         {
           action: 'fas fa-suitcase',
@@ -135,12 +135,27 @@
           href: '#',
         },
       ];
+
+    const DASHBOARD_URL = '{% url "dashboard:index" %}';
   
       Vue.mixin({
         delimiters: ['[[', ']]'],
         data: () => ({
           navigationDrawerItems: NAVIGATION_DRAWER_ITEMS,
-        })
+          breadcrumbs: [
+            {
+              text: 'Dashboard',
+              disabled: false,
+              href: DASHBOARD_URL,
+            },
+          ],
+          subBreadcrumbs: [],
+        }),
+        methods: {
+          updateBreadcrumbs() {
+            this.breadcrumbs = this.breadcrumbs.concat(this.subBreadcrumbs);
+          }
+        }
       });
   </script>
   

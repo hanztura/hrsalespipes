@@ -24,6 +24,7 @@ urlpatterns = [
     path('contacts/', include('contacts.urls')),
     path('jobs/', include('jobs.urls')),
     path('pipeline/', include('salespipes.urls')),
+    path('dashboard/', include('dashboard.urls')),
 
     path(settings.ADMIN_URL, admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

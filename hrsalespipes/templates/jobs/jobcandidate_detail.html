@@ -133,12 +133,7 @@
 
     data: () => ({
       drawer: null,
-      breadcrumbs: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          href: '/',
-        },
+      subBreadcrumbs: [
         {
           text: 'Jobs',
           disabled: false,
@@ -165,7 +160,11 @@
         'Interviews',
         'CV'
       ],
-    })
+    }),
+
+    mounted(){
+      this.updateBreadcrumbs();
+    },
 
   });
 </script>  
