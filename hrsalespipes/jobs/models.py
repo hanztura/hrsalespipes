@@ -13,8 +13,10 @@ from system.models import User, InterviewMode
 class Status(models.Model):
     name = models.CharField(max_length=100)
     probability = models.DecimalField(
-        max_digits=2, decimal_places=2, blank=True, null=True)
-    is_default = models.BooleanField(default=False)
+        max_digits=3, decimal_places=2, blank=True, null=True)
+    should_create_pipeline = models.BooleanField(
+        default=False,
+        verbose_name='should create pipeline if selected')
 
     def __str__(self):
         return self.name
@@ -65,13 +67,6 @@ class JobCandidate(TimeStampedModel):
         null=True,
         blank=True)
     tentative_date_of_joining = models.DateField(null=True, blank=True)
-    actual_income = models.DecimalField(
-        max_digits=8,
-        decimal_places=2,
-        default=0,
-        null=True,
-        blank=True,
-        verbose_name=settings.JOB_CANDIDATE_ACTUAL_INCOME_ALIAS)
     associate = models.ForeignKey(
         Employee,
         on_delete=models.PROTECT,

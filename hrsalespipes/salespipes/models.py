@@ -1,3 +1,4 @@
+import datetime
 from uuid import uuid4
 
 from django.conf import settings
@@ -6,12 +7,18 @@ from django.urls import reverse
 
 from django_extensions.db.models import TimeStampedModel
 
-from jobs.models import Job
+from jobs.models import Job, Status as JobStatus
 
 
 class Status(models.Model):
     name = models.CharField(max_length=100)
     probability = models.DecimalField(max_digits=3, decimal_places=2)
+    job_status = models.OneToOneField(
+        JobStatus,
+        on_delete=models.PROTECT,
+        related_name='related_pipeline_status',
+        verbose_name='equivalent job status',
+        null=True)
 
     def __str__(self):
         return self.name
@@ -19,7 +26,9 @@ class Status(models.Model):
 
 class Pipeline(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    date = models.DateField(verbose_name=settings.PIPELINE_DATE_ALIAS)
+    date = models.DateField(
+        verbose_name=settings.PIPELINE_DATE_ALIAS,
+        default=datetime.date.today)
     job = models.OneToOneField(
         Job,
         on_delete=models.PROTECT,

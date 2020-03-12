@@ -50,6 +50,9 @@ class RateDetail(models.Model):
         def get_value(cls, member):
             return cls[member].value[0]
 
+    class Meta:
+        ordering = ('base_minimum', 'base_maximum')
+
     rate_record = models.ForeignKey(
         Rate,
         on_delete=models.PROTECT,
@@ -79,7 +82,11 @@ class Commission(models.Model):
     employee = models.ForeignKey(
         Employee,
         on_delete=models.PROTECT,
-        related_name='employee_commissions')
+        related_name='employee_commissions',
+        null=True)
+    rate_role_type = models.CharField(
+        max_length=100,
+        null=True)
     rate_used = models.DecimalField(max_digits=10, decimal_places=2)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     is_paid = models.BooleanField(default=False)

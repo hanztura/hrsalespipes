@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .forms import RateModelForm
-from .models import Rate, RateDetail
+from .models import Rate, RateDetail, Commission
 
 
 class RateDetailInline(admin.TabularInline):
@@ -20,3 +20,4 @@ class RateAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Rate, RateAdmin)
+admin.site.register(Commission)

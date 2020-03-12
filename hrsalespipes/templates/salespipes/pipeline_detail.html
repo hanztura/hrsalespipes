@@ -59,6 +59,11 @@ Pipeline Detail - Job {{ object.job.reference_number }}
             </tbody>
           </table>
         </v-simple-table>
+
+              <v-btn
+                block
+                color="primary"
+                href="{% url 'salespipes:edit' object.pk %}">Edit</v-btn>
       </v-col>
     </v-row>
   </v-container>  

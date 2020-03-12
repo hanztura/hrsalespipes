@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 
 from .models import Pipeline
+from commissions.helpers import create_commission
 
 
 class PipelineModelForm(ModelForm):
@@ -20,6 +21,15 @@ class PipelineModelForm(ModelForm):
             'vat',
         ]
 
+    def save(self, commit=True):
+        instance = super().save(commit)
+
+        probability = instance.status.probability
+        if commit and probability >= 1:
+            create_commission(instance)
+
+        return instance
+
 
 class PipelineCreateModelForm(ModelForm):
 
@@ -28,3 +38,21 @@ class PipelineCreateModelForm(ModelForm):
         fields = [
             'job',
         ]
+
+
+class PipelineUpdateStatus(ModelForm):
+
+    class Meta:
+        model = Pipeline
+        fields = [
+            'status'
+        ]
+
+    def save(self, commit=True):
+        instance = super().save(commit)
+
+        probability = instance.status.probability
+        if commit and probability >= 1:
+            create_commission(instance)
+
+        return instance
