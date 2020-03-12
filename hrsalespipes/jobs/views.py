@@ -2,8 +2,7 @@ import datetime
 import json
 
 from django.conf import settings
-from django.contrib.auth.mixins import (
-    PermissionRequiredMixin, LoginRequiredMixin)
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView

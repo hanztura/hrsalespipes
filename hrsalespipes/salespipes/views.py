@@ -1,6 +1,7 @@
 import datetime
 import json
 
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
@@ -9,10 +10,11 @@ from .models import Pipeline, Status
 from jobs.models import Job
 
 
-class PipelineCreateView(CreateView):
+class PipelineCreateView(PermissionRequiredMixin, CreateView):
     model = Pipeline
     form_class = PipelineCreateModelForm
     template_name = 'salespipes/pipeline_create_form.html'
+    permission_required = 'salespipes.add_pipeline'
 
     def form_valid(self, form):
         form.instance.date = datetime.date.today()
@@ -31,10 +33,11 @@ class PipelineCreateView(CreateView):
         return context
 
 
-class PipelineUpdateView(UpdateView):
+class PipelineUpdateView(PermissionRequiredMixin, UpdateView):
     model = Pipeline
     form_class = PipelineModelForm
     template_name = 'salespipes/pipeline_update_form.html'
+    permission_required = 'salespipes.change_pipeline'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -54,9 +57,11 @@ class PipelineUpdateView(UpdateView):
         return context
 
 
-class PipelineListView(ListView):
+class PipelineListView(PermissionRequiredMixin, ListView):
     model = Pipeline
+    permission_required = 'salespipes.view_pipeline'
 
 
-class PipelineDetailView(DetailView):
+class PipelineDetailView(PermissionRequiredMixin, DetailView):
     model = Pipeline
+    permission_required = 'salespipes.view_pipeline'
