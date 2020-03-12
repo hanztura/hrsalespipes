@@ -2,6 +2,8 @@ import datetime
 import json
 
 from django.conf import settings
+from django.contrib.auth.mixins import (
+    PermissionRequiredMixin, LoginRequiredMixin)
 from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
@@ -14,10 +16,11 @@ from contacts.models import Client, Candidate, Employee
 from system.models import User, InterviewMode
 
 
-class JobCreateView(CreateView):
+class JobCreateView(PermissionRequiredMixin, CreateView):
     model = Job
     form_class = JobCreateModelForm
     template_name = 'jobs/job_create_form.html'
+    permission_required = 'jobs.add_job'
 
     def form_valid(self, form):
         form.instance.date = datetime.date.today()
@@ -36,10 +39,11 @@ class JobCreateView(CreateView):
         return context
 
 
-class JobUpdateView(UpdateView):
+class JobUpdateView(PermissionRequiredMixin, UpdateView):
     model = Job
     form_class = JobUpdateModelForm
     template_name = 'jobs/job_update_form.html'
+    permission_required = 'jobs.change_job'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -57,8 +61,9 @@ class JobUpdateView(UpdateView):
         return context
 
 
-class JobListView(ListView):
+class JobListView(PermissionRequiredMixin, ListView):
     model = Job
+    permission_required = 'jobs.view_job'
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -66,8 +71,9 @@ class JobListView(ListView):
         return queryset
 
 
-class JobDetailView(DetailView):
+class JobDetailView(PermissionRequiredMixin, DetailView):
     model = Job
+    permission_required = 'jobs.view_job'
 
     def get_queryset(self):
         q = super().get_queryset()
@@ -85,10 +91,11 @@ class JobDetailView(DetailView):
         return context
 
 
-class JobCandidateCreateView(CreateView):
+class JobCandidateCreateView(PermissionRequiredMixin, CreateView):
     model = JobCandidate
     form_class = JobCandidateCreateModelForm
     template_name = 'jobs/jobcandidate_create_form.html'
+    permission_required = 'jobs.add_jobcandidate'
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -122,10 +129,11 @@ class JobCandidateCreateView(CreateView):
             args=[str(self.object.job_id), str(self.object.pk)])
 
 
-class JobCandidateUpdateView(UpdateView):
+class JobCandidateUpdateView(PermissionRequiredMixin, UpdateView):
     model = JobCandidate
     form_class = JobCandidateUpdateModelForm
     template_name = 'jobs/jobcandidate_update_form.html'
+    permission_required = 'jobs.change_jobcandidate'
 
     def get_queryset(self):
         q = super().get_queryset()
@@ -160,8 +168,9 @@ class JobCandidateUpdateView(UpdateView):
         return context
 
 
-class JobCandidateDetailView(DetailView):
+class JobCandidateDetailView(PermissionRequiredMixin, DetailView):
     model = JobCandidate
+    permission_required = 'jobs.view_jobcandidate'
 
     def get_queryset(self):
         q = super().get_queryset()
@@ -175,9 +184,10 @@ class JobCandidateDetailView(DetailView):
         return context
 
 
-class InterviewCreateView(CreateView):
+class InterviewCreateView(PermissionRequiredMixin, CreateView):
     model = Interview
     form_class = InterviewModelForm
+    permission_required = 'jobs.add_interview'
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -216,9 +226,10 @@ class InterviewCreateView(CreateView):
             args=[str(self.job_candidate.job_id), str(self.job_candidate.pk)])
 
 
-class InterviewUpdateView(UpdateView):
+class InterviewUpdateView(PermissionRequiredMixin, UpdateView):
     model = Interview
     form_class = InterviewModelForm
+    permission_required = 'jobs.change_interview'
 
     def get_object(self):
         pk = self.kwargs['pk']
