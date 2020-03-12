@@ -146,7 +146,7 @@ STATICFILES_DIRS = [
 
 LOGIN_URL = 'system:login'
 LOGIN_REDIRECT_URL = 'dashboard:index'
-LOGOUT_REDIRECT_URL = 'dashboard:index'
+LOGOUT_REDIRECT_URL = 'system:home'
 
 INTERNAL_IPS = ('127.0.0.1', 'localhost', '192.168.1.12')
 
