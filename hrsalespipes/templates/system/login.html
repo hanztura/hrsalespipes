@@ -39,3 +39,18 @@
     </v-row>
   </v-container>  
 {% endblock content %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      breadcrumbs: [],
+    })
+
+  });
+</script>  
+{% endblock script %}

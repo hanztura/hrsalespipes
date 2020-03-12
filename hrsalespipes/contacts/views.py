@@ -6,9 +6,9 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
 
-from .forms import ( ClientCreateModelForm, ContactCreateModelForm,
-                     CandidateUpdateModelForm, ClientUpdateModelForm,
-                     SupplierModelForm)
+from .forms import (ClientCreateModelForm, ContactCreateModelForm,
+                    CandidateUpdateModelForm, ClientUpdateModelForm,
+                    SupplierModelForm)
 from .models import Candidate, Client, Supplier, Employee
 from system.models import VisaStatus
 
@@ -17,10 +17,11 @@ class ContactsTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'contacts/contacts.html'
 
 
-class CandidateCreateView(CreateView):
+class CandidateCreateView(PermissionRequiredMixin, CreateView):
     model = Candidate
     form_class = ContactCreateModelForm
     template_name = 'contacts/candidate_create_form.html'
+    permission_required = ('contacts.add_candidate')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,10 +47,11 @@ class CandidateCreateView(CreateView):
         return context
 
 
-class CandidateUpdateView(UpdateView):
+class CandidateUpdateView(PermissionRequiredMixin, UpdateView):
     model = Candidate
     form_class = CandidateUpdateModelForm
     template_name = 'contacts/candidate_update_form.html'
+    permission_required = ('contacts.change_candidate')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -69,8 +71,9 @@ class CandidateUpdateView(UpdateView):
         return context
 
 
-class CandidateDetailView(DetailView):
+class CandidateDetailView(PermissionRequiredMixin, DetailView):
     model = Candidate
+    permission_required = ('contacts.view_candidate')
 
     def get_queryset(self, **kwargs):
         queryset = super().get_queryset(**kwargs)
@@ -78,8 +81,9 @@ class CandidateDetailView(DetailView):
         return queryset
 
 
-class CandidateListView(ListView):
+class CandidateListView(PermissionRequiredMixin, ListView):
     model = Candidate
+    permission_required = ('contacts.view_candidate')
 
     def get_queryset(self, **kwargs):
         q = super().get_queryset(**kwargs)
@@ -87,41 +91,49 @@ class CandidateListView(ListView):
         return q
 
 
-class ClientCreateView(CreateView):
+class ClientCreateView(PermissionRequiredMixin, CreateView):
     model = Client
     form_class = ClientCreateModelForm
     template_name = 'contacts/client_create_form.html'
+    permission_required = ('contacts.add_client')
 
 
-class ClientListView(ListView):
+class ClientListView(PermissionRequiredMixin, ListView):
     model = Client
+    permission_required = ('contacts.view_client')
 
 
-class ClientUpdateView(UpdateView):
+class ClientUpdateView(PermissionRequiredMixin, UpdateView):
     model = Client
     form_class = ClientUpdateModelForm
     template_name = 'contacts/client_update_form.html'
+    permission_required = ('contacts.change_client')
 
 
-class ClientDetailView(DetailView):
+class ClientDetailView(PermissionRequiredMixin, DetailView):
     model = Client
+    permission_required = ('contacts.view_client')
 
 
-class SupplierCreateView(CreateView):
+class SupplierCreateView(PermissionRequiredMixin, CreateView):
     model = Supplier
     form_class = SupplierModelForm
     template_name = 'contacts/supplier_create_form.html'
+    permission_required = ('contacts.add_supplier')
 
 
-class SupplierListView(ListView):
+class SupplierListView(PermissionRequiredMixin, ListView):
     model = Supplier
+    permission_required = ('contacts.view_supplier')
 
 
-class SupplierUpdateView(UpdateView):
+class SupplierUpdateView(PermissionRequiredMixin, UpdateView):
     model = Supplier
     form_class = SupplierModelForm
     template_name = 'contacts/supplier_update_form.html'
+    permission_required = ('contacts.change_supplier')
 
 
-class SupplierDetailView(DetailView):
+class SupplierDetailView(PermissionRequiredMixin, DetailView):
     model = Supplier
+    permission_required = ('contacts.view_supplier')
