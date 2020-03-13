@@ -15,6 +15,7 @@ Clients - New
       <v-col cols="12" class="text-center">
         <form method="post">
           {% csrf_token %}
+          <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
@@ -42,8 +43,8 @@ Clients - New
           </v-text-field>
 
           <v-autocomplete
-            v-model="locations"
-            :items="items"
+            :items="locations"
+            item-value="text"
             dense
             label="Location"
             outlined
@@ -83,18 +84,21 @@ Clients - New
           disabled: true,
         }
       ],
-      items: [
-        'Philippines',
-        'UAE',
-      ],
-      locations: null,
+      locations: [],
       location: '{{ form.location.value }}',
     }),
 
-    mounted(){
-      this.updateBreadcrumbs();
-    }
+    methods: {
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      }
+    },
 
+    beforeMount(){
+      this.setDataChoices('dataLocationChoices', 'locations');
+      this.updateBreadcrumbs();
+    },
   });
 </script>  
 {% endblock script %}

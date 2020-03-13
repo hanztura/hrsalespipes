@@ -11,6 +11,8 @@ from .forms import (JobCreateModelForm, JobUpdateModelForm,
                     InterviewModelForm)
 from .models import Job, JobCandidate, Status, Interview
 from contacts.models import Client, Candidate, Employee
+from salespipes.models import Pipeline
+from system.helpers import get_objects_as_choices
 from system.models import User, InterviewMode
 from system.utils import PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin
 
@@ -29,12 +31,7 @@ class JobCreateView(PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        clients = Client.objects.all()
-        clients = [{'value': str(data.pk), 'text': data.name}
-                   for data in clients]
-        clients = json.dumps(clients)
-
-        context['clients'] = clients
+        context['clients'] = get_objects_as_choices(Client)
         return context
 
 
@@ -47,16 +44,7 @@ class JobUpdateView(PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        clients = Client.objects.all()
-        clients = [{'value': str(data.pk), 'text': data.name}
-                   for data in clients]
-        clients = json.dumps(clients)
-
-        users = User.objects.all()
-        users = [{'value': str(data.pk), 'text': str(data)} for data in users]
-        users = json.dumps(users)
-
-        context['clients'] = clients
+        context['clients'] = get_objects_as_choices(Client)
         return context
 
 
@@ -78,13 +66,14 @@ class JobDetailView(PermissionRequiredMixin, DetailView):
         q = super().get_queryset()
         q = q.prefetch_related(
             'candidates', 'candidates__candidate',
-            'candidates__status', 'candidates__associate')
+            'candidates__status', 'candidates__associate', 'pipeline')
         return q
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context['candidates'] = self.object.candidates.all()
+        context['pipeline'] = self.object.pipeline
         context['JOB_POTENTIAL_INCOME_ALIAS'] = settings.JOB_POTENTIAL_INCOME_ALIAS
         context['JOB_REFERENCE_NUMBER_ALIAS'] = settings.JOB_REFERENCE_NUMBER_ALIAS
         return context
@@ -113,12 +102,7 @@ class JobCandidateCreateView(PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        candidates = Candidate.objects.all()
-        candidates = [{'value': str(data.pk), 'text': data.name}
-                      for data in candidates]
-        candidates = json.dumps(candidates)
-
-        context['candidates'] = candidates
+        context['candidates'] = get_objects_as_choices(Candidate)
         context['job'] = self.job
         return context
 
@@ -142,27 +126,12 @@ class JobCandidateUpdateView(PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        candidates = Candidate.objects.all()
-        candidates = [{'value': str(data.pk), 'text': data.name}
-                      for data in candidates]
-        candidates = json.dumps(candidates)
-
-        status_objects = Status.objects.all()
-        status_objects = [{'value': str(data.pk), 'text': data.name}
-                          for data in status_objects]
-        status_objects = json.dumps(status_objects)
-
-        employees = Employee.objects.all()
-        employees = [{'value': str(data.pk), 'text': data.name}
-                     for data in employees]
-        employees = json.dumps(employees)
-
         job = self.kwargs['job_pk']
         job = Job.objects.get(pk=job)
 
-        context['candidates'] = candidates
-        context['status_objects'] = status_objects
-        context['employees'] = employees
+        context['candidates'] = get_objects_as_choices(Candidate)
+        context['status_objects'] = get_objects_as_choices(Status)
+        context['employees'] = get_objects_as_choices(Employee)
         context['job'] = job
         return context
 
@@ -204,16 +173,11 @@ class InterviewCreateView(PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        modes = InterviewMode.objects.all()
-        modes = [{'value': str(data.pk), 'text': data.name}
-                 for data in modes]
-        modes = json.dumps(modes)
-
         status_choices = [{'value': data[0], 'text': data[1]}
                           for data in Interview.STATUS_CHOICES]
         status_choices = json.dumps(status_choices)
 
-        context['modes'] = modes
+        context['modes'] = get_objects_as_choices(InterviewMode)
         context['status_choices'] = status_choices
         context['job_candidate'] = self.job_candidate
         context['form_mode'] = 'New'
@@ -239,16 +203,11 @@ class InterviewUpdateView(PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        modes = InterviewMode.objects.all()
-        modes = [{'value': str(data.pk), 'text': data.name}
-                 for data in modes]
-        modes = json.dumps(modes)
-
         status_choices = [{'value': data[0], 'text': data[1]}
                           for data in Interview.STATUS_CHOICES]
         status_choices = json.dumps(status_choices)
 
-        context['modes'] = modes
+        context['modes'] = get_objects_as_choices(InterviewMode)
         context['status_choices'] = status_choices
         context['job_candidate'] = self.object.job_candidate
         context['form_mode'] = 'Edit'

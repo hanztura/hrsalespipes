@@ -119,6 +119,65 @@ Job Detail - {{ object.reference_number }}
                 href="{% url 'jobs:candidates_new' object.pk %}">Add a candidate</v-btn>
 
             </v-tab-item>
+
+            <v-tab-item id="Pipeline">
+              <v-simple-table>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>Date:</th>
+                      <td>{{ pipeline.date }}</td>
+                    </tr>
+                    <tr>
+                      <th>Invoice Date:</th>
+                      <td>{{ pipeline.invoice_date }}</td>
+                    </tr>
+                    <tr>
+                      <th>Recruitment Term:</th>
+                      <td>{{ pipeline.recruitment_term }}</td>
+                    </tr>
+                    <tr>
+                      <th>Recruitment Rate:</th>
+                      <td>{{ pipeline.recruitment_rate }}</td>
+                    </tr>
+                    <tr>
+                      <th>Base Amount:</th>
+                      <td>{{ pipeline.base_amount }}</td>
+                    </tr>
+                    <tr>
+                      <th>Potential Income:</th>
+                      <td>{{ pipeline.potential_income }}</td>
+                    </tr>
+                    <tr>
+                      <th>Status:</th>
+                      <td>{{ pipeline.status }}</td>
+                    </tr>
+                    <tr>
+                      <th>Invoice Amount:</th>
+                      <td>{{ pipeline.invoice_amount }}</td>
+                    </tr>
+                    <tr>
+                      <th>VAT:</th>
+                      <td>{{ pipeline.vat }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </v-simple-table>
+
+              <v-btn
+                class="my-2"
+                block
+                color="primary"
+                outlined
+                href="{% url 'salespipes:detail' pipeline.pk %}">View Pipeline Detail</v-btn>
+
+              <v-btn
+                class="my-2"
+                block
+                color="primary"
+                href="{% url 'salespipes:edit' pipeline.pk %}">Edit Pipeline</v-btn>
+
+            </v-tab-item>
           </v-tabs-items>
         </v-tabs>
       </v-col>

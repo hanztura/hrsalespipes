@@ -15,6 +15,7 @@
       <v-col cols="12" class="text-center">
         <form method="post">
           {% csrf_token %}
+          <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
@@ -50,6 +51,7 @@
 
                 <v-autocomplete
                   :items="locations"
+                  item-value="text"
                   dense
                   label="Location"
                   outlined
@@ -190,10 +192,7 @@
         'Contact Details',
         'Others'
       ],
-      locations: [
-        'Philippines',
-        'UAE',
-      ],
+      locations: [],
       location: '{{ form.location.value }}',
       industries: [
         'Retail ',
@@ -211,9 +210,17 @@
       industry: '{{ form.industry.value }}',
     }),
 
-    mounted(){
+    methods: {
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      }
+    },
+
+    beforeMount(){
+      this.setDataChoices('dataLocationChoices', 'locations');
       this.updateBreadcrumbs();
-    }
+    },
 
   });
 </script>  

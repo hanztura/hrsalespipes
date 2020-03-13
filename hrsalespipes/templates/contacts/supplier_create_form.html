@@ -40,16 +40,6 @@ Supplier - New
             type="email"
             value="{{ form.email_address.value|default_if_none:'' }}">
           </v-text-field>
-
-          <v-autocomplete
-            v-model="locations"
-            :items="items"
-            dense
-            label="Location"
-            outlined
-            v-model.lazy="location"
-            name='location'>
-          </v-autocomplete>
           <v-input>
           <v-btn block color="success" type="submit">Save</v-btn>
           </v-input>
@@ -83,12 +73,6 @@ Supplier - New
           disabled: true,
         }
       ],
-      items: [
-        'Philippines',
-        'UAE',
-      ],
-      locations: null,
-      location: '{{ form.location.value }}',
     }),
 
     mounted(){

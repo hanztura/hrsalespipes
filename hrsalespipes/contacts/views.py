@@ -9,8 +9,9 @@ from .forms import (ClientCreateModelForm, ContactCreateModelForm,
                     CandidateUpdateModelForm, ClientUpdateModelForm,
                     SupplierModelForm)
 from .models import Candidate, Client, Supplier, Employee
+from system.helpers import get_objects_as_choices
 from system.utils import PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin
-from system.models import VisaStatus
+from system.models import VisaStatus, Location, Nationality
 
 
 class ContactsTemplateView(LoginRequiredMixin, TemplateView):
@@ -26,15 +27,8 @@ class CandidateCreateView(PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        visa_status_objects = VisaStatus.objects.all()
-        visa_status_objects = [{'value': data.pk, 'text': data.name}
-                               for data in visa_status_objects]
-        visa_status_objects = json.dumps(visa_status_objects)
-
-        employees = Employee.objects.all()
-        employees = [{'value': str(data.pk), 'text': data.name}
-                     for data in employees]
-        employees = json.dumps(employees)
+        employees = get_objects_as_choices(Employee)
+        locations = get_objects_as_choices(Location)
 
         try:
             default_candidate_owner = self.request.user.as_employee
@@ -42,8 +36,8 @@ class CandidateCreateView(PermissionRequiredMixin, CreateView):
         except Exception as e:
             context['default_candidate_owner'] = ''
 
-        context['visa_status_objects'] = visa_status_objects
         context['employees'] = employees
+        context['locations'] = locations
         return context
 
 
@@ -56,18 +50,10 @@ class CandidateUpdateView(PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        visa_status_objects = VisaStatus.objects.all()
-        visa_status_objects = [{'value': data.pk, 'text': data.name}
-                               for data in visa_status_objects]
-        visa_status_objects = json.dumps(visa_status_objects)
-
-        employees = Employee.objects.all()
-        employees = [{'value': str(data.pk), 'text': data.name}
-                     for data in employees]
-        employees = json.dumps(employees)
-
-        context['visa_status_objects'] = visa_status_objects
-        context['employees'] = employees
+        context['visa_status_objects'] = get_objects_as_choices(VisaStatus)
+        context['employees'] = get_objects_as_choices(Employee)
+        context['locations'] = get_objects_as_choices(Location)
+        context['nationalities'] = get_objects_as_choices(Nationality)
         return context
 
 
@@ -97,6 +83,14 @@ class ClientCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'contacts/client_create_form.html'
     permission_required = ('contacts.add_client')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        locations = get_objects_as_choices(Location)
+
+        context['locations'] = locations
+        return context
+
 
 class ClientListView(PermissionRequiredMixin, ListView):
     model = Client
@@ -108,6 +102,14 @@ class ClientUpdateView(PermissionRequiredMixin, UpdateView):
     form_class = ClientUpdateModelForm
     template_name = 'contacts/client_update_form.html'
     permission_required = ('contacts.change_client')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        locations = get_objects_as_choices(Location)
+
+        context['locations'] = locations
+        return context
 
 
 class ClientDetailView(PermissionRequiredMixin, DetailView):

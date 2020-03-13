@@ -16,6 +16,7 @@ Candidates - New
         <form method="post">
           {% csrf_token %}
           <input type="hidden" id="dataCandidateOwnerChoices" value="{{ employees }}">
+          <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
           <v-text-field
             label="Name"
             outlined
@@ -50,8 +51,8 @@ Candidates - New
           </v-autocomplete>
 
           <v-autocomplete
-            v-model="locations"
-            :items="items"
+            :items="locations"
+            item-value="text"
             dense
             label="Location"
             outlined
@@ -91,11 +92,7 @@ Candidates - New
           disabled: true,
         }
       ],
-      items: [
-        'Philippines',
-        'UAE',
-      ],
-      locations: null,
+      locations: [],
       location: '',
       employees: [],
       candidateOwner: '{{ form.candidate_owner.value|default_if_none:default_candidate_owner }}',
@@ -110,6 +107,7 @@ Candidates - New
 
     beforeMount(){
       this.setDataChoices('dataCandidateOwnerChoices', 'employees');
+      this.setDataChoices('dataLocationChoices', 'locations');
       this.updateBreadcrumbs();
     },
 

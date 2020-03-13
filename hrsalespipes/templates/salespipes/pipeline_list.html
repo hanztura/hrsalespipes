@@ -32,7 +32,7 @@ Pipeline
             </thead>
             <tbody>
               {% for object in object_list %}
-              <tr @click="goTo('{% url 'salespipes:detail' object.pk %}')" :style="style">
+              <tr>
                 <td>{{ object.date }}</td>
                 <td><a href="{% url 'jobs:detail' object.job_id %}" title="Open Job Detail">{{ object.job }}</a></td>
                 <td>{{ object.invoice_date }}</td>

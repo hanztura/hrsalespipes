@@ -1,19 +1,10 @@
-from django.db.models import Model
+import json
 
 
-class SingletonModel(Model):
+def get_objects_as_choices(model):
+    objects = model.objects.all()
+    objects = [{'value': str(data.pk), 'text': data.name}
+               for data in objects]
+    objects = json.dumps(objects)
 
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        self.pk = 1
-        super(SingletonModel, self).save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        pass
-
-    @classmethod
-    def load(cls):
-        obj, created = cls.objects.get_or_create(pk=1)
-        return obj
+    return objects

@@ -73,15 +73,6 @@
                   name="ms_teams_id"
                   value="{{ form.ms_teams_id.value }}">
                 </v-text-field>
-
-                <v-autocomplete
-                  :items="locations"
-                  dense
-                  label="Location"
-                  outlined
-                  v-model.lazy="location"
-                  name="location">
-                </v-autocomplete>
               </v-tab-item> <!-- Basic -->
             </v-tabs-items>
 
@@ -132,11 +123,6 @@
       tabs: [
         'Contact Details',
       ],
-      locations: [
-        'Philippines',
-        'UAE',
-      ],
-      location: '{{ form.location.value }}',
     }),
 
     mounted(){

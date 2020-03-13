@@ -16,6 +16,8 @@
         <form method="post" id="form--candidate">
           <input type="hidden" id="dataVisaStatusChoices" value="{{ visa_status_objects }}">
           <input type="hidden" id="dataCandidateOwnerChoices" value="{{ employees }}">
+          <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
+          <input type="hidden" id="dataNationalityChoices" value="{{ nationalities }}">
           {% csrf_token %}
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
@@ -90,6 +92,7 @@
 
                 <v-autocomplete
                   :items="nationalities"
+                  item-value="text"
                   dense
                   label="Nationality"
                   outlined
@@ -279,15 +282,9 @@
         'Current/Previous Work',
         'Others'
       ],
-      locations: [
-        'Philippines',
-        'UAE',
-      ],
+      locations: [],
       location: '{{ form.location.value }}',
-      nationalities: [
-        'Filipino',
-        'etc',
-      ],
+      nationalities: [],
       nationality: '{{ form.nationality.value }}',
       civilStatusChoices: [
         {value: 'S', text: 'Single'},
@@ -327,6 +324,8 @@
     beforeMount(){
       this.setVisaStatusChoices();
       this.setDataChoices('dataCandidateOwnerChoices', 'employees');
+      this.setDataChoices('dataLocationChoices', 'locations');
+      this.setDataChoices('dataNationalityChoices', 'nationalities');
       this.updateBreadcrumbs();
     },
 
