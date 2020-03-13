@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import environ
 
+from django.urls import reverse
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
@@ -49,8 +51,12 @@ INSTALLED_APPS = [
     # 'django_filters',
 
     'system',
+    'commissions',
     'contacts',
     'jobs',
+    'salespipes',
+    'dashboard',
+    'reports',
 ]
 
 MIDDLEWARE = [
@@ -139,8 +145,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
 
-
-LOGIN_URL = '/login/'
+LOGIN_URL = 'system:login'
+LOGIN_REDIRECT_URL = 'dashboard:index'
+LOGOUT_REDIRECT_URL = 'system:home'
 
 INTERNAL_IPS = ('127.0.0.1', 'localhost', '192.168.1.12')
 
@@ -160,10 +167,18 @@ REST_FRAMEWORK = {
 JOB_REFERENCE_NUMBER_ALIAS = os.environ.setdefault(
     'HRSALESPIPES_JOB_REFERENCE_NUMBER_ALIAS', 'Job Reference Number')
 JOB_DATE_ALIAS = os.environ.setdefault(
-    'HRSALESPIPES_JOB_REFERENCE_NUMBER_ALIAS', 'Date')
+    'HRSALESPIPES_JOB_DATE_ALIAS', 'Date')
 JOB_POTENTIAL_INCOME_ALIAS = os.environ.setdefault(
     'HRSALESPIPES_JOB_POTENTIAL_INCOME_ALIAS', 'Potential Income')
 JOB_CANDIDATE_ACTUAL_INCOME_ALIAS = os.environ.setdefault(
     'HRSALESPIPES_JOB_CANDIDATE_ACTUAL_INCOME_ALIAS', 'Actual Income')
 PIPELINE_DATE_ALIAS = os.environ.setdefault(
     'HRSALESPIPES_PIPELINE_DATE_ALIAS', 'Date')
+COMMISSION_RATE_ROLE_TYPE_ONE_ALIAS = os.environ.setdefault(
+    'COMMISSION_RATE_ROLE_TYPE_ONE_ALIAS', 'Level One')
+COMMISSION_RATE_ROLE_TYPE_TWO_ALIAS = os.environ.setdefault(
+    'COMMISSION_RATE_ROLE_TYPE_TWO_ALIAS', 'Level Two')
+COMMISSION_RATE_ROLE_TYPE_THREE_ALIAS = os.environ.setdefault(
+    'COMMISSION_RATE_ROLE_TYPE_THREE_ALIAS', 'Level Three')
+COMMISSION_RATE_ROLE_TYPE_OTHERS_ALIAS = os.environ.setdefault(
+    'COMMISSION_RATE_ROLE_TYPE_OTHERS_ALIAS', 'Others')

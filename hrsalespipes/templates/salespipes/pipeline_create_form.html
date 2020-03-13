@@ -1,0 +1,78 @@
+{% extends "salespipes/base.html" %}
+
+{% block title %}
+Pipeline - New
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>New Pipeline</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" id="dataJobsChoices" value="{{ jobs }}">
+          {% for error in form.errors %}
+            <v-list-item>{{ error }}</v-list-item>
+          {% endfor %}
+
+          <v-autocomplete
+            :items="jobs"
+            label="Job"
+            v-model.lazy="job"
+            name='job'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
+          <v-input>
+            <v-btn block color="success" type="submit">Save</v-btn>
+          </v-input>
+        </form>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Pipeline',
+          disabled: false,
+          href: '{% url "salespipes:list" %}',
+        },
+        {
+          text: 'New',
+        }
+      ],
+      jobs: [],
+      job: '{{ form.job.value }}',
+    }),
+
+    methods: {
+      setJobChoices: function() {
+        let data = document.getElementById('dataJobsChoices').value;
+        this.jobs = JSON.parse(data);
+      },
+    },
+
+    beforeMount(){
+      this.setJobChoices();
+      this.updateBreadcrumbs();
+    },
+
+  });
+</script>  
+{% endblock script %}

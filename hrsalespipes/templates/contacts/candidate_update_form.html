@@ -1,0 +1,334 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+{{ object.name }} - Update Candidate
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>{{ object.name }} - Update Candidate</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <form method="post" id="form--candidate">
+          <input type="hidden" id="dataVisaStatusChoices" value="{{ visa_status_objects }}">
+          <input type="hidden" id="dataCandidateOwnerChoices" value="{{ employees }}">
+          <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
+          <input type="hidden" id="dataNationalityChoices" value="{{ nationalities }}">
+          {% csrf_token %}
+          {% for error in form.errors %}
+            <v-list-item>{{ error }}</v-list-item>
+          {% endfor %}
+            <v-tabs
+              v-model="tab"
+              fixed-tabs>
+              <v-tab
+                v-for="tab in tabs"
+                :key="tab">
+                [[ tab ]]
+              </v-tab>
+            </v-tabs>
+
+            <v-tabs-items v-model="tab">
+              <v-tab-item>
+
+                <v-text-field
+                  label="Contact Number"
+                  outlined
+                  name="contact_number"
+                  value="{{ form.contact_number.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Alternate Contact Number"
+                  outlined
+                  name="alternate_contact_number"
+                  value="{{ form.alternate_contact_number.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Email Address"
+                  outlined
+                  name="email_address"
+                  type="email"
+                  value="{{ form.email_address.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Skype ID"
+                  outlined
+                  name="skype_id"
+                  value="{{ form.skype_id.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="MS Teams ID"
+                  outlined
+                  name="ms_teams_id"
+                  value="{{ form.ms_teams_id.value }}">
+                </v-text-field>
+
+                <v-autocomplete
+                  :items="locations"
+                  dense
+                  label="Location"
+                  outlined
+                  v-model.lazy="location"
+                  name="location">
+                </v-autocomplete>
+              </v-tab-item> <!-- Basic -->
+
+              <v-tab-item>
+                <v-text-field
+                  label="Name"
+                  outlined
+                  name="name"
+                  required
+                  value="{{ form.name.value }}">
+                </v-text-field>
+
+                <v-autocomplete
+                  :items="nationalities"
+                  item-value="text"
+                  dense
+                  label="Nationality"
+                  outlined
+                  name="nationality"
+                  v-model.lazy="nationality">
+                </v-autocomplete>
+
+                <v-textarea
+                  name="languages"
+                  label="Languages"
+                  outlined
+                  value="{{ form.languages.value }}"
+                ></v-textarea>
+
+                <v-text-field
+                  label="Preferred Location"
+                  outlined
+                  name="preferred_location"
+                  value="{{ form.preferred_location.value }}">
+                </v-text-field>
+
+                <v-select
+                  :items="civilStatusChoices"
+                  label="Civil Status"
+                  name="civil_status"
+                  outlined
+                  value="{{ form.civil_status.value }}"></v-select>
+
+                <v-select
+                  :items="genders"
+                  label="Gender"
+                  name="gender"
+                  outlined
+                  value="{{ form.gender.value }}"></v-select>
+
+                <v-textarea
+                  name="dependents"
+                  label="Dependents"
+                  outlined
+                  value="{{ form.dependents.value }}"
+                ></v-textarea>
+
+                <v-text-field
+                  label="Highest Educational Qualificaiton"
+                  outlined
+                  name="highest_educational_qualification"
+                  value="{{ form.highest_educational_qualification.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Date of Birth"
+                  outlined
+                  name="date_of_birth"
+                  type="date"
+                  value="{{ form.date_of_birth.value|date:"Y-m-d" }}">
+                </v-text-field>
+              </v-tab-item>  <!-- Personal -->
+
+              <v-tab-item>
+                <v-text-field
+                  label="Positiion"
+                  outlined
+                  name="current_previous_position"
+                  value="{{ form.current_previous_position.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Company"
+                  outlined
+                  name="current_previous_company"
+                  value="{{ form.current_previous_company.value }}">
+                </v-text-field>
+
+                <v-textarea
+                  name="current_previous_salary_and_benefits"
+                  label="Salary and Benefits"
+                  outlined
+                  value="{{ form.current_previous_salary_and_benefits.value }}">
+                  </v-textarea>
+
+                <v-textarea
+                  name="motivation_for_leaving"
+                  label="Motivation for leaving"
+                  outlined
+                  value="{{ form.motivation_for_leaving.value }}"
+                ></v-textarea>
+              </v-tab-item>  <!-- Work history -->
+
+              <v-tab-item>
+
+                <v-select
+                  :items="visaStatusChoices"
+                  label="Visa Status"
+                  name="visa_status"
+                  outlined
+                  id="visa_status"
+                  data-default-value="{{ form.visa_status.value }}"
+                  v-model="visaStatus"></v-select>
+
+                <v-textarea
+                  name="expected_salary_and_benefits"
+                  label="Expected Salary and Benefits"
+                  outlined
+                  value="{{ form.expected_salary_and_benefits.value }}">
+                  </v-textarea>
+
+                <v-text-field
+                  label="Availability for interview"
+                  outlined
+                  name="availability_for_interview"
+                  value="{{ form.availability_for_interview.value }}">
+                </v-text-field>
+
+                <v-text-field
+                  label="Notice Period"
+                  outlined
+                  name="notice_period"
+                  value="{{ form.notice_period.value }}">
+                </v-text-field>
+
+                <v-autocomplete
+                  name='candidate_owner'
+                  :items="employees"
+                  dense
+                  label="Candidate Owner"
+                  outlined
+                  required
+                  v-model.lazy="candidateOwner">
+                </v-autocomplete>
+
+                <v-textarea
+                  name="notes"
+                  label="Notes/Remarks"
+                  outlined
+                  value="{{ form.notes.value }}">
+                  </v-textarea>
+              </v-tab-item>  <!-- Others -->
+            </v-tabs-items>
+
+            <v-input>
+              <v-btn block color="success" type="submit">Save</v-btn>
+            </v-input>
+        </form>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+    delimiters: ['[[', ']]'],
+
+    props: {
+      source: String,
+    },
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Contacts',
+          disabled: false,
+          href: '{% url "contacts:index" %}',
+        },
+        {
+          text: 'Candidates',
+          disabled: false,
+          href: '{% url "contacts:candidates_list" %}',
+        },
+        {
+          text: '{{ object.name }}',
+          disabled: false,
+          href: '{% url "contacts:candidates_detail" object.pk %}',
+        },
+        {
+          text: 'Edit',
+          disabled: true,
+        }
+      ],
+      tab: null,
+      tabs: [
+        'Contact Details',
+        'Personal',
+        'Current/Previous Work',
+        'Others'
+      ],
+      locations: [],
+      location: '{{ form.location.value }}',
+      nationalities: [],
+      nationality: '{{ form.nationality.value }}',
+      civilStatusChoices: [
+        {value: 'S', text: 'Single'},
+        {value: 'M', text: 'Married'},
+        {value: 'W', text: 'Widowed'},
+        {value: 'D', text: 'Divorced'},
+        {value: 'Se', text: 'Separated'},
+      ],
+      genders: [
+        {value: 'F', text: 'Female'},
+        {value: 'M', text: 'Male'},
+      ],
+      visaStatusChoices: [],
+      visaStatus: '',
+      employees: [],
+      candidateOwner: '{{ form.candidate_owner.value }}',
+    }),
+
+    methods: {
+      setVisaStatusChoices: function() {
+        // get value
+        let data = document.getElementById('dataVisaStatusChoices').value;
+        this.visaStatusChoices = JSON.parse(data);
+
+        let defaultValue = document.getElementById('visa_status').getAttribute('data-default-value');
+        defaultValue = Number(defaultValue);
+        if (defaultValue || defaultValue == 0) {
+          this.visaStatus = defaultValue;
+        }
+      },
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      }
+    },
+
+    beforeMount(){
+      this.setVisaStatusChoices();
+      this.setDataChoices('dataCandidateOwnerChoices', 'employees');
+      this.setDataChoices('dataLocationChoices', 'locations');
+      this.setDataChoices('dataNationalityChoices', 'nationalities');
+      this.updateBreadcrumbs();
+    },
+
+  });
+</script>  
+{% endblock script %}

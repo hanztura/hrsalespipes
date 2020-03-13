@@ -1,0 +1,122 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+Supplier Detail - {{ object.name }}
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>{{ object.name }} - Supplier Detail</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <v-tabs
+          v-model="tab"
+          fixed-tabs>
+          <v-tab
+            v-for="tab in tabs"
+            :key="tab">
+            [[ tab ]]
+          </v-tab>
+
+          <v-tabs-items v-model="tab">
+            <v-tab-item>
+              <v-simple-table
+                dense>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>Contact Number:</th>
+                      <td>{{ object.contact_number }}</td>
+                    </tr>
+                    <tr>
+                      <th>Alternate Contact Number:</th>
+                      <td>{{ object.alternate_contact_number }}</td>
+                    </tr>
+                    <tr>
+                      <th>Email Address:</th>
+                      <td><a href="mailto:{{ object.email_address }}">{{ object.email_address }}</a></td>
+                    </tr>
+                    <tr>
+                      <th>Whatsapp Link:</th>
+                      <td>
+                        {% if object.whatsapp_link %}
+                          <a href="{{ object.whatsapp_link }}">Click here to send WhatsApp Message</a>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Skype ID:</th>
+                      <td>{{ object.skype_id }}</td>
+                    </tr>
+                    <tr>
+                      <th>MS Teams ID:</th>
+                      <td>{{ object.ms_teams_id }}</td>
+                    </tr>
+                    <tr>
+                      <th>Location:</th>
+                      <td>{{ object.location }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </v-simple-table>
+            </v-tab-item>
+          </v-tabs-items>
+        </v-tabs>
+      </v-col>
+      
+      <v-col cols="12" class="text-center">
+        <v-btn
+          block
+          color="primary"
+          href="{% url 'contacts:suppliers_edit' object.pk %}">Edit</v-btn>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+    delimiters: ['[[', ']]'],
+
+    props: {
+      source: String,
+    },
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Contacts',
+          disabled: false,
+          href: '{% url "contacts:index" %}',
+        },
+        {
+          text: 'Suppliers',
+          disabled: false,
+          href: '{% url "contacts:suppliers_list" %}',
+        },
+        {
+          text: '{{ object.name }}',
+          disabled: true,
+        },
+      ],
+      tab: null,
+      tabs: [
+        'Contact Details',
+      ],
+    }),
+
+    mounted(){
+      this.updateBreadcrumbs();
+    }
+
+  });
+</script>  
+{% endblock script %}

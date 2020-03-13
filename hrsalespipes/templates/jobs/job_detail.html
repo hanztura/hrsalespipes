@@ -1,0 +1,225 @@
+{% extends "jobs/base.html" %}
+
+{% block title %}
+Job Detail - {{ object.reference_number }}
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>{{ object.reference_number }} - Job Detail</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <v-tabs
+          v-model="tab"
+          fixed-tabs>
+          <v-tab
+            v-for="tabItem in tabs"
+            :key="tabItem"
+            :href="'#' + tabItem"
+            :target="tabItem">
+            [[ tabItem ]]
+          </v-tab>
+
+          <v-tabs-items v-model="tab">
+            <v-tab-item id="Details">
+              <v-simple-table>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>{{ JOB_REFERENCE_NUMBER_ALIAS }}:</th>
+                      <td>{{ object.reference_number }}</td>
+                    </tr>
+                    <tr>
+                      <th>Date:</th>
+                      <td>{{ object.date }}</td>
+                    </tr>
+                    <tr>
+                      <th>Client:</th>
+                      <td>{{ object.client.name }}</td>
+                    </tr>
+                    <tr>
+                      <th>Position:</th>
+                      <td>{{ object.position }}</td>
+                    </tr>
+                    <tr>
+                      <th>Consultant:</th>
+                      <td>{{ object.consultant }}</td>
+                    </tr>
+                    <tr>
+                      <th>Location:</th>
+                      <td>{{ object.location }}</td>
+                    </tr>
+                    <tr>
+                      <th>{{ JOB_POTENTIAL_INCOME_ALIAS }}:</th>
+                      <td>{{ object.potential_income }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </v-simple-table>
+
+              <v-btn
+                block
+                color="primary"
+                href="{% url 'jobs:edit' object.pk %}">Edit</v-btn>
+
+            </v-tab-item>
+
+            <v-tab-item id="Candidates">
+              <v-simple-table>
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="text-center">Candidate</th>
+                      <th class="text-center">Registration Date</th>
+                      <th class="text-center">Status</th>
+                      <th class="text-center">Salary Offered</th>
+                      <th class="text-center">Tentative date of joining</th>
+                      <th class="text-center">NFI</th>
+                      <th class="text-center">Associate</th>
+                      <th class="text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% if candidates %}
+                      {% for candidate in candidates %}
+                      <tr>
+                        <td>{{ candidate.candidate.name }}</td>
+                        <td>{{ candidate.registration_date }}</td>
+                        <td>{{ candidate.status }}</td>
+                        <td>{{ candidate.salary_offered_currency }} {{ candidate.salary_offered }}</td>
+                        <td>{{ candidate.tentative_date_of_joining }}</td>
+                        <td>{{ candidate.actual_income|default_if_none:0 }}</td>
+                        <td>{{ candidate.associate.name }}</td>
+                        <td>
+                          <v-btn
+                            href="{% url 'jobs:candidates_detail' object.pk candidate.pk %}"
+                            text>view</v-btn>
+                          <v-btn
+                            href="{% url 'jobs:candidates_edit' object.pk candidate.pk %}"
+                            text>edit</v-btn>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    {% else %}
+                      <tr>
+                        <td colspan="8">No data yet. <a href="{% url 'jobs:candidates_new' object.pk %}">Add now</a>.</td>
+                      </tr>
+                    {% endif %}
+                  </tbody>
+                </table>
+              </v-simple-table>
+
+              <v-btn
+                color="primary"
+                block
+                href="{% url 'jobs:candidates_new' object.pk %}">Add a candidate</v-btn>
+
+            </v-tab-item>
+
+            <v-tab-item id="Pipeline">
+              <v-simple-table>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>Date:</th>
+                      <td>{{ pipeline.date }}</td>
+                    </tr>
+                    <tr>
+                      <th>Invoice Date:</th>
+                      <td>{{ pipeline.invoice_date }}</td>
+                    </tr>
+                    <tr>
+                      <th>Recruitment Term:</th>
+                      <td>{{ pipeline.recruitment_term }}</td>
+                    </tr>
+                    <tr>
+                      <th>Recruitment Rate:</th>
+                      <td>{{ pipeline.recruitment_rate }}</td>
+                    </tr>
+                    <tr>
+                      <th>Base Amount:</th>
+                      <td>{{ pipeline.base_amount }}</td>
+                    </tr>
+                    <tr>
+                      <th>Potential Income:</th>
+                      <td>{{ pipeline.potential_income }}</td>
+                    </tr>
+                    <tr>
+                      <th>Status:</th>
+                      <td>{{ pipeline.status }}</td>
+                    </tr>
+                    <tr>
+                      <th>Invoice Amount:</th>
+                      <td>{{ pipeline.invoice_amount }}</td>
+                    </tr>
+                    <tr>
+                      <th>VAT:</th>
+                      <td>{{ pipeline.vat }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </v-simple-table>
+
+              <v-btn
+                class="my-2"
+                block
+                color="primary"
+                outlined
+                href="{% url 'salespipes:detail' pipeline.pk %}">View Pipeline Detail</v-btn>
+
+              <v-btn
+                class="my-2"
+                block
+                color="primary"
+                href="{% url 'salespipes:edit' pipeline.pk %}">Edit Pipeline</v-btn>
+
+            </v-tab-item>
+          </v-tabs-items>
+        </v-tabs>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+    delimiters: ['[[', ']]'],
+
+    props: {
+      source: String,
+    },
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Jobs',
+          disabled: false,
+          href: '{% url "jobs:list" %}',
+        },
+        {
+          text: '{{ object.reference_number }}',
+        },
+      ],
+      tab: null,
+      tabs: [
+        'Details',
+        'Candidates',
+        'Pipeline'
+      ],
+    }),
+
+    mounted() {
+      this.updateBreadcrumbs();
+    }
+
+  });
+</script>  
+{% endblock script %}

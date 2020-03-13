@@ -1,0 +1,237 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock title %} | HRSalesPipes</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  {% if debug %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendor/materialdesignicons.min.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "vendor/vuetify/vuetify.min.css" %}">
+  {% else %}
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  {% endif %}
+
+  {% block headblock %}{% endblock headblock %}
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <script defer src='{% static "vendor/fontawesome.js" %}'></script>
+<body>
+  <div id="app">
+    <v-app id="inspire">
+      <v-navigation-drawer
+        v-model="drawer"
+        app>
+        <v-list>
+          <template
+            v-for="item in navigationDrawerItems">
+
+            <v-list-group
+              v-if="item.items"
+              :key="item.title"
+              v-model="item.active"
+              :prepend-icon="item.action"
+              no-action
+            >
+              <template v-slot:activator>
+                <v-list-item-content>
+                  <v-list-item-title v-text="item.title"></v-list-item-title>
+                </v-list-item-content>
+              </template>
+
+              <v-list-item
+                v-for="subItem in item.items"
+                :key="subItem.title"
+                :href="subItem.href"
+              >
+                <v-list-item-content>
+                  <v-list-item-title v-text="subItem.title"></v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-group>
+            
+            <v-list-item
+              v-else
+              :key="item.title"
+              v-model="item.active"
+              :href="item.href">
+              <v-list-item-icon>
+                <v-icon>[[ item.action ]]</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title v-text="item.title"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-list>
+      </v-navigation-drawer>
+
+      <v-app-bar
+        app
+        color="indigo"
+        dark>
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+
+        <v-toolbar-title>HRSalesPipes</v-toolbar-title>
+
+        <v-spacer></v-spacer>
+
+        <v-btn icon href="{% url 'jobs:list' %}" title='Jobs'>
+          <v-icon>fas fa-suitcase</v-icon>
+        </v-btn>
+
+        <v-btn icon href="{% url 'salespipes:list' %}" title='Pipeline'>
+          <v-icon>fas fa-dollar-sign</v-icon>
+        </v-btn>
+
+        <v-menu
+        left
+        bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on" title="Contacts">
+            <v-icon>fas fa-address-book</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item href="{% url 'contacts:candidates_list' %}">
+            Candidates
+          </v-list-item>
+          <v-list-item href="{% url 'contacts:clients_list' %}">
+            Clients
+          </v-list-item>
+          <v-list-item href="{% url 'contacts:suppliers_list' %}">
+            Suppliers
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+        <v-btn icon href="{% url 'reports:index' %}" title='Reports'>
+          <v-icon>fas fa-file</v-icon>
+        </v-btn>
+
+        <v-menu
+        left
+        bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on" title="Account">
+            <v-icon>fas fa-user-circle</v-icon>
+          </v-btn>
+        </template>
+
+        {% if user.is_authenticated %}
+        <v-list>
+          <v-list-item>
+            <v-list-item-title>Hi {{ user.username }}!</v-list-item-title>
+          </v-list-item>
+          <v-list-item
+            href="{% url 'system:logout' %}">
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item>
+        </v-list>
+        {% endif %}
+      </v-menu>
+      </v-app-bar>
+
+      <v-content>
+        {% block content %}{% endblock content %}
+      </v-content>
+      <v-footer
+        color="indigo"
+        app
+      >
+        <span class="white--text">HRSalesPipes &copy; 2020 X of Y Business and IT Services. All rights reserved.</span>
+      </v-footer>
+    </v-app>
+  </div>
+
+  {% if debug %}
+    <script src="{% static "vendor/vue/vue.js" %}"></script>
+    <script src="{% static "vendor/vuetify/vuetify.js" %}"></script>
+  {% else %}
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  {% endif %}
+
+  <script>
+    const NAVIGATION_DRAWER_ITEMS = [
+        {
+          action: 'fas fa-home',
+          title: 'Dashboard',
+          href: '{% url "dashboard:index" %}',
+        },
+        {
+          action: 'fas fa-suitcase',
+          title: 'Jobs',
+          href: '{% url "jobs:list" %}',
+        },
+        {
+          action: 'fas fa-dollar-sign',
+          title: 'Pipeline',
+          href: '{% url "salespipes:list" %}',
+        },
+        {
+          action: 'fas fa-address-book',
+          title: 'Contacts',
+          items: [
+            { title: 'Candidates',
+              href: '{% url "contacts:candidates_list" %}'
+            },
+            { title: 'Clients',
+              href: '{% url "contacts:clients_list" %}'
+            },
+            { title: 'Suppliers',
+              href: '{% url "contacts:suppliers_list" %}'
+            },
+          ],
+        },
+        {
+          action: 'fas fa-file',
+          title: 'Reports',
+          href: '{% url "reports:index" %}',
+        },
+      ];
+
+    const DASHBOARD_URL = '{% url "dashboard:index" %}';
+  
+      Vue.mixin({
+        delimiters: ['[[', ']]'],
+        data: () => ({
+          navigationDrawerItems: NAVIGATION_DRAWER_ITEMS,
+          breadcrumbs: [
+            {
+              text: 'Dashboard',
+              disabled: false,
+              href: DASHBOARD_URL,
+            },
+          ],
+          subBreadcrumbs: [],
+        }),
+        methods: {
+          updateBreadcrumbs() {
+            this.breadcrumbs = this.breadcrumbs.concat(this.subBreadcrumbs);
+          }
+        }
+      });
+  </script>
+  
+  {% block script %}
+  <script>
+    new Vue({
+      el: '#inspire',
+      vuetify: new Vuetify(),
+
+      props: {
+        source: String,
+      },
+      data: () => ({
+        drawer: null,
+      }),
+    });
+  </script>
+  {% endblock script %}
+</body>
+</html>

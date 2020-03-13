@@ -1,0 +1,85 @@
+{% extends "salespipes/base.html" %}
+
+{% block title %}
+Pipeline
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>Pipeline</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <v-simple-table>
+          <table>
+            <thead>
+              <tr>
+                <th class="text-center">Date</th>
+                <th class="text-center">Job Reference Number</th>
+                <th class="text-center">Invoice Date</th>
+                <th class="text-center">Recruitment Term</th>
+                <th class="text-center">Recruitment Rate</th>
+                <th class="text-center">Base Amount</th>
+                <th class="text-center">Potential Income</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Invoice Amount</th>
+                <th class="text-center">VAT</th>
+                <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for object in object_list %}
+              <tr>
+                <td>{{ object.date }}</td>
+                <td><a href="{% url 'jobs:detail' object.job_id %}" title="Open Job Detail">{{ object.job }}</a></td>
+                <td>{{ object.invoice_date }}</td>
+                <td>{{ object.recruitment_term }}</td>
+                <td>{{ object.recruitment_rate }}</td>
+                <td>{{ object.base_amount }}</td>
+                <td>{{ object.potential_income }}</td>
+                <td>{{ object.status }}</td>
+                <td>{{ object.invoice_amount }}</td>
+                <td>{{ object.vat }}</td>
+                <td>
+                  <v-btn
+                    href="{% url 'salespipes:detail' object.pk %}"
+                    text>view</v-btn>
+                  <v-btn
+                    href="{% url 'salespipes:edit' object.pk %}"
+                    text>edit</v-btn>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </v-simple-table>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Pipeline',
+        },
+      ],
+    }),
+
+    mounted(){
+      this.updateBreadcrumbs();
+    },
+
+  });
+</script>  
+{% endblock script %}

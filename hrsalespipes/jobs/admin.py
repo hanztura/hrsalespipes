@@ -1,3 +1,15 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Status
+
+
+class StatusAdmin(admin.ModelAdmin):
+    fields = [
+        'name',
+        'probability',
+        'should_create_pipeline',
+    ]
+    list_display = ('name', 'probability', 'should_create_pipeline')
+
+
+admin.site.register(Status, StatusAdmin)

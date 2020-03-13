@@ -1,0 +1,171 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+{{ object.candidate.name }} - {{ object.job.reference_number }} Job Candidate Detail
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>{{ object.candidate.name }} - {{ object.job.reference_number }} Job Candidate Detail</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <v-tabs
+          v-model="tab"
+          fixed-tabs>
+          <v-tab
+            v-for="tab in tabs"
+            :key="tab">
+            [[ tab ]]
+          </v-tab>
+
+          <v-tabs-items v-model="tab">
+            <v-tab-item>
+              <v-simple-table>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>Candidate:</th>
+                      <td>{{ object.candidate.name }}</td>
+                    </tr>
+                    <tr>
+                      <th>Registration Date:</th>
+                      <td>{{ object.registration_date }}</td>
+                    </tr>
+                    <tr>
+                      <th>Status:</th>
+                      <td>{{ object.status }}</td>
+                    </tr>
+                    <tr>
+                      <th>CV Date Shared:</th>
+                      <td>{{ object.cv_date_shared }}</td>
+                    </tr>
+                    <tr>
+                      <th>Remarks:</th>
+                      <td>{{ object.remarks }}</td>
+                    </tr>
+                    <tr>
+                      <th>Salary Offered Currency:</th>
+                      <td>{{ object.salary_offered_currency }}</td>
+                    </tr>
+                    <tr>
+                      <th>Salary Offered:</th>
+                      <td>{{ object.salary_offered }}</td>
+                    </tr>
+                    <tr>
+                      <th>Tentative date of joining:</th>
+                      <td>{{ object.tentative_date_of_joining }}</td>
+                    </tr>
+                    <tr>
+                      <th>Actual Income:</th>
+                      <td>{{ object.actual_income }}</td>
+                    </tr>
+                    <tr>
+                      <th>Associate:</th>
+                      <td>{{ object.associate.name }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </v-simple-table>
+
+              <v-btn
+                block
+                color="primary"
+                href="{% url 'jobs:candidates_edit' object.job_id object.pk %}">Edit</v-btn>
+
+            </v-tab-item>
+
+            <v-tab-item>
+              <v-simple-table>
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="text-center">Date</th>
+                      <th class="text-center">Mode</th>
+                      <th class="text-center">Status</th>
+                      <th class="text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for interview in interviews %}
+                    <tr>
+                      <td>{{ interview.date }}</td>
+                      <td>{{ interview.mode }}</td>
+                      <td>{{ interview.status }}</td>
+                      <td>
+                        <v-btn
+                          href="{% url 'jobs:interviews_edit' object.job_id object.pk interview.pk %}"
+                          text>edit</v-btn>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </v-simple-table>
+
+              <v-btn
+                absolute
+                right
+                color="primary"
+                href="{% url 'jobs:interviews_new' object.job_id object.pk %}">Add an interview</v-btn>
+
+            </v-tab-item>
+          </v-tabs-items>
+        </v-tabs>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+    delimiters: ['[[', ']]'],
+
+    props: {
+      source: String,
+    },
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Jobs',
+          disabled: false,
+          href: '{% url "jobs:list" %}',
+        },
+        {
+          text: '{{ object.job.reference_number }}',
+          disabled: false,
+          href: '{% url "jobs:detail" object.job_id %}',
+        },
+        {
+          text: 'Candidates',
+          disabled: false,
+          href: '#'
+        },
+        {
+          text: '{{ object.candidate.name }}',
+          disabled: true,
+        }
+      ],
+      tab: null,
+      tabs: [
+        'Details',
+        'Interviews',
+        'CV'
+      ],
+    }),
+
+    mounted(){
+      this.updateBreadcrumbs();
+    },
+
+  });
+</script>  
+{% endblock script %}

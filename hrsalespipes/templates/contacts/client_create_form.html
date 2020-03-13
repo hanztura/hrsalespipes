@@ -1,0 +1,104 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+Clients - New
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>New Client</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
+          {% for error in form.errors %}
+            <v-list-item>{{ error }}</v-list-item>
+          {% endfor %}
+          <v-text-field
+            label="Name"
+            outlined
+            name="name"
+            required
+            value="{{ form.name.value|default_if_none:'' }}">
+          </v-text-field>
+
+          <v-text-field
+            label="Contact Number"
+            outlined
+            name="contact_number"
+            value="{{ form.contact_number.value|default_if_none:'' }}">
+          </v-text-field>
+
+          <v-text-field
+            label="Email Address"
+            outlined
+            name="email_address"
+            type="email"
+            value="{{ form.email_address.value|default_if_none:'' }}">
+          </v-text-field>
+
+          <v-autocomplete
+            :items="locations"
+            item-value="text"
+            dense
+            label="Location"
+            outlined
+            v-model.lazy="location"
+            name='location'>
+          </v-autocomplete>
+          <v-input>
+          <v-btn block color="success" type="submit">Save</v-btn>
+          </v-input>
+        </form>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Contacts',
+          disabled: false,
+          href: '{% url "contacts:index" %}',
+        },
+        {
+          text: 'Clients',
+          disabled: false,
+          href: '{% url "contacts:clients_list" %}',
+        },
+        {
+          text: 'New',
+          disabled: true,
+        }
+      ],
+      locations: [],
+      location: '{{ form.location.value }}',
+    }),
+
+    methods: {
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      }
+    },
+
+    beforeMount(){
+      this.setDataChoices('dataLocationChoices', 'locations');
+      this.updateBreadcrumbs();
+    },
+  });
+</script>  
+{% endblock script %}

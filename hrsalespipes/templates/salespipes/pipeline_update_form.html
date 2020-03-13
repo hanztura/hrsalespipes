@@ -1,0 +1,161 @@
+{% extends "salespipes/base.html" %}
+
+{% block title %}
+Pipeline - Edit
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>{{ object.job.reference_number }} - Pipeline Edit</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" id="dataJobsChoices" value="{{ jobs }}">
+          <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
+          {% for error in form.errors %}
+            <v-list-item>{{ error }}</v-list-item>
+          {% endfor %}
+
+          <v-text-field
+            label="{{ form.date.label }}"
+            outlined
+            name="date"
+            required
+            type="date"
+            value="{{ form.date.value|date:'Y-m-d' }}">
+          </v-text-field>
+
+          <v-autocomplete
+            :items="jobs"
+            label="Job"
+            v-model.lazy="job"
+            name='job'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
+          <v-text-field
+            label="{{ form.invoice_date.label }}"
+            outlined
+            name="invoice_date"
+            type="date"
+            value="{{ form.invoice_date.value|date:'Y-m-d' }}">
+          </v-text-field>
+
+          <v-text-field
+            label="Recruitment Term"
+            outlined
+            name="recruitment_term"
+            value="{{ form.recruitment_term.value }}">
+          </v-text-field>
+
+          <v-text-field
+            label="Recruitment Rate"
+            outlined
+            name="recruitment_rate"
+            type="number"
+            value="{{ form.recruitment_rate.value }}">
+          </v-text-field>
+
+          <v-text-field
+            label="Base Amount"
+            outlined
+            name="base_amount"
+            type="number"
+            value="{{ form.base_amount.value }}">
+          </v-text-field>
+
+          <v-text-field
+            label="Potential Income"
+            outlined
+            name="potential_income"
+            type="number"
+            value="{{ form.potential_income.value }}">
+          </v-text-field>
+
+          <v-autocomplete
+            :items="statusChoices"
+            label="Status"
+            v-model.lazy="status"
+            name='status'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
+          <v-text-field
+            label="Invoice Amount"
+            outlined
+            name="invoice_amount"
+            type="number"
+            value="{{ form.invoice_amount.value }}">
+          </v-text-field>
+
+          <v-text-field
+            label="VAT"
+            outlined
+            name="vat"
+            type="number"
+            value="{{ form.vat.value }}">
+          </v-text-field>
+
+          <v-input>
+            <v-btn block color="success" type="submit">Save</v-btn>
+          </v-input>
+        </form>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Pipeline',
+          disabled: false,
+          href: '{% url "salespipes:list" %}',
+        },
+        {
+          text: '{{ object.job.reference_number }}',
+          disabled: false,
+          href: '{% url "salespipes:detail" object.pk %}',
+        },
+        {
+          text: 'Edit',
+        }
+      ],
+      jobs: [],
+      job: '{{ form.job.value }}',
+      statusChoices: [],
+      status: '{{ form.status.value }}',
+    }),
+
+    methods: {
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      }
+    },
+
+    beforeMount(){
+      this.setDataChoices('dataJobsChoices', 'jobs');
+      this.setDataChoices('dataStatusChoices', 'statusChoices');
+      this.updateBreadcrumbs();
+    },
+
+  });
+</script>  
+{% endblock script %}

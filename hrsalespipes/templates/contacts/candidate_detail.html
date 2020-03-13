@@ -1,0 +1,248 @@
+{% extends "contacts/base.html" %}
+
+{% block title %}
+Candidate Detail - {{ object.name }}
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>{{ object.name }} - Candidate Detail</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <v-tabs
+          v-model="tab"
+          fixed-tabs>
+          <v-tab
+            v-for="tab in tabs"
+            :key="tab">
+            [[ tab ]]
+          </v-tab>
+
+          <v-tabs-items v-model="tab">
+            <v-tab-item>
+              <v-simple-table
+                dense>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>Contact Number:</th>
+                      <td>{{ object.contact_number }}</td>
+                    </tr>
+                    <tr>
+                      <th>Alternate Contact Number:</th>
+                      <td>{{ object.alternate_contact_number }}</td>
+                    </tr>
+                    <tr>
+                      <th>Email Address:</th>
+                      <td><a href="mailto:{{ object.email_address }}">{{ object.email_address }}</a></td>
+                    </tr>
+                    <tr>
+                      <th>Whatsapp Link:</th>
+                      <td>
+                        {% if object.whatsapp_link %}
+                          <a href="{{ object.whatsapp_link }}">Click here to send WhatsApp Message</a>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Skype ID:</th>
+                      <td>{{ object.skype_id }}</td>
+                    </tr>
+                    <tr>
+                      <th>MS Teams ID:</th>
+                      <td>{{ object.ms_teams_id }}</td>
+                    </tr>
+                    <tr>
+                      <th>Location:</th>
+                      <td>{{ object.location }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </v-simple-table>
+            </v-tab-item>
+
+            <v-tab-item>
+              <v-simple-table
+                dense>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>Nationality:</th>
+                      <td>{{ object.nationality }}</td>
+                    </tr>
+                    <tr>
+                      <th>Languages:</th>
+                      <td>{{ object.languages }}</td>
+                    </tr>
+                    <tr>
+                      <th>Preferred Location:</th>
+                      <td>{{ object.preferred_location }}</td>
+                    </tr>
+                    <tr>
+                      <th>Civil Status:</th>
+                      <td>{{ object.civil_status }}</td>
+                    </tr>
+                    <tr>
+                      <th>Gender:</th>
+                      <td>{{ object.gender }}</td>
+                    </tr>
+                    <tr>
+                      <th>Dependents:</th>
+                      <td>{{ object.dependents }}</td>
+                    </tr>
+                    <tr>
+                      <th>Highest Educational Qualificaiton:</th>
+                      <td>{{ object.highest_educational_qualification }}</td>
+                    </tr>
+                    <tr>
+                      <th>Date of Birth:</th>
+                      <td>{{ object.date_of_birth }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </v-simple-table>
+            </v-tab-item>
+
+            <v-tab-item>
+              <v-simple-table
+                dense>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>Positiion:</th>
+                      <td>{{ object.current_previous_position }}</td>
+                    </tr>
+                    <tr>
+                      <th>Company:</th>
+                      <td>{{ object.current_previous_company }}</td>
+                    </tr>
+                    <tr>
+                      <th>Salary and Benefits:</th>
+                      <td>{{ object.current_previous_salary_and_benefits }}</td>
+                    </tr>
+                    <tr>
+                      <th>Motivation for leaving:</th>
+                      <td>{{ object.motivation_for_leaving }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </v-simple-table>
+            </v-tab-item>
+
+            <v-tab-item>
+              <v-simple-table
+                dense>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>Visa Status:</th>
+                      <td>{{ object.visa_status }}</td>
+                    </tr>
+                    <tr>
+                      <th>Expected Salary and Benefits:</th>
+                      <td>{{ object.expected_salary_and_benefits }}</td>
+                    </tr>
+                    <tr>
+                      <th>Availablity for Interview:</th>
+                      <td>{{ object.availability_for_interview }}</td>
+                    </tr>
+                    <tr>
+                      <th>Notice Period:</th>
+                      <td>{{ object.notice_period }}</td>
+                    </tr>
+                    <tr>
+                      <th>Candidate Owner:</th>
+                      <td>{{ object.candidate_owner }}</td>
+                    </tr>
+                    <tr>
+                      <th>Notes/Remarks:</th>
+                      <td>{{ object.notes }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </v-simple-table>
+            </v-tab-item>
+          </v-tabs-items>
+        </v-tabs>
+      </v-col>
+      
+      <v-col cols="12" class="text-center">
+        <v-btn
+          block
+          color="primary"
+          href="{% url 'contacts:candidates_edit' object.pk %}">Edit</v-btn>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+    delimiters: ['[[', ']]'],
+
+    props: {
+      source: String,
+    },
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Contacts',
+          disabled: false,
+          href: '{% url "contacts:index" %}',
+        },
+        {
+          text: 'Candidates',
+          disabled: false,
+          href: '{% url "contacts:candidates_list" %}',
+        },
+        {
+          text: '{{ object.name }}',
+          disabled: true,
+        },
+      ],
+      tab: null,
+      tabs: [
+        'Contact Details',
+        'Personal',
+        'Current/Previous Work',
+        'Others'
+      ],
+      locations: [
+        'Philippines',
+        'UAE',
+      ],
+      location: '{{ object.location }}',
+      nationalities: [
+        'Filipino',
+        'etc',
+      ],
+      nationality: '{{ object.nationality }}',
+      civilStatusChoices: [
+        {value: 'S', text: 'Single'},
+        {value: 'M', text: 'Married'},
+        {value: 'W', text: 'Widowed'},
+        {value: 'D', text: 'Divorced'},
+        {value: 'Se', text: 'Separated'},
+      ],
+      genders: [
+        {value: 'F', text: 'Female'},
+        {value: 'M', text: 'Male'},
+      ]
+    }),
+
+    mounted(){
+      this.updateBreadcrumbs();
+    }
+
+  });
+</script>  
+{% endblock script %}
