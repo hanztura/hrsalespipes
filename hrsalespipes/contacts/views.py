@@ -1,7 +1,6 @@
 import json
 
-from django.contrib.auth.mixins import (
-    PermissionRequiredMixin, LoginRequiredMixin)
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
@@ -10,6 +9,7 @@ from .forms import (ClientCreateModelForm, ContactCreateModelForm,
                     CandidateUpdateModelForm, ClientUpdateModelForm,
                     SupplierModelForm)
 from .models import Candidate, Client, Supplier, Employee
+from system.utils import PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin
 from system.models import VisaStatus
 
 

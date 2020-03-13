@@ -1,3 +1,22 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.views import redirect_to_login
+from django.shortcuts import render
+
+
+class PermissionRequiredWithCustomMessageMixin(PermissionRequiredMixin):
+    permission_denied_message = 'Sorry you might not have the permission to \
+        access this page. Please contact your administrator if you feel you \
+        should be able to access this  page.'
+
+    def handle_no_permission(self):
+        if self.raise_exception or self.request.user.is_authenticated:
+            context = {
+                'permission_denied_message': self.get_permission_denied_message()
+            }
+            return render(self.request, 'system/403.html', context)
+        return redirect_to_login(self.request.get_full_path(), self.get_login_url(), self.get_redirect_field_name())
+
+
 CURRENCIES_CHOICES = (
     ('AFN', 'AFN'),
     ('EUR', 'EUR'),

@@ -2,7 +2,6 @@ import datetime
 import json
 
 from django.conf import settings
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
@@ -13,6 +12,7 @@ from .forms import (JobCreateModelForm, JobUpdateModelForm,
 from .models import Job, JobCandidate, Status, Interview
 from contacts.models import Client, Candidate, Employee
 from system.models import User, InterviewMode
+from system.utils import PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin
 
 
 class JobCreateView(PermissionRequiredMixin, CreateView):

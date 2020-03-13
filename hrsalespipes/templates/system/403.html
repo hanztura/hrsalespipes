@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div>
+    <v-breadcrumbs :items="breadcrumbs" divider=">"></v-breadcrumbs>
+  </div>
+  
+  <v-container
+    fluid>
+    <h1>Ooops! Something went wrong.</h1>
+    <p>{{ permission_denied_message }}</p>
+  </v-container>  
+{% endblock content %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      breadcrumbs: [],
+    })
+
+  });
+</script>  
+{% endblock script %}

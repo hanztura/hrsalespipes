@@ -1,13 +1,13 @@
 import datetime
 import json
 
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
 from .forms import PipelineCreateModelForm, PipelineModelForm
 from .models import Pipeline, Status
 from jobs.models import Job
+from system.utils import PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin
 
 
 class PipelineCreateView(PermissionRequiredMixin, CreateView):
