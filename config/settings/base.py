@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'jobs',
     'salespipes',
     'dashboard',
+    'reports',
 ]
 
 MIDDLEWARE = [

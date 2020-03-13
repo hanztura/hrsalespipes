@@ -109,6 +109,10 @@
         </v-list>
       </v-menu>
 
+        <v-btn icon href="{% url 'reports:index' %}" title='Reports'>
+          <v-icon>fas fa-file</v-icon>
+        </v-btn>
+
         <v-menu
         left
         bottom>
@@ -185,9 +189,9 @@
           ],
         },
         {
-          action: 'fas fa-cog',
-          title: 'Settings',
-          href: '#',
+          action: 'fas fa-file',
+          title: 'Reports',
+          href: '{% url "reports:index" %}',
         },
       ];
 
