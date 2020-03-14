@@ -1,4 +1,5 @@
 from enum import Enum
+from uuid import uuid4
 
 from django.conf import settings
 from django.db import models
@@ -74,6 +75,7 @@ class RateDetail(models.Model):
 
 
 class Commission(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     date = models.DateField()
     pipeline = models.ForeignKey(
         Pipeline,

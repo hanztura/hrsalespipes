@@ -22,6 +22,7 @@ from debug_toolbar import urls as debug_toolbar_urls
 
 urlpatterns = [
     path('contacts/', include('contacts.urls')),
+    path('commissions/', include('commissions.urls')),
     path('jobs/', include('jobs.urls')),
     path('pipeline/', include('salespipes.urls')),
     path('dashboard/', include('dashboard.urls')),

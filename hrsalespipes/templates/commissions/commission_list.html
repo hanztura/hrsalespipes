@@ -1,0 +1,85 @@
+{% extends "commissions/base.html" %}
+
+{% block title %}
+Commissions - List
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <h1>Commissions</h1>
+      <v-col cols="12">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn absolute right color="primary" v-on="on">New</v-btn>
+          </template>
+          <span>To create a new commission, open a Pipeline record and hit the "Create a commission" button.</span>
+        </v-tooltip>
+      </v-col>
+      <v-col cols="12">
+        <v-simple-table>
+          <table>
+            <thead>
+              <th class="text-center">Date</th>
+              <th class="text-center">Pipeline</th>
+              <th class="text-center">Employee</th>
+              <th class="text-center">Amount</th>
+              <th class="text-center">Actions</th>
+            </thead>
+            <tbody>
+              {% if object_list %}
+                {% for object in object_list %}
+                <tr>
+                  <td class="text-center">{{ object.date }}</td>
+                  <td class="text-center"><a href="{% url 'salespipes:detail' object.pipeline_id %}">{{ object.pipeline.job.reference_number }}</a></td>
+                  <td class="text-center">{{ object.employee.name }}</td>
+                  <td class="text-center">{{ object.amount }}</td>
+                  <td class="text-center">
+                    <v-btn
+                      href="{% url 'commissions:detail' object.pk %}"
+                      text>view</v-btn>
+                    <v-btn
+                      href="{% url 'commissions:edit' object.pk %}"
+                      text>edit</v-btn>
+                  </td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td class="text-center" colspan="5">No data available.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </v-simple-table>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Commissions',
+        },
+      ],
+    }),
+
+    mounted() {
+      this.updateBreadcrumbs();
+    }
+
+  });
+</script>  
+{% endblock script %}

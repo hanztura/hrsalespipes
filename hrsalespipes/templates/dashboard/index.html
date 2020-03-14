@@ -17,3 +17,22 @@ Dashboard
     </v-row>
   </v-container>  
 {% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [],
+    }),
+
+    mounted() {
+      this.updateBreadcrumbs();
+    }
+
+  });
+</script>  
+{% endblock script %}
