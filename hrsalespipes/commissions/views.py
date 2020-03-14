@@ -1,7 +1,13 @@
+import datetime
+
+from django.shortcuts import get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
 from .models import Commission
+from contacts.models import Employee
+from salespipes.models import Pipeline
+from system.helpers import get_objects_as_choices
 from system.utils import PermissionRequiredWithCustomMessageMixin
 
 
@@ -10,6 +16,28 @@ class CommissionCreateView(
         CreateView):
     model = Commission
     permission_required = 'commissions.add_commission'
+    fields = [
+        'employee',
+        'rate_role_type',
+        'rate_used',
+        'amount',
+    ]
+
+    def form_valid(self, form):
+        pipeline = self.kwargs['pipeline_pk']
+        pipeline = get_object_or_404(Pipeline, pk=pipeline)
+
+        form.instance.pipeline = pipeline
+        form.instance.date = datetime.date.today()
+
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['mode'] = 'New'
+        context['employees'] = get_objects_as_choices(Employee)
+        return context
 
 
 class CommissionUpdateView(
@@ -17,6 +45,34 @@ class CommissionUpdateView(
         UpdateView):
     model = Commission
     permission_required = 'commissions.change_commission'
+    fields = [
+        'date',
+        'employee',
+        'rate_role_type',
+        'rate_used',
+        'amount',
+        'is_paid',
+    ]
+    template_name = 'commissions/commission_update_form.html'
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.select_related('pipeline__job', 'employee')
+
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.object.is_paid:
+            is_paid = 'true'
+        else:
+            is_paid = 'false'
+
+        context['is_paid'] = is_paid
+        context['mode'] = 'Edit'
+        context['employees'] = get_objects_as_choices(Employee)
+        return context
 
 
 class CommissionDetailView(
@@ -24,6 +80,12 @@ class CommissionDetailView(
         DetailView):
     model = Commission
     permission_required = 'commissions.view_commission'
+
+    def get_queryset(self, **kwargs):
+        q = super().get_queryset(**kwargs)
+        q = q.select_related('pipeline__job', 'employee')
+
+        return q
 
 
 class CommissionListView(
@@ -34,6 +96,6 @@ class CommissionListView(
 
     def get_queryset(self, **kwargs):
         q = super().get_queryset(**kwargs)
-        q = q.select_related('pipeline__job')
+        q = q.select_related('pipeline__job', 'employee')
 
         return q

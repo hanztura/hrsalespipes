@@ -60,6 +60,15 @@ Pipeline Detail - Job {{ object.job.reference_number }}
           </table>
         </v-simple-table>
 
+        {% if perms.commissions.add_commission %}
+          <v-btn
+            class="my-2"
+            block
+            outlined
+            color="primary"
+            href="{% url 'commissions:new' object.pk %}">Create a commission</v-btn>
+        {% endif %}
+
               <v-btn
                 block
                 color="primary"

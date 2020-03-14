@@ -1,13 +1,13 @@
 {% extends "commissions/base.html" %}
 
 {% block title %}
-Commissions - New
+Commission ({{ object.pipeline.job.reference_number }}) {{ object.employee.name }} - Edit
 {% endblock title %}
 
 {% block subcontent %}
   <v-container
     fluid>
-    <h1>New Commission</h1>
+    <h1>Commission (<a href="{% url 'salespipes:detail' object.pipeline_id %}" title="view pipeline detail">{{ object.pipeline.job.reference_number }}</a>) {{ object.employee.name }} - Edit</h1>
     <v-row
       align="center"
       justify="center"
@@ -19,6 +19,15 @@ Commissions - New
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
+
+          <v-text-field
+            outlined
+            required
+            label="Date"
+            name="date"
+            type='date'
+            value="{{ form.date.value|date:'Y-m-d' }}">
+          </v-text-field>
 
           <v-autocomplete
             :items="employees"
@@ -60,6 +69,11 @@ Commissions - New
             value="{{ form.amount.value|default_if_none:0 }}">
           </v-text-field>
 
+          <v-checkbox
+            v-model="isPaid"
+            label="Is Paid?"
+          ></v-checkbox>
+
           <v-input>
             <v-btn block color="success" type="submit">Save</v-btn>
           </v-input>
@@ -84,14 +98,19 @@ Commissions - New
           href: '{% url "commissions:list" %}',
         },
         {
-          text: 'New',
-          disabled: true,
+          text: '({{ object.pipeline.job.reference_number }}) {{ object.employee.name }}',
+          disabled: false,
+          href: '{% url "commissions:detail" object.pk %}',
+        },
+        {
+          text: 'Edit',
         }
       ],
       employees: [],
       employee: '{{ form.employee.value }}',
       rateRoleTypes: ['one', 'two', 'three', 'others'],
       rateRoleType: '{{ form.rate_role_type.value }}',
+      isPaid: {{ is_paid }},
     }),
 
     methods: {

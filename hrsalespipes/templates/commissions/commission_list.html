@@ -27,6 +27,7 @@ Commissions - List
               <th class="text-center">Date</th>
               <th class="text-center">Pipeline</th>
               <th class="text-center">Employee</th>
+              <th class="text-center">Rate Role Type</th>
               <th class="text-center">Amount</th>
               <th class="text-center">Actions</th>
             </thead>
@@ -37,6 +38,7 @@ Commissions - List
                   <td class="text-center">{{ object.date }}</td>
                   <td class="text-center"><a href="{% url 'salespipes:detail' object.pipeline_id %}">{{ object.pipeline.job.reference_number }}</a></td>
                   <td class="text-center">{{ object.employee.name }}</td>
+                  <td class="text-center">{{ object.rate_role_type }}</td>
                   <td class="text-center">{{ object.amount }}</td>
                   <td class="text-center">
                     <v-btn
