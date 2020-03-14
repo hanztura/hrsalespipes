@@ -33,6 +33,8 @@ class Setting(SingletonModel):
     runned_nationalities_initial_data = models.BooleanField(
         default=False,
         blank=True)
+    vat_rate = models.DecimalField(
+        max_digits=2, decimal_places=2, default=0.05)
 
 
 class VisaStatus(models.Model):

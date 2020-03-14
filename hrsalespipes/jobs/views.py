@@ -72,8 +72,13 @@ class JobDetailView(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        try:
+            pipeline = self.object.pipeline
+        except Exception as e:
+            pipeline = None
+
         context['candidates'] = self.object.candidates.all()
-        context['pipeline'] = self.object.pipeline
+        context['pipeline'] = pipeline
         context['JOB_POTENTIAL_INCOME_ALIAS'] = settings.JOB_POTENTIAL_INCOME_ALIAS
         context['JOB_REFERENCE_NUMBER_ALIAS'] = settings.JOB_REFERENCE_NUMBER_ALIAS
         return context

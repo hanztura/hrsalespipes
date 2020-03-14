@@ -1,10 +1,11 @@
 import datetime
 
+from django.db import transaction
 from django.forms import ModelForm
 
 from .models import Job, JobCandidate, Interview
 from salespipes.forms import (
-    Pipeline, PipelineCreateModelForm, PipelineModelForm, PipelineUpdateStatus)
+    Pipeline, PipelineModelForm, PipelineUpdateStatus)
 
 
 class JobCreateModelForm(ModelForm):
@@ -57,6 +58,7 @@ class JobCandidateUpdateModelForm(ModelForm):
             'associate',
         ]
 
+    @transaction.atomic
     def save(self, commit=True):
         instance = super().save(commit)
 
@@ -72,13 +74,15 @@ class JobCandidateUpdateModelForm(ModelForm):
 
             pipeline_record = Pipeline.objects.filter(job_id=instance.job_id)
             if not pipeline_record.exists():
-                pipeline = PipelineCreateModelForm({'job': instance.job_id})
-                pipeline = pipeline.save()
-
-                pipeline = PipelineUpdateStatus(
-                    {'status': related_pipeline_status.pk},
-                    instance=pipeline)
-                pipeline.save()
+                data = {
+                    'job': instance.job_id,
+                    'status': related_pipeline_status.pk,
+                    'base_amount': instance.salary_offered,
+                    'date': datetime.date.today(),
+                }
+                pipeline = PipelineModelForm(data)
+                if pipeline.is_valid():
+                    pipeline = pipeline.save()
 
             # only update status if not created and if probability is upgrade
             if pipeline_record.exists() and is_upgrade:
@@ -86,7 +90,9 @@ class JobCandidateUpdateModelForm(ModelForm):
                 pipeline = PipelineUpdateStatus(
                     {'status': related_pipeline_status.pk},
                     instance=pipeline_record)
-                pipeline.save()
+
+                if pipeline.is_valid():
+                    pipeline.save()
 
         return instance
 
