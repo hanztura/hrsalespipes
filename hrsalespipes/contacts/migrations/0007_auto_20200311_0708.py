@@ -11,7 +11,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='candidate',
+            name='candidate_owner',
+        ),
+        migrations.AddField(
             model_name='candidate',
             name='candidate_owner',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='contacts.Employee'),
