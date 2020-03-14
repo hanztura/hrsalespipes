@@ -11,9 +11,8 @@ from .forms import (JobCreateModelForm, JobUpdateModelForm,
                     InterviewModelForm)
 from .models import Job, JobCandidate, Status, Interview
 from contacts.models import Client, Candidate, Employee
-from salespipes.models import Pipeline
 from system.helpers import get_objects_as_choices
-from system.models import User, InterviewMode
+from system.models import InterviewMode
 from system.utils import PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin
 
 
@@ -30,7 +29,6 @@ class JobCreateView(PermissionRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         context['clients'] = get_objects_as_choices(Client)
         return context
 
@@ -72,8 +70,13 @@ class JobDetailView(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        try:
+            pipeline = self.object.pipeline
+        except Exception as e:
+            pipeline = None
+
         context['candidates'] = self.object.candidates.all()
-        context['pipeline'] = self.object.pipeline
+        context['pipeline'] = pipeline
         context['JOB_POTENTIAL_INCOME_ALIAS'] = settings.JOB_POTENTIAL_INCOME_ALIAS
         context['JOB_REFERENCE_NUMBER_ALIAS'] = settings.JOB_REFERENCE_NUMBER_ALIAS
         return context

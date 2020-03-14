@@ -1,4 +1,5 @@
 {% extends "salespipes/base.html" %}
+{% load static %}
 
 {% block title %}
 Pipeline - Edit
@@ -17,9 +18,9 @@ Pipeline - Edit
           {% csrf_token %}
           <input type="hidden" id="dataJobsChoices" value="{{ jobs }}">
           <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
-          {% for error in form.errors %}
-            <v-list-item>{{ error }}</v-list-item>
-          {% endfor %}
+          {% if form.errors %}
+            <p>{{form.errors}}</p>
+          {% endif %}
 
           <v-text-field
             label="{{ form.date.label }}"
@@ -49,10 +50,12 @@ Pipeline - Edit
           </v-text-field>
 
           <v-text-field
-            label="Recruitment Term"
             outlined
+            label="Recruitment Term"
             name="recruitment_term"
-            value="{{ form.recruitment_term.value }}">
+            type="number"
+            step="0.01"
+            v-model.lazy="recruitmentTerm">
           </v-text-field>
 
           <v-text-field
@@ -60,7 +63,8 @@ Pipeline - Edit
             outlined
             name="recruitment_rate"
             type="number"
-            value="{{ form.recruitment_rate.value }}">
+            step="0.01"
+            v-model.lazy="recruitmentFee">
           </v-text-field>
 
           <v-text-field
@@ -68,7 +72,8 @@ Pipeline - Edit
             outlined
             name="base_amount"
             type="number"
-            value="{{ form.base_amount.value }}">
+            step="0.01"
+            v-model.lazy="baseAmount">
           </v-text-field>
 
           <v-text-field
@@ -76,7 +81,8 @@ Pipeline - Edit
             outlined
             name="potential_income"
             type="number"
-            value="{{ form.potential_income.value }}">
+            step="0.01"
+            v-model.lazy="potentialIncome">
           </v-text-field>
 
           <v-autocomplete
@@ -92,18 +98,23 @@ Pipeline - Edit
           <v-text-field
             label="Invoice Amount"
             outlined
-            name="invoice_amount"
+            disabled
             type="number"
-            value="{{ form.invoice_amount.value }}">
+            step="0.01"
+            v-model.lazy="invoiceAmount">
           </v-text-field>
 
           <v-text-field
             label="VAT"
             outlined
-            name="vat"
+            disabled
             type="number"
-            value="{{ form.vat.value }}">
+            step="0.01"
+            v-model.lazy="vat">
           </v-text-field>
+
+          <input type="hidden" name="invoice_amount" :value="invoiceAmount">
+          <input type="hidden" name="vat" :value="vat">
 
           <v-input>
             <v-btn block color="success" type="submit">Save</v-btn>
@@ -115,7 +126,15 @@ Pipeline - Edit
 {% endblock subcontent %}
 
 {% block script %}
+
+{% if debug %}
+  <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+{% else %}
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+{% endif %}
+
 <script>
+
   new Vue({
     el: '#inspire',
     vuetify: new Vuetify(),
@@ -141,13 +160,51 @@ Pipeline - Edit
       job: '{{ form.job.value }}',
       statusChoices: [],
       status: '{{ form.status.value }}',
+      recruitmentTerm: {{ form.recruitment_term.value }},
+      recruitmentFee: {{ form.recruitment_rate.value }},
+      baseAmount: {{ form.base_amount.value }},
+      potentialIncome: {{ form.potential_income.value }},
+      vatRate: {{ vat_rate }},
+      vat: {{ form.vat.value }},
+      invoiceAmount: {{ form.invoice_amount.value }},
     }),
+
+    watch: {
+      recruitmentTerm: function (val, oldVal){
+        this.potentialIncome = this.computedPotentialIncome;
+      },
+      recruitmentFee: function (val, oldVal){
+        this.potentialIncome = this.computedPotentialIncome;
+      },
+      baseAmount: function (val, oldVal){
+        this.potentialIncome = this.computedPotentialIncome;
+      },
+      potentialIncome: function () {
+        this.vat = this.computedVat;
+        this.invoiceAmount = this.computedInvoiceAmount;
+      }
+    },
+
+    computed: {
+      computedPotentialIncome: function () {
+        amount = this.baseAmount * this.recruitmentTerm * this.recruitmentFee;
+        return _.round(amount, 2);
+      },
+      computedInvoiceAmount: function() {
+        amount = this.potentialIncome + this.vat;
+        return _.round(amount, 2);
+      },
+      computedVat: function() {
+        amount = this.potentialIncome * this.vatRate;
+        return _.round(amount, 2);
+      }
+    },
 
     methods: {
       setDataChoices: function(sourceId, setDataVariable) {
         let data = document.getElementById(sourceId).value;
         this.$set(this, setDataVariable, JSON.parse(data));
-      }
+      },
     },
 
     beforeMount(){

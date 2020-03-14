@@ -209,10 +209,21 @@
             },
           ],
           subBreadcrumbs: [],
+          isCommissionAllowed: Boolean('{{ perms.commissions.view_commission }}' != 'False'),
         }),
         methods: {
           updateBreadcrumbs() {
             this.breadcrumbs = this.breadcrumbs.concat(this.subBreadcrumbs);
+
+            // add commission to navigation drawer
+            if (this.isCommissionAllowed) {
+              data = {
+                action: 'fas fa-calculator',
+                title: 'Commissions',
+                href: '{% url "commissions:list" %}',
+              }
+              this.navigationDrawerItems.push(data);
+            }
           }
         }
       });

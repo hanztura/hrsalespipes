@@ -7,6 +7,7 @@ from django.views.generic import DetailView, ListView
 from .forms import PipelineCreateModelForm, PipelineModelForm
 from .models import Pipeline, Status
 from jobs.models import Job
+from system.models import Setting
 from system.utils import PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin
 
 
@@ -52,8 +53,12 @@ class PipelineUpdateView(PermissionRequiredMixin, UpdateView):
                           for data in status_objects]
         status_objects = json.dumps(status_objects)
 
+        setting = Setting.objects.all().first()
+        vat_rate = setting.vat_rate
+
         context['jobs'] = jobs
         context['status_objects'] = status_objects
+        context['vat_rate'] = vat_rate
         return context
 
 
