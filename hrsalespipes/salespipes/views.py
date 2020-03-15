@@ -72,7 +72,30 @@ class PipelineListView(PermissionRequiredMixin, ListView):
     model = Pipeline
     permission_required = 'salespipes.view_pipeline'
 
+    def get_queryset(self):
+        q = super().get_queryset().select_related('status')
+        return q
+
 
 class PipelineDetailView(PermissionRequiredMixin, DetailView):
     model = Pipeline
     permission_required = 'salespipes.view_pipeline'
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.prefetch_related('job__candidates__status')
+
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        candidates = self.object.job.candidates.all()
+        candidates = candidates.filter(status__probability__gte=1)
+        if candidates.exists():
+            candidate = candidates.select_related('candidate').first()
+        else:
+            candidate = None
+
+        context['candidate'] = candidate
+        return context

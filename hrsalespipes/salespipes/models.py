@@ -33,7 +33,6 @@ class Pipeline(TimeStampedModel):
         Job,
         on_delete=models.PROTECT,
         related_name='pipeline')
-    invoice_date = models.DateField(null=True, blank=True)
     recruitment_term = models.DecimalField(
         max_digits=15, decimal_places=5, default=1.0, blank=True)
     recruitment_rate = models.DecimalField(
@@ -47,6 +46,10 @@ class Pipeline(TimeStampedModel):
         on_delete=models.PROTECT,
         null=True,
         blank=True)
+    invoice_date = models.DateField(null=True, blank=True)
+    invoice_number = models.CharField(
+        max_length=50,
+        blank=True)
     invoice_amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -58,5 +61,13 @@ class Pipeline(TimeStampedModel):
         default=0,
         blank=True)
 
-    def get_absolute_url(self):
+    @property
+    def edit_href(self):
         return reverse('salespipes:edit', args=[str(self.pk), ])
+
+    @property
+    def view_href(self):
+        return reverse('salespipes:detail', args=[str(self.pk), ])
+
+    def get_absolute_url(self):
+        return self.edit_href

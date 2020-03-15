@@ -1,0 +1,51 @@
+<v-simple-table>
+  <table>
+    <tbody>
+      <tr>
+        <th>Candidate:</th>
+        <td>{{ object.candidate.name }}</td>
+      </tr>
+      <tr>
+        <th>Registration Date:</th>
+        <td>{{ object.registration_date }}</td>
+      </tr>
+      <tr>
+        <th>Status:</th>
+        <td>{{ object.status }}</td>
+      </tr>
+      <tr>
+        <th>CV Date Shared:</th>
+        <td>{{ object.cv_date_shared }}</td>
+      </tr>
+      <tr>
+        <th>Remarks:</th>
+        <td>{{ object.remarks }}</td>
+      </tr>
+      <tr>
+        <th>Salary Offered Currency:</th>
+        <td>{{ object.salary_offered_currency }}</td>
+      </tr>
+      <tr>
+        <th>Salary Offered:</th>
+        <td>{{ object.salary_offered }}</td>
+      </tr>
+      <tr>
+        <th>Tentative date of joining:</th>
+        <td>{{ object.tentative_date_of_joining }}</td>
+      </tr>
+      <tr>
+        <th>Actual Income:</th>
+        <td>{{ object.actual_income }}</td>
+      </tr>
+      <tr>
+        <th>Associate:</th>
+        <td>{{ object.associate.name }}</td>
+      </tr>
+    </tbody>
+  </table>
+</v-simple-table>
+
+<v-btn
+  block
+  color="primary"
+  href="{% url 'jobs:candidates_edit' object.job_id object.pk %}">Edit</v-btn>

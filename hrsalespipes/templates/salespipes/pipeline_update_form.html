@@ -42,14 +42,6 @@ Pipeline - Edit
           </v-autocomplete>
 
           <v-text-field
-            label="{{ form.invoice_date.label }}"
-            outlined
-            name="invoice_date"
-            type="date"
-            value="{{ form.invoice_date.value|date:'Y-m-d' }}">
-          </v-text-field>
-
-          <v-text-field
             outlined
             label="Recruitment Term"
             name="recruitment_term"
@@ -94,6 +86,21 @@ Pipeline - Edit
             outlined
             required>
           </v-autocomplete>
+
+          <v-text-field
+            label="Invoice Date"
+            outlined
+            name="invoice_date"
+            type="date"
+            value="{{ form.invoice_date.value|date:'Y-m-d' }}">
+          </v-text-field>
+
+          <v-text-field
+            outlined
+            label="Invoice Number"
+            name="invoice_number"
+            value="{{ form.invoice_number.value }}">
+          </v-text-field>
 
           <v-text-field
             label="Invoice Amount"

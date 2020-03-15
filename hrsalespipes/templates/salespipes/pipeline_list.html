@@ -1,4 +1,5 @@
 {% extends "salespipes/base.html" %}
+{% load humanize %}
 
 {% block title %}
 Pipeline
@@ -22,12 +23,9 @@ Pipeline
               <tr>
                 <th class="text-center">Date</th>
                 <th class="text-center">Job Reference Number</th>
-                <th class="text-center">Invoice Date</th>
-                <th class="text-center">Recruitment Term</th>
-                <th class="text-center">Recruitment Rate</th>
-                <th class="text-center">Base Amount</th>
                 <th class="text-center">Potential Income</th>
                 <th class="text-center">Status</th>
+                <th class="text-center">Invoice Date</th>
                 <th class="text-center">Invoice Amount</th>
                 <th class="text-center">VAT</th>
                 <th class="text-center">Actions</th>
@@ -37,22 +35,14 @@ Pipeline
               {% for object in object_list %}
               <tr>
                 <td>{{ object.date }}</td>
-                <td><a href="{% url 'jobs:detail' object.job_id %}" title="Open Job Detail">{{ object.job }}</a></td>
-                <td>{{ object.invoice_date }}</td>
-                <td>{{ object.recruitment_term }}</td>
-                <td>{{ object.recruitment_rate }}</td>
-                <td>{{ object.base_amount }}</td>
-                <td>{{ object.potential_income }}</td>
+                <td>{{ object.job }}</td>
+                <td>{{ object.potential_income|intcomma }}</td>
                 <td>{{ object.status }}</td>
-                <td>{{ object.invoice_amount }}</td>
-                <td>{{ object.vat }}</td>
+                <td>{{ object.invoice_date }}</td>
+                <td>{{ object.invoice_amount|intcomma }}</td>
+                <td>{{ object.vat|intcomma }}</td>
                 <td>
-                  <v-btn
-                    href="{% url 'salespipes:detail' object.pk %}"
-                    text>view</v-btn>
-                  <v-btn
-                    href="{% url 'salespipes:edit' object.pk %}"
-                    text>edit</v-btn>
+                  {% include "_includes/list_action_buttons.html" with edit_href=object.edit_href view_href=object.view_href %}
                 </td>
               </tr>
               {% endfor %}
