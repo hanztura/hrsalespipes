@@ -26,7 +26,7 @@ class PipelineModelForm(ModelForm):
         default = 1
         cleaned_data = self.cleaned_data.get('recruitment_term', default)
         if cleaned_data:
-            return round(cleaned_data, 2)
+            return round(cleaned_data, 5)
 
         return default
 
@@ -34,7 +34,7 @@ class PipelineModelForm(ModelForm):
         default = 0
         cleaned_data = self.cleaned_data.get('recruitment_rate', default)
         if cleaned_data:
-            return round(cleaned_data, 2)
+            return round(cleaned_data, 10)
 
         return default
 
