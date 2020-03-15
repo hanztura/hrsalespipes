@@ -1,6 +1,7 @@
 import datetime
 import json
 
+from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
@@ -60,6 +61,11 @@ class PipelineUpdateView(PermissionRequiredMixin, UpdateView):
         context['status_objects'] = status_objects
         context['vat_rate'] = vat_rate
         return context
+
+    def get_success_url(self):
+        return reverse(
+            'salespipes:detail',
+            args=[str(self.object.pk), ])
 
 
 class PipelineListView(PermissionRequiredMixin, ListView):

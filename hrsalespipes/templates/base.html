@@ -79,14 +79,6 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn icon href="{% url 'jobs:list' %}" title='Jobs'>
-          <v-icon>fas fa-suitcase</v-icon>
-        </v-btn>
-
-        <v-btn icon href="{% url 'salespipes:list' %}" title='Pipeline'>
-          <v-icon>fas fa-dollar-sign</v-icon>
-        </v-btn>
-
         <v-menu
         left
         bottom>
@@ -108,6 +100,14 @@
           </v-list-item>
         </v-list>
       </v-menu>
+
+        <v-btn icon href="{% url 'jobs:list' %}" title='Jobs'>
+          <v-icon>fas fa-suitcase</v-icon>
+        </v-btn>
+
+        <v-btn icon href="{% url 'salespipes:list' %}" title='Pipeline'>
+          <v-icon>fas fa-dollar-sign</v-icon>
+        </v-btn>
 
         <v-btn icon href="{% url 'reports:index' %}" title='Reports'>
           <v-icon>fas fa-file</v-icon>
@@ -164,16 +164,6 @@
           href: '{% url "dashboard:index" %}',
         },
         {
-          action: 'fas fa-suitcase',
-          title: 'Jobs',
-          href: '{% url "jobs:list" %}',
-        },
-        {
-          action: 'fas fa-dollar-sign',
-          title: 'Pipeline',
-          href: '{% url "salespipes:list" %}',
-        },
-        {
           action: 'fas fa-address-book',
           title: 'Contacts',
           items: [
@@ -187,6 +177,16 @@
               href: '{% url "contacts:suppliers_list" %}'
             },
           ],
+        },
+        {
+          action: 'fas fa-suitcase',
+          title: 'Jobs',
+          href: '{% url "jobs:list" %}',
+        },
+        {
+          action: 'fas fa-dollar-sign',
+          title: 'Pipeline',
+          href: '{% url "salespipes:list" %}',
         },
         {
           action: 'fas fa-file',

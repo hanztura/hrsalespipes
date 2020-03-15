@@ -89,14 +89,6 @@
             value="{{ form.tentative_date_of_joining.value|date:'Y-m-d' }}">
           </v-text-field>
 
-          <v-text-field
-            label="{{ form.actual_income.label }}"
-            outlined
-            name="actual_income"
-            type="number"
-            value="{{ form.actual_income.value|default_if_none:0 }}">
-          </v-text-field>
-
           <v-autocomplete
             :items="associates"
             label="Associate"

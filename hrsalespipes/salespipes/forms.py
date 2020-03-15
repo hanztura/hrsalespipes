@@ -23,16 +23,36 @@ class PipelineModelForm(ModelForm):
         ]
 
     def clean_recruitment_term(self):
-        return round(self.cleaned_data['recruitment_term'], 2)
+        default = 1
+        cleaned_data = self.cleaned_data.get('recruitment_term', default)
+        if cleaned_data:
+            return round(cleaned_data, 2)
+
+        return default
 
     def clean_recruitment_rate(self):
-        return round(self.cleaned_data['recruitment_rate'], 2)
+        default = 0
+        cleaned_data = self.cleaned_data.get('recruitment_rate', default)
+        if cleaned_data:
+            return round(cleaned_data, 2)
+
+        return default
 
     def clean_base_amount(self):
-        return round(self.cleaned_data['base_amount'], 2)
+        default = 0
+        cleaned_data = self.cleaned_data.get('base_amount', default)
+        if cleaned_data:
+            return round(cleaned_data, 2)
+
+        return default
 
     def clean_potential_income(self):
-        return round(self.cleaned_data['potential_income'], 2)
+        default = 0
+        cleaned_data = self.cleaned_data.get('potential_income', default)
+        if cleaned_data:
+            return round(cleaned_data, 2)
+
+        return default
 
     def clean(self):
         cleaned_data = super().clean()

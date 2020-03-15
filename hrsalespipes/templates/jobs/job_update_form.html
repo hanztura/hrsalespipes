@@ -16,9 +16,21 @@
         <form method="post">
           {% csrf_token %}
           <input type="hidden" id="dataClientChoices" value="{{ clients }}">
+          <input type="hidden" id="dataBoardChoices" value="{{ boards }}">
+          <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
+
+          <v-autocomplete
+            :items="boards"
+            label="Job Board"
+            v-model.lazy="board"
+            name='board'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
 
           <v-text-field
             label="{{ form.reference_number.label }}"
@@ -55,13 +67,16 @@
             value="{{ form.position.value|default_if_none:'' }}">
           </v-text-field>
 
-          <v-text-field
-            label="{{ form.location.label }}"
+          <v-autocomplete
+            :items="locations"
+            item-value="text"
+            label="Location"
+            v-model.lazy="location"
+            name='location'
+            dense
             outlined
-            name="location"
-            required
-            value="{{ form.location.value|default_if_none:'' }}">
-          </v-text-field>
+            required>
+          </v-autocomplete>
 
           <v-text-field
             label="{{ form.potential_income.label }}"
@@ -107,6 +122,10 @@
       ],
       clients: [],
       client: '{{ form.client.value|default_if_none:"" }}',
+      boards: [],
+      board: '{{ form.board.value }}',
+      locations: [],
+      location: '{{ form.location.value|default_if_none:"" }}',
     }),
 
     methods: {
@@ -114,10 +133,16 @@
         let data = document.getElementById('dataClientChoices').value;
         this.clients = JSON.parse(data);
       },
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      },
     },
 
     beforeMount(){
-      this.setClientsChoices();
+      this.setDataChoices('dataClientChoices', 'clients');
+      this.setDataChoices('dataBoardChoices', 'boards');
+      this.setDataChoices('dataLocationChoices', 'locations');
       this.updateBreadcrumbs();
     },
 

@@ -46,10 +46,6 @@ Job Detail - {{ object.reference_number }}
                       <td>{{ object.position }}</td>
                     </tr>
                     <tr>
-                      <th>Consultant:</th>
-                      <td>{{ object.consultant }}</td>
-                    </tr>
-                    <tr>
                       <th>Location:</th>
                       <td>{{ object.location }}</td>
                     </tr>
@@ -87,7 +83,9 @@ Job Detail - {{ object.reference_number }}
                     {% if candidates %}
                       {% for candidate in candidates %}
                       <tr>
-                        <td>{{ candidate.candidate.name }}</td>
+                        <td>
+                          <a href="{% url 'contacts:candidates_detail' candidate.candidate_id %}" title="view contact detail">{{ candidate.candidate.name }}</a>
+                        </td>
                         <td>{{ candidate.registration_date }}</td>
                         <td>{{ candidate.status }}</td>
                         <td>{{ candidate.salary_offered_currency }} {{ candidate.salary_offered }}</td>
