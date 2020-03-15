@@ -94,5 +94,13 @@ class Commission(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     is_paid = models.BooleanField(default=False)
 
+    @property
+    def edit_href(self):
+        return reverse('commissions:edit', args=[str(self.pk), ])
+
+    @property
+    def view_href(self):
+        return reverse('commissions:detail', args=[str(self.pk), ])
+
     def get_absolute_url(self):
-        return reverse('commissions:detail', args=[str(self.pk)])
+        return self.view_href

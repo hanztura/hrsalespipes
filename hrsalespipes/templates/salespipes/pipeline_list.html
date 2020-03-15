@@ -34,14 +34,14 @@ Pipeline
             <tbody>
               {% for object in object_list %}
               <tr>
-                <td>{{ object.date }}</td>
-                <td>{{ object.job }}</td>
-                <td>{{ object.potential_income|intcomma }}</td>
-                <td>{{ object.status }}</td>
-                <td>{{ object.invoice_date }}</td>
-                <td>{{ object.invoice_amount|intcomma }}</td>
-                <td>{{ object.vat|intcomma }}</td>
-                <td>
+                <td class="text-center">{{ object.date }}</td>
+                <td class="text-center">{{ object.job }}</td>
+                <td class="text-right">{{ object.potential_income|intcomma }}</td>
+                <td class="text-center">{{ object.status }}</td>
+                <td class="text-center">{{ object.invoice_date }}</td>
+                <td class="text-right">{{ object.invoice_amount|intcomma }}</td>
+                <td class="text-right">{{ object.vat|intcomma }}</td>
+                <td class="text-center">
                   {% include "_includes/list_action_buttons.html" with edit_href=object.edit_href view_href=object.view_href %}
                 </td>
               </tr>

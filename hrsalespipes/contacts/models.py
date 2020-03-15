@@ -17,8 +17,16 @@ class Client(ContactModel):
     refund_scheme = models.TextField(blank=True)
     validity = models.DateField(null=True, blank=True)
 
+    @property
+    def edit_href(self):
+        return reverse('contacts:clients_edit', args=[str(self.pk), ])
+
+    @property
+    def view_href(self):
+        return reverse('contacts:clients_detail', args=[str(self.pk), ])
+
     def get_absolute_url(self):
-        return reverse('contacts:clients_edit', args=[str(self.id), ])
+        return self.edit_href
 
 
 class Supplier(ContactModel):
@@ -26,8 +34,16 @@ class Supplier(ContactModel):
     class Meta:
         abstract = False
 
+    @property
+    def edit_href(self):
+        return reverse('contacts:suppliers_edit', args=[str(self.pk), ])
+
+    @property
+    def view_href(self):
+        return reverse('contacts:suppliers_detail', args=[str(self.pk), ])
+
     def get_absolute_url(self):
-        return reverse('contacts:suppliers_edit', args=[str(self.id), ])
+        return self.edit_href
 
 
 class Employee(ContactModel):
@@ -89,5 +105,13 @@ class Candidate(ContactModel):
     def __str__(self):
         return self.name
 
+    @property
+    def edit_href(self):
+        return reverse('contacts:candidates_edit', args=[str(self.pk), ])
+
+    @property
+    def view_href(self):
+        return reverse('contacts:candidates_detail', args=[str(self.pk), ])
+
     def get_absolute_url(self):
-        return reverse('contacts:candidates_edit', args=[str(self.id), ])
+        return self.edit_href

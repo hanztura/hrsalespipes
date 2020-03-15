@@ -12,12 +12,13 @@ class PipelineModelForm(ModelForm):
         fields = [
             'date',
             'job',
-            'invoice_date',
             'recruitment_term',
             'recruitment_rate',
             'base_amount',
             'potential_income',
             'status',
+            'invoice_date',
+            'invoice_number',
             'invoice_amount',
             'vat',
         ]
