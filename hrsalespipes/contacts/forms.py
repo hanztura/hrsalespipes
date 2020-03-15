@@ -24,6 +24,7 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
         model = Candidate
         fields = [
             'name',
+            'code',
             'contact_number',
             'alternate_contact_number',
             'email_address',

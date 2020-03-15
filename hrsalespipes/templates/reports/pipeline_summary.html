@@ -1,0 +1,92 @@
+{% extends "reports/base.html" %}
+{% load humanize %}
+
+{% block title %}
+Pipeline Summary - Reports
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>Pipeline Summary - Reports</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <v-simple-table>
+          <table>
+            <thead>
+              <tr>
+                <th class="text-center">Pipeline</th>
+                <th class="text-center">Job</th>
+                <th class="text-center">Candidate</th>
+                <th class="text-center">Client</th>
+                <th class="text-center">Invoice</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for object in object_list %}
+              <tr class="">
+                <td class="text-center">
+                  <p>Date: <a href="{% url 'salespipes:detail' object.id %}" title="view pipeline detail">{{ object.date }}</a></p>
+                  <p>Status: <strong>{{ object.status }}</strong></p>
+                </td>
+                <td class="text-center">
+                  <p>Reference Number: <a href="{% url 'jobs:detail' object.job_id %}" title="view job detail">{{ object.job.reference_number }}</a></p>
+                  <p>Date: {{ object.job.date }}</p>
+                  <p>Position: {{ object.job.position }}</p>
+                </td>
+                <td class="text-center">
+                  {% if object.candidate %}
+                    <p><a href="{% url 'contacts:candidates_detail' object.candidate.candidate_id %}" title="view candidate detail">{{ object.candidate.candidate.name }}</a></p>
+                    <p>No.: {{ object.candidate.candidate.code }}</p>
+                  {% else %}
+                    <p>None</p>
+                  {% endif %}
+                </td>
+                <td class="text-center">
+                  <p><a href="{% url 'contacts:clients_detail' object.job.client_id %}" title="view client detail">{{ object.job.client.name }}</a></p>
+                  <p>Industry: {{ object.job.client.industry }}</p>
+                </td>
+                <td class="text-center">
+                  <p>Date: {{ object.invoice_date }}</p>
+                  <p>Number: {{ object.invoice_number }}</p>
+                  <p>Amount: {{ object.invoice_amount|intcomma }}</p>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </v-simple-table>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Reports',
+          href: '{% url "reports:index" %}'
+        },
+        {
+          text: 'Pipeline Summary',
+        },
+      ],
+    }),
+
+    mounted(){
+      this.updateBreadcrumbs();
+    },
+
+  });
+</script>  
+{% endblock script %}
