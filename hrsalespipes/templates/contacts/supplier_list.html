@@ -5,9 +5,9 @@ Suppliers - List
 {% endblock title %}
 
 {% block subcontent %}
-  <h1>Suppliers List</h1>
   <v-container
     fluid>
+    <h1>Suppliers List</h1>
     <v-row
       align="center"
       justify="center"
@@ -19,20 +19,24 @@ Suppliers - List
         <v-simple-table>
           <table>
             <thead>
-              <th>Name</th>
-              <th>Email Address</th>
-              <th>Contact No.</th>
+              <th class="text-center">Name</th>
+              <th class="text-center">Email Address</th>
+              <th class="text-center">Contact No.</th>
+              <th class="text-center">Actions</th>
             </thead>
             <tbody>
               {% for supplier in object_list %}
               <tr>
-                <td><a href="{% url 'contacts:suppliers_detail' supplier.pk %}">{{ supplier.name }}</a></td>
-                <td>
+                <td class="text-center">{{ supplier.name }}</td>
+                <td class="text-center">
                   {% if supplier.email_address %}
                     <a href="mailto:{{ supplier.email_address }}">{{ supplier.email_address }}</a>
                   {% endif %}
                 </td>
-                <td>{{ supplier.contact_number}}</td>
+                <td class="text-center">{{ supplier.contact_number}}</td>
+                <td class="text-center">
+                  {% include "_includes/list_action_buttons.html" with edit_href=supplier.edit_href view_href=supplier.view_href %}
+                </td>
               </tr>
               {% endfor %}
             </tbody>

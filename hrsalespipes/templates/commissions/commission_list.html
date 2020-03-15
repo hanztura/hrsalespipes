@@ -1,4 +1,5 @@
 {% extends "commissions/base.html" %}
+{% load humanize %}
 
 {% block title %}
 Commissions - List
@@ -7,11 +8,11 @@ Commissions - List
 {% block subcontent %}
   <v-container
     fluid>
+    <h1>Commissions</h1>
     <v-row
       align="center"
       justify="center"
     >
-      <h1>Commissions</h1>
       <v-col cols="12">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
@@ -39,14 +40,9 @@ Commissions - List
                   <td class="text-center"><a href="{% url 'salespipes:detail' object.pipeline_id %}">{{ object.pipeline.job.reference_number }}</a></td>
                   <td class="text-center">{{ object.employee.name }}</td>
                   <td class="text-center">{{ object.rate_role_type }}</td>
-                  <td class="text-center">{{ object.amount }}</td>
+                  <td class="text-right">{{ object.amount|intcomma }}</td>
                   <td class="text-center">
-                    <v-btn
-                      href="{% url 'commissions:detail' object.pk %}"
-                      text>view</v-btn>
-                    <v-btn
-                      href="{% url 'commissions:edit' object.pk %}"
-                      text>edit</v-btn>
+                    {% include "_includes/list_action_buttons.html" with edit_href=object.edit_href view_href=object.view_href %}
                   </td>
                 </tr>
                 {% endfor %}

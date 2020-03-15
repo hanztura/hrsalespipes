@@ -57,8 +57,16 @@ class Job(TimeStampedModel):
     def __str__(self):
         return self.reference_number
 
-    def get_absolute_url(self):
+    @property
+    def edit_href(self):
         return reverse('jobs:edit', args=[str(self.pk), ])
+
+    @property
+    def view_href(self):
+        return reverse('jobs:detail', args=[str(self.pk), ])
+
+    def get_absolute_url(self):
+        return self.edit_href
 
 
 class JobCandidate(TimeStampedModel):

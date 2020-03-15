@@ -5,9 +5,9 @@ Jobs - List
 {% endblock title %}
 
 {% block subcontent %}
-  <h1>Jobs List</h1>
   <v-container
     fluid>
+    <h1>Jobs List</h1>
     <v-row
       align="center"
       justify="center"
@@ -19,22 +19,26 @@ Jobs - List
         <v-simple-table>
           <table>
             <thead>
-              <th>Reference #</th>
-              <th>Date</th>
-              <th>Client</th>
-              <th>Position</th>
-              <th>Location</th>
-              <th>Potential Income</th>
+              <th class="text-center">Reference #</th>
+              <th class="text-center">Date</th>
+              <th class="text-center">Client</th>
+              <th class="text-center">Position</th>
+              <th class="text-center">Location</th>
+              <th class="text-center">Potential Income</th>
+              <th class="text-center">Actions</th>
             </thead>
             <tbody>
               {% for object in object_list %}
               <tr>
-                <td><a href="{% url 'jobs:detail' object.pk %}">{{ object.reference_number }}</a></td>
-                <td>{{ object.date }}</td>
-                <td>{{ object.client.name }}</td>
-                <td>{{ object.position }}</td>
-                <td>{{ object.location }}</td>
-                <td>{{ object.potential_income|default_if_none:0 }}</td>
+                <td class="text-center">{{ object.reference_number }}</td>
+                <td class="text-center">{{ object.date }}</td>
+                <td class="text-center">{{ object.client.name }}</td>
+                <td class="text-center">{{ object.position }}</td>
+                <td class="text-center">{{ object.location }}</td>
+                <td class="text-right">{{ object.potential_income|default_if_none:0 }}</td>
+                <td class="text-center">
+                  {% include "_includes/list_action_buttons.html" with edit_href=object.edit_href view_href=object.view_href %}
+                </td>
               </tr>
               {% endfor %}
             </tbody>

@@ -1,4 +1,5 @@
 {% extends "salespipes/base.html" %}
+{% load humanize %}
 
 {% block title %}
 Pipeline Detail - Job {{ object.job.reference_number }}
@@ -7,72 +8,98 @@ Pipeline Detail - Job {{ object.job.reference_number }}
 {% block subcontent %}
   <v-container
     fluid>
-    <h1>Job {{ object.job.reference_number }} - Pipeline Detail</h1>
+    <h1>Job {{ object.job.reference_number }} - Pipeline Detail</h1>    
     <v-row
       align="center"
       justify="center"
     >
       <v-col cols="12" class="text-center">
-        <v-simple-table>
-          <table>
-            <tbody>
-              <tr>
-                <th>Date:</th>
-                <td>{{ object.date }}</td>
-              </tr>
-              <tr>
-                <th>Job Reference Number:</th>
-                <td><a href="{% url 'jobs:detail' object.job_id %}" title="view job detail">{{ object.job }}</a></td>
-              </tr>
-              <tr>
-                <th>Invoice Date:</th>
-                <td>{{ object.invoice_date }}</td>
-              </tr>
-              <tr>
-                <th>Recruitment Term:</th>
-                <td>{{ object.recruitment_term }}</td>
-              </tr>
-              <tr>
-                <th>Recruitment Rate:</th>
-                <td>{{ object.recruitment_rate }}</td>
-              </tr>
-              <tr>
-                <th>Base Amount:</th>
-                <td>{{ object.base_amount }}</td>
-              </tr>
-              <tr>
-                <th>Potential Income:</th>
-                <td>{{ object.potential_income }}</td>
-              </tr>
-              <tr>
-                <th>Status:</th>
-                <td>{{ object.status }}</td>
-              </tr>
-              <tr>
-                <th>Invoice Amount:</th>
-                <td>{{ object.invoice_amount }}</td>
-              </tr>
-              <tr>
-                <th>VAT:</th>
-                <td>{{ object.vat }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </v-simple-table>
+        <v-tabs
+          v-model="tab"
+          fixed-tabs>
+          <v-tab
+            v-for="tab in tabs"
+            :key="tab">
+            [[ tab ]]
+          </v-tab>
 
-        {% if perms.commissions.add_commission %}
-          <v-btn
-            class="my-2"
-            block
-            outlined
-            color="primary"
-            href="{% url 'commissions:new' object.pk %}">Create a commission</v-btn>
-        {% endif %}
+          <v-tabs-items v-model="tab">
+            <v-tab-item>
+              <v-simple-table>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>Date:</th>
+                      <td>{{ object.date }}</td>
+                    </tr>
+                    <tr>
+                      <th>Job Reference Number:</th>
+                      <td><a href="{% url 'jobs:detail' object.job_id %}" title="view job detail">{{ object.job }}</a></td>
+                    </tr>
+                    <tr>
+                      <th>Recruitment Term:</th>
+                      <td>{{ object.recruitment_term }}</td>
+                    </tr>
+                    <tr>
+                      <th>Recruitment Rate:</th>
+                      <td>{{ object.recruitment_rate }}</td>
+                    </tr>
+                    <tr>
+                      <th>Base Amount:</th>
+                      <td>{{ object.base_amount|intcomma }}</td>
+                    </tr>
+                    <tr>
+                      <th>Potential Income:</th>
+                      <td>{{ object.potential_income|intcomma }}</td>
+                    </tr>
+                    <tr>
+                      <th>Status:</th>
+                      <td>{{ object.status }}</td>
+                    </tr>
+                    <tr>
+                      <th>Invoice Date:</th>
+                      <td>{{ object.invoice_date }}</td>
+                    </tr>
+                    <tr>
+                      <th>Invoice Number:</th>
+                      <td>{{ object.invoice_number }}</td>
+                    </tr>
+                    <tr>
+                      <th>Invoice Amount:</th>
+                      <td>{{ object.invoice_amount|intcomma }}</td>
+                    </tr>
+                    <tr>
+                      <th>VAT:</th>
+                      <td>{{ object.vat|intcomma }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </v-simple-table>
 
-              <v-btn
-                block
-                color="primary"
-                href="{% url 'salespipes:edit' object.pk %}">Edit</v-btn>
+              {% if perms.commissions.add_commission %}
+                <v-btn
+                  class="my-2"
+                  block
+                  outlined
+                  color="primary"
+                  href="{% url 'commissions:new' object.pk %}">Create a commission</v-btn>
+              {% endif %}
+
+                    <v-btn
+                      block
+                      color="primary"
+                      href="{% url 'salespipes:edit' object.pk %}">Edit Pipeline</v-btn>
+            </v-tab-item>
+
+            <v-tab-item>
+              {% if candidate %}
+                {% include "jobs/includes/jobcandidate_detail_table.html" with object=candidate %}
+              {% else %}
+                <p>No Candidate.</p>
+              {% endif %}
+            </v-tab-item>
+          </v-tabs-items>
+        </v-tabs>
       </v-col>
     </v-row>
   </v-container>  
@@ -95,6 +122,11 @@ Pipeline Detail - Job {{ object.job.reference_number }}
         {
           text: '{{ object.job.reference_number }}',
         },
+      ],
+      tab: null,
+      tabs: [
+        'Pipeline Detail',
+        'Job Candidate',
       ],
     }),
 
