@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
@@ -55,6 +56,11 @@ class CandidateUpdateView(PermissionRequiredMixin, UpdateView):
         context['locations'] = get_objects_as_choices(Location)
         context['nationalities'] = get_objects_as_choices(Nationality)
         return context
+
+    def get_success_url(self):
+        return reverse(
+            'contacts:candidates_detail',
+            args=[str(self.object.id), ])
 
 
 class CandidateDetailView(PermissionRequiredMixin, DetailView):
@@ -111,6 +117,9 @@ class ClientUpdateView(PermissionRequiredMixin, UpdateView):
         context['locations'] = locations
         return context
 
+    def get_success_url(self):
+        return reverse('contacts:clients_detail', args=[str(self.object.id)])
+
 
 class ClientDetailView(PermissionRequiredMixin, DetailView):
     model = Client
@@ -134,6 +143,9 @@ class SupplierUpdateView(PermissionRequiredMixin, UpdateView):
     form_class = SupplierModelForm
     template_name = 'contacts/supplier_update_form.html'
     permission_required = ('contacts.change_supplier')
+
+    def get_success_url(self):
+        return reverse('contacts:suppliers_detail', args=[str(self.object.id)])
 
 
 class SupplierDetailView(PermissionRequiredMixin, DetailView):

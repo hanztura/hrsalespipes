@@ -44,7 +44,7 @@ Candidate Detail - {{ object.name }}
                       <th>Whatsapp Link:</th>
                       <td>
                         {% if object.contact_number %}
-                          <a href="https://api.whatsapp.com/send?phone={{ object.contact_number }}">Click here to send WhatsApp Message</a>
+                          <a href="https://api.whatsapp.com/send?phone={{ object.contact_number }}" target="_blank">Click here to send WhatsApp Message</a>
                         {% endif %}
                       </td>
                     </tr>

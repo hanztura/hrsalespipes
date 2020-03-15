@@ -1,6 +1,7 @@
 import datetime
 
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
@@ -73,6 +74,9 @@ class CommissionUpdateView(
         context['mode'] = 'Edit'
         context['employees'] = get_objects_as_choices(Employee)
         return context
+
+    def get_success_url(self):
+        return reverse('commissions:detail', args=[str(self.object.id)])
 
 
 class CommissionDetailView(
