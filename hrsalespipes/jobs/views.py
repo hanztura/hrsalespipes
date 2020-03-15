@@ -9,10 +9,10 @@ from django.views.generic import DetailView, ListView
 from .forms import (JobCreateModelForm, JobUpdateModelForm,
                     JobCandidateCreateModelForm, JobCandidateUpdateModelForm,
                     InterviewModelForm)
-from .models import Job, JobCandidate, Status, Interview
+from .models import Job, JobCandidate, Status, Interview, Board
 from contacts.models import Client, Candidate, Employee
 from system.helpers import get_objects_as_choices
-from system.models import InterviewMode
+from system.models import InterviewMode, Location
 from system.utils import PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin
 
 
@@ -29,7 +29,9 @@ class JobCreateView(PermissionRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         context['clients'] = get_objects_as_choices(Client)
+        context['boards'] = get_objects_as_choices(Board)
         return context
 
 
@@ -43,7 +45,14 @@ class JobUpdateView(PermissionRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
 
         context['clients'] = get_objects_as_choices(Client)
+        context['boards'] = get_objects_as_choices(Board)
+        context['locations'] = get_objects_as_choices(Location)
         return context
+
+    def get_success_url(self):
+        return reverse(
+            'jobs:detail',
+            args=[str(self.object.pk), ])
 
 
 class JobListView(PermissionRequiredMixin, ListView):
