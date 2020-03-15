@@ -13,10 +13,16 @@ class JobCreateModelForm(ModelForm):
     class Meta:
         model = Job
         fields = [
+            'board',
             'reference_number',
             'client',
             'position',
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['board'].required = True
 
 
 class JobUpdateModelForm(ModelForm):
@@ -24,6 +30,7 @@ class JobUpdateModelForm(ModelForm):
     class Meta:
         model = Job
         fields = [
+            'board',
             'reference_number',
             'date',
             'client',
@@ -31,6 +38,11 @@ class JobUpdateModelForm(ModelForm):
             'location',
             'potential_income',
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['board'].required = True
 
 
 class JobCandidateCreateModelForm(ModelForm):

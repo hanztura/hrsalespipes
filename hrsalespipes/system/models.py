@@ -35,6 +35,7 @@ class Setting(SingletonModel):
         blank=True)
     vat_rate = models.DecimalField(
         max_digits=2, decimal_places=2, default=0.05)
+    company_name = models.CharField(max_length=128, blank=True)
 
 
 class VisaStatus(models.Model):
