@@ -22,7 +22,7 @@
       {% if object_list %}
         {% for object in object_list %}
         <tr>
-          <td class="text-center">{{ object.date|date:'j M Y' }}</td>
+          <td class="text-center">{{ object.date|date:'d M Y' }}</td>
           <td class="text-center">{{ object.board.name }}</td>
           <td class="text-center">{{ object.reference_number }}</td>
           <td class="text-center">{{ object.client.name }}</td>
