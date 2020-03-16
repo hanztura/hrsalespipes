@@ -33,7 +33,6 @@ class Board(models.Model):
 
 
 class Job(TimeStampedModel):
-
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     board = models.ForeignKey(
         Board,
@@ -57,6 +56,12 @@ class Job(TimeStampedModel):
 
     class Meta:
         ordering = ['-date', '-reference_number']
+        permissions = [
+            (
+                'view_report_jobs_summary',
+                'Can view report Jobs Summary'
+            ),
+        ]
 
     def __str__(self):
         return self.reference_number

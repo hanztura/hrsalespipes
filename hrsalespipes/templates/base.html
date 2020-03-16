@@ -80,33 +80,33 @@
         <v-spacer></v-spacer>
 
         <v-menu
-        left
-        bottom>
-        <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on" title="Contacts">
-            <v-icon>fas fa-address-book</v-icon>
-          </v-btn>
-        </template>
+          left
+          bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" title="Contacts">
+              <v-icon>fas fa-address-book</v-icon>
+            </v-btn>
+          </template>
 
-        <v-list>
-          <v-list-item href="{% url 'contacts:candidates_list' %}">
-            Candidates
-          </v-list-item>
-          <v-list-item href="{% url 'contacts:clients_list' %}">
-            Clients
-          </v-list-item>
-          <v-list-item href="{% url 'contacts:suppliers_list' %}">
-            Suppliers
-          </v-list-item>
-        </v-list>
-      </v-menu>
+          <v-list>
+            <v-list-item href="{% url 'contacts:candidates_list' %}">
+              Candidates
+            </v-list-item>
+            <v-list-item href="{% url 'contacts:clients_list' %}">
+              Clients
+            </v-list-item>
+            <v-list-item href="{% url 'contacts:suppliers_list' %}">
+              Suppliers
+            </v-list-item>
+          </v-list>
+        </v-menu>
 
         <v-btn icon href="{% url 'jobs:list' %}" title='Jobs'>
           <v-icon>fas fa-suitcase</v-icon>
         </v-btn>
 
         <v-btn icon href="{% url 'salespipes:list' %}" title='Pipeline'>
-          <v-icon>fas fa-dollar-sign</v-icon>
+          <v-icon>fas fa-filter</v-icon>
         </v-btn>
 
         <v-btn icon href="{% url 'reports:index' %}" title='Reports'>
@@ -114,26 +114,26 @@
         </v-btn>
 
         <v-menu
-        left
-        bottom>
-        <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on" title="Account">
-            <v-icon>fas fa-user-circle</v-icon>
-          </v-btn>
-        </template>
+          left
+          bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" title="Account">
+              <v-icon>fas fa-user-circle</v-icon>
+            </v-btn>
+          </template>
 
-        {% if user.is_authenticated %}
-        <v-list>
-          <v-list-item>
-            <v-list-item-title>Hi {{ user.username }}!</v-list-item-title>
-          </v-list-item>
-          <v-list-item
-            href="{% url 'system:logout' %}">
-            <v-list-item-title>Logout</v-list-item-title>
-          </v-list-item>
-        </v-list>
-        {% endif %}
-      </v-menu>
+          {% if user.is_authenticated %}
+          <v-list>
+            <v-list-item>
+              <v-list-item-title>Hi {{ user.username }}!</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              href="{% url 'system:logout' %}">
+              <v-list-item-title>Logout</v-list-item-title>
+            </v-list-item>
+          </v-list>
+          {% endif %}
+          </v-menu>
       </v-app-bar>
 
       <v-content>
@@ -184,7 +184,7 @@
           href: '{% url "jobs:list" %}',
         },
         {
-          action: 'fas fa-dollar-sign',
+          action: 'fas fa-filter',
           title: 'Pipeline',
           href: '{% url "salespipes:list" %}',
         },

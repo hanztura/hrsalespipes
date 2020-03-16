@@ -1,0 +1,51 @@
+{% extends "reports/pdf/base.html" %}
+{% load humanize %}
+
+{% block content %}
+<content>
+  <h1>Jobs Summary</h1>
+  <p class="my-0 py-0"><strong>{{ COMPANY }}</strong></p>
+  <p class="my-0 py-0">For the period {{ from }} to {{ to }}</p>
+  <table>
+    <thead>
+      <tr>
+        <th class="text-center">Date</th>
+        <th class="text-center">Board</th>
+        <th class="text-center">Reference Number</th>
+        <th class="text-center">Client</th>
+        <th class="text-center">Position</th>
+        <th class="text-center">Location</th>
+        <th class="text-center">Potential Income</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if object_list %}
+        {% for object in object_list %}
+        <tr>
+          <td class="text-center">{{ object.date|date:'j M Y' }}</td>
+          <td class="text-center">{{ object.board.name }}</td>
+          <td class="text-center">{{ object.reference_number }}</td>
+          <td class="text-center">{{ object.client.name }}</td>
+          <td class="text-center">{{ object.position }}</td>
+          <td class="text-center">{{ object.location }}</td>
+          <td class="text-right">{{ object.potential_income|intcomma }}</td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="5">No data available.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+
+    {% if object_list %}
+    <tfoot>
+      <tr>
+        <td class="text-right" colspan="6">Total</td>
+        <td class="text-right"><strong>{{ potential_income__sum|floatformat:2|intcomma }}</strong></td>
+      </tr>
+    </tfoot>
+    {% endif %}
+  </table>
+</content>
+{% endblock content %}

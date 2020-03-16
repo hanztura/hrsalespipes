@@ -55,6 +55,7 @@ class FromToViewFilterMixin:
         context['to'] = date_to
         return context
 
+
 CURRENCIES_CHOICES = (
     ('AFN', 'AFN'),
     ('EUR', 'EUR'),
