@@ -13,9 +13,11 @@ Reports
       align="center"
       justify="center"
     >
-      <ul>
-        <li><a href="{% url 'reports:pipeline_summary' %}">Pipeline Summary</a></li>
-      </ul>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title><a href="{% url 'reports:pipeline_summary' %}">Pipeline Summary</a></v-list-item-title>
+        </v-list-item-content>
+    </v-list-item>
     </v-row>
   </v-container>  
 {% endblock subcontent %}

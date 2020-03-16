@@ -13,6 +13,54 @@ Pipeline Summary - Reports
       align="center"
       justify="center"
     >
+      <v-col cols="12">
+        <form id="searchForm" ref="searchForm">
+          <v-container fluid>
+            <v-row>
+              <v-col cols="12" md="3">
+                <v-text-field
+                  outlined
+                  required
+                  dense
+                  label="From"
+                  name="from"
+                  type="date"
+                  value="{{ from|default_if_none:'' }}">
+                </v-text-field>
+              </v-col>
+              <v-col cols="12" md="3">
+                <v-text-field
+                  outlined
+                  required
+                  dense
+                  label="To"
+                  name="to"
+                  type="date"
+                  value="{{ to|default_if_none:'' }}">
+                </v-text-field>
+              </v-col>
+              <v-col cols="12" md="3">
+                <v-btn icon type="submit">
+                  <v-icon>fas fa-search</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </form>
+      </v-col>
+
+      <v-col cols="12">
+        <v-container class="max-width">
+          <v-pagination
+            v-model="page"
+            class="my-4"
+            :length="pageLength"
+            @input="pageGoTo"
+            :disabled="pageLength <= 1"
+          ></v-pagination>
+        </v-container>
+      </v-col> <!-- Pagination -->
+
       <v-col cols="12" class="text-center">
         <v-simple-table>
           <table>
@@ -26,36 +74,42 @@ Pipeline Summary - Reports
               </tr>
             </thead>
             <tbody>
-              {% for object in object_list %}
-              <tr class="">
-                <td class="text-center">
-                  <p>Date: <a href="{% url 'salespipes:detail' object.id %}" title="view pipeline detail">{{ object.date }}</a></p>
-                  <p>Status: <strong>{{ object.status }}</strong></p>
-                </td>
-                <td class="text-center">
-                  <p>Reference Number: <a href="{% url 'jobs:detail' object.job_id %}" title="view job detail">{{ object.job.reference_number }}</a></p>
-                  <p>Date: {{ object.job.date }}</p>
-                  <p>Position: {{ object.job.position }}</p>
-                </td>
-                <td class="text-center">
-                  {% if object.candidate %}
-                    <p><a href="{% url 'contacts:candidates_detail' object.candidate.candidate_id %}" title="view candidate detail">{{ object.candidate.candidate.name }}</a></p>
-                    <p>No.: {{ object.candidate.candidate.code }}</p>
-                  {% else %}
-                    <p>None</p>
-                  {% endif %}
-                </td>
-                <td class="text-center">
-                  <p><a href="{% url 'contacts:clients_detail' object.job.client_id %}" title="view client detail">{{ object.job.client.name }}</a></p>
-                  <p>Industry: {{ object.job.client.industry }}</p>
-                </td>
-                <td class="text-center">
-                  <p>Date: {{ object.invoice_date }}</p>
-                  <p>Number: {{ object.invoice_number }}</p>
-                  <p>Amount: {{ object.invoice_amount|intcomma }}</p>
-                </td>
-              </tr>
-              {% endfor %}
+              {% if object_list %}
+                {% for object in object_list %}
+                <tr>
+                  <td class="text-left">
+                    <p>Status: <strong>{{ object.status }}</strong></p>
+                    <p>Date: <a href="{% url 'salespipes:detail' object.id %}" title="view pipeline detail">{{ object.date }}</a></p>
+                  </td>
+                  <td class="text-left">
+                    <p>Reference Number: <a href="{% url 'jobs:detail' object.job_id %}" title="view job detail">{{ object.job.reference_number }}</a></p>
+                    <p>Date: {{ object.job.date }}</p>
+                    <p>Position: {{ object.job.position }}</p>
+                  </td>
+                  <td class="text-left">
+                    {% if object.job.candidates %}
+                      <p><a href="{% url 'contacts:candidates_detail' object.job.candidates.first.candidate_id %}" title="view candidate detail">{{ object.job.candidates.first.candidate.name }}</a></p>
+                      <p>Code: {{ object.job.candidates.first.candidate.code }}</p>
+                    {% else %}
+                      <p>None</p>
+                    {% endif %}
+                  </td>
+                  <td class="text-left">
+                    <p><a href="{% url 'contacts:clients_detail' object.job.client_id %}" title="view client detail">{{ object.job.client.name }}</a></p>
+                    <p>Industry: {{ object.job.client.industry }}</p>
+                  </td>
+                  <td class="text-left">
+                    <p>Date: {{ object.invoice_date }}</p>
+                    <p>Number: {{ object.invoice_number }}</p>
+                    <p>Amount: {{ object.invoice_amount|intcomma }}</p>
+                  </td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5">No data available.</td>
+                </tr>
+              {% endif %}
             </tbody>
           </table>
         </v-simple-table>
@@ -81,7 +135,17 @@ Pipeline Summary - Reports
           text: 'Pipeline Summary',
         },
       ],
+      page: {{ page_obj.number|default_if_none:0 }},
+      pageLength: {{ paginator.num_pages|default_if_none:0 }},
     }),
+
+    methods:{
+      pageGoTo: function (page) {
+        let url = '{% url "reports:pipeline_summary" %}';
+        url = `${url}?page=${this.page}`;
+        window.location.href = url;
+      }
+    },
 
     mounted(){
       this.updateBreadcrumbs();
