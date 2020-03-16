@@ -1,0 +1,66 @@
+{% load humanize %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Jobs Summary</title>
+  <style>
+    .text-center {
+      text-align: center;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    py-0 {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    my-0{
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    @page {
+      size: letter landscape;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+
+    body {
+      font-size: 7.5pt;
+    }
+
+    table {
+      page-break-inside: avoid;
+      width: 100%;
+      margin:1em auto;
+      vertical-align: middle;
+    }
+
+    table, th, td {
+      border-collapse: collapse;
+      table-layout: auto;
+      border-spacing: 1rem;
+    }
+
+    td {
+      padding-left: 1em;
+      padding-top: 1em;
+      vertical-align: middle;
+    }
+
+    tr { vertical-align: middle; }
+
+    tbody tr:nth-child(odd) {background: #eee; }
+  </style>
+</head>
+<body>
+  <main>
+    {% block content %}{% endblock content %}
+  </main>
+</body>
+</html>

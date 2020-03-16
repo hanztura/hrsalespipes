@@ -2,10 +2,13 @@ from django.db.models import Prefetch, Sum
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, ListView
 
+from django_weasyprint import WeasyTemplateResponseMixin
+
 from jobs.models import Job, JobCandidate
 from salespipes.models import Pipeline
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin, FromToViewFilterMixin)
+from system.models import Setting
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
@@ -54,4 +57,16 @@ class JobsSummaryListView(
         q = context['object_list']
         sums = q.aggregate(Sum('potential_income'))
         context['potential_income__sum'] = sums['potential_income__sum']
+        return context
+
+
+class JobsSummaryPDFView(
+        WeasyTemplateResponseMixin,
+        JobsSummaryListView):
+    template_name = 'reports/pdf/jobs_summary.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['COMPANY'] = Setting.objects.first().company_name
         return context
