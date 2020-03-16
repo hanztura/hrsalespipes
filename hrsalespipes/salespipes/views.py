@@ -9,7 +9,9 @@ from .forms import PipelineCreateModelForm, PipelineModelForm
 from .models import Pipeline, Status
 from jobs.models import Job
 from system.models import Setting
-from system.utils import PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin
+from system.utils import (
+    PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin,
+    FromToViewFilterMixin)
 
 
 class PipelineCreateView(PermissionRequiredMixin, CreateView):
@@ -68,9 +70,10 @@ class PipelineUpdateView(PermissionRequiredMixin, UpdateView):
             args=[str(self.object.pk), ])
 
 
-class PipelineListView(PermissionRequiredMixin, ListView):
+class PipelineListView(FromToViewFilterMixin, PermissionRequiredMixin, ListView):
     model = Pipeline
     permission_required = 'salespipes.view_pipeline'
+    paginate_by = 25
 
     def get_queryset(self):
         q = super().get_queryset().select_related('status')

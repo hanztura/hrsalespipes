@@ -11,8 +11,10 @@ class ContactModel(TimeStampedModel):
 
     class Meta:
         abstract = True
+        ordering = 'name',
 
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    code = models.CharField(max_length=50, blank=True)
     name = models.CharField(max_length=100, unique=True)
     contact_number = models.TextField(max_length=32, blank=True)
     alternate_contact_number = models.CharField(max_length=32, blank=True)
@@ -37,3 +39,22 @@ class FormCleanContactNumber:
             pass
 
         return contact_number
+
+
+class FilterNameMixin:
+    paginate_by = 25
+
+    def get_queryset(self, **kwargs):
+        q = super().get_queryset(**kwargs)
+
+        name = self.request.GET.get('name', '')
+        if name:
+            q = q.filter(name__icontains=name)
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        name = self.request.GET.get('name', '')
+        context['search_name'] = name
+        return context

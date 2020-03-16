@@ -14,6 +14,29 @@ Commissions - List
       justify="center"
     >
       <v-col cols="12">
+        <form id="multiSearchForm" ref="multiSearchForm">
+          <v-container fluid>
+            <v-row>
+              <v-col cols="12" md="3" class="py-0">
+                <v-text-field
+                  outlined
+                  dense
+                  clearable
+                  label="Search reference number or employee"
+                  name="q"
+                  value="{{ search_q|default_if_none:'' }}">
+                </v-text-field>
+              </v-col>
+              <v-col cols="12" md="3" class="pa-0">
+                <v-btn icon type="submit">
+                  <v-icon>fas fa-search</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </form>
+      </v-col>
+      <v-col cols="12" class="py-0">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-btn absolute right color="primary" v-on="on">New</v-btn>
@@ -55,6 +78,12 @@ Commissions - List
           </table>
         </v-simple-table>
       </v-col>
+
+      <v-col cols="12">
+        <v-container class="max-width">
+          {% include "_includes/pagination.html" %}
+        </v-container>
+      </v-col> <!-- Pagination -->
     </v-row>
   </v-container>  
 {% endblock subcontent %}
@@ -72,7 +101,17 @@ Commissions - List
           text: 'Commissions',
         },
       ],
+      page: {{ page_obj.number|default_if_none:0 }},
+      pageLength: {{ paginator.num_pages|default_if_none:0 }},
     }),
+
+    methods:{
+      pageGoTo: function (page) {
+        let url = '{% url "reports:pipeline_summary" %}';
+        url = `${url}?page=${this.page}`;
+        window.location.href = url;
+      }
+    },
 
     mounted() {
       this.updateBreadcrumbs();

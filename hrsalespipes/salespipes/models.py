@@ -25,6 +25,20 @@ class Status(models.Model):
 
 
 class Pipeline(TimeStampedModel):
+
+    class Meta:
+        permissions = [
+            (
+                'view_report_pipeline_summary',
+                'Can view report Pipeline Summary'
+            ),
+            (
+                'view_report_pipeline_details',
+                'Can view report Pipeline Details'
+            ),
+        ]
+        ordering = ['-date', '-job']
+
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     date = models.DateField(
         verbose_name=settings.PIPELINE_DATE_ALIAS,
@@ -60,6 +74,17 @@ class Pipeline(TimeStampedModel):
         decimal_places=2,
         default=0,
         blank=True)
+
+    @property
+    def candidate(self):
+        candidates = self.job.candidates.all()
+        candidates = candidates.filter(status__probability__gte=1)
+        if candidates.exists():
+            candidate = candidates.first()
+        else:
+            candidate = None
+
+        return candidate
 
     @property
     def edit_href(self):

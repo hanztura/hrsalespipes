@@ -1,5 +1,6 @@
 import datetime
 
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
@@ -97,9 +98,21 @@ class CommissionListView(
         ListView):
     model = Commission
     permission_required = 'commissions.view_commission'
+    paginate_by = 25
 
     def get_queryset(self, **kwargs):
         q = super().get_queryset(**kwargs)
         q = q.select_related('pipeline__job', 'employee')
 
+        search_q = self.request.GET.get('q', '')
+        if search_q:
+            q = q.filter(
+                Q(pipeline__job__reference_number__icontains=search_q) | Q(employee__name__icontains=search_q))
         return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        search_q = self.request.GET.get('q', '')
+        context['search_q'] = search_q
+        return context
