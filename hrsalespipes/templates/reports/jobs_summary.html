@@ -28,7 +28,8 @@ Jobs Summary - Reports
         <v-btn
           icon
           right
-          title="Export as Excel">
+          title="Export as Excel"
+          href="{% url 'reports:excel_jobs_summary' %}?from={{ from }}&to={{ to }}">
           <v-icon class="green--text">fas fa-file-excel</v-icon>
         </v-btn>
       </v-col>
