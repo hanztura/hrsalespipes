@@ -1,0 +1,90 @@
+{% extends "reports/base.html" %}
+{% load humanize %}
+
+{% block title %}
+Jobs Summary - Reports
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>Jobs Summary</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12">
+        {% include "_includes/filter_date_from_and_to.html" %}
+      </v-col>
+
+      <v-col cols="12" class="text-center">
+        <v-simple-table
+          fixed-header>
+          <table>
+            <thead>
+              <tr>
+                <th class="text-center">Date</th>
+                <th class="text-center">Board</th>
+                <th class="text-center">Reference Number</th>
+                <th class="text-center">Client</th>
+                <th class="text-center">Position</th>
+                <th class="text-center">Location</th>
+                <th class="text-center">Potential Income</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if object_list %}
+                {% for object in object_list %}
+                <tr>
+                  <td>{{ object.date }}</td>
+                  <td>{{ object.board.name }}</td>
+                  <td>{{ object.reference_number }}</td>
+                  <td>{{ object.client.name }}</td>
+                  <td>{{ object.position }}</td>
+                  <td>{{ object.location }}</td>
+                  <td>{{ object.potential_income|intcomma }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                  <td class="text-right" colspan="6">Total</td>
+                  <td><strong>{{ potential_income__sum|floatformat:2|intcomma }}</strong></td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="5">No data available.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </v-simple-table>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Reports',
+          href: '{% url "reports:index" %}'
+        },
+        {
+          text: 'Pipeline Summary',
+        },
+      ],
+    }),
+
+    mounted(){
+      this.updateBreadcrumbs();
+    },
+
+  });
+</script>  
+{% endblock script %}

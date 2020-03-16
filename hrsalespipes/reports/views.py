@@ -1,11 +1,8 @@
-import calendar
-import datetime
-
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Sum
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, ListView
 
-from jobs.models import JobCandidate
+from jobs.models import Job, JobCandidate
 from salespipes.models import Pipeline
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin, FromToViewFilterMixin)
@@ -24,14 +21,6 @@ class PipelineSummaryListView(
     permission_required = 'salespipes.view_report_pipeline_summary'
     paginate_by = 25
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        today = datetime.date.today()
-        last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
-        self.month_first_day = str(today.replace(day=1))
-        self.month_last_day = str(today.replace(day=last_day_of_the_month))
-
     def get_queryset(self):
         q = super().get_queryset()
 
@@ -43,3 +32,26 @@ class PipelineSummaryListView(
             Prefetch('job__candidates', queryset=job__candidates_queryset))
 
         return q
+
+
+class JobsSummaryListView(
+        FromToViewFilterMixin,
+        PermissionRequiredWithCustomMessageMixin,
+        ListView):
+    model = Job
+    template_name = 'reports/jobs_summary.html'
+    permission_required = 'jobs.view_report_jobs_summary'
+    paginate_by = 0
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.select_related('board', 'client')
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        q = context['object_list']
+        sums = q.aggregate(Sum('potential_income'))
+        context['potential_income__sum'] = sums['potential_income__sum']
+        return context
