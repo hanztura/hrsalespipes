@@ -13,6 +13,10 @@ Jobs - List
       justify="center"
     >
       <v-col cols="12">
+        {% include "_includes/filter_date_from_and_to.html" %}
+      </v-col>
+  
+      <v-col cols="12">
         <v-btn absolute right color="primary" href="{% url 'jobs:new' %}">New</v-btn>
       </v-col>
       <v-col cols="12">
@@ -45,6 +49,12 @@ Jobs - List
           </table>
         </v-simple-table>
       </v-col>
+
+      <v-col cols="12">
+        <v-container class="max-width">
+          {% include "_includes/pagination.html" %}
+        </v-container>
+      </v-col> <!-- Pagination -->
     </v-row>
   </v-container>  
 {% endblock subcontent %}
@@ -64,7 +74,17 @@ Jobs - List
           href: '{% url "jobs:list" %}',
         },
       ],
+      page: {{ page_obj.number|default_if_none:0 }},
+      pageLength: {{ paginator.num_pages|default_if_none:0 }},
     }),
+
+    methods:{
+      pageGoTo: function (page) {
+        let url = '{% url "reports:pipeline_summary" %}';
+        url = `${url}?page=${this.page}`;
+        window.location.href = url;
+      }
+    },
 
     mounted() {
       this.updateBreadcrumbs();

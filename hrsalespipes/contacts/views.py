@@ -1,5 +1,3 @@
-import json
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
@@ -10,8 +8,10 @@ from .forms import (ClientCreateModelForm, ContactCreateModelForm,
                     CandidateUpdateModelForm, ClientUpdateModelForm,
                     SupplierModelForm)
 from .models import Candidate, Client, Supplier, Employee
+from .utils import FilterNameMixin
 from system.helpers import get_objects_as_choices
-from system.utils import PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin
+from system.utils import (
+    PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin)
 from system.models import VisaStatus, Location, Nationality
 
 
@@ -73,7 +73,7 @@ class CandidateDetailView(PermissionRequiredMixin, DetailView):
         return queryset
 
 
-class CandidateListView(PermissionRequiredMixin, ListView):
+class CandidateListView(FilterNameMixin, PermissionRequiredMixin, ListView):
     model = Candidate
     permission_required = ('contacts.view_candidate')
 
@@ -98,7 +98,7 @@ class ClientCreateView(PermissionRequiredMixin, CreateView):
         return context
 
 
-class ClientListView(PermissionRequiredMixin, ListView):
+class ClientListView(FilterNameMixin, PermissionRequiredMixin, ListView):
     model = Client
     permission_required = ('contacts.view_client')
 
@@ -133,7 +133,7 @@ class SupplierCreateView(PermissionRequiredMixin, CreateView):
     permission_required = ('contacts.add_supplier')
 
 
-class SupplierListView(PermissionRequiredMixin, ListView):
+class SupplierListView(FilterNameMixin, PermissionRequiredMixin, ListView):
     model = Supplier
     permission_required = ('contacts.view_supplier')
 

@@ -37,6 +37,7 @@ class Pipeline(TimeStampedModel):
                 'Can view report Pipeline Details'
             ),
         ]
+        ordering = ['-date', '-job']
 
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     date = models.DateField(

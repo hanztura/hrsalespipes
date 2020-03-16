@@ -14,52 +14,8 @@ Pipeline Summary - Reports
       justify="center"
     >
       <v-col cols="12">
-        <form id="searchForm" ref="searchForm">
-          <v-container fluid>
-            <v-row>
-              <v-col cols="12" md="3">
-                <v-text-field
-                  outlined
-                  required
-                  dense
-                  label="From"
-                  name="from"
-                  type="date"
-                  value="{{ from|default_if_none:'' }}">
-                </v-text-field>
-              </v-col>
-              <v-col cols="12" md="3">
-                <v-text-field
-                  outlined
-                  required
-                  dense
-                  label="To"
-                  name="to"
-                  type="date"
-                  value="{{ to|default_if_none:'' }}">
-                </v-text-field>
-              </v-col>
-              <v-col cols="12" md="3">
-                <v-btn icon type="submit">
-                  <v-icon>fas fa-search</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-container>
-        </form>
+        {% include "_includes/filter_date_from_and_to.html" %}
       </v-col>
-
-      <v-col cols="12">
-        <v-container class="max-width">
-          <v-pagination
-            v-model="page"
-            class="my-4"
-            :length="pageLength"
-            @input="pageGoTo"
-            :disabled="pageLength <= 1"
-          ></v-pagination>
-        </v-container>
-      </v-col> <!-- Pagination -->
 
       <v-col cols="12" class="text-center">
         <v-simple-table>
@@ -114,6 +70,12 @@ Pipeline Summary - Reports
           </table>
         </v-simple-table>
       </v-col>
+
+      <v-col cols="12">
+        <v-container class="max-width">
+          {% include "_includes/pagination.html" %}
+        </v-container>
+      </v-col> <!-- Pagination -->
     </v-row>
   </v-container>  
 {% endblock subcontent %}

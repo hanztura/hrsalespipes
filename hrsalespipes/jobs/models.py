@@ -33,6 +33,7 @@ class Board(models.Model):
 
 
 class Job(TimeStampedModel):
+
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     board = models.ForeignKey(
         Board,
@@ -53,6 +54,9 @@ class Job(TimeStampedModel):
         null=True,
         blank=True,
         verbose_name=settings.JOB_POTENTIAL_INCOME_ALIAS)
+
+    class Meta:
+        ordering = ['-date', '-reference_number']
 
     def __str__(self):
         return self.reference_number
@@ -95,6 +99,9 @@ class JobCandidate(TimeStampedModel):
         on_delete=models.PROTECT,
         related_name='as_associate')
 
+    class Meta:
+        ordering = ['-registration_date', 'job', 'candidate__name']
+
     def get_absolute_url(self):
         return reverse('jobs:detail',
                        args=[str(self.job_id)])
@@ -112,3 +119,6 @@ class Interview(models.Model):
     mode = models.ForeignKey(InterviewMode, on_delete=models.PROTECT)
     date = models.DateField()
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
+
+    class Meta:
+        ordering = ['-date', 'job_candidate']

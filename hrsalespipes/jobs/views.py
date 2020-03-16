@@ -13,7 +13,9 @@ from .models import Job, JobCandidate, Status, Interview, Board
 from contacts.models import Client, Candidate, Employee
 from system.helpers import get_objects_as_choices
 from system.models import InterviewMode, Location
-from system.utils import PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin
+from system.utils import (
+    PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin,
+    FromToViewFilterMixin)
 
 
 class JobCreateView(PermissionRequiredMixin, CreateView):
@@ -55,7 +57,7 @@ class JobUpdateView(PermissionRequiredMixin, UpdateView):
             args=[str(self.object.pk), ])
 
 
-class JobListView(PermissionRequiredMixin, ListView):
+class JobListView(FromToViewFilterMixin, PermissionRequiredMixin, ListView):
     model = Job
     permission_required = 'jobs.view_job'
 

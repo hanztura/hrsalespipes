@@ -1,0 +1,22 @@
+
+<form id="nameSearchForm" ref="nameSearchForm">
+  <v-container fluid>
+    <v-row>
+      <v-col cols="12" md="3" class="py-0">
+        <v-text-field
+          outlined
+          dense
+          label="Search name"
+          name="name"
+          clearable
+          value="{{ search_name|default_if_none:'' }}">
+        </v-text-field>
+      </v-col>
+      <v-col cols="12" md="3" class="pa-0">
+        <v-btn icon type="submit">
+          <v-icon>fas fa-search</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-container>
+</form>
