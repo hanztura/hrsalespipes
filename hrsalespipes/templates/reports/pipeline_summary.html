@@ -29,7 +29,7 @@ Pipeline Summary - Reports
           icon
           right
           title="Export as Excel"
-          href="#">
+          href="{% url 'reports:excel_pipeline_summary' %}?from={{ from }}&to={{ to }}">
           <v-icon class="green--text">fas fa-file-excel</v-icon>
         </v-btn>
       </v-col>
