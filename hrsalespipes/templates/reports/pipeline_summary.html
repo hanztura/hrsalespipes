@@ -17,6 +17,23 @@ Pipeline Summary - Reports
         {% include "_includes/filter_date_from_and_to.html" %}
       </v-col>
 
+      <v-col cols='12' class="text-right my-0 py-0">
+        <v-btn
+          icon
+          right
+          title="Export as PDF"
+          href="{% url 'reports:pdf_pipeline_summary' %}?from={{ from }}&to={{ to }}">
+          <v-icon class="red--text">fas fa-file-pdf</v-icon>
+        </v-btn>
+        <v-btn
+          icon
+          right
+          title="Export as Excel"
+          href="#">
+          <v-icon class="green--text">fas fa-file-excel</v-icon>
+        </v-btn>
+      </v-col>
+
       <v-col cols="12" class="text-center">
         <v-simple-table>
           <table>
@@ -58,6 +75,7 @@ Pipeline Summary - Reports
                     <p>Date: {{ object.invoice_date }}</p>
                     <p>Number: {{ object.invoice_number }}</p>
                     <p>Amount: {{ object.invoice_amount|intcomma }}</p>
+                    <p>VAT: {{ object.vat|intcomma }}</p>
                   </td>
                 </tr>
                 {% endfor %}
@@ -67,6 +85,19 @@ Pipeline Summary - Reports
                 </tr>
               {% endif %}
             </tbody>
+
+            {% if object_list %}
+            <tfoot>
+              <tr>
+                <td class="text-right" colspan="4">Total Invoice Amount</td>
+                <td class="text-left"><strong>{{ invoice_amount__sum|floatformat:2|intcomma }}</strong></td>
+              </tr>
+              <tr>
+                <td class="text-right" colspan="4">Total VAT Amount</td>
+                <td class="text-left"><strong>{{ vat__sum|floatformat:2|intcomma }}</strong></td>
+              </tr>
+            </tfoot>
+            {% endif %}
           </table>
         </v-simple-table>
       </v-col>

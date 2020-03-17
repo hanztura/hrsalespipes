@@ -43,6 +43,29 @@ class PipelineSummaryListView(
 
         return q
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        q = context['object_list']
+        sums = q.aggregate(Sum('invoice_amount'), Sum('vat'))
+        context['invoice_amount__sum'] = sums['invoice_amount__sum']
+        context['vat__sum'] = sums['vat__sum']
+        return context
+
+
+class PipelineSummaryPDFView(
+        WeasyTemplateResponseMixin,
+        PipelineSummaryListView):
+    template_name = 'reports/pdf/pipeline_summary.html'
+    pdf_attachment = False
+    pdf_filename = 'pipeline-summary.pdf'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['COMPANY'] = Setting.objects.first().company_name
+        return context
+
 
 class JobsSummaryListView(
         FromToViewFilterMixin,
@@ -71,7 +94,7 @@ class JobsSummaryPDFView(
         WeasyTemplateResponseMixin,
         JobsSummaryListView):
     template_name = 'reports/pdf/jobs_summary.html'
-    pdf_attachment = True
+    pdf_attachment = False
     pdf_filename = 'jobs-summary.pdf'
 
     def get_context_data(self, **kwargs):
