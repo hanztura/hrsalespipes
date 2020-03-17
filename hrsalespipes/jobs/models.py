@@ -61,6 +61,10 @@ class Job(TimeStampedModel):
                 'view_report_jobs_summary',
                 'Can view report Jobs Summary'
             ),
+            (
+                'view_report_job_to_pipeline_analysis',
+                'Can view report Job to Pipeline Analysis'
+            ),
         ]
 
     def __str__(self):
