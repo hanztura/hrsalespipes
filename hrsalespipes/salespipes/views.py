@@ -77,6 +77,7 @@ class PipelineListView(FromToViewFilterMixin, PermissionRequiredMixin, ListView)
 
     def get_queryset(self):
         q = super().get_queryset().select_related('status')
+        q = q.prefetch_related('job_candidate__job', 'job_candidate__candidate')
         return q
 
 

@@ -1,4 +1,5 @@
 {% extends "salespipes/base.html" %}
+{% load static %}
 
 {% block title %}
 Pipeline - New
@@ -30,6 +31,16 @@ Pipeline - New
             required>
           </v-autocomplete>
 
+          <v-autocomplete
+            :items="jobCandidates"
+            label="Job Candidate"
+            v-model.lazy="jobCandidate"
+            name='job_candidate'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
           <v-input>
             <v-btn block color="success" type="submit">Save</v-btn>
           </v-input>
@@ -40,6 +51,15 @@ Pipeline - New
 {% endblock subcontent %}
 
 {% block script %}
+
+{% if debug %}
+  <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+  <script src="{% static "vendor/axios.min.js" %}"></script>
+{% else %}
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{% endif %}
+
 <script>
   new Vue({
     el: '#inspire',
@@ -59,12 +79,40 @@ Pipeline - New
       ],
       jobs: [],
       job: '{{ form.job.value }}',
+      jobCandidates: [],
+      jobCandidate: Number('{{ form.job_candidate.value }}'),
     }),
+
+    watch: {
+      job: function (){
+        this.fetchJobCandidates();
+      }
+    },
 
     methods: {
       setJobChoices: function() {
         let data = document.getElementById('dataJobsChoices').value;
         this.jobs = JSON.parse(data);
+      },
+      fetchJobCandidates: function(){
+        if (this.job){
+          let url = `/api/job-candidates/?job=${this.job}`;
+          let _this = this;
+          axios.get(url)
+            .then(function(response){
+              data = response.data;
+              // map data
+              _this.jobCandidates = _.map(data, (value) => {
+                return {
+                  'text': value.candidate.name,
+                  'value': value.id
+                }
+              })
+            })
+            .catch(function(error){
+              console.log(error);
+            });
+        }
       },
     },
 
@@ -72,6 +120,10 @@ Pipeline - New
       this.setJobChoices();
       this.updateBreadcrumbs();
     },
+
+    mounted(){
+      this.fetchJobCandidates();
+    }
 
   });
 </script>  
