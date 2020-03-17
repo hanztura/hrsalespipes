@@ -2,13 +2,13 @@
 {% load humanize %}
 
 {% block title %}
-Jobs Summary - Reports
+Job to Pipeline Analysis - Reports
 {% endblock title %}
 
 {% block subcontent %}
   <v-container
     fluid>
-    <h1>Jobs Summary</h1>
+    <h1>Job to Pipeline Analysis</h1>
     <v-row
       align="center"
       justify="center"
@@ -22,14 +22,14 @@ Jobs Summary - Reports
           icon
           right
           title="Export as PDF"
-          href="{% url 'reports:pdf_jobs_summary' %}?from={{ from }}&to={{ to }}">
+          href="{% url 'reports:pdf_job_to_pipeline_analysis' %}?from={{ from }}&to={{ to }}">
           <v-icon class="red--text">fas fa-file-pdf</v-icon>
         </v-btn>
         <v-btn
           icon
           right
           title="Export as Excel"
-          href="{% url 'reports:excel_jobs_summary' %}?from={{ from }}&to={{ to }}">
+          href="{% url 'reports:excel_job_to_pipeline_analysis' %}?from={{ from }}&to={{ to }}">
           <v-icon class="green--text">fas fa-file-excel</v-icon>
         </v-btn>
       </v-col>
@@ -40,41 +40,47 @@ Jobs Summary - Reports
           <table>
             <thead>
               <tr>
-                <th class="text-center">Date</th>
-                <th class="text-center">Board</th>
                 <th class="text-center">Reference Number</th>
                 <th class="text-center">Client</th>
                 <th class="text-center">Position</th>
-                <th class="text-center">Location</th>
-                <th class="text-center">Potential Income</th>
+                <th class="text-center">Job Date</th>
+                <th class="text-center">Pipeline Date</th>
+                <th class="text-center">Job to Pipeline # of Days</th>
               </tr>
             </thead>
             <tbody>
               {% if object_list %}
                 {% for object in object_list %}
                 <tr>
-                  <td>{{ object.date }}</td>
-                  <td>{{ object.board.name }}</td>
                   <td>{{ object.reference_number }}</td>
                   <td>{{ object.client.name }}</td>
                   <td>{{ object.position }}</td>
-                  <td>{{ object.location }}</td>
-                  <td class="text-right">{{ object.potential_income|intcomma }}</td>
+                  <td>{{ object.date }}</td>
+                  <td>{{ object.pipeline.date }}</td>
+                  <td>{{ object.num_of_days }}</td>
                 </tr>
                 {% endfor %}
               {% else %}
                 <tr>
-                  <td colspan="5">No data available.</td>
+                  <td colspan="6">No data available.</td>
                 </tr>
               {% endif %}
             </tbody>
 
             {% if object_list %}
             <tfoot>
-                <tr>
-                  <td class="text-right" colspan="6">Total</td>
-                  <td class="text-right"><strong>{{ potential_income__sum|floatformat:2|intcomma }}</strong></td>
-                </tr>
+              <tr>
+                <td class="text-right" colspan="5">Average number of days</td>
+                <td class="text-center"><strong>{{ AVERAGE }}</strong></td>
+              </tr>
+              <tr>
+                <td class="text-right" colspan="5">Longest number of days</td>
+                <td class="text-center"><strong>{{ MAX }}</strong></td>
+              </tr>
+              <tr>
+                <td class="text-right" colspan="5">Shortest number of days</td>
+                <td class="text-center"><strong>{{ MIN }}</strong></td>
+              </tr>
             </tfoot>
             {% endif %}
           </table>
@@ -98,7 +104,7 @@ Jobs Summary - Reports
           href: '{% url "reports:index" %}'
         },
         {
-          text: 'Jobs Summary',
+          text: 'Job to Pipeline Analysis',
         },
       ],
     }),

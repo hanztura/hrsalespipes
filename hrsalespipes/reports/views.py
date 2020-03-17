@@ -1,5 +1,6 @@
 import calendar
 import datetime
+import math
 import uuid
 import xlwt
 
@@ -281,6 +282,187 @@ class JobsSummaryExcelView(
             ((6, 'potential_income'), ),
             5
         )
+
+        wb.save(response)
+        return response
+
+
+class JobToPipelineAnalysisListView(
+        FromToViewFilterMixin,
+        PermissionRequiredWithCustomMessageMixin,
+        ListView):
+    model = Job
+    template_name = 'reports/job_to_pipeline_analysis.html'
+    permission_required = 'jobs.view_report_job_to_pipeline_analysis'
+    paginate_by = 0
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.select_related('board', 'client').prefetch_related('pipeline')
+
+        # compute job to pipeline days
+        num_of_days_data = []
+        for job in q:
+            job_date = job.date
+            if hasattr(job, 'pipeline'):
+                pipeline_date = job.pipeline.date
+            else:
+                pipeline_date = datetime.date.today()
+
+            num_of_days = pipeline_date - job_date
+            num_of_days = num_of_days.days
+            job.num_of_days = num_of_days
+
+            num_of_days_data.append(num_of_days)
+
+        total_days = sum(num_of_days_data)
+        self.average_num_of_days = total_days / len(num_of_days_data)
+        self.max_num_of_days = max(num_of_days_data)
+        self.min_num_of_days = min(num_of_days_data)
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['AVERAGE'] = math.ceil(self.average_num_of_days)
+        context['MAX'] = self.max_num_of_days
+        context['MIN'] = self.min_num_of_days
+        return context
+
+
+class JobToPipelineAnalysisPDFView(
+        WeasyTemplateResponseMixin,
+        JobToPipelineAnalysisListView):
+    template_name = 'reports/pdf/job_to_pipeline_analysis.html'
+    pdf_attachment = True
+    pdf_filename = 'Job to Pipeline Analysis.pdf'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['COMPANY'] = Setting.objects.first().company_name
+        return context
+
+
+class JobToPipelineAnalysisExcelView(
+        PermissionRequiredWithCustomMessageMixin,
+        View):
+    permission_required = 'jobs.view_report_job_to_pipeline_analysis'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        today = datetime.date.today()
+        last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
+        self.month_first_day = str(today.replace(day=1))
+        self.month_last_day = str(today.replace(day=last_day_of_the_month))
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; \
+            filename="Job to Pipeline Analysis.xls"'
+
+        date_from = request.GET.get('from', self.month_first_day)
+        date_to = request.GET.get('to', self.month_last_day)
+
+        columns = [
+            'Reference Number',
+            'Client',
+            'Position',
+            'Job Date',
+            'Pipeline Date',
+            'Job to Pipeline # of Days',
+        ]
+        heading_title = 'Job to Pipeline Analysis'
+
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet(heading_title)
+
+        # Sheet header, first row
+        row_num = 0
+
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+
+        heading = [
+            heading_title,
+            Setting.objects.first().company_name,
+            'For the period {} to {}'.format(date_from, date_to)
+        ]
+        for head in heading:
+            ws.write(row_num, 0, head, font_style)
+            row_num += 1
+        row_num += 1  # blank row
+
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+
+        rows = Job.objects.all().select_related('board', 'client')
+        rows = rows.prefetch_related('pipeline')
+
+        if date_from and date_to:
+            try:
+                rows = rows.filter(date__gte=date_from, date__lte=date_to)
+
+                # compute job to pipeline days
+                num_of_days_data = []
+                for job in rows:
+                    job_date = job.date
+                    if hasattr(job, 'pipeline'):
+                        pipeline_date = job.pipeline.date
+                    else:
+                        pipeline_date = datetime.date.today()
+
+                    num_of_days = pipeline_date - job_date
+                    num_of_days = num_of_days.days
+                    job.num_of_days = num_of_days
+
+                    num_of_days_data.append(num_of_days)
+
+                total_days = sum(num_of_days_data)
+                AVERAGE = total_days / len(num_of_days_data)
+                MAX = max(num_of_days_data)
+                MIN = min(num_of_days_data)
+            except Exception as e:
+                rows = Job.objects.none()
+
+        # right data
+        for row in rows:
+            row_num += 1
+            if hasattr(job, 'pipeline'):
+                pipeline_date = job.pipeline.date
+            else:
+                pipeline_date = datetime.date.today()
+
+            values = [
+                row.reference_number,
+                row.client.name,
+                row.position,
+                row.date,
+                pipeline_date,
+                row.num_of_days
+            ]
+            for i, value in enumerate(values):
+                ws.write(row_num, i, value, font_style)
+
+        # total row
+        footer_label_index = 4
+        footer = (('AVERAGE', AVERAGE), ('MAX', MAX), ('MIN', MIN))
+        for label, value in footer:
+            row_num += 1
+            ws.write(
+                row_num,
+                footer_label_index,
+                label,
+                font_style)
+            ws.write(
+                row_num,
+                footer_label_index + 1,
+                math.ceil(value),
+                font_style)
 
         wb.save(response)
         return response

@@ -1,0 +1,59 @@
+{% extends "reports/pdf/base.html" %}
+{% load humanize %}
+
+{% block title %}<title>Job to Pipeline Analysis Download PDF - Reports</title>{% endblock title %}
+
+{% block content %}
+<content>
+  <h1>Job to Pipeline Analysis</h1>
+  <p class="my-0 py-0"><strong>{{ COMPANY }}</strong></p>
+  <p class="my-0 py-0">For the period {{ from }} to {{ to }}</p>
+  <table>
+    <thead>
+      <tr>
+        <th class="text-center">Reference Number</th>
+        <th class="text-center">Client</th>
+        <th class="text-center">Position</th>
+        <th class="text-center">Job Date</th>
+        <th class="text-center">Pipeline Date</th>
+        <th class="text-center">Job to Pipeline # of Days</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if object_list %}
+        {% for object in object_list %}
+        <tr>
+          <td class="text-center">{{ object.reference_number }}</td>
+          <td class="text-center">{{ object.client.name }}</td>
+          <td class="text-center">{{ object.position }}</td>
+          <td class="text-center">{{ object.date }}</td>
+          <td class="text-center">{{ object.pipeline.date }}</td>
+          <td class="text-center">{{ object.num_of_days }}</td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="6">No data available.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+
+    {% if object_list %}
+    <tfoot>
+      <tr>
+        <td class="text-right" colspan="5">Average number of days</td>
+        <td class="text-center"><strong>{{ AVERAGE }}</strong></td>
+      </tr>
+      <tr>
+        <td class="text-right" colspan="5">Longest number of days</td>
+        <td class="text-center"><strong>{{ MAX }}</strong></td>
+      </tr>
+      <tr>
+        <td class="text-right" colspan="5">Shortest number of days</td>
+        <td class="text-center"><strong>{{ MIN }}</strong></td>
+      </tr>
+    </tfoot>
+    {% endif %}
+  </table>
+</content>
+{% endblock content %}

@@ -1,8 +1,10 @@
 from django.urls import path
 
 from .views import (
-    IndexView, PipelineSummaryListView, PipelineSummaryPDFView, PipelineSummaryExcelView,
-    JobsSummaryListView, JobsSummaryPDFView, JobsSummaryExcelView)
+    IndexView, PipelineSummaryListView, PipelineSummaryPDFView,
+    PipelineSummaryExcelView, JobToPipelineAnalysisListView,
+    JobsSummaryListView, JobsSummaryPDFView, JobsSummaryExcelView,
+    JobToPipelineAnalysisPDFView, JobToPipelineAnalysisExcelView)
 
 app_name = 'reports'
 urlpatterns = [
@@ -18,6 +20,7 @@ urlpatterns = [
         'pipeline-summary/',
         PipelineSummaryListView.as_view(),
         name='pipeline_summary'),
+
     path(
         'pdf/jobs-summary/',
         JobsSummaryPDFView.as_view(),
@@ -30,5 +33,19 @@ urlpatterns = [
         'jobs-summary/',
         JobsSummaryListView.as_view(),
         name='jobs_summary'),
+
+    path(
+        'pdf/job-to-pipeline-analysis/',
+        JobToPipelineAnalysisPDFView.as_view(),
+        name='pdf_job_to_pipeline_analysis'),
+    path(
+        'excel/job-to-pipeline-analysis/',
+        JobToPipelineAnalysisExcelView.as_view(),
+        name='excel_job_to_pipeline_analysis'),
+    path(
+        'job-to-pipeline-analysis/',
+        JobToPipelineAnalysisListView.as_view(),
+        name='job_to_pipeline_analysis'),
+
     path('', IndexView.as_view(), name='index'),
 ]

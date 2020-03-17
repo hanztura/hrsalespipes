@@ -18,10 +18,17 @@ Reports
           <v-list-item-title><a href="{% url 'reports:pipeline_summary' %}">Pipeline Summary</a></v-list-item-title>
         </v-list-item-content>
     </v-list-item>
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title><a href="{% url 'reports:jobs_summary' %}">Jobs Summary</a></v-list-item-title>
-        </v-list-item-content>
+
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title><a href="{% url 'reports:jobs_summary' %}">Jobs Summary</a></v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+    
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title><a href="{% url 'reports:job_to_pipeline_analysis' %}">Job to Pipeline Analysis</a></v-list-item-title>
+      </v-list-item-content>
     </v-list-item>
     </v-row>
   </v-container>  
