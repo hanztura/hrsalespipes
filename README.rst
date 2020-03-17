@@ -36,3 +36,7 @@ Set-up Gunicorn
     [Install]
     WantedBy=multi-user.target
 
+Install
+    Weasy requirement
+    sudo apt-get install build-essential python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
+
