@@ -13,7 +13,7 @@
       <tr>
         <th class="text-center">Date</th>
         <th class="text-center">Status</th>
-        <th class="text-center">Job Reference Number</th>
+        <th class="text-center">Reference Number</th>
         <th class="text-center">Job Date</th>
         <th class="text-center">Position</th>
         <th class="text-center">Candidate Code</th>
@@ -31,25 +31,20 @@
         {% for object in object_list %}
         <tr>
           <td class="text-center">{{ object.date|date:'d M Y' }}</td>
-          <td class="text-center">{{ object.board.name }}</td>
-          <td class="text-center">{{ object.job.job_reference_number }}</td>
+          <td class="text-center">{{ object.status.name }}</td>
+          <td class="text-center">{{ object.job_candidate.job.reference_number }}</td>
           <td class="text-center">{{ object.job.date }}</td>
           <td class="text-center">{{ object.job.position }}</td>
 
-          {% if object.job.candidates %}
-            <td class="text-center">{{ object.job.candidates.first.candidate.code }}</td>
-            <td class="text-center">{{ object.job.candidates.first.candidate.name }}</td>
-          {% else %}
-            <td></td>
-            <td></td>
-          {% endif %}
+          <td class="text-center">{{ object.job_candidate.candidate.code }}</td>
+          <td class="text-center">{{ object.job_candidate.candidate.name }}</td>
 
-            <td class="text-right">{{ object.job.client.name }}</td>
-            <td class="text-right">{{ object.job.client.industry }}</td>
+            <td class="text-right">{{ object.job_candidate.job.client.name }}</td>
+            <td class="text-right">{{ object.job_candidate.job.client.industry }}</td>
             <td class="text-right">{{ object.invoice_date|default_if_none:'' }}</td>
-            <td class="text-right">{{ object.invoice_number }}</td>
-            <td class="text-right">{{ object.invoice_amount }}</td>
-            <td class="text-right">{{ object.vat }}</td>
+            <td class="text-right">{{ object.invoice_number|intcomma }}</td>
+            <td class="text-right">{{ object.invoice_amount|intcomma }}</td>
+            <td class="text-right">{{ object.vat|intcomma }}</td>
         </tr>
         {% endfor %}
       {% else %}

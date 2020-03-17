@@ -36,12 +36,11 @@ class PipelineSummaryListView(
     def get_queryset(self):
         q = super().get_queryset()
 
-        job__candidates_queryset = JobCandidate.objects.select_related(
-            'status', 'candidate').filter(status__probability__gte=1)
-        q = q.select_related('status', 'job')
-        q = q.prefetch_related(
-            'job__client',
-            Prefetch('job__candidates', queryset=job__candidates_queryset))
+        q = q.select_related(
+            'status',
+            'job',
+            'job_candidate__candidate',
+            'job_candidate__job__client')
 
         return q
 
@@ -62,7 +61,7 @@ class PipelineSummaryPDFView(
         PipelineSummaryListView):
     template_name = 'reports/pdf/pipeline_summary.html'
     pdf_attachment = True
-    pdf_filename = 'pipeline-summary.pdf'
+    pdf_filename = 'Pipeline Summary.pdf'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -87,7 +86,7 @@ class PipelineSummaryExcelView(
     def get(self, request, *args, **kwargs):
         response = HttpResponse(content_type='application/ms-excel')
         response['Content-Disposition'] = 'attachment; \
-            filename="pipeline-summary.xls"'
+            filename="Pipeline Summary.xls"'
 
         date_from = request.GET.get('from', self.month_first_day)
         date_to = request.GET.get('to', self.month_last_day)
@@ -132,14 +131,10 @@ class PipelineSummaryExcelView(
         # Sheet body, remaining rows
         font_style = xlwt.XFStyle()
 
-        job__candidates_queryset = JobCandidate.objects.select_related(
-            'status', 'candidate').filter(status__probability__gte=1)
         rows = Pipeline.objects.all()
 
-        rows = rows.select_related('job', 'status')
-        rows = rows.prefetch_related(
-            'job__client',
-            Prefetch('job__candidates', queryset=job__candidates_queryset))
+        rows = rows.select_related(
+            'status', 'job_candidate__candidate', 'job_candidate__job__client')
 
         if date_from and date_to:
             try:
@@ -150,17 +145,17 @@ class PipelineSummaryExcelView(
 
         for row in rows:
             row_num += 1
-            job_candidates = row.job.candidates
-            if job_candidates:
-                candidate = job_candidates.first().candidate
+            job_candidate = row.job_candidate
+            if job_candidate:
+                candidate = job_candidate.candidate
                 candidate_name = candidate.name
                 candidate_code = candidate.code
             else:
                 candidate_name = ''
                 candidate_code = ''
 
-            job = row.job
-            client = row.job.client
+            job = row.job_candidate.job
+            client = job.client
 
             values = [
                 row.date,
@@ -168,8 +163,8 @@ class PipelineSummaryExcelView(
                 job.reference_number,
                 job.date,
                 job.position,
-                candidate_name,
                 candidate_code,
+                candidate_name,
                 client.name,
                 client.industry,
                 row.invoice_date,
