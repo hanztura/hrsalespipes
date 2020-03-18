@@ -7,6 +7,9 @@
 <content>
   <h1>Commissions Earned Summary</h1>
   <p class="my-0 py-0"><strong>{{ COMPANY }}</strong></p>
+  {% if employee %}
+  <p class="my-0 py-0">{{ employee.name }}</p>
+  {% endif %}
   <p class="my-0 py-0">For the period {{ from }} to {{ to }}</p>
   <table>
     <thead>

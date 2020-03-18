@@ -14,7 +14,56 @@ Commissions Earned Summary - Reports
       justify="center"
     >
       <v-col cols="12">
-        {% include "_includes/filter_date_from_and_to.html" %}
+        <input type="hidden" id="dataEmployeesChoices" value="{{ employees }}">
+        <form id="searchForm" ref="searchForm">
+          <v-container fluid>
+            <v-row>
+              <v-col cols="12" md="3" class="py-0">
+                <v-text-field
+                  outlined
+                  required
+                  dense
+                  prepend-inner-icon="fas fa-calendar-alt"
+                  label="From"
+                  name="from"
+                  type="date"
+                  value="{{ from|default_if_none:'' }}">
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="3" class="py-0">
+                <v-text-field
+                  outlined
+                  required
+                  dense
+                  prepend-inner-icon="fas fa-calendar-alt"
+                  label="To"
+                  name="to"
+                  type="date"
+                  value="{{ to|default_if_none:'' }}">
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="3" class="py-0">
+                <v-autocomplete
+                  :items="employees"
+                  label="Employee"
+                  v-model.lazy="employee"
+                  name='employee'
+                  prepend-inner-icon="fas fa-user"
+                  dense
+                  outlined
+                  clearable>
+                </v-autocomplete>
+              </v-col>
+              <v-col cols="12" md="3" class="pa-0">
+                <v-btn icon type="submit">
+                  <v-icon>fas fa-search</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </form>
       </v-col>
 
       <v-col cols='12' class="text-right my-0 py-0">
@@ -22,14 +71,14 @@ Commissions Earned Summary - Reports
           icon
           right
           title="Export as PDF"
-          href="{% url 'reports:pdf_commissions_earned_summary' %}?from={{ from }}&to={{ to }}">
+          href="{% url 'reports:pdf_commissions_earned_summary' %}?from={{ from }}&to={{ to }}&employee={{ employee_pk|default_if_none:'' }}">
           <v-icon class="red--text">fas fa-file-pdf</v-icon>
         </v-btn>
         <v-btn
           icon
           right
           title="Export as Excel"
-          href="{% url 'reports:excel_commissions_earned_summary' %}?from={{ from }}&to={{ to }}">
+          href="{% url 'reports:excel_commissions_earned_summary' %}?from={{ from }}&to={{ to }}&employee={{ employee_pk|default_if_none:'' }}">
           <v-icon class="green--text">fas fa-file-excel</v-icon>
         </v-btn>
       </v-col>
@@ -109,9 +158,19 @@ Commissions Earned Summary - Reports
           text: 'Commissions Earned Summary', 
         },
       ],
+      employees: [],
+      employee: '{{ employee_pk|default_if_none:"" }}',
     }),
 
+    methods: {
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      },
+    },
+
     mounted(){
+      this.setDataChoices('dataEmployeesChoices', 'employees')
       this.updateBreadcrumbs();
     },
 
