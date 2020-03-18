@@ -60,7 +60,10 @@ class CommissionsEarnedSummaryListView(
         sums = q.aggregate(Sum('amount'))
 
         context['employee'] = self.employee
-        context['employee_pk'] = self.employee.pk
+        context['employee_pk'] = None
+        if self.employee:
+            context['employee_pk'] = self.employee.pk
+
         context['employees'] = get_objects_as_choices(Employee)
         context['TOTAL'] = sums['amount__sum']
         return context
