@@ -19,12 +19,119 @@ from jobs.models import Job, JobCandidate
 from system.helpers import get_objects_as_choices
 from salespipes.models import Pipeline
 from system.utils import (
-    PermissionRequiredWithCustomMessageMixin, FromToViewFilterMixin)
+    PermissionRequiredWithCustomMessageMixin, FromToViewFilterMixin,
+    MonthFilterViewMixin)
 from system.models import Setting
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
     template_name = 'reports/index.html'
+
+
+class MonthlyInvoicesSummaryListView(
+        MonthFilterViewMixin,
+        PermissionRequiredWithCustomMessageMixin,
+        ListView):
+    model = Pipeline
+    template_name = 'reports/monthly_invoices_summary.html'
+    permission_required = 'salespipes.view_report_monthly_invoices_summary'
+    paginate_by = 0
+    TITLE = 'Monthly Invoices Summary'
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.select_related(
+            'job_candidate__job__client',
+            'job_candidate__candidate')
+
+        q = q.filter(invoice_amount__gt=0)
+
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        q = context['object_list']
+        sums = q.aggregate(Sum('invoice_amount'), Sum('vat'))
+
+        context['TITLE'] = self.TITLE
+        context['TOTAL'] = sums['invoice_amount__sum']
+        context['VAT'] = sums['vat__sum']
+        return context
+
+
+class MonthlyInvoicesSummaryPDFView(
+        WeasyTemplateResponseMixin,
+        MonthlyInvoicesSummaryListView):
+    template_name = 'reports/pdf/monthly_invoices_summary.html'
+    pdf_attachment = True
+    pdf_filename = ''
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.pdf_filename = '{}.pdf'.format(self.TITLE)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['COMPANY'] = Setting.objects.first().company_name
+        return context
+
+
+class MonthlyInvoicesSummaryExcelView(
+        PermissionRequiredWithCustomMessageMixin,
+        View):
+    permission_required = 'salespipes.view_report_monthly_invoices_summary'
+    TITLE = 'Monthly Invoices Summary'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        today = datetime.date.today()
+        self.month = today.strftime('%Y-%m')
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = \
+            'attachment; filename="{}.xls"'.format(self.TITLE)
+
+        month = request.GET.get('month', self.month)  # 'YYYY-MM'
+
+        columns = [
+            'Date',
+            'Invoice Number',
+            'Job Reference Number',
+            'Client',
+            'Industry',
+            'Invoice Amount',
+            'VAT',
+        ]
+        values_list = [
+            'invoice_date',
+            'invoice_number',
+            'job_candidate__job__reference_number',
+            'job_candidate__job__client__name',
+            'job_candidate__job__client__industry',
+            'invoice_amount',
+            'vat',
+        ]
+
+        wb = generate_excel(
+            self.TITLE,
+            month,
+            month,
+            columns,
+            Pipeline,
+            ('job_candidate__job__client', 'job_candidate__candidate'),
+            values_list,
+            ((5, 'invoice_amount'), (6, 'vat')),
+            4,
+            is_month_filter=True
+        )
+
+        wb.save(response)
+        return response
 
 
 class CommissionsEarnedSummaryListView(
@@ -146,7 +253,7 @@ class PipelineSummaryListView(
     model = Pipeline
     template_name = 'reports/pipeline_summary.html'
     permission_required = 'salespipes.view_report_pipeline_summary'
-    paginate_by = 25
+    paginate_by = 0
 
     def get_queryset(self):
         q = super().get_queryset()

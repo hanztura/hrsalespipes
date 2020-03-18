@@ -36,6 +36,10 @@ class Pipeline(TimeStampedModel):
                 'view_report_pipeline_details',
                 'Can view report Pipeline Details'
             ),
+            (
+                'view_report_monthly_invoices_summary',
+                'Can view report Monthly Invoices Summary'
+            ),
         ]
         ordering = ['-date', '-job']
 

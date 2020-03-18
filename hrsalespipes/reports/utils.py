@@ -9,7 +9,8 @@ from system.models import Setting
 
 def generate_excel(heading_title, date_from, date_to, columns, model,
                    select_related, values_list, aggregate_fields,
-                   total_label_position, employee_id=None):
+                   total_label_position, employee_id=None,
+                   is_month_filter=False):
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet(heading_title)
 
@@ -47,10 +48,18 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
 
     if date_from and date_to:
         try:
-            data = rows.filter(date__gte=date_from, date__lte=date_to)
+            # filter date
+            if is_month_filter:
+                year, month = date_from.split('-')
+                data = rows.filter(date__month=month, date__year=year)
+            else:  # two dates
+                data = rows.filter(date__gte=date_from, date__lte=date_to)
+
+            # filter employee
             if employee_id:
-                data = data.filter(employee_id=employee_id)
-            rows = data.values_list(*values_list)
+                data = data.filter(employee_id=employee_id)  # used for aggreg.
+
+            rows = data.values_list(*values_list)  # final value of rows
         except Exception as e:
             data = None
             rows = model.objects.none()
