@@ -1,6 +1,4 @@
 {% extends "reports/base.html" %}
-{% load humanize %}
-
 {% block title %}
 {{ TITLE }} - Reports
 {% endblock title %}
@@ -14,6 +12,7 @@
       justify="center"
     >
       <v-col cols="12">
+        <input type="hidden" id="dataConsultantChoices" value="{{ consultants }}">
         <form id="searchForm" ref="searchForm">
           <v-container fluid>
             <v-row>
@@ -28,6 +27,19 @@
                   type="month"
                   value="{{ month|default_if_none:'' }}">
                 </v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="3" class="py-0">
+                <v-autocomplete
+                  :items="consultants"
+                  label="Consultant"
+                  v-model.lazy="consultant"
+                  name='consultant'
+                  prepend-inner-icon="fas fa-user"
+                  dense
+                  outlined
+                  clearable>
+                </v-autocomplete>
               </v-col>
 
               <v-col cols="12" md="3" class="pa-0">
@@ -45,62 +57,21 @@
           icon
           right
           title="Export as PDF"
-          href="{% url 'reports:pdf_monthly_invoices_summary' %}?from={{ from }}&to={{ to }}">
+          href="{% url 'reports:pdf_monthly_invoices_summary' %}?from={{ from }}&to={{ to }}&consultant={{ consultant_pk|default_if_none:'' }}">
           <v-icon class="red--text">fas fa-file-pdf</v-icon>
         </v-btn>
         <v-btn
           icon
           right
           title="Export as Excel"
-          href="{% url 'reports:excel_monthly_invoices_summary' %}?from={{ from }}&to={{ to }}">
+          href="{% url 'reports:excel_monthly_invoices_summary' %}?from={{ from }}&to={{ to }}&consultant={{ consultant_pk|default_if_none:'' }}">
           <v-icon class="green--text">fas fa-file-excel</v-icon>
         </v-btn>
       </v-col>
 
       <v-col cols="12" class="text-center">
         <v-simple-table>
-          <table>
-            <thead>
-              <tr>
-                <th class="text-center">Date</th>
-                <th class="text-center">Invoice Number</th>
-                <th class="text-center">Job Reference Number</th>
-                <th class="text-center">Client</th>
-                <th class="text-center">Industry</th>
-                <th class="text-center">Invoice Amount</th>
-                <th class="text-center">VAT</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% if object_list %}
-                {% for object in object_list %}
-                <tr>
-                  <td class="text-center">{{ object.date|date:'d M Y' }}</td>
-                  <td class="text-center">{{ object.invoice_number }}</td>
-                  <td class="text-center">{{ object.job_candidate.job.reference_number }}</td>
-                  <td class="text-center">{{ object.job_candidate.job.client.name }}</td>
-                  <td class="text-center">{{ object.job_candidate.job.client.industry }}</td>
-                  <td class="text-right">{{ object.invoice_amount }}</td>
-                  <td class="text-right">{{ object.vat|intcomma }}</td>
-                </tr>
-                {% endfor %}
-              {% else %}
-                <tr>
-                  <td colspan="7">No data available.</td>
-                </tr>
-              {% endif %}
-            </tbody>
-
-            {% if object_list %}
-            <tfoot>
-              <tr>
-                <td class="text-right" colspan="5">TOTALS</td>
-                <td class="text-right"><strong>{{ TOTAL|floatformat:2|intcomma }}</strong></td>
-                <td class="text-right"><strong>{{ VAT|floatformat:2|intcomma }}</strong></td>
-              </tr>
-            </tfoot>
-            {% endif %}
-          </table>
+          {% include "reports/includes/monthly_invoices_table.html" %}
         </v-simple-table>
       </v-col>
     </v-row>
@@ -124,9 +95,19 @@
           text: '{{ TITLE }}',
         },
       ],
+      consultants: [],
+      consultant: '{{ consultant_pk|default_if_none:"" }}',
     }),
 
+    methods: {
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      },
+    },
+
     mounted(){
+      this.setDataChoices('dataConsultantChoices', 'consultants');
       this.updateBreadcrumbs();
     },
 
