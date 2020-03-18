@@ -43,7 +43,7 @@ class Pipeline(TimeStampedModel):
     date = models.DateField(
         verbose_name=settings.PIPELINE_DATE_ALIAS,
         default=datetime.date.today)
-    job = models.OneToOneField(
+    job = models.OneToOneField(  # DEPRECIATED!!!
         Job,
         on_delete=models.PROTECT,
         related_name='pipeline',

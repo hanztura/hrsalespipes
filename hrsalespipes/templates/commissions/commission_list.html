@@ -60,7 +60,7 @@ Commissions - List
                 {% for object in object_list %}
                 <tr>
                   <td class="text-center">{{ object.date }}</td>
-                  <td class="text-center"><a href="{% url 'salespipes:detail' object.pipeline_id %}">{{ object.pipeline.job.reference_number }}</a></td>
+                  <td class="text-center"><a href="{% url 'salespipes:detail' object.pipeline_id %}">{{ object.pipeline.job_candidate.job.reference_number }}</a></td>
                   <td class="text-center">{{ object.employee.name }}</td>
                   <td class="text-center">{{ object.rate_role_type }}</td>
                   <td class="text-right">{{ object.amount|intcomma }}</td>
