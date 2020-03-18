@@ -9,14 +9,10 @@ Reports
   <v-container
     fluid>
     <h1>Reports</h1>
-    <v-row
-      align="center"
-      justify="center"
-    >
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title><a href="{% url 'reports:pipeline_summary' %}">Pipeline Summary</a></v-list-item-title>
-        </v-list-item-content>
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title><a href="{% url 'reports:pipeline_summary' %}">Pipeline Summary</a></v-list-item-title>
+      </v-list-item-content>
     </v-list-item>
 
     <v-list-item>
@@ -30,13 +26,18 @@ Reports
         <v-list-item-title><a href="{% url 'reports:job_to_pipeline_analysis' %}">Job to Pipeline Analysis</a></v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-    
+
     <v-list-item>
       <v-list-item-content>
         <v-list-item-title><a href="{% url 'reports:commissions_earned_summary' %}">Commissions Earned Summary</a></v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-    </v-row>
+
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title><a href="{% url 'reports:monthly_invoices_summary' %}">Monthly Invoices Summary</a></v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
   </v-container>  
 {% endblock subcontent %}
 

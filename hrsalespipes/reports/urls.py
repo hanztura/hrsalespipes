@@ -6,7 +6,8 @@ from .views import (
     JobsSummaryListView, JobsSummaryPDFView, JobsSummaryExcelView,
     JobToPipelineAnalysisPDFView, JobToPipelineAnalysisExcelView,
     CommissionsEarnedSummaryListView, CommissionsEarnedSummaryPDFView,
-    CommissionsEarnedSummaryExcelView)
+    CommissionsEarnedSummaryExcelView, MonthlyInvoicesSummaryListView,
+    MonthlyInvoicesSummaryPDFView, MonthlyInvoicesSummaryExcelView)
 
 app_name = 'reports'
 urlpatterns = [
@@ -61,6 +62,19 @@ urlpatterns = [
         'commissions-earned-summary/',
         CommissionsEarnedSummaryListView.as_view(),
         name='commissions_earned_summary'),
+
+    path(
+        'pdf/monthly-invoices-summary/',
+        MonthlyInvoicesSummaryPDFView.as_view(),
+        name='pdf_monthly_invoices_summary'),
+    path(
+        'excel/monthly-invoices-summary/',
+        MonthlyInvoicesSummaryExcelView.as_view(),
+        name='excel_monthly_invoices_summary'),
+    path(
+        'monthly-invoices-summary/',
+        MonthlyInvoicesSummaryListView.as_view(),
+        name='monthly_invoices_summary'),
 
     path('', IndexView.as_view(), name='index'),
 ]

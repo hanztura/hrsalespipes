@@ -1,0 +1,55 @@
+{% extends "reports/pdf/base.html" %}
+{% load humanize %}
+
+{% block title %}<title>{{ TITLE }} Download PDF - Reports</title>{% endblock title %}
+
+{% block content %}
+<content>
+  <h1>{{ TITLE }}</h1>
+  <p class="my-0 py-0"><strong>{{ COMPANY }}</strong></p>
+  <p class="my-0 py-0">For the period {{ from }} to {{ to }}</p>
+  <table>
+    <thead>
+      <tr>
+        <th class="text-center">Date</th>
+        <th class="text-center">Invoice Number</th>
+        <th class="text-center">Job Reference Number</th>
+        <th class="text-center">Client</th>
+        <th class="text-center">Industry</th>
+        <th class="text-center">Invoice Amount</th>
+        <th class="text-center">VAT</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if object_list %}
+        {% for object in object_list %}
+        <tr>
+          <td class="text-center">{{ object.date|date:'d M Y' }}</td>
+          <td class="text-center">{{ object.invoice_number }}</td>
+          <td class="text-center">{{ object.job_candidate.job.reference_number }}</td>
+          <td class="text-center">{{ object.job_candidate.job.client.name }}</td>
+          <td class="text-center">{{ object.job_candidate.job.client.industry }}</td>
+          <td class="text-right">{{ object.invoice_amount }}</td>
+          <td class="text-right">{{ object.vat|intcomma }}</td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="7">No data available.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+
+
+    {% if object_list %}
+    <tfoot>
+      <tr>
+        <td class="text-right" colspan="5">TOTALS</td>
+        <td class="text-right"><strong>{{ TOTAL|floatformat:2|intcomma }}</strong></td>
+        <td class="text-right"><strong>{{ VAT|floatformat:2|intcomma }}</strong></td>
+      </tr>
+    </tfoot>
+    {% endif %}
+  </table>
+</content>
+{% endblock content %}

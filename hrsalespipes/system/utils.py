@@ -56,6 +56,37 @@ class FromToViewFilterMixin:
         return context
 
 
+class MonthFilterViewMixin:
+    paginate_by = 25
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        today = datetime.date.today()
+        self.month = today.strftime('%Y-%m')
+
+    def get_queryset(self):
+        q = super().get_queryset()
+
+        month = self.request.GET.get('month', self.month)
+        year, month = month.split('-')
+
+        if month and year:
+            try:
+                q = q.filter(date__month=month, date__year=year)
+            except Exception as e:
+                pass
+
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        month = self.request.GET.get('month', self.month)
+        context['month'] = month
+        return context
+
+
 CURRENCIES_CHOICES = (
     ('AFN', 'AFN'),
     ('EUR', 'EUR'),
