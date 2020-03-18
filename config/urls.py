@@ -18,8 +18,14 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from jobs.viewsets import JobCandidateListAPIView
+
 
 urlpatterns = [
+    path(
+        'api/job-candidates/',
+        JobCandidateListAPIView.as_view(),
+        name='api_job_candidates'),
     path('contacts/', include('contacts.urls')),
     path('commissions/', include('commissions.urls')),
     path('jobs/', include('jobs.urls')),

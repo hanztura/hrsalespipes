@@ -41,6 +41,16 @@ Pipeline - Edit
             required>
           </v-autocomplete>
 
+          <v-autocomplete
+            :items="jobCandidates"
+            label="Job Candidate"
+            v-model.lazy="jobCandidate"
+            name='job_candidate'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
           <v-text-field
             outlined
             label="Recruitment Term"
@@ -136,8 +146,10 @@ Pipeline - Edit
 
 {% if debug %}
   <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+  <script src="{% static "vendor/axios.min.js" %}"></script>
 {% else %}
   <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 {% endif %}
 
 <script>
@@ -165,6 +177,8 @@ Pipeline - Edit
       ],
       jobs: [],
       job: '{{ form.job.value }}',
+      jobCandidates: [],
+      jobCandidate: Number('{{ form.job_candidate.value }}'),
       statusChoices: [],
       status: '{{ form.status.value }}',
       recruitmentTerm: {{ form.recruitment_term.value }},
@@ -189,6 +203,9 @@ Pipeline - Edit
       potentialIncome: function () {
         this.vat = this.computedVat;
         this.invoiceAmount = this.computedInvoiceAmount;
+      },
+      job: function (){
+        this.fetchJobCandidates();
       }
     },
 
@@ -212,6 +229,26 @@ Pipeline - Edit
         let data = document.getElementById(sourceId).value;
         this.$set(this, setDataVariable, JSON.parse(data));
       },
+      fetchJobCandidates: function(){
+        if (this.job){
+          let url = `/api/job-candidates/?job=${this.job}`;
+          let _this = this;
+          axios.get(url)
+            .then(function(response){
+              data = response.data;
+              // map data
+              _this.jobCandidates = _.map(data, (value) => {
+                return {
+                  'text': value.candidate.name,
+                  'value': value.id
+                }
+              })
+            })
+            .catch(function(error){
+              console.log(error);
+            });
+        }
+      }
     },
 
     beforeMount(){
@@ -219,6 +256,10 @@ Pipeline - Edit
       this.setDataChoices('dataStatusChoices', 'statusChoices');
       this.updateBreadcrumbs();
     },
+
+    mounted(){
+      this.fetchJobCandidates();
+    }
 
   });
 </script>  

@@ -48,8 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     'django_extensions',
-    # 'rest_framework',
-    # 'django_filters',
+    'guardian',
+    'rest_framework',
+    'django_filters',
 
     'system',
     'commissions',
@@ -120,6 +121,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # default
+    'guardian.backends.ObjectPermissionBackend',
+]
+
 AUTH_USER_MODEL = 'system.User'
 ADMIN_URL = os.environ.setdefault('HRSALESPIPES_ADMIN_URL', 'admin/')
 
@@ -159,7 +165,7 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.DjangoModelPermissions'
     ],
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }

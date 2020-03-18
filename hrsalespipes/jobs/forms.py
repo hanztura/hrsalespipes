@@ -5,7 +5,7 @@ from django.forms import ModelForm
 
 from .models import Job, JobCandidate, Interview
 from salespipes.forms import (
-    Pipeline, PipelineModelForm, PipelineUpdateStatus)
+    Pipeline, PipelineModelForm, PipelineUpdateStatusModelForm)
 
 
 class JobCreateModelForm(ModelForm):
@@ -74,37 +74,49 @@ class JobCandidateUpdateModelForm(ModelForm):
     def save(self, commit=True):
         instance = super().save(commit)
 
+        # create pipeline if needed
         if instance.status.should_create_pipeline and commit:
-            try:
+            if hasattr(instance, 'status'):
+                # get candidate status' related pipeline status
                 related_pipeline_status = \
                     instance.status.related_pipeline_status
-                is_upgrade = instance.status.probability > \
-                    related_pipeline_status.probability
-            except Exception as e:
+            else:
                 related_pipeline_status = None
                 is_upgrade = False
 
-            pipeline_record = Pipeline.objects.filter(job_id=instance.job_id)
-            if not pipeline_record.exists():
+            pipeline_record = Pipeline.objects.filter(
+                job_candidate_id=instance.pk)
+
+            if not pipeline_record.exists():  # if no pipeline record, create
                 data = {
-                    'job': instance.job_id,
+                    'job_candidate': instance.pk,
                     'status': related_pipeline_status.pk,
                     'base_amount': instance.salary_offered,
                     'date': datetime.date.today(),
                 }
-                pipeline = PipelineModelForm(data)
-                if pipeline.is_valid():
-                    pipeline = pipeline.save()
+                new_pipeline_form = PipelineModelForm(data)
+
+                if new_pipeline_form.is_valid():
+                    new_pipeline_form.save()
 
             # only update status if not created and if probability is upgrade
-            if pipeline_record.exists() and is_upgrade:
+            # then update pipeline status
+            if pipeline_record.exists():
+                is_upgrade = False
                 pipeline_record = pipeline_record.first()
-                pipeline = PipelineUpdateStatus(
-                    {'status': related_pipeline_status.pk},
-                    instance=pipeline_record)
+                pipeline_record_status = pipeline_record.status
 
-                if pipeline.is_valid():
-                    pipeline.save()
+                if pipeline_record_status:
+                    is_upgrade = instance.status.probability > \
+                        pipeline_record_status.probability
+
+                if is_upgrade:
+                    pipeline = PipelineUpdateStatusModelForm(
+                        {'status': related_pipeline_status.pk},
+                        instance=pipeline_record)
+
+                    if pipeline.is_valid():
+                        pipeline.save()
 
         return instance
 

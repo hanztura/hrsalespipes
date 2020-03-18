@@ -26,6 +26,7 @@ Pipeline
             <thead>
               <tr>
                 <th class="text-center">Date</th>
+                <th class="text-center">Candidate</th>
                 <th class="text-center">Job Reference Number</th>
                 <th class="text-center">Potential Income</th>
                 <th class="text-center">Status</th>
@@ -39,7 +40,8 @@ Pipeline
               {% for object in object_list %}
               <tr>
                 <td class="text-center">{{ object.date }}</td>
-                <td class="text-center">{{ object.job }}</td>
+                <td class="text-center">{{ object.job_candidate.candidate }}</td>
+                <td class="text-center">{{ object.job_candidate.job.reference_number }}</td>
                 <td class="text-right">{{ object.potential_income|intcomma }}</td>
                 <td class="text-center">{{ object.status }}</td>
                 <td class="text-center">{{ object.invoice_date }}</td>

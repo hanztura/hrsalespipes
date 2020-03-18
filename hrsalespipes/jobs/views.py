@@ -75,21 +75,23 @@ class JobDetailView(PermissionRequiredMixin, DetailView):
         q = super().get_queryset()
         q = q.prefetch_related(
             'candidates', 'candidates__candidate',
-            'candidates__status', 'candidates__associate', 'pipeline')
+            'candidates__status', 'candidates__associate',
+            'candidates__pipeline')
         return q
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        try:
-            pipeline = self.object.pipeline
-        except Exception as e:
-            pipeline = None
+        candidates = self.object.candidates.all()
+        pipelines = [candidate.pipeline for candidate in candidates
+                     if hasattr(candidate, 'pipeline')]
 
-        context['candidates'] = self.object.candidates.all()
-        context['pipeline'] = pipeline
-        context['JOB_POTENTIAL_INCOME_ALIAS'] = settings.JOB_POTENTIAL_INCOME_ALIAS
-        context['JOB_REFERENCE_NUMBER_ALIAS'] = settings.JOB_REFERENCE_NUMBER_ALIAS
+        context['candidates'] = candidates
+        context['pipelines'] = pipelines
+        context['JOB_POTENTIAL_INCOME_ALIAS'] = \
+            settings.JOB_POTENTIAL_INCOME_ALIAS
+        context['JOB_REFERENCE_NUMBER_ALIAS'] = \
+            settings.JOB_REFERENCE_NUMBER_ALIAS
         return context
 
 

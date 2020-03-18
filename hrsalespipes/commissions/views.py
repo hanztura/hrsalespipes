@@ -102,12 +102,16 @@ class CommissionListView(
 
     def get_queryset(self, **kwargs):
         q = super().get_queryset(**kwargs)
-        q = q.select_related('pipeline__job', 'employee')
+        q = q.select_related(
+            'pipeline__job_candidate__job',
+            'pipeline__job_candidate__candidate',
+            'employee')
 
         search_q = self.request.GET.get('q', '')
         if search_q:
             q = q.filter(
-                Q(pipeline__job__reference_number__icontains=search_q) | Q(employee__name__icontains=search_q))
+                Q(pipeline__job_candidate__job__reference_number__icontains=search_q) | \
+                Q(employee__name__icontains=search_q))
         return q
 
     def get_context_data(self, **kwargs):
