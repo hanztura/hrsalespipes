@@ -10,7 +10,7 @@ from system.models import Setting
 def generate_excel(heading_title, date_from, date_to, columns, model,
                    select_related, values_list, aggregate_fields,
                    total_label_position, employee_id=None,
-                   is_month_filter=False):
+                   is_month_filter=False, consultant_id=None):
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet(heading_title)
 
@@ -25,11 +25,21 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
         Setting.objects.first().company_name,
         'For the period {} to {}'.format(date_from, date_to)
     ]
+    contact_type = None
+    contact_id = None
     if employee_id:
-        employee = Employee.objects.filter(id=employee_id)
-        if employee.exists():
-            employee = employee.first()
-            heading.insert(2, employee.name)
+        contact_type = 'Employee'
+        contact_id = employee_id
+
+    if consultant_id:
+        contact_type = 'Consultant'
+        contact_id = consultant_id
+
+    if contact_type:
+        contact = Employee.objects.filter(id=contact_id)
+        if contact.exists():
+            contact = contact.first()
+            heading.insert(2, contact.name)
         else:
             heading.insert(2, '')
 
@@ -55,9 +65,13 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
             else:  # two dates
                 data = rows.filter(date__gte=date_from, date__lte=date_to)
 
-            # filter employee
-            if employee_id:
-                data = data.filter(employee_id=employee_id)  # used for aggreg.
+            # filter contact
+            if contact_id:
+                if contact_type == 'Employee':
+                    # used for aggreg.
+                    data = data.filter(employee_id=contact_id)
+                else:  # consultant
+                    data = data.filter(job_candidate__candidate__candidate_owner_id=contact_id)
 
             rows = data.values_list(*values_list)  # final value of rows
         except Exception as e:

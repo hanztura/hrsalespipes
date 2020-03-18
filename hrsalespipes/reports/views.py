@@ -39,12 +39,20 @@ class MonthlyInvoicesSummaryListView(
     TITLE = 'Monthly Invoices Summary'
 
     def get_queryset(self):
-        q = super().get_queryset()
+        q = super().get_queryset().filter(invoice_amount__gt=0)
         q = q.select_related(
             'job_candidate__job__client',
-            'job_candidate__candidate')
+            'job_candidate__candidate__candidate_owner')
 
-        q = q.filter(invoice_amount__gt=0)
+        # filter consultant (optional)
+        consultant_pk = self.request.GET.get('consultant', '')  # employee id
+        self.consultant = None
+        if consultant_pk:
+            consultant = Employee.objects.filter(id=consultant_pk)
+            if consultant.exists():
+                self.consultant = consultant.first()
+                q = q.filter(
+                    job_candidate__candidate__candidate_owner=self.consultant)
 
         return q
 
@@ -53,6 +61,13 @@ class MonthlyInvoicesSummaryListView(
 
         q = context['object_list']
         sums = q.aggregate(Sum('invoice_amount'), Sum('vat'))
+
+        context['consultant'] = self.consultant
+        context['consultant_pk'] = None
+        if self.consultant:
+            context['consultant_pk'] = self.consultant.pk
+
+        context['consultants'] = get_objects_as_choices(Employee)
 
         context['TITLE'] = self.TITLE
         context['TOTAL'] = sums['invoice_amount__sum']
@@ -97,6 +112,7 @@ class MonthlyInvoicesSummaryExcelView(
             'attachment; filename="{}.xls"'.format(self.TITLE)
 
         month = request.GET.get('month', self.month)  # 'YYYY-MM'
+        consultant_pk = self.request.GET.get('consultant', '')
 
         columns = [
             'Date',
@@ -104,6 +120,7 @@ class MonthlyInvoicesSummaryExcelView(
             'Job Reference Number',
             'Client',
             'Industry',
+            'Consultant',
             'Invoice Amount',
             'VAT',
         ]
@@ -113,21 +130,30 @@ class MonthlyInvoicesSummaryExcelView(
             'job_candidate__job__reference_number',
             'job_candidate__job__client__name',
             'job_candidate__job__client__industry',
+            'job_candidate__candidate__candidate_owner__name',
             'invoice_amount',
             'vat',
         ]
 
+        invoice_amount_index = 6
         wb = generate_excel(
             self.TITLE,
             month,
             month,
             columns,
             Pipeline,
-            ('job_candidate__job__client', 'job_candidate__candidate'),
+            (
+                'job_candidate__job__client',
+                'job_candidate__candidate__candidate_owner'
+            ),
             values_list,
-            ((5, 'invoice_amount'), (6, 'vat')),
-            4,
-            is_month_filter=True
+            (
+                (invoice_amount_index, 'invoice_amount'),
+                (invoice_amount_index + 1, 'vat')
+            ),  # aggregate fields
+            invoice_amount_index - 1,  # totals label
+            is_month_filter=True,
+            consultant_id=consultant_pk
         )
 
         wb.save(response)

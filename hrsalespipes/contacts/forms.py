@@ -17,6 +17,11 @@ class ContactCreateModelForm(FormCleanContactNumber, ModelForm):
             'candidate_owner',
         ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['candidate_owner'].required = True
+
 
 class CandidateUpdateModelForm(ContactCreateModelForm):
 
