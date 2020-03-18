@@ -1,0 +1,120 @@
+{% extends "reports/base.html" %}
+{% load humanize %}
+
+{% block title %}
+Commissions Earned Summary - Reports
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>Commissions Earned Summary</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12">
+        {% include "_includes/filter_date_from_and_to.html" %}
+      </v-col>
+
+      <v-col cols='12' class="text-right my-0 py-0">
+        <v-btn
+          icon
+          right
+          title="Export as PDF"
+          href="{% url 'reports:pdf_commissions_earned_summary' %}?from={{ from }}&to={{ to }}">
+          <v-icon class="red--text">fas fa-file-pdf</v-icon>
+        </v-btn>
+        <v-btn
+          icon
+          right
+          title="Export as Excel"
+          href="{% url 'reports:excel_commissions_earned_summary' %}?from={{ from }}&to={{ to }}">
+          <v-icon class="green--text">fas fa-file-excel</v-icon>
+        </v-btn>
+      </v-col>
+
+      <v-col cols="12" class="text-center">
+        <v-simple-table
+          fixed-header>
+          <table>
+            <thead>
+              <tr>
+                <th class="text-center">Date</th>
+                <th class="text-center">Reference Number</th>
+                <th class="text-center">Employee</th>
+                <th class="text-center">Role Type</th>
+                <th class="text-center">Paid?</th>
+                <th class="text-center">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if object_list %}
+                {% for object in object_list %}
+                <tr>
+                  <td><a href="{% url 'commissions:detail' object.pk %}" title="view Commission Detail">{{ object.date }}</a></td>
+                  <td>{{ object.pipeline.job_candidate.job.reference_number }}</td>
+                  <td>{{ object.employee.name }}</td>
+                  <td>{{ object.rate_role_type }}</td>
+                  <td>
+                    {% if object.is_paid %}
+                    <v-icon class="green--text" small>
+                      fas fa-check
+                    </v-icon>
+                    {% else %}
+                    <v-icon small>
+                      fas fa-times
+                    </v-icon>
+                    {% endif %}
+                  </td>
+                  <td class="text-right">{{ object.amount|intcomma }}</td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5">No data available.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+
+            {% if object_list %}
+            <tfoot>
+                <tr>
+                  <td class="text-right" colspan="5">TOTAL AMOUNT</td>
+                  <td class="text-right"><strong>{{ TOTAL|floatformat:2|intcomma }}</strong></td>
+                </tr>
+            </tfoot>
+            {% endif %}
+          </table>
+        </v-simple-table>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Reports',
+          href: '{% url "reports:index" %}'
+        },
+        {
+          text: 'Commissions Earned Summary', 
+        },
+      ],
+    }),
+
+    mounted(){
+      this.updateBreadcrumbs();
+    },
+
+  });
+</script>  
+{% endblock script %}

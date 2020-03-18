@@ -1,10 +1,9 @@
 import calendar
 import datetime
 import math
-import uuid
 import xlwt
 
-from django.db.models import Prefetch, Sum
+from django.db.models import Sum
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.views.generic import TemplateView, ListView
@@ -13,6 +12,7 @@ from django.views.generic.base import View
 from django_weasyprint import WeasyTemplateResponseMixin
 
 from .utils import generate_excel
+from commissions.models import Commission
 from jobs.models import Job, JobCandidate
 from salespipes.models import Pipeline
 from system.utils import (
@@ -275,6 +275,99 @@ class JobsSummaryExcelView(
             ('board', 'client'),
             values_list,
             ((6, 'potential_income'), ),
+            5
+        )
+
+        wb.save(response)
+        return response
+
+
+class CommissionsEarnedSummaryListView(
+        FromToViewFilterMixin,
+        PermissionRequiredWithCustomMessageMixin,
+        ListView):
+    model = Commission
+    template_name = 'reports/commissions_earned_summary.html'
+    permission_required = 'commissions.view_report_commissions_earned_summary'
+    paginate_by = 0
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.select_related(
+            'pipeline__job_candidate__job',
+            'employee')
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        q = context['object_list']
+        sums = q.aggregate(Sum('amount'))
+        context['TOTAL'] = sums['amount__sum']
+        return context
+
+
+class CommissionsEarnedSummaryPDFView(
+        WeasyTemplateResponseMixin,
+        CommissionsEarnedSummaryListView):
+    template_name = 'reports/pdf/commissions_earned_summary.html'
+    pdf_attachment = True
+    pdf_filename = 'Commissions Earned Summary.pdf'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['COMPANY'] = Setting.objects.first().company_name
+        return context
+
+
+class CommissionsEarnedSummaryExcelView(
+        PermissionRequiredWithCustomMessageMixin,
+        View):
+    permission_required = 'commissions.view_report_commissions_earned_summary'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        today = datetime.date.today()
+        last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
+        self.month_first_day = str(today.replace(day=1))
+        self.month_last_day = str(today.replace(day=last_day_of_the_month))
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = \
+            'attachment; filename="Commissions Earned Summary.xls"'
+
+        date_from = request.GET.get('from', self.month_first_day)
+        date_to = request.GET.get('to', self.month_last_day)
+
+        columns = [
+            'Date',
+            'Reference Number',
+            'Employee',
+            'Role Type',
+            'Paid?',
+            'Amount',
+        ]
+        values_list = [
+            'date',
+            'pipeline__job_candidate__job__reference_number',
+            'employee__name',
+            'rate_role_type',
+            'is_paid',
+            'amount',
+        ]
+
+        wb = generate_excel(
+            'Commissions Earned Summary',
+            date_from,
+            date_to,
+            columns,
+            Commission,
+            ('pipeline__job_candidate__job', 'employee'),
+            values_list,
+            ((4, 'amount'), ),
             5
         )
 
