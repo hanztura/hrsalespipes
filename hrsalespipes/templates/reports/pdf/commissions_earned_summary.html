@@ -1,0 +1,51 @@
+{% extends "reports/pdf/base.html" %}
+{% load humanize %}
+
+{% block title %}<title>Commissions Earned Summary Download PDF - Reports</title>{% endblock title %}
+
+{% block content %}
+<content>
+  <h1>Commissions Earned Summary</h1>
+  <p class="my-0 py-0"><strong>{{ COMPANY }}</strong></p>
+  <p class="my-0 py-0">For the period {{ from }} to {{ to }}</p>
+  <table>
+    <thead>
+      <tr>
+        <th class="text-center">Date</th>
+        <th class="text-center">Reference Number</th>
+        <th class="text-center">Employee</th>
+        <th class="text-center">Role Type</th>
+        <th class="text-center">Paid?</th>
+        <th class="text-center">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if object_list %}
+        {% for object in object_list %}
+        <tr>
+          <td class="text-center"><a href="{% url 'commissions:detail' object.pk %}" title="view Commission Detail">{{ object.date }}</a></td>
+          <td class="text-center">{{ object.pipeline.job_candidate.job.reference_number }}</td>
+          <td class="text-center">{{ object.employee.name }}</td>
+          <td class="text-center">{{ object.rate_role_type }}</td>
+          <td class="text-center">{{ object.is_paid|yesno}}</td>
+          <td class="text-right">{{ object.amount|intcomma }}</td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="5">No data available.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+
+    {% if object_list %}
+    <tfoot>
+        <tr>
+          <td class="text-right" colspan="5">TOTAL AMOUNT</td>
+          <td class="text-right"><strong>{{ TOTAL|floatformat:2|intcomma }}</strong></td>
+        </tr>
+    </tfoot>
+    {% endif %}
+  </table>
+</content>
+{% endblock content %}

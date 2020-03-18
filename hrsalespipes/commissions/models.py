@@ -94,6 +94,17 @@ class Commission(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     is_paid = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = (
+            '-date',
+            '-pipeline__job_candidate__job__reference_number',
+            'rate_role_type')
+        permissions = [
+            (
+                'view_report_commissions_earned_summary',
+                'Can view report Commissions Earned Summary'
+            )]
+
     @property
     def edit_href(self):
         return reverse('commissions:edit', args=[str(self.pk), ])
