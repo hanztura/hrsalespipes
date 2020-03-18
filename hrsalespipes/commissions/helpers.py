@@ -16,15 +16,11 @@ def create_commission(pipeline):
         if rate.role_type == 'one':
             # lowest level / associate
             commission_base_amount = pipeline.invoice_amount
-            employee = pipeline.job.candidates.all()
-            employee = employee.filter(status__probability__gte=1).first()
-            employee = employee.associate
+            employee = pipeline.job_candidate.associate
 
         elif rate.role_type == 'two':
             commission_base_amount = pipeline.potential_income
-            employee = pipeline.job.candidates.all()
-            employee = employee.filter(status__probability__gte=1).first()
-            employee = employee.candidate.candidate_owner
+            employee = pipeline.job_candidate.candidate.candidate_owner
 
         elif rate.role_type == 'three':
             commission_base_amount = pipeline.invoice_amount

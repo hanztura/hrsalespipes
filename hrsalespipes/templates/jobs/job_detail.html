@@ -1,4 +1,5 @@
 {% extends "jobs/base.html" %}
+{% load humanize %}
 
 {% block title %}
 Job Detail - {{ object.reference_number }}
@@ -93,12 +94,7 @@ Job Detail - {{ object.reference_number }}
                         <td>{{ candidate.actual_income|default_if_none:0 }}</td>
                         <td>{{ candidate.associate.name }}</td>
                         <td>
-                          <v-btn
-                            href="{% url 'jobs:candidates_detail' object.pk candidate.pk %}"
-                            text>view</v-btn>
-                          <v-btn
-                            href="{% url 'jobs:candidates_edit' object.pk candidate.pk %}"
-                            text>edit</v-btn>
+                          {% include "_includes/list_action_buttons.html" with edit_href=candidate.edit_href view_href=candidate.view_href %}
                         </td>
                       </tr>
                       {% endfor %}
@@ -118,68 +114,53 @@ Job Detail - {{ object.reference_number }}
 
             </v-tab-item>
 
-            <v-tab-item id="Pipeline">
+            <v-tab-item id="Pipelines">
 
-              {% if pipeline %}
                 <v-simple-table>
                   <table>
+                    <thead>
+                      <tr>
+                        <th class="text-center">Date</th>
+                        <th class="text-center">Candidate</th>
+                        <th class="text-center">Recruitment Term</th>
+                        <th class="text-center">Recruitment Rate</th>
+                        <th class="text-center">Base Amount</th>
+                        <th class="text-center">Potential Income</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Invoice Date</th>
+                        <th class="text-center">Invoice Amount</th>
+                        <th class="text-center">VAT</th>
+                        <th class="text-center">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
                     <tbody>
+                      {% for pipeline in pipelines %}
                       <tr>
-                        <th>Date:</th>
                         <td>{{ pipeline.date }}</td>
-                      </tr>
-                      <tr>
-                        <th>Invoice Date:</th>
-                        <td>{{ pipeline.invoice_date }}</td>
-                      </tr>
-                      <tr>
-                        <th>Recruitment Term:</th>
-                        <td>{{ pipeline.recruitment_term }}</td>
-                      </tr>
-                      <tr>
-                        <th>Recruitment Rate:</th>
-                        <td>{{ pipeline.recruitment_rate }}</td>
-                      </tr>
-                      <tr>
-                        <th>Base Amount:</th>
-                        <td>{{ pipeline.base_amount }}</td>
-                      </tr>
-                      <tr>
-                        <th>Potential Income:</th>
-                        <td>{{ pipeline.potential_income }}</td>
-                      </tr>
-                      <tr>
-                        <th>Status:</th>
+                        <td>{{ pipeline.job_candidate.candidate.name }}</td>
                         <td>{{ pipeline.status }}</td>
+                        <td>{{ pipeline.recruitment_term }}</td>
+                        <td>{{ pipeline.recruitment_rate }}</td>
+                        <td>{{ pipeline.base_amount|intcomma }}</td>
+                        <td>{{ pipeline.potential_income|intcomma }}</td>
+                        <td>{{ pipeline.invoice_date }}</td>
+                        <td>{{ pipeline.invoice_amount|intcomma }}</td>
+                        <td>{{ pipeline.vat|intcomma }}</td>
+                        <td>
+                          {% include "_includes/list_action_buttons.html" with edit_href=pipeline.edit_href view_href=pipeline.view_href %}
+                        </td>
                       </tr>
+                      {% endfor %}
+
+                      {% if not pipelines %}
                       <tr>
-                        <th>Invoice Amount:</th>
-                        <td>{{ pipeline.invoice_amount }}</td>
+                        <td colspan="9"><p>No pipeline.</p></td>
                       </tr>
-                      <tr>
-                        <th>VAT:</th>
-                        <td>{{ pipeline.vat }}</td>
-                      </tr>
+                      {% endif %}
                     </tbody>
                   </table>
                 </v-simple-table>
-
-                <v-btn
-                  class="my-2"
-                  block
-                  color="primary"
-                  outlined
-                  href="{% url 'salespipes:detail' pipeline.pk %}">View Pipeline Detail</v-btn>
-
-                <v-btn
-                  class="my-2"
-                  block
-                  color="primary"
-                  href="{% url 'salespipes:edit' pipeline.pk %}">Edit Pipeline</v-btn>
-              {% else %}
-                <p>No pipeline.</p>
-              {% endif %}
-
             </v-tab-item>
           </v-tabs-items>
         </v-tabs>
@@ -215,7 +196,7 @@ Job Detail - {{ object.reference_number }}
       tabs: [
         'Details',
         'Candidates',
-        'Pipeline'
+        'Pipelines'
       ],
     }),
 

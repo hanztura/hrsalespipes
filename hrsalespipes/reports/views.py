@@ -36,12 +36,11 @@ class PipelineSummaryListView(
     def get_queryset(self):
         q = super().get_queryset()
 
-        job__candidates_queryset = JobCandidate.objects.select_related(
-            'status', 'candidate').filter(status__probability__gte=1)
-        q = q.select_related('status', 'job')
-        q = q.prefetch_related(
-            'job__client',
-            Prefetch('job__candidates', queryset=job__candidates_queryset))
+        q = q.select_related(
+            'status',
+            'job',
+            'job_candidate__candidate',
+            'job_candidate__job__client')
 
         return q
 
@@ -62,7 +61,7 @@ class PipelineSummaryPDFView(
         PipelineSummaryListView):
     template_name = 'reports/pdf/pipeline_summary.html'
     pdf_attachment = True
-    pdf_filename = 'pipeline-summary.pdf'
+    pdf_filename = 'Pipeline Summary.pdf'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -87,7 +86,7 @@ class PipelineSummaryExcelView(
     def get(self, request, *args, **kwargs):
         response = HttpResponse(content_type='application/ms-excel')
         response['Content-Disposition'] = 'attachment; \
-            filename="pipeline-summary.xls"'
+            filename="Pipeline Summary.xls"'
 
         date_from = request.GET.get('from', self.month_first_day)
         date_to = request.GET.get('to', self.month_last_day)
@@ -132,14 +131,10 @@ class PipelineSummaryExcelView(
         # Sheet body, remaining rows
         font_style = xlwt.XFStyle()
 
-        job__candidates_queryset = JobCandidate.objects.select_related(
-            'status', 'candidate').filter(status__probability__gte=1)
         rows = Pipeline.objects.all()
 
-        rows = rows.select_related('job', 'status')
-        rows = rows.prefetch_related(
-            'job__client',
-            Prefetch('job__candidates', queryset=job__candidates_queryset))
+        rows = rows.select_related(
+            'status', 'job_candidate__candidate', 'job_candidate__job__client')
 
         if date_from and date_to:
             try:
@@ -150,17 +145,17 @@ class PipelineSummaryExcelView(
 
         for row in rows:
             row_num += 1
-            job_candidates = row.job.candidates
-            if job_candidates:
-                candidate = job_candidates.first().candidate
+            job_candidate = row.job_candidate
+            if job_candidate:
+                candidate = job_candidate.candidate
                 candidate_name = candidate.name
                 candidate_code = candidate.code
             else:
                 candidate_name = ''
                 candidate_code = ''
 
-            job = row.job
-            client = row.job.client
+            job = row.job_candidate.job
+            client = job.client
 
             values = [
                 row.date,
@@ -168,8 +163,8 @@ class PipelineSummaryExcelView(
                 job.reference_number,
                 job.date,
                 job.position,
-                candidate_name,
                 candidate_code,
+                candidate_name,
                 client.name,
                 client.industry,
                 row.invoice_date,
@@ -291,27 +286,28 @@ class JobToPipelineAnalysisListView(
         FromToViewFilterMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
-    model = Job
+    model = JobCandidate
     template_name = 'reports/job_to_pipeline_analysis.html'
     permission_required = 'jobs.view_report_job_to_pipeline_analysis'
     paginate_by = 0
 
     def get_queryset(self):
         q = super().get_queryset()
-        q = q.select_related('board', 'client').prefetch_related('pipeline')
+        q = q.select_related('job', 'candidate').prefetch_related('pipeline')
+        q = q.filter(pipeline__isnull=False)
 
         # compute job to pipeline days
         num_of_days_data = []
-        for job in q:
-            job_date = job.date
-            if hasattr(job, 'pipeline'):
-                pipeline_date = job.pipeline.date
+        for job_candidate in q:
+            registration_date = job_candidate.registration_date
+            if hasattr(job_candidate, 'pipeline'):
+                pipeline_date = job_candidate.pipeline.date
             else:
                 pipeline_date = datetime.date.today()
 
-            num_of_days = pipeline_date - job_date
+            num_of_days = pipeline_date - registration_date
             num_of_days = num_of_days.days
-            job.num_of_days = num_of_days
+            job_candidate.num_of_days = num_of_days
 
             num_of_days_data.append(num_of_days)
 
@@ -366,6 +362,7 @@ class JobToPipelineAnalysisExcelView(
         date_to = request.GET.get('to', self.month_last_day)
 
         columns = [
+            'Candidate',
             'Reference Number',
             'Client',
             'Position',
@@ -400,25 +397,28 @@ class JobToPipelineAnalysisExcelView(
         # Sheet body, remaining rows
         font_style = xlwt.XFStyle()
 
-        rows = Job.objects.all().select_related('board', 'client')
-        rows = rows.prefetch_related('pipeline')
+        rows = JobCandidate.objects.all().select_related('job', 'candidate')
+        rows = rows.prefetch_related('pipeline', 'job__client')
+        rows = rows.filter(pipeline__isnull=False)
 
         if date_from and date_to:
             try:
-                rows = rows.filter(date__gte=date_from, date__lte=date_to)
+                rows = rows.filter(
+                    registration_date__gte=date_from,
+                    registration_date__lte=date_to)
 
                 # compute job to pipeline days
                 num_of_days_data = []
-                for job in rows:
-                    job_date = job.date
-                    if hasattr(job, 'pipeline'):
-                        pipeline_date = job.pipeline.date
+                for job_candidate in rows:
+                    job_date = job_candidate.registration_date
+                    if hasattr(job_candidate, 'pipeline'):
+                        pipeline_date = job_candidate.pipeline.date
                     else:
                         pipeline_date = datetime.date.today()
 
                     num_of_days = pipeline_date - job_date
                     num_of_days = num_of_days.days
-                    job.num_of_days = num_of_days
+                    job_candidate.num_of_days = num_of_days
 
                     num_of_days_data.append(num_of_days)
 
@@ -427,21 +427,22 @@ class JobToPipelineAnalysisExcelView(
                 MAX = max(num_of_days_data)
                 MIN = min(num_of_days_data)
             except Exception as e:
-                rows = Job.objects.none()
+                rows = JobCandidate.objects.none()
 
         # right data
         for row in rows:
             row_num += 1
-            if hasattr(job, 'pipeline'):
-                pipeline_date = job.pipeline.date
+            if hasattr(row, 'pipeline'):
+                pipeline_date = row.pipeline.date
             else:
                 pipeline_date = datetime.date.today()
 
             values = [
-                row.reference_number,
-                row.client.name,
-                row.position,
-                row.date,
+                row.candidate.name,
+                row.job.reference_number,
+                row.job.client.name,
+                row.job.position,
+                row.registration_date,
                 pipeline_date,
                 row.num_of_days
             ]
@@ -449,7 +450,7 @@ class JobToPipelineAnalysisExcelView(
                 ws.write(row_num, i, value, font_style)
 
         # total row
-        footer_label_index = 4
+        footer_label_index = 5
         footer = (('AVERAGE', AVERAGE), ('MAX', MAX), ('MIN', MIN))
         for label, value in footer:
             row_num += 1

@@ -1,17 +1,18 @@
 from django.forms import ModelForm
 
 from .models import Pipeline
-from commissions.helpers import create_commission
+from .utils import CreateCommissionFormMixin
 from system.models import Setting
 
 
-class PipelineModelForm(ModelForm):
+class PipelineModelForm(CreateCommissionFormMixin, ModelForm):
 
     class Meta:
         model = Pipeline
         fields = [
             'date',
             'job',
+            'job_candidate',
             'recruitment_term',
             'recruitment_rate',
             'base_amount',
@@ -22,6 +23,11 @@ class PipelineModelForm(ModelForm):
             'invoice_amount',
             'vat',
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['job_candidate'].required = True
 
     def clean_recruitment_term(self):
         default = 1
@@ -68,15 +74,6 @@ class PipelineModelForm(ModelForm):
 
         return cleaned_data
 
-    def save(self, commit=True):
-        instance = super().save(commit)
-
-        probability = instance.status.probability
-        if commit and probability >= 1:
-            create_commission(instance)
-
-        return instance
-
 
 class PipelineCreateModelForm(ModelForm):
 
@@ -84,22 +81,19 @@ class PipelineCreateModelForm(ModelForm):
         model = Pipeline
         fields = [
             'job',
+            'job_candidate',
         ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-class PipelineUpdateStatus(ModelForm):
+        self.fields['job_candidate'].required = True
+
+
+class PipelineUpdateStatusModelForm(CreateCommissionFormMixin, ModelForm):
 
     class Meta:
         model = Pipeline
         fields = [
             'status'
         ]
-
-    def save(self, commit=True):
-        instance = super().save(commit)
-
-        probability = instance.status.probability
-        if commit and probability >= 1:
-            create_commission(instance)
-
-        return instance

@@ -115,6 +115,20 @@ class JobCandidate(TimeStampedModel):
         return reverse('jobs:detail',
                        args=[str(self.job_id)])
 
+    @property
+    def edit_href(self):
+        return reverse(
+            'jobs:candidates_edit',
+            args=[str(self.job_id),
+                  str(self.pk)])
+
+    @property
+    def view_href(self):
+        return reverse(
+            'jobs:candidates_detail',
+            args=[str(self.job_id),
+                  str(self.pk)])
+
 
 class Interview(models.Model):
     STATUS_CHOICES = (

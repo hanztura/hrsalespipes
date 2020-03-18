@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from django_extensions.db.models import TimeStampedModel
 
-from jobs.models import Job, Status as JobStatus
+from jobs.models import Job, JobCandidate, Status as JobStatus
 
 
 class Status(models.Model):
@@ -43,10 +43,17 @@ class Pipeline(TimeStampedModel):
     date = models.DateField(
         verbose_name=settings.PIPELINE_DATE_ALIAS,
         default=datetime.date.today)
-    job = models.OneToOneField(
+    job = models.OneToOneField(  # DEPRECIATED!!!
         Job,
         on_delete=models.PROTECT,
-        related_name='pipeline')
+        related_name='pipeline',
+        null=True,
+        blank=True)
+    job_candidate = models.OneToOneField(
+        JobCandidate,
+        on_delete=models.PROTECT,
+        related_name='pipeline',
+        null=True)
     recruitment_term = models.DecimalField(
         max_digits=15, decimal_places=5, default=1.0, blank=True)
     recruitment_rate = models.DecimalField(

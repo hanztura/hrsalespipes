@@ -55,21 +55,21 @@ Pipeline Summary - Reports
                     <p>Date: <a href="{% url 'salespipes:detail' object.id %}" title="view pipeline detail">{{ object.date }}</a></p>
                   </td>
                   <td class="text-left">
-                    <p>Reference Number: <a href="{% url 'jobs:detail' object.job_id %}" title="view job detail">{{ object.job.reference_number }}</a></p>
-                    <p>Date: {{ object.job.date }}</p>
-                    <p>Position: {{ object.job.position }}</p>
+                    <p>Reference Number: <a href="{% url 'jobs:detail' object.job_id %}" title="view job detail">{{ object.job_candidate.job.reference_number }}</a></p>
+                    <p>Date: {{ object.job_candidate.job.date }}</p>
+                    <p>Position: {{ object.job_candidate.job.position }}</p>
                   </td>
                   <td class="text-left">
-                    {% if object.job.candidates %}
-                      <p><a href="{% url 'contacts:candidates_detail' object.job.candidates.first.candidate_id %}" title="view candidate detail">{{ object.job.candidates.first.candidate.name }}</a></p>
-                      <p>Code: {{ object.job.candidates.first.candidate.code }}</p>
+                    {% if object.job_candidate %}
+                      <p><a href="{% url 'contacts:candidates_detail' object.job_candidate.candidate_id %}" title="view candidate detail">{{ object.job_candidate.candidate.name }}</a></p>
+                      <p>Code: {{ object.job_candidate.candidate.code }}</p>
                     {% else %}
                       <p>None</p>
                     {% endif %}
                   </td>
                   <td class="text-left">
-                    <p><a href="{% url 'contacts:clients_detail' object.job.client_id %}" title="view client detail">{{ object.job.client.name }}</a></p>
-                    <p>Industry: {{ object.job.client.industry }}</p>
+                    <p><a href="{% url 'contacts:clients_detail' object.job_candidate.job.client_id %}" title="view client detail">{{ object.job_candidate.job.client.name }}</a></p>
+                    <p>Industry: {{ object.job_candidate.job.client.industry }}</p>
                   </td>
                   <td class="text-left">
                     <p>Date: {{ object.invoice_date }}</p>
