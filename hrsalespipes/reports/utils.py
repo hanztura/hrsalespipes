@@ -3,12 +3,13 @@ import xlwt
 
 from django.db.models import Sum
 
+from contacts.models import Employee
 from system.models import Setting
 
 
 def generate_excel(heading_title, date_from, date_to, columns, model,
                    select_related, values_list, aggregate_fields,
-                   total_label_position):
+                   total_label_position, employee_id=None):
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet(heading_title)
 
@@ -23,6 +24,14 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
         Setting.objects.first().company_name,
         'For the period {} to {}'.format(date_from, date_to)
     ]
+    if employee_id:
+        employee = Employee.objects.filter(id=employee_id)
+        if employee.exists():
+            employee = employee.first()
+            heading.insert(2, employee.name)
+        else:
+            heading.insert(2, '')
+
     for head in heading:
         ws.write(row_num, 0, head, font_style)
         row_num += 1
@@ -39,6 +48,8 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
     if date_from and date_to:
         try:
             data = rows.filter(date__gte=date_from, date__lte=date_to)
+            if employee_id:
+                data = data.filter(employee_id=employee_id)
             rows = data.values_list(*values_list)
         except Exception as e:
             data = None

@@ -62,6 +62,5 @@ urlpatterns = [
         CommissionsEarnedSummaryListView.as_view(),
         name='commissions_earned_summary'),
 
-
     path('', IndexView.as_view(), name='index'),
 ]
