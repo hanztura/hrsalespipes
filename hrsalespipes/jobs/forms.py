@@ -68,7 +68,13 @@ class JobCandidateUpdateModelForm(ModelForm):
             'salary_offered',
             'tentative_date_of_joining',
             'associate',
+            'consultant',
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['consultant'].required = True
 
     @transaction.atomic
     def save(self, commit=True):
