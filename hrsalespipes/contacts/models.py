@@ -13,7 +13,7 @@ class Client(ContactModel):
     meeting_arranged = models.TextField(blank=True)
     agreement_terms = models.CharField(max_length=200, blank=True)
     agreement_fee = models.DecimalField(
-        max_digits=2, decimal_places=2, blank=True, null=True)
+        max_digits=10, decimal_places=5, blank=True, null=True)
     refund_scheme = models.TextField(blank=True)
     validity = models.DateField(null=True, blank=True)
 
