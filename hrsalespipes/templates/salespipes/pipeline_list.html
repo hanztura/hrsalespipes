@@ -30,6 +30,7 @@ Pipeline
                 <th class="text-center">Job Reference Number</th>
                 <th class="text-center">Potential Income</th>
                 <th class="text-center">Status</th>
+                <th class="text-center">Succesful Date</th>
                 <th class="text-center">Invoice Date</th>
                 <th class="text-center">Invoice Amount</th>
                 <th class="text-center">VAT</th>
@@ -44,6 +45,7 @@ Pipeline
                 <td class="text-center">{{ object.job_candidate.job.reference_number }}</td>
                 <td class="text-right">{{ object.potential_income|intcomma }}</td>
                 <td class="text-center">{{ object.status }}</td>
+                <td class="text-center">{{ object.successful_date }}</td>
                 <td class="text-center">{{ object.invoice_date }}</td>
                 <td class="text-right">{{ object.invoice_amount|intcomma }}</td>
                 <td class="text-right">{{ object.vat|intcomma }}</td>
