@@ -5,14 +5,14 @@
 <head>
   <title>{% block title %}{% endblock title %} | HRSalesPipes</title>
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
   {% if debug %}
     <link rel="stylesheet" type="text/css" href="{% static "vendor/materialdesignicons.min.css" %}">
-    <link rel="stylesheet" type="text/css" href="{% static "vendor/vuetify/vuetify.min.css" %}">
   {% else %}
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    {# <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet"> #}
   {% endif %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendor/vuetify/vuetify.min.css" %}">
 
   {% block headblock %}{% endblock headblock %}
 
@@ -71,7 +71,7 @@
 
       <v-app-bar
         app
-        color="indigo"
+        color="primary"
         dark>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
@@ -149,10 +149,10 @@
         {% block content %}{% endblock content %}
       </v-content>
       <v-footer
-        color="indigo"
+        color="primary"
         app
-      >
-        <span class="white--text">HRSalesPipes &copy; 2020 X of Y Business and IT Services. All rights reserved.</span>
+        dark>
+        <span>HRSalesPipes &copy; 2020 X of Y Business and IT Services. All rights reserved.</span>
       </v-footer>
     </v-app>
   </div>
@@ -171,19 +171,23 @@
           action: 'fas fa-home',
           title: 'Dashboard',
           href: '{% url "dashboard:index" %}',
+          iconColor: 'primary--text',
         },
         {
           action: 'fas fa-address-book',
           title: 'Contacts',
           items: [
             { title: 'Candidates',
-              href: '{% url "contacts:candidates_list" %}'
+              href: '{% url "contacts:candidates_list" %}',
+              iconColor: 'primary--text',
             },
             { title: 'Clients',
-              href: '{% url "contacts:clients_list" %}'
+              href: '{% url "contacts:clients_list" %}',
+              iconColor: 'primary--text',
             },
             { title: 'Suppliers',
-              href: '{% url "contacts:suppliers_list" %}'
+              href: '{% url "contacts:suppliers_list" %}',
+              iconColor: 'primary--text',
             },
           ],
         },
@@ -191,16 +195,19 @@
           action: 'fas fa-suitcase',
           title: 'Jobs',
           href: '{% url "jobs:list" %}',
+          iconColor: 'primary--text',
         },
         {
           action: 'fas fa-filter',
           title: 'Pipeline',
           href: '{% url "salespipes:list" %}',
+          iconColor: 'primary--text',
         },
         {
           action: 'fas fa-file',
           title: 'Reports',
           href: '{% url "reports:index" %}',
+          iconColor: 'primary--text',
         },
       ];
 
