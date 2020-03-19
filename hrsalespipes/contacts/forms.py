@@ -14,13 +14,7 @@ class ContactCreateModelForm(FormCleanContactNumber, ModelForm):
             'whatsapp_link',
             'email_address',
             'location',
-            'candidate_owner',
         ]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields['candidate_owner'].required = True
 
 
 class CandidateUpdateModelForm(ContactCreateModelForm):
@@ -66,7 +60,7 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
         self.fields['candidate_owner'].required = True
 
 
-class ClientUpdateModelForm(ContactCreateModelForm):
+class ClientUpdateModelForm(FormCleanContactNumber, ModelForm):
 
     class Meta:
         model = Client
@@ -89,6 +83,11 @@ class ClientUpdateModelForm(ContactCreateModelForm):
             'validity',
         ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['industry'].required = True
+
 
 class ClientCreateModelForm(FormCleanContactNumber, ModelForm):
 
@@ -100,7 +99,13 @@ class ClientCreateModelForm(FormCleanContactNumber, ModelForm):
             'whatsapp_link',
             'email_address',
             'location',
+            'industry'
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['industry'].required = True
 
 
 class SupplierModelForm(FormCleanContactNumber, ModelForm):
