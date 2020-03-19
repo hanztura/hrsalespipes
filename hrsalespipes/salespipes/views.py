@@ -90,7 +90,9 @@ class PipelineDetailView(PermissionRequiredMixin, DetailView):
         q = q.select_related(
             'job_candidate__status',
             'job_candidate__job',
-            'job_candidate__candidate')
+            'job_candidate__candidate',
+            'job_candidate__consultant',
+            'job_candidate__associate')
 
         return q
 
