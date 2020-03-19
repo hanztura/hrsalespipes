@@ -19,6 +19,7 @@ class Status(models.Model):
         related_name='related_pipeline_status',
         verbose_name='equivalent job status',
         null=True)
+    is_closed = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return self.name
@@ -47,6 +48,7 @@ class Pipeline(TimeStampedModel):
     date = models.DateField(
         verbose_name=settings.PIPELINE_DATE_ALIAS,
         default=datetime.date.today)
+    successful_date = models.DateField(null=True, blank=True)
     job = models.OneToOneField(  # DEPRECIATED!!!
         Job,
         on_delete=models.PROTECT,

@@ -1,3 +1,4 @@
+import datetime
 from django.forms import ModelForm
 
 from .models import Pipeline
@@ -73,6 +74,20 @@ class PipelineModelForm(CreateCommissionFormMixin, ModelForm):
         cleaned_data['invoice_amount'] = invoice_amount
 
         return cleaned_data
+
+    def save(self, commit=True):
+        # update success date if status has changed
+        status = self.fields['status']
+        initial = self.initial['status']
+        data = self.cleaned_data['status'].pk
+        if status.has_changed(initial, data):
+            if self.instance.status.probability >= 1:
+                today = datetime.date.today()
+                self.instance.successful_date = today
+            else:
+                self.instance.successful_date = None
+
+        return super().save(commit)
 
 
 class PipelineCreateModelForm(ModelForm):

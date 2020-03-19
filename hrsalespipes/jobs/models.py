@@ -107,6 +107,11 @@ class JobCandidate(TimeStampedModel):
         Employee,
         on_delete=models.PROTECT,
         related_name='as_associate')
+    consultant = models.ForeignKey(
+        Employee,
+        on_delete=models.PROTECT,
+        related_name='as_consultant',
+        null=True)
 
     class Meta:
         ordering = ['-registration_date', 'job', 'candidate__name']
