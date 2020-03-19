@@ -9,6 +9,7 @@ Dashboard
 {% block subcontent %}
   <h1>Dashboard</h1>
   <input type="hidden" id="dataDashboardItemsNumber" value="{{ dashboard_items_number }}">
+  <input type="hidden" id="dataSuccessfulJobsAllTimePerIndustry" value="{{ sjatpi }}">
   <v-container
     fluid>
     <v-row
@@ -20,32 +21,29 @@ Dashboard
         :key="item.title"
         :text="item.title"
         :value="item.value"></dashboard-value-card>
-      <v-col cols=12>
+    </v-row>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols=12 md=6>
         <v-card
           class="mx-auto text-center"
-          color="green"
-          dark
-          max-width="600">
+          color="primary"
+          dark>
+          <v-card-text>
+            <div class="display-1 font-weight-thin">Successful jobs per industry</div>
+          </v-card-text>
+
           <v-card-text>
             <v-sheet color="rgba(0, 0, 0, .12)">
               <g-chart
                 :type="chartType"
-                :data="chartData"
+                :data="sjatpi"
                 :options="chartOptions"
               />
-              </v-sparkline>
             </v-sheet>
           </v-card-text>
-
-          <v-card-text>
-            <div class="display-1 font-weight-thin">Sales Last 24h</div>
-          </v-card-text>
-
-          <v-divider></v-divider>
-
-          <v-card-actions class="justify-center">
-            <v-btn block text>Go to Report</v-btn>
-          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -54,6 +52,7 @@ Dashboard
 
 {% block script %}
 
+<script src="{% static "vendor/lodash/lodash.js" %}"></script>
 <script src="{% static "vendor/vue-google-charts/vue-google-charts.browser.js" %}"></script>
 <script>
   const DashboardValueCard = {
@@ -64,7 +63,7 @@ Dashboard
           class="mx-auto text-center"
           outlined>
           <v-card-text>
-            <p><strong>[[ value ]]</strong></p>
+            <p class="font-weight-black headline">[[ value ]]</p>
             <p class="title mb-0">[[ text ]]</p>
           </v-card-text>
         </v-card>
@@ -94,13 +93,36 @@ Dashboard
       },
       chartType: 'ColumnChart',
       dashboardItemsNumber: [],
+      sjatpi: [["Industry","Successful jobs per industry"]],
     }),
 
     methods: {
       setDataChoices: function(sourceId, setDataVariable) {
         let data = document.getElementById(sourceId).value;
         this.$set(this, setDataVariable, JSON.parse(data));
-      }
+      },
+      transformSJTPI: function(sourceId='dataSuccessfulJobsAllTimePerIndustry') {
+        let data = document.getElementById(sourceId).value;
+        data = JSON.parse(data);
+
+        // set value label
+        this.sjatpi[0][1] = data.title;
+
+        // transform data to be consumed by a graph
+        data = _.map(data.value, (graph) => {
+          // graph is the value attribute from django
+          return [
+            graph.job_candidate__job__client__industry,
+            graph.value
+          ]
+        });
+
+        this.sjatpi = this.sjatpi.concat(data);
+        }
+    },
+
+    beforeMount(){
+      this.transformSJTPI();
     },
 
     mounted() {

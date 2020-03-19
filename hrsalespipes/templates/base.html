@@ -127,10 +127,19 @@
             <v-list-item>
               <v-list-item-title>Hi {{ user.username }}!</v-list-item-title>
             </v-list-item>
+
             <v-list-item
               href="{% url 'system:logout' %}">
               <v-list-item-title>Logout</v-list-item-title>
             </v-list-item>
+
+            {% if user.is_staff %}
+            <v-list-item
+              href="{% url 'system:admin' %}">
+              <v-list-item-title>Admin</v-list-item-title>
+            </v-list-item>
+            {% endif %}
+
           </v-list>
           {% endif %}
           </v-menu>

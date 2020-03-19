@@ -124,7 +124,7 @@
                   outlined
                   type='number'
                   name="agreement_fee"
-                  value="{{ form.agreement_fee.value }}">
+                  value="{{ form.agreement_fee.value|default_if_none:'' }}">
                 </v-text-field>
 
                 <v-textarea
@@ -139,7 +139,7 @@
                   outlined
                   type='date'
                   name="validity"
-                  value="{{ form.validity.value }}">
+                  value="{{ form.validity.value|default_if_none:''|date:'Y-m-d' }}">
                 </v-text-field>
                 
               </v-tab-item> <!-- Others -->
@@ -195,17 +195,50 @@
       locations: [],
       location: '{{ form.location.value }}',
       industries: [
-        'Retail ',
-        'Government',
-        'Interior Design',
-        'Legal ',
-        'Investment',
-        'Consultancy',
-        'Healthcare',
-        'FMCG',
-        'Trading ',
-        'Defence',
-        'Oil & Gas',
+        {
+          'text': 'Retail',
+          'value': 'Retail',
+        },
+        {
+          'text': 'Government',
+          'value': 'Government',
+        },
+        {
+          'text': 'Interior Design',
+          'value': 'Interior Design',
+        },
+        {
+          'text': 'Legal',
+          'value': 'Legal',
+        },
+        {
+          'text': 'Investment',
+          'value': 'Investment',
+        },
+        {
+          'text': 'Consultancy',
+          'value': 'Consultancy',
+        },
+        {
+          'text': 'Healthcare',
+          'value': 'Healthcare',
+        },
+        {
+          'text': 'FMCG',
+          'value': 'FMCG',
+        },
+        {
+          'text': 'Trading ',
+          'value': 'Trading ',
+        },
+        {
+          'text': 'Defence',
+          'value': 'Defence',
+        },
+        {
+          'text': 'Oil & Gas',
+          'value': 'Oil & Gas',
+        },
       ],
       industry: '{{ form.industry.value }}',
     }),

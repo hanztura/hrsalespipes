@@ -27,6 +27,16 @@ Clients - New
             value="{{ form.name.value|default_if_none:'' }}">
           </v-text-field>
 
+          <v-autocomplete
+            :items="industries"
+            label="Industry"
+            v-model.lazy="industry"
+            name="industry"
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
           <v-text-field
             label="Contact Number"
             outlined
@@ -86,6 +96,53 @@ Clients - New
       ],
       locations: [],
       location: '{{ form.location.value }}',
+      industries: [
+        {
+          'text': 'Retail',
+          'value': 'Retail',
+        },
+        {
+          'text': 'Government',
+          'value': 'Government',
+        },
+        {
+          'text': 'Interior Design',
+          'value': 'Interior Design',
+        },
+        {
+          'text': 'Legal',
+          'value': 'Legal',
+        },
+        {
+          'text': 'Investment',
+          'value': 'Investment',
+        },
+        {
+          'text': 'Consultancy',
+          'value': 'Consultancy',
+        },
+        {
+          'text': 'Healthcare',
+          'value': 'Healthcare',
+        },
+        {
+          'text': 'FMCG',
+          'value': 'FMCG',
+        },
+        {
+          'text': 'Trading ',
+          'value': 'Trading ',
+        },
+        {
+          'text': 'Defence',
+          'value': 'Defence',
+        },
+        {
+          'text': 'Oil & Gas',
+          'value': 'Oil & Gas',
+        },
+      ],
+      industry: '{{ form.industry.value }}',
     }),
 
     methods: {

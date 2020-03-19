@@ -17,7 +17,7 @@
           {% csrf_token %}
           <input type="hidden" id="dataCandidateChoices" value="{{ candidates }}">
           <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
-          <input type="hidden" id="dataAssociateChoices" value="{{ employees }}">
+          <input type="hidden" id="dataEmployeesChoices" value="{{ employees }}">
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
@@ -90,10 +90,20 @@
           </v-text-field>
 
           <v-autocomplete
-            :items="associates"
+            :items="employees"
             label="Associate"
             v-model.lazy="associate"
             name='associate'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
+          <v-autocomplete
+            :items="employees"
+            label="Consultant"
+            v-model.lazy="consultant"
+            name='consultant'
             dense
             outlined
             required>
@@ -146,8 +156,9 @@
       candidate: '{{ form.candidate.value }}',
       statusChoices: [],
       status: '{{ form.status.value }}',
-      associates: [],
-      associate: '{{ form.associate.value }}'
+      employees: [],
+      associate: '{{ form.associate.value }}',
+      consultant: '{{ form.consultant.value }}'
     }),
 
     methods: {
@@ -160,7 +171,7 @@
     beforeMount(){
       this.setDataChoices('dataCandidateChoices', 'candidates');
       this.setDataChoices('dataStatusChoices', 'statusChoices');
-      this.setDataChoices('dataAssociateChoices', 'associates');
+      this.setDataChoices('dataEmployeesChoices', 'employees');
       this.updateBreadcrumbs();
     },
 
