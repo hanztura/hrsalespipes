@@ -23,7 +23,7 @@
         <td class="text-center">{{ object.job_candidate.job.client.name }}</td>
         <td class="text-center">{{ object.job_candidate.job.client.industry }}</td>
         <td class="text-center">{{ object.job_candidate.candidate.candidate_owner.name }}</td>
-        <td class="text-right">{{ object.invoice_amount }}</td>
+        <td class="text-right">{{ object.invoice_amount|intcomma }}</td>
         <td class="text-right">{{ object.vat|intcomma }}</td>
       </tr>
       {% endfor %}
