@@ -40,7 +40,6 @@ Dashboard
               <g-chart
                 :type="chartType"
                 :data="sjatpi"
-                :options="chartOptions"
               />
             </v-sheet>
           </v-card-text>
@@ -52,8 +51,13 @@ Dashboard
 
 {% block script %}
 
-<script src="{% static "vendor/lodash/lodash.js" %}"></script>
-<script src="{% static "vendor/vue-google-charts/vue-google-charts.browser.js" %}"></script>
+{% if debug %}
+  <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+  <script src="{% static "vendor/vue-google-charts/vue-google-charts.browser.js" %}"></script>
+{% else %}
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-google-charts@0.3.2/dist/vue-google-charts.browser.js"></script>
+{% endif %}
 <script>
   const DashboardValueCard = {
     props: ['value', 'text'],
@@ -78,19 +82,6 @@ Dashboard
     data: () => ({
       drawer: null,
       subBreadcrumbs: [],
-      chartData: [
-        ['Year', 'Sales', 'Expenses', 'Profit'],
-        ['2014', 1000, 400, 200],
-        ['2015', 1170, 460, 250],
-        ['2016', 660, 1120, 300],
-        ['2017', 1030, 540, 350]
-      ],
-      chartOptions: {
-        chart: {
-          title: 'Company Performance',
-          subtitle: 'Sales, Expenses, and Profit: 2014-2017',
-        }
-      },
       chartType: 'ColumnChart',
       dashboardItemsNumber: [],
       sjatpi: [["Industry","Successful jobs per industry"]],

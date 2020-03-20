@@ -51,7 +51,12 @@ Dashboard
 
 {% block script %}
 
-<script src="{% static "vendor/vue-google-charts/vue-google-charts.browser.js" %}"></script>
+
+{% if debug %}
+  <script src="{% static "vendor/vue-google-charts/vue-google-charts.browser.js" %}"></script>
+{% else %}
+  <script src="https://cdn.jsdelivr.net/npm/vue-google-charts@0.3.2/dist/vue-google-charts.browser.js"></script>
+{% endif %}
 <script>
   new Vue({
     el: '#inspire',
