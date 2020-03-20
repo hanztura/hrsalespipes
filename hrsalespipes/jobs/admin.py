@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Status, Board
+from .models import Status
 
 
 class StatusAdmin(admin.ModelAdmin):
@@ -13,4 +13,3 @@ class StatusAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Status, StatusAdmin)
-admin.site.register(Board)
