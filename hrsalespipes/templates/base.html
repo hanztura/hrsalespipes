@@ -257,6 +257,10 @@
       data: () => ({
         drawer: null,
       }),
+
+      mounted(){
+        this.updateBreadcrumbs();
+      }
     });
   </script>
   {% endblock script %}
