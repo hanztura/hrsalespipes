@@ -35,6 +35,7 @@
                       <th class="text-center">Date</th>
                       <th class="text-center">Mode</th>
                       <th class="text-center">Status</th>
+                      <th class="text-center">Done by</th>
                       <th class="text-center">Actions</th>
                     </tr>
                   </thead>
@@ -44,6 +45,7 @@
                       <td>{{ interview.date }}</td>
                       <td>{{ interview.mode }}</td>
                       <td>{{ interview.status }}</td>
+                      <td>{{ interview.done_by.name }}</td>
                       <td>
                         <v-btn
                           href="{% url 'jobs:interviews_edit' object.job_id object.pk interview.pk %}"
