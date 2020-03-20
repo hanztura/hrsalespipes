@@ -60,7 +60,9 @@ Dashboard
   <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue-google-charts@0.3.2/dist/vue-google-charts.browser.js"></script>
 {% endif %}
+<script src="https://cdn.jsdelivr.net/npm/animated-number-vue@1.0.0/dist/AnimatedNumber.umd.min.js"></script>
 <script>
+  Vue.component('animated-number', AnimatedNumber)
   const DashboardValueCard = {
     props: ['value', 'text'],
     template: `
@@ -69,15 +71,21 @@ Dashboard
           class="mx-auto text-center"
           outlined>
           <v-card-text>
-            <p class="font-weight-black headline">[[ value ]]</p>
+            <p class="font-weight-black headline">
+              <animated-number
+                :value="value"
+                :duration="2000"
+                :round="0"/>
+            </p>
             <p class="title mb-0">[[ text ]]</p>
           </v-card-text>
         </v-card>
       </v-col>
-    `
+    `,
   }
 
   new Vue({
+    name: 'DashboardApp',
     el: '#inspire',
     vuetify: new Vuetify(),
 
@@ -124,7 +132,7 @@ Dashboard
     },
 
     components: {
-      'dashboard-value-card': DashboardValueCard
+      'dashboard-value-card': DashboardValueCard,
     }
 
   });

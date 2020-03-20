@@ -92,23 +92,17 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 {
                     'type': 'number',
                     'title': 'Interviews Arranged',
-                    'value': humanize.intcomma(
-                        round(float(all_interviews.count()))
-                    )
+                    'value': round(float(all_interviews.count()))
                 },
                 {
                     'type': 'number',
                     'title': 'NFI generated this month',
-                    'value': humanize.intcomma(
-                        round(float(tpi))
-                    )
+                    'value': round(float(tpi))
                 },
                 {
                     'type': 'number',
                     'title': 'NFI generated last month',
-                    'value': humanize.intcomma(
-                        round(float(tpi_last_month))
-                    )
+                    'value': round(float(tpi_last_month))
                 },
             ]
 
