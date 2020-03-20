@@ -62,6 +62,7 @@ class JobCandidateUpdateModelForm(ModelForm):
             'candidate',
             'registration_date',
             'status',
+            'cv_source',
             'cv_date_shared',
             'remarks',
             'salary_offered_currency',

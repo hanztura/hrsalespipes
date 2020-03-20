@@ -85,7 +85,7 @@ class JobDetailView(PermissionRequiredMixin, DetailView):
         q = q.prefetch_related(
             'candidates', 'candidates__candidate',
             'candidates__status', 'candidates__associate',
-            'candidates__pipeline',)
+            'candidates__pipeline__status',)
         return q
 
     def get_context_data(self, **kwargs):
@@ -173,6 +173,7 @@ class JobCandidateUpdateView(
         context['candidates'] = get_objects_as_choices(Candidate)
         context['status_objects'] = get_objects_as_choices(Status)
         context['employees'] = get_objects_as_choices(Employee)
+        context['cv_sources'] = get_objects_as_choices(boards)
         context['job'] = job
         return context
 

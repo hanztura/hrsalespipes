@@ -93,6 +93,9 @@ class JobCandidate(TimeStampedModel):
         on_delete=models.PROTECT,
         null=True,
         blank=True)
+    cv_source = models.CharField(
+        max_length=100,
+        blank=True)
     cv_date_shared = models.DateField(null=True, blank=True)
     remarks = models.TextField(blank=True)
     salary_offered_currency = models.CharField(max_length=3, blank=True)
