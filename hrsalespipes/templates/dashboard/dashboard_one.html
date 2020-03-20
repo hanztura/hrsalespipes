@@ -12,6 +12,8 @@ Dashboard
   <v-container
     fluid>
     <h1>Dashboard</h1>
+    {% if data_note %}<span class="caption">{{ data_note }}</span>{% endif %}
+
     <v-row
       align="center"
       justify="center"
