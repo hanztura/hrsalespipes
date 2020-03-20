@@ -147,6 +147,12 @@ class Interview(models.Model):
     mode = models.ForeignKey(InterviewMode, on_delete=models.PROTECT)
     date = models.DateField()
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
+    done_by = models.ForeignKey(
+        Employee,
+        on_delete=models.PROTECT,
+        related_name='interviews',
+        null=True,
+        blank=True)
 
     class Meta:
         ordering = ['-date', 'job_candidate']

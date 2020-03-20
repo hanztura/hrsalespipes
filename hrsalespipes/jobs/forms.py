@@ -128,7 +128,7 @@ class JobCandidateUpdateModelForm(ModelForm):
         return instance
 
 
-class InterviewModelForm(ModelForm):
+class InterviewCreateModelForm(ModelForm):
 
     class Meta:
         model = Interview
@@ -142,3 +142,20 @@ class InterviewModelForm(ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields['date'].initial = datetime.date.today()
+
+
+class InterviewUpdateModelForm(InterviewCreateModelForm):
+
+    class Meta:
+        model = Interview
+        fields = [
+            'mode',
+            'date',
+            'status',
+            'done_by'
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['done_by'].required = True

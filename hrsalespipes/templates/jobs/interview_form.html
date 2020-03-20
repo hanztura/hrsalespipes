@@ -50,6 +50,19 @@
             required>
           </v-autocomplete>
 
+          {% if form_mode == 'Edit' %}
+            <input type="hidden" id="dataEmployeeChoices" value="{{ employees }}">
+            <v-autocomplete
+              :items="employees"
+              label="Done by"
+              v-model.lazy="doneBy"
+              name='done_by'
+              dense
+              outlined
+              required>
+            </v-autocomplete>
+          {% endif %}
+
           <v-input>
             <v-btn block color="success" type="submit">Save</v-btn>
           </v-input>
@@ -101,24 +114,27 @@
       modes: [],
       mode: '{{ form.mode.value }}',
       statusChoices: [],
+      formMode: '{{ form_mode }}',
       status: '{{ form.status.value }}',
+      employees: [],
+      doneBy: '{{ form.done_by.value|default_if_none:"" }}',
     }),
 
     methods: {
-      setModeChoices: function() {
-        let data = document.getElementById('dataModesChoices').value;
-        this.modes = JSON.parse(data);
-      },
-      setStatusChoices: function() {
-        let data = document.getElementById('dataStatusChoices').value;
-        this.statusChoices = JSON.parse(data);
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
       },
     },
 
     beforeMount(){
-      this.setModeChoices();
-      this.setStatusChoices();
+      this.setDataChoices('dataModesChoices', 'modes');
+      this.setDataChoices('dataStatusChoices', 'statusChoices');
       this.updateBreadcrumbs();
+
+      if (this.formMode == 'Edit'){
+        this.setDataChoices('dataEmployeeChoices', 'employees');
+      }
     },
 
   });

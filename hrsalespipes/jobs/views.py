@@ -9,7 +9,7 @@ from django.views.generic import DetailView, ListView
 
 from .forms import (JobCreateModelForm, JobUpdateModelForm,
                     JobCandidateCreateModelForm, JobCandidateUpdateModelForm,
-                    InterviewModelForm)
+                    InterviewCreateModelForm, InterviewUpdateModelForm)
 from .models import Job, JobCandidate, Status, Interview, Board
 from contacts.models import Client, Candidate, Employee
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
@@ -182,9 +182,9 @@ class JobCandidateDetailView(PermissionRequiredMixin, DetailView):
     permission_required = 'jobs.view_jobcandidate'
 
     def get_queryset(self):
-        q = super().get_queryset()
-        q = q.prefetch_related(
-            'candidate', 'job', 'status', 'interviews', 'associate')
+        q = super().get_queryset().select_related(
+            'associate', 'consultant', 'status', 'job', 'candidate')
+        q = q.prefetch_related('interviews__done_by')
         return q
 
     def get_context_data(self, **kwargs):
@@ -198,7 +198,7 @@ class InterviewCreateView(
         ActionMessageViewMixin,
         CreateView):
     model = Interview
-    form_class = InterviewModelForm
+    form_class = InterviewCreateModelForm
     permission_required = 'jobs.add_interview'
     success_msg = 'Interview created.'
 
@@ -211,8 +211,13 @@ class InterviewCreateView(
         self.job_candidate = job_candidate
 
     def form_valid(self, form):
-        form.instance.job_candidate = self.job_candidate
+        # set up done_by field
+        employee = None
+        if hasattr(self.request.user, 'as_employee'):
+            employee = self.request.user.as_employee
 
+        form.instance.done_by = employee
+        form.instance.job_candidate = self.job_candidate
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -239,14 +244,15 @@ class InterviewUpdateView(
         ActionMessageViewMixin,
         UpdateView):
     model = Interview
-    form_class = InterviewModelForm
+    form_class = InterviewUpdateModelForm
     permission_required = 'jobs.change_interview'
     success_msg = 'Interview updated.'
 
     def get_object(self):
         pk = self.kwargs['pk']
         q = Interview.objects.select_related(
-            'job_candidate', 'job_candidate__candidate', 'job_candidate__job').get(pk=pk)
+            'job_candidate', 'job_candidate__candidate', 'job_candidate__job')
+        q = q.get(pk=pk)
         return q
 
     def get_context_data(self, **kwargs):
@@ -259,6 +265,7 @@ class InterviewUpdateView(
         context['modes'] = get_objects_as_choices(InterviewMode)
         context['status_choices'] = status_choices
         context['job_candidate'] = self.object.job_candidate
+        context['employees'] = get_objects_as_choices(Employee)
         context['form_mode'] = 'Edit'
         return context
 
