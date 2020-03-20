@@ -22,23 +22,8 @@ class Status(models.Model):
         return self.name
 
 
-class Board(models.Model):
-    name = models.CharField(max_length=100)
-
-    class Meta:
-        verbose_name = 'Job Board'
-
-    def __str__(self):
-        return self.name
-
-
 class Job(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    board = models.ForeignKey(
-        Board,
-        on_delete=models.PROTECT,
-        null=True,
-        verbose_name='Job Board')
     reference_number = models.CharField(
         max_length=100,
         verbose_name=settings.JOB_REFERENCE_NUMBER_ALIAS,

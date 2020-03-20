@@ -16,20 +16,9 @@ Jobs - New
         <form method="post">
           {% csrf_token %}
           <input type="hidden" id="dataClientChoices" value="{{ clients }}">
-          <input type="hidden" id="dataBoardChoices" value="{{ boards }}">
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
-
-          <v-autocomplete
-            :items="boards"
-            label="Job Board"
-            v-model.lazy="board"
-            name='board'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
 
           <v-text-field
             label="{{ form.reference_number.label }}"
@@ -87,8 +76,6 @@ Jobs - New
       ],
       clients: [],
       client: '{{ form.client.value }}',
-      boards: [],
-      board: '{{ form.board.value }}',
     }),
 
     methods: {
@@ -104,7 +91,6 @@ Jobs - New
 
     beforeMount(){
       this.setDataChoices('dataClientChoices', 'clients');
-      this.setDataChoices('dataBoardChoices', 'boards');
       this.updateBreadcrumbs();
     },
 

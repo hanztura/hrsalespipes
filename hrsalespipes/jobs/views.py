@@ -10,8 +10,8 @@ from django.views.generic import DetailView, ListView
 from .forms import (JobCreateModelForm, JobUpdateModelForm,
                     JobCandidateCreateModelForm, JobCandidateUpdateModelForm,
                     InterviewCreateModelForm, InterviewUpdateModelForm)
-from .models import Job, JobCandidate, Status, Interview, Board
-from contacts.models import Client, Candidate, Employee
+from .models import Job, JobCandidate, Status, Interview
+from contacts.models import Client, Candidate, Employee, Supplier as Board
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.models import InterviewMode, Location
 from system.utils import (
@@ -38,7 +38,6 @@ class JobCreateView(
         context = super().get_context_data(**kwargs)
 
         context['clients'] = get_objects_as_choices(Client)
-        context['boards'] = get_objects_as_choices(Board)
         return context
 
 
@@ -56,7 +55,6 @@ class JobUpdateView(
         context = super().get_context_data(**kwargs)
 
         context['clients'] = get_objects_as_choices(Client)
-        context['boards'] = get_objects_as_choices(Board)
         context['locations'] = get_objects_as_choices(Location)
         return context
 
@@ -173,7 +171,7 @@ class JobCandidateUpdateView(
         context['candidates'] = get_objects_as_choices(Candidate)
         context['status_objects'] = get_objects_as_choices(Status)
         context['employees'] = get_objects_as_choices(Employee)
-        context['cv_sources'] = get_objects_as_choices(boards)
+        context['cv_sources'] = get_objects_as_choices(Board)
         context['job'] = job
         return context
 
