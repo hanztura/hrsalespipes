@@ -8,7 +8,7 @@ from django.views.generic import TemplateView
 
 from .utils import (
     custom_permissions, template_names, get_data_dashboard_items_number)
-from jobs.models import Interview
+from jobs.models import Interview, JobCandidate
 from salespipes.models import Pipeline
 
 
@@ -48,16 +48,20 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             'status', 'job_candidate__job__client')
         all_interviews = Interview.objects.all().select_related(
             'job_candidate__associate', 'job_candidate__consultant')
+        all_job_candidates = JobCandidate.objects.all()
 
         # prepare data for dashboard items
         dashboard_items_number = []
         if self.dashboard_index in [1, 2, 0]:  # dashboard for One Two Three
 
+            # cv shared to client
+            cv_sent_to_clients = all_job_candidates.filter(cv_date_shared__isnull=False)
             if self.dashboard_index == 0:  # Three Dashboard
                 context['data_note'] = \
                     'All employees\' data are used in this dashboard.'
 
                 active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi = get_data_dashboard_items_number(all_pipelines)
+
             else:  # One Two dashboard
                 employee = None
                 if hasattr(user, 'as_employee'):
@@ -68,6 +72,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
                     # interview data
                     all_interviews = all_interviews.filter(done_by=employee)
+                    cv_sent_to_clients = cv_sent_to_clients.filter(
+                        Q(associate=employee) | Q(consultant=employee))
                 else:
                     null_pipeline = Pipeline.objects.none()
                     active_jobs = null_pipeline
@@ -76,6 +82,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     tpi_last_month = 0
                     sjatpi = []
                     all_interviews = Interview.objects.none()
+                    cv_sent_to_clients = JobCandidate.objects.none()
 
             # prepare to be included in context
             data = [
@@ -93,6 +100,11 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     'type': 'number',
                     'title': 'Interviews Arranged',
                     'value': round(float(all_interviews.count()))
+                },
+                {
+                    'type': 'number',
+                    'title': 'CVs sent to clients',
+                    'value': round(float(cv_sent_to_clients.count()))
                 },
                 {
                     'type': 'number',
