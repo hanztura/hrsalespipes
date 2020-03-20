@@ -18,13 +18,13 @@
   <tbody>
     {% for object in object_list %}
     <tr>
-      <td class="text-center">{{ object.date }}</td>
-      <td class="text-center">{{ object.job_candidate.candidate }}</td>
-      <td class="text-center">{{ object.job_candidate.job.reference_number }}</td>
+      <td class="text-center"><a href="{% url 'salespipes:detail' object.pk %}" title="view pipeline detail">{{ object.date }}</a></td>
+      <td class="text-center"><a href="{% url 'jobs:candidates_detail' object.job_candidate.job_id object.job_candidate_id %}" title="view job candidate detail">{{ object.job_candidate.candidate }}</a></td>
+      <td class="text-center"><a href="{% url 'jobs:detail' object.job_candidate.job_id %}" title="view job detail">{{ object.job_candidate.job.reference_number }}</a></td>
       <td class="text-right">{{ object.potential_income|intcomma }}</td>
       <td class="text-center">{{ object.status }}</td>
-      <td class="text-center">{{ object.successful_date }}</td>
-      <td class="text-center">{{ object.invoice_date }}</td>
+      <td class="text-center">{{ object.successful_date|default_if_none:'' }}</td>
+      <td class="text-center">{{ object.invoice_date|default_if_none:'' }}</td>
       <td class="text-right">{{ object.invoice_amount|intcomma }}</td>
       <td class="text-right">{{ object.vat|intcomma }}</td>
       <td class="text-center">
