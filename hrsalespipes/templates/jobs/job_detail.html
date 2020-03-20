@@ -117,49 +117,7 @@ Job Detail - {{ object.reference_number }}
             <v-tab-item id="Pipelines">
 
                 <v-simple-table>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th class="text-center">Date</th>
-                        <th class="text-center">Candidate</th>
-                        <th class="text-center">Recruitment Term</th>
-                        <th class="text-center">Recruitment Rate</th>
-                        <th class="text-center">Base Amount</th>
-                        <th class="text-center">Potential Income</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Invoice Date</th>
-                        <th class="text-center">Invoice Amount</th>
-                        <th class="text-center">VAT</th>
-                        <th class="text-center">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tbody>
-                      {% for pipeline in pipelines %}
-                      <tr>
-                        <td>{{ pipeline.date }}</td>
-                        <td>{{ pipeline.job_candidate.candidate.name }}</td>
-                        <td>{{ pipeline.status }}</td>
-                        <td>{{ pipeline.recruitment_term }}</td>
-                        <td>{{ pipeline.recruitment_rate }}</td>
-                        <td>{{ pipeline.base_amount|intcomma }}</td>
-                        <td>{{ pipeline.potential_income|intcomma }}</td>
-                        <td>{{ pipeline.invoice_date }}</td>
-                        <td>{{ pipeline.invoice_amount|intcomma }}</td>
-                        <td>{{ pipeline.vat|intcomma }}</td>
-                        <td>
-                          {% include "_includes/list_action_buttons.html" with edit_href=pipeline.edit_href view_href=pipeline.view_href %}
-                        </td>
-                      </tr>
-                      {% endfor %}
-
-                      {% if not pipelines %}
-                      <tr>
-                        <td colspan="9"><p>No pipeline.</p></td>
-                      </tr>
-                      {% endif %}
-                    </tbody>
-                  </table>
+                  {% include "salespipes/includes/pipeline_list_table.html" with object_list=pipelines %}
                 </v-simple-table>
             </v-tab-item>
           </v-tabs-items>
