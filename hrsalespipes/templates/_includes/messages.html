@@ -1,0 +1,12 @@
+<div>
+  {% for message in messages %}
+  <v-alert
+    dense
+    dismissible
+    outlined
+    type="{{ message.level_tag }}"
+    id="message_{{ forloop.counter }}">
+    {{ message }}
+  </v-alert>
+  {% endfor %}
+</div>

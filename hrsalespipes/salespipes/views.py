@@ -9,16 +9,21 @@ from .forms import PipelineCreateModelForm, PipelineModelForm
 from .models import Pipeline, Status
 from jobs.models import Job
 from system.models import Setting
+from system.helpers import ActionMessageViewMixin
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin,
     FromToViewFilterMixin)
 
 
-class PipelineCreateView(PermissionRequiredMixin, CreateView):
+class PipelineCreateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        CreateView):
     model = Pipeline
     form_class = PipelineCreateModelForm
     template_name = 'salespipes/pipeline_create_form.html'
     permission_required = 'salespipes.add_pipeline'
+    success_msg = 'Pipeline created.'
 
     def form_valid(self, form):
         form.instance.date = datetime.date.today()
@@ -37,11 +42,15 @@ class PipelineCreateView(PermissionRequiredMixin, CreateView):
         return context
 
 
-class PipelineUpdateView(PermissionRequiredMixin, UpdateView):
+class PipelineUpdateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        UpdateView):
     model = Pipeline
     form_class = PipelineModelForm
     template_name = 'salespipes/pipeline_update_form.html'
     permission_required = 'salespipes.change_pipeline'
+    success_msg = 'Pipeline updated.'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

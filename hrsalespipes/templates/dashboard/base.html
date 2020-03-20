@@ -4,6 +4,18 @@
   <div>
     <v-breadcrumbs :items="breadcrumbs" divider=">"></v-breadcrumbs>
   </div>
-  
+
+  {% if messages %}
+  <div>
+    {% for message in messages %}
+    <v-alert
+      type="{{ message.level_tag }}"
+      id="message_{{ forloop.counter }}">
+      {{ message }}
+    </v-alert>
+    {% endfor %}
+  </div>
+  {% endif %}
+
   {% block subcontent %}{% endblock subcontent %}  
 {% endblock content %}
