@@ -6,7 +6,9 @@ from django.contrib.humanize.templatetags import humanize
 from django.db.models import Q, Sum, Count
 from django.views.generic import TemplateView
 
-from .utils import custom_permissions, template_names, get_data_dashboard_items_number
+from .utils import (
+    custom_permissions, template_names, get_data_dashboard_items_number)
+from jobs.models import Interview, JobCandidate
 from salespipes.models import Pipeline
 
 
@@ -41,61 +43,82 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
+        # queryset to be used by dashboard items
+        all_pipelines = Pipeline.objects.all().select_related(
+            'status', 'job_candidate__job__client')
+        all_interviews = Interview.objects.all().select_related(
+            'job_candidate__associate', 'job_candidate__consultant')
+        all_job_candidates = JobCandidate.objects.all()
+
         # prepare data for dashboard items
         dashboard_items_number = []
-        if self.dashboard_index in [1, 2]:  # dashboard for One or Two user
-            employee = None
-            if hasattr(user, 'as_employee'):
-                employee = user.as_employee
+        if self.dashboard_index in [1, 2, 0]:  # dashboard for One Two Three
 
-            all_pipelines = Pipeline.objects.all().select_related(
-                'status', 'job_candidate__job__client')
+            # cv shared to client
+            cv_sent_to_clients = all_job_candidates.filter(cv_date_shared__isnull=False)
+            if self.dashboard_index == 0:  # Three Dashboard
+                context['data_note'] = \
+                    'All employees\' data are used in this dashboard.'
 
-            if employee:
-                active_jobs, successful_jobs,tpi, tpi_last_month, sjatpi = get_data_dashboard_items_number(all_pipelines, employee)
+                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi = get_data_dashboard_items_number(all_pipelines)
 
-            else:  # if user is not employee
-                null_pipeline = Pipeline.objects.none()
-                active_jobs = null_pipeline
-                successful_jobs = null_pipeline
-                tpi = 0
-                tpi_last_month = 0
-                sjatpi = []
+            else:  # One Two dashboard
+                employee = None
+                if hasattr(user, 'as_employee'):
+                    employee = user.as_employee
 
-        elif self.dashboard_index == 0:  # dashboard for Three user
-            all_pipelines = Pipeline.objects.all().select_related(
-                'status', 'job_candidate__job__client')
+                if employee:
+                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi = get_data_dashboard_items_number(all_pipelines, employee)
 
-            active_jobs, successful_jobs,tpi, tpi_last_month, sjatpi = get_data_dashboard_items_number(all_pipelines)
+                    # interview data
+                    all_interviews = all_interviews.filter(done_by=employee)
+                    cv_sent_to_clients = cv_sent_to_clients.filter(
+                        Q(associate=employee) | Q(consultant=employee))
+                else:
+                    null_pipeline = Pipeline.objects.none()
+                    active_jobs = null_pipeline
+                    successful_jobs = null_pipeline
+                    tpi = 0
+                    tpi_last_month = 0
+                    sjatpi = []
+                    all_interviews = Interview.objects.none()
+                    cv_sent_to_clients = JobCandidate.objects.none()
 
-        # prepare to be included in context
-        data = [
-            {
-                'type': 'number',  # number, graph
-                'title': 'Active jobs',
-                'value': active_jobs.count()
-            },
-            {
-                'type': 'number',
-                'title': 'Succesful jobs this month',
-                'value': successful_jobs.count()
-            },
-            {
-                'type': 'number',
-                'title': 'NFI generated this month',
-                'value': humanize.intcomma(
-                    round(float(tpi))
-                )
-            },
-            {
-                'type': 'number',
-                'title': 'NFI generated last month',
-                'value': humanize.intcomma(
-                    round(float(tpi_last_month))
-                )
-            },
-        ]
-        dashboard_items_number += data
+            # prepare to be included in context
+            data = [
+                {
+                    'type': 'number',  # number, graph
+                    'title': 'Active jobs',
+                    'value': active_jobs.count()
+                },
+                {
+                    'type': 'number',
+                    'title': 'Succesful jobs this month',
+                    'value': successful_jobs.count()
+                },
+                {
+                    'type': 'number',
+                    'title': 'Interviews Arranged',
+                    'value': round(float(all_interviews.count()))
+                },
+                {
+                    'type': 'number',
+                    'title': 'CVs sent to clients',
+                    'value': round(float(cv_sent_to_clients.count()))
+                },
+                {
+                    'type': 'number',
+                    'title': 'NFI generated this month',
+                    'value': round(float(tpi))
+                },
+                {
+                    'type': 'number',
+                    'title': 'NFI generated last month',
+                    'value': round(float(tpi_last_month))
+                },
+            ]
+
+            dashboard_items_number += data
 
         sjatpi = {
             'type': 'graph',

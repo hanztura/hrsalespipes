@@ -22,23 +22,8 @@ class Status(models.Model):
         return self.name
 
 
-class Board(models.Model):
-    name = models.CharField(max_length=100)
-
-    class Meta:
-        verbose_name = 'Job Board'
-
-    def __str__(self):
-        return self.name
-
-
 class Job(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    board = models.ForeignKey(
-        Board,
-        on_delete=models.PROTECT,
-        null=True,
-        verbose_name='Job Board')
     reference_number = models.CharField(
         max_length=100,
         verbose_name=settings.JOB_REFERENCE_NUMBER_ALIAS,
@@ -92,6 +77,9 @@ class JobCandidate(TimeStampedModel):
         Status,
         on_delete=models.PROTECT,
         null=True,
+        blank=True)
+    cv_source = models.CharField(
+        max_length=100,
         blank=True)
     cv_date_shared = models.DateField(null=True, blank=True)
     remarks = models.TextField(blank=True)
@@ -147,6 +135,12 @@ class Interview(models.Model):
     mode = models.ForeignKey(InterviewMode, on_delete=models.PROTECT)
     date = models.DateField()
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
+    done_by = models.ForeignKey(
+        Employee,
+        on_delete=models.PROTECT,
+        related_name='interviews',
+        null=True,
+        blank=True)
 
     class Meta:
         ordering = ['-date', 'job_candidate']

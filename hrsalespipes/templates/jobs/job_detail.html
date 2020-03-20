@@ -75,6 +75,8 @@ Job Detail - {{ object.reference_number }}
                       <th class="text-center">Status</th>
                       <th class="text-center">Salary Offered</th>
                       <th class="text-center">Tentative date of joining</th>
+                      <th class="text-center">CV Source</th>
+                      <th class="text-center">CV Date Shared</th>
                       <th class="text-center">NFI</th>
                       <th class="text-center">Associate</th>
                       <th class="text-center">Actions</th>
@@ -91,6 +93,8 @@ Job Detail - {{ object.reference_number }}
                         <td>{{ candidate.status }}</td>
                         <td>{{ candidate.salary_offered_currency }} {{ candidate.salary_offered }}</td>
                         <td>{{ candidate.tentative_date_of_joining }}</td>
+                        <td>{{ candidate.cv_source }}</td>
+                        <td>{{ candidate.cv_date_shared|default_if_none:'' }}</td>
                         <td>{{ candidate.actual_income|default_if_none:0 }}</td>
                         <td>{{ candidate.associate.name }}</td>
                         <td>

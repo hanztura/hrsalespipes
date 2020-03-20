@@ -4,10 +4,14 @@
   <div>
     <v-breadcrumbs :items="breadcrumbs" divider=">"></v-breadcrumbs>
   </div>
+
+  {% if messages %}
+    {% include "_includes/messages.html" %}
+  {% endif %}
   
-  <h1>Login</h1>
   <v-container
     fluid>
+    <h1>Login</h1>
     <v-row
       align="center"
       justify="center"
@@ -21,7 +25,8 @@
             outlined
             name="username"
             required
-            value="{{ form.username.value|default_if_none:'' }}">
+            value="{{ form.username.value|default_if_none:'' }}"
+            error-messages="{{ form.username.errors }}">
           </v-text-field>
 
           <v-text-field
@@ -30,7 +35,8 @@
             name="password"
             required
             type='password'
-            value="{{ form.password.value|default_if_none:'' }}">
+            value="{{ form.password.value|default_if_none:'' }}"
+            error-messages="{{ form.username.errors }}">
           </v-text-field>
 
           <v-btn block class="primary" type="submit">Login</v-btn>

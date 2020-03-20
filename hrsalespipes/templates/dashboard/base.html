@@ -6,15 +6,7 @@
   </div>
 
   {% if messages %}
-  <div>
-    {% for message in messages %}
-    <v-alert
-      type="{{ message.level_tag }}"
-      id="message_{{ forloop.counter }}">
-      {{ message }}
-    </v-alert>
-    {% endfor %}
-  </div>
+    {% include "_includes/messages.html" %}
   {% endif %}
 
   {% block subcontent %}{% endblock subcontent %}  

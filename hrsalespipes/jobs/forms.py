@@ -13,16 +13,10 @@ class JobCreateModelForm(ModelForm):
     class Meta:
         model = Job
         fields = [
-            'board',
             'reference_number',
             'client',
             'position',
         ]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields['board'].required = True
 
 
 class JobUpdateModelForm(ModelForm):
@@ -30,7 +24,6 @@ class JobUpdateModelForm(ModelForm):
     class Meta:
         model = Job
         fields = [
-            'board',
             'reference_number',
             'date',
             'client',
@@ -38,11 +31,6 @@ class JobUpdateModelForm(ModelForm):
             'location',
             'potential_income',
         ]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields['board'].required = True
 
 
 class JobCandidateCreateModelForm(ModelForm):
@@ -62,6 +50,7 @@ class JobCandidateUpdateModelForm(ModelForm):
             'candidate',
             'registration_date',
             'status',
+            'cv_source',
             'cv_date_shared',
             'remarks',
             'salary_offered_currency',
@@ -128,7 +117,7 @@ class JobCandidateUpdateModelForm(ModelForm):
         return instance
 
 
-class InterviewModelForm(ModelForm):
+class InterviewCreateModelForm(ModelForm):
 
     class Meta:
         model = Interview
@@ -142,3 +131,20 @@ class InterviewModelForm(ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields['date'].initial = datetime.date.today()
+
+
+class InterviewUpdateModelForm(InterviewCreateModelForm):
+
+    class Meta:
+        model = Interview
+        fields = [
+            'mode',
+            'date',
+            'status',
+            'done_by'
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['done_by'].required = True
