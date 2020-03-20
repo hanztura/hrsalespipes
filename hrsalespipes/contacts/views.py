@@ -9,7 +9,7 @@ from .forms import (ClientCreateModelForm, ContactCreateModelForm,
                     SupplierModelForm)
 from .models import Candidate, Client, Supplier, Employee
 from .utils import FilterNameMixin
-from system.helpers import get_objects_as_choices
+from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin)
 from system.models import VisaStatus, Location, Nationality
@@ -19,11 +19,15 @@ class ContactsTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'contacts/contacts.html'
 
 
-class CandidateCreateView(PermissionRequiredMixin, CreateView):
+class CandidateCreateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        CreateView):
     model = Candidate
     form_class = ContactCreateModelForm
     template_name = 'contacts/candidate_create_form.html'
     permission_required = ('contacts.add_candidate')
+    success_msg = 'Candidate created.'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -42,11 +46,15 @@ class CandidateCreateView(PermissionRequiredMixin, CreateView):
         return context
 
 
-class CandidateUpdateView(PermissionRequiredMixin, UpdateView):
+class CandidateUpdateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        UpdateView):
     model = Candidate
     form_class = CandidateUpdateModelForm
     template_name = 'contacts/candidate_update_form.html'
     permission_required = ('contacts.change_candidate')
+    success_msg = 'Candidate updated.'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -83,11 +91,15 @@ class CandidateListView(FilterNameMixin, PermissionRequiredMixin, ListView):
         return q
 
 
-class ClientCreateView(PermissionRequiredMixin, CreateView):
+class ClientCreateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        CreateView):
     model = Client
     form_class = ClientCreateModelForm
     template_name = 'contacts/client_create_form.html'
     permission_required = ('contacts.add_client')
+    success_msg = 'Client created.'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -103,11 +115,15 @@ class ClientListView(FilterNameMixin, PermissionRequiredMixin, ListView):
     permission_required = ('contacts.view_client')
 
 
-class ClientUpdateView(PermissionRequiredMixin, UpdateView):
+class ClientUpdateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        UpdateView):
     model = Client
     form_class = ClientUpdateModelForm
     template_name = 'contacts/client_update_form.html'
     permission_required = ('contacts.change_client')
+    success_msg = 'Client updated.'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -126,11 +142,15 @@ class ClientDetailView(PermissionRequiredMixin, DetailView):
     permission_required = ('contacts.view_client')
 
 
-class SupplierCreateView(PermissionRequiredMixin, CreateView):
+class SupplierCreateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        CreateView):
     model = Supplier
     form_class = SupplierModelForm
     template_name = 'contacts/supplier_create_form.html'
     permission_required = ('contacts.add_supplier')
+    success_msg = 'Supplier created.'
 
 
 class SupplierListView(FilterNameMixin, PermissionRequiredMixin, ListView):
@@ -138,11 +158,15 @@ class SupplierListView(FilterNameMixin, PermissionRequiredMixin, ListView):
     permission_required = ('contacts.view_supplier')
 
 
-class SupplierUpdateView(PermissionRequiredMixin, UpdateView):
+class SupplierUpdateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        UpdateView):
     model = Supplier
     form_class = SupplierModelForm
     template_name = 'contacts/supplier_update_form.html'
     permission_required = ('contacts.change_supplier')
+    success_msg = 'Supplier updated.'
 
     def get_success_url(self):
         return reverse('contacts:suppliers_detail', args=[str(self.object.id)])

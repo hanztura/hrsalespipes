@@ -9,12 +9,13 @@ from django.views.generic import DetailView, ListView
 from .models import Commission
 from contacts.models import Employee
 from salespipes.models import Pipeline
-from system.helpers import get_objects_as_choices
+from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.utils import PermissionRequiredWithCustomMessageMixin
 
 
 class CommissionCreateView(
         PermissionRequiredWithCustomMessageMixin,
+        ActionMessageViewMixin,
         CreateView):
     model = Commission
     permission_required = 'commissions.add_commission'
@@ -24,6 +25,7 @@ class CommissionCreateView(
         'rate_used',
         'amount',
     ]
+    success_msg = 'Commission created.'
 
     def form_valid(self, form):
         pipeline = self.kwargs['pipeline_pk']
@@ -44,6 +46,7 @@ class CommissionCreateView(
 
 class CommissionUpdateView(
         PermissionRequiredWithCustomMessageMixin,
+        ActionMessageViewMixin,
         UpdateView):
     model = Commission
     permission_required = 'commissions.change_commission'
@@ -56,6 +59,7 @@ class CommissionUpdateView(
         'is_paid',
     ]
     template_name = 'commissions/commission_update_form.html'
+    success_msg = 'Commission updated.'
 
     def get_queryset(self):
         q = super().get_queryset()

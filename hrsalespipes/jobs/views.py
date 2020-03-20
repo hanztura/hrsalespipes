@@ -1,6 +1,7 @@
 import datetime
 import json
 
+from django.contrib import messages
 from django.conf import settings
 from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
@@ -11,18 +12,22 @@ from .forms import (JobCreateModelForm, JobUpdateModelForm,
                     InterviewModelForm)
 from .models import Job, JobCandidate, Status, Interview, Board
 from contacts.models import Client, Candidate, Employee
-from system.helpers import get_objects_as_choices
+from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.models import InterviewMode, Location
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin,
     FromToViewFilterMixin)
 
 
-class JobCreateView(PermissionRequiredMixin, CreateView):
+class JobCreateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        CreateView):
     model = Job
     form_class = JobCreateModelForm
     template_name = 'jobs/job_create_form.html'
     permission_required = 'jobs.add_job'
+    success_msg = 'Job created.'
 
     def form_valid(self, form):
         form.instance.date = datetime.date.today()
@@ -37,11 +42,15 @@ class JobCreateView(PermissionRequiredMixin, CreateView):
         return context
 
 
-class JobUpdateView(PermissionRequiredMixin, UpdateView):
+class JobUpdateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        UpdateView):
     model = Job
     form_class = JobUpdateModelForm
     template_name = 'jobs/job_update_form.html'
     permission_required = 'jobs.change_job'
+    success_msg = 'Job updated.'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -95,11 +104,15 @@ class JobDetailView(PermissionRequiredMixin, DetailView):
         return context
 
 
-class JobCandidateCreateView(PermissionRequiredMixin, CreateView):
+class JobCandidateCreateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        CreateView):
     model = JobCandidate
     form_class = JobCandidateCreateModelForm
     template_name = 'jobs/jobcandidate_create_form.html'
     permission_required = 'jobs.add_jobcandidate'
+    success_msg = 'Job Candidate created.'
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -110,7 +123,15 @@ class JobCandidateCreateView(PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.job = self.job
-        form.instance.associate = self.request.user.as_employee
+
+        if hasattr(self.request.user, 'as_employee'):
+            form.instance.associate = self.request.user.as_employee
+        else:
+            messages.warning(
+                self.request,
+                'Contact admin for employee profile.')
+            form.add_error(None, 'Your Employee profile required')
+
         form.instance.registration_date = datetime.date.today()
 
         return super().form_valid(form)
@@ -128,11 +149,15 @@ class JobCandidateCreateView(PermissionRequiredMixin, CreateView):
             args=[str(self.object.job_id), str(self.object.pk)])
 
 
-class JobCandidateUpdateView(PermissionRequiredMixin, UpdateView):
+class JobCandidateUpdateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        UpdateView):
     model = JobCandidate
     form_class = JobCandidateUpdateModelForm
     template_name = 'jobs/jobcandidate_update_form.html'
     permission_required = 'jobs.change_jobcandidate'
+    success_msg = 'Job Candidate updated.'
 
     def get_queryset(self):
         q = super().get_queryset()
@@ -168,10 +193,14 @@ class JobCandidateDetailView(PermissionRequiredMixin, DetailView):
         return context
 
 
-class InterviewCreateView(PermissionRequiredMixin, CreateView):
+class InterviewCreateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        CreateView):
     model = Interview
     form_class = InterviewModelForm
     permission_required = 'jobs.add_interview'
+    success_msg = 'Interview created.'
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -205,10 +234,14 @@ class InterviewCreateView(PermissionRequiredMixin, CreateView):
             args=[str(self.job_candidate.job_id), str(self.job_candidate.pk)])
 
 
-class InterviewUpdateView(PermissionRequiredMixin, UpdateView):
+class InterviewUpdateView(
+        PermissionRequiredMixin,
+        ActionMessageViewMixin,
+        UpdateView):
     model = Interview
     form_class = InterviewModelForm
     permission_required = 'jobs.change_interview'
+    success_msg = 'Interview updated.'
 
     def get_object(self):
         pk = self.kwargs['pk']

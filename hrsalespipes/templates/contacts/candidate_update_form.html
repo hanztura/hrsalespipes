@@ -126,20 +126,20 @@
                   label="Civil Status"
                   name="civil_status"
                   outlined
-                  value="{{ form.civil_status.value }}"></v-select>
+                  value="{{ form.civil_status.value|default_if_none:'' }}"></v-select>
 
                 <v-select
                   :items="genders"
                   label="Gender"
                   name="gender"
                   outlined
-                  value="{{ form.gender.value }}"></v-select>
+                  value="{{ form.gender.value|default_if_none:'' }}"></v-select>
 
                 <v-textarea
                   name="dependents"
                   label="Dependents"
                   outlined
-                  value="{{ form.dependents.value }}"
+                  value="{{ form.dependents.value|default_if_none:'' }}"
                 ></v-textarea>
 
                 <v-text-field
@@ -163,28 +163,28 @@
                   label="Positiion"
                   outlined
                   name="current_previous_position"
-                  value="{{ form.current_previous_position.value }}">
+                  value="{{ form.current_previous_position.value|default_if_none:'' }}">
                 </v-text-field>
 
                 <v-text-field
                   label="Company"
                   outlined
                   name="current_previous_company"
-                  value="{{ form.current_previous_company.value }}">
+                  value="{{ form.current_previous_company.value|default_if_none:'' }}">
                 </v-text-field>
 
                 <v-textarea
                   name="current_previous_salary_and_benefits"
                   label="Salary and Benefits"
                   outlined
-                  value="{{ form.current_previous_salary_and_benefits.value }}">
+                  value="{{ form.current_previous_salary_and_benefits.value|default_if_none:'' }}">
                   </v-textarea>
 
                 <v-textarea
                   name="motivation_for_leaving"
                   label="Motivation for leaving"
                   outlined
-                  value="{{ form.motivation_for_leaving.value }}"
+                  value="{{ form.motivation_for_leaving.value|default_if_none:'' }}"
                 ></v-textarea>
               </v-tab-item>  <!-- Work history -->
 
@@ -196,7 +196,7 @@
                   name="visa_status"
                   outlined
                   id="visa_status"
-                  data-default-value="{{ form.visa_status.value }}"
+                  data-default-value="{{ form.visa_status.value|default_if_none:'' }}"
                   v-model="visaStatus"></v-select>
 
                 <v-textarea
@@ -305,9 +305,9 @@
         {value: 'M', text: 'Male'},
       ],
       visaStatusChoices: [],
-      visaStatus: '',
+      visaStatus: '{{ form.visa_status.value|default_if_none:"0" }}',
       employees: [],
-      candidateOwner: '{{ form.candidate_owner.value }}',
+      candidateOwner: '{{ form.candidate_owner.value|default_if_none:'' }}',
     }),
 
     methods: {
@@ -316,11 +316,11 @@
         let data = document.getElementById('dataVisaStatusChoices').value;
         this.visaStatusChoices = JSON.parse(data);
 
-        let defaultValue = document.getElementById('visa_status').getAttribute('data-default-value');
-        defaultValue = Number(defaultValue);
-        if (defaultValue || defaultValue == 0) {
-          this.visaStatus = defaultValue;
-        }
+        // let defaultValue = document.getElementById('visa_status').getAttribute('data-default-value');
+        // defaultValue = Number(defaultValue);
+        // if (defaultValue || defaultValue == 0) {
+        //   this.visaStatus = defaultValue;
+        // }
       },
       setDataChoices: function(sourceId, setDataVariable) {
         let data = document.getElementById(sourceId).value;

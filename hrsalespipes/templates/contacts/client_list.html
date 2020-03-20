@@ -24,6 +24,7 @@ Clients - List
           <table>
             <thead>
               <th class="text-center">Name</th>
+              <th class="text-center">Industry</th>
               <th class="text-center">Email Address</th>
               <th class="text-center">Contact No.</th>
               <th class="text-center">Actions</th>
@@ -32,6 +33,7 @@ Clients - List
               {% for client in object_list %}
               <tr>
                 <td class="text-center">{{ client.name }}</td>
+                <td class="text-center">{{ client.industry }}</td>
                 <td class="text-center">
                   {% if client.email_address %}
                     <a href="mailto:{{ client.email_address }}">{{ client.email_address }}</a>
