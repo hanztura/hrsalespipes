@@ -40,7 +40,7 @@ Job Detail - {{ object.reference_number }}
                     </tr>
                     <tr>
                       <th>Client:</th>
-                      <td>{{ object.client.name }}</td>
+                      <td><a href="{% url 'contacts:clients_detail' object.client_id %}" title="view client detail">{{ object.client.name }}</a></td>
                     </tr>
                     <tr>
                       <th>Position:</th>

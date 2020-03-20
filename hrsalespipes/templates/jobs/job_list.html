@@ -34,9 +34,9 @@ Jobs - List
             <tbody>
               {% for object in object_list %}
               <tr>
-                <td class="text-center">{{ object.reference_number }}</td>
+                <td class="text-center"><a href="{% url 'jobs:detail' object.pk %}" title="view job detail">{{ object.reference_number }}</a></td>
                 <td class="text-center">{{ object.date }}</td>
-                <td class="text-center">{{ object.client.name }}</td>
+                <td class="text-center"><a href="{% url 'contacts:clients_detail' object.client_id %}" title="view client detail">{{ object.client.name }}</a></td>
                 <td class="text-center">{{ object.position }}</td>
                 <td class="text-center">{{ object.location }}</td>
                 <td class="text-right">{{ object.potential_income|default_if_none:0 }}</td>
