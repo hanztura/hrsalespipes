@@ -82,7 +82,7 @@ class JobCandidateUpdateModelForm(ModelForm):
 
         # create pipeline if needed
         if instance.status.should_create_pipeline and commit:
-            if hasattr(instance, 'status'):
+            if hasattr(instance.status, 'related_pipeline_status'):
                 # get candidate status' related pipeline status
                 related_pipeline_status = \
                     instance.status.related_pipeline_status
@@ -94,9 +94,10 @@ class JobCandidateUpdateModelForm(ModelForm):
                 job_candidate_id=instance.pk)
 
             if not pipeline_record.exists():  # if no pipeline record, create
+                related_pipeline_status_pk = related_pipeline_status.pk if related_pipeline_status else None
                 data = {
                     'job_candidate': instance.pk,
-                    'status': related_pipeline_status.pk,
+                    'status': related_pipeline_status_pk,
                     'base_amount': instance.salary_offered,
                     'date': datetime.date.today(),
                 }

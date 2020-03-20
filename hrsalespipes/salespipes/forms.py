@@ -78,7 +78,7 @@ class PipelineModelForm(CreateCommissionFormMixin, ModelForm):
     def save(self, commit=True):
         # update success date if status has changed
         status = self.fields['status']
-        initial = self.initial['status']
+        initial = self.initial.get('status', None)
         data = self.cleaned_data['status'].pk
         if status.has_changed(initial, data):
             if self.instance.status.probability >= 1:
