@@ -22,40 +22,7 @@ Pipeline
       </v-col>
       <v-col cols="12" class="text-center">
         <v-simple-table>
-          <table>
-            <thead>
-              <tr>
-                <th class="text-center">Date</th>
-                <th class="text-center">Candidate</th>
-                <th class="text-center">Job Reference Number</th>
-                <th class="text-center">Potential Income</th>
-                <th class="text-center">Status</th>
-                <th class="text-center">Succesful Date</th>
-                <th class="text-center">Invoice Date</th>
-                <th class="text-center">Invoice Amount</th>
-                <th class="text-center">VAT</th>
-                <th class="text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for object in object_list %}
-              <tr>
-                <td class="text-center">{{ object.date }}</td>
-                <td class="text-center">{{ object.job_candidate.candidate }}</td>
-                <td class="text-center">{{ object.job_candidate.job.reference_number }}</td>
-                <td class="text-right">{{ object.potential_income|intcomma }}</td>
-                <td class="text-center">{{ object.status }}</td>
-                <td class="text-center">{{ object.successful_date }}</td>
-                <td class="text-center">{{ object.invoice_date }}</td>
-                <td class="text-right">{{ object.invoice_amount|intcomma }}</td>
-                <td class="text-right">{{ object.vat|intcomma }}</td>
-                <td class="text-center">
-                  {% include "_includes/list_action_buttons.html" with edit_href=object.edit_href view_href=object.view_href %}
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+          {% include "salespipes/includes/pipeline_list_table.html" %}
         </v-simple-table>
       </v-col>
 

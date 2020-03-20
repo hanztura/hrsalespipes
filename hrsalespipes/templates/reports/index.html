@@ -8,57 +8,52 @@ Reports
 {% block subcontent %}
   <v-container
     fluid>
-    <h1>Reports</h1>
-    <v-list-item>
-      <v-list-item-content>
-        <v-list-item-title><a href="{% url 'reports:pipeline_summary' %}">Pipeline Summary</a></v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+    <v-list shaped>
+      <v-subheader><h1>Reports</h1></v-subheader>
+      <v-list-item>
+          <v-list-item-icon>
+            <v-icon>fas fa-filter</v-icon>
+          </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title><a href="{% url 'reports:pipeline_summary' %}">Pipeline Summary</a></v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
 
-    <v-list-item>
-      <v-list-item-content>
-        <v-list-item-title><a href="{% url 'reports:jobs_summary' %}">Jobs Summary</a></v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-    
-    <v-list-item>
-      <v-list-item-content>
-        <v-list-item-title><a href="{% url 'reports:job_to_pipeline_analysis' %}">Job to Pipeline Analysis</a></v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+      <v-list-item>
+          <v-list-item-icon>
+            <v-icon>fas fa-suitcase</v-icon>
+          </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title><a href="{% url 'reports:jobs_summary' %}">Jobs Summary</a></v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      
+      <v-list-item>
+          <v-list-item-icon>
+            <v-icon>fas fa-arrow-right</v-icon>
+          </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title><a href="{% url 'reports:job_to_pipeline_analysis' %}">Job to Pipeline Analysis</a></v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
 
-    <v-list-item>
-      <v-list-item-content>
-        <v-list-item-title><a href="{% url 'reports:commissions_earned_summary' %}">Commissions Earned Summary</a></v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+      <v-list-item>
+          <v-list-item-icon>
+            <v-icon>fas fa-calculator</v-icon>
+          </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title><a href="{% url 'reports:commissions_earned_summary' %}">Commissions Earned Summary</a></v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
 
-    <v-list-item>
-      <v-list-item-content>
-        <v-list-item-title><a href="{% url 'reports:monthly_invoices_summary' %}">Monthly Invoices Summary</a></v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+      <v-list-item>
+          <v-list-item-icon>
+            <v-icon>fas fa-file-invoice-dollar</v-icon>
+          </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title><a href="{% url 'reports:monthly_invoices_summary' %}">Monthly Invoices Summary</a></v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
   </v-container>  
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Reports',
-        },
-      ],
-    }),
-
-    mounted(){
-      this.updateBreadcrumbs();
-    }
-  });
-</script>  
-{% endblock script %}

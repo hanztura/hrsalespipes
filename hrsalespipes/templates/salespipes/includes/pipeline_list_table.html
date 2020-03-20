@@ -1,0 +1,36 @@
+{% load humanize %}
+
+<table>
+  <thead>
+    <tr>
+      <th class="text-center">Date</th>
+      <th class="text-center">Candidate</th>
+      <th class="text-center">Job Reference Number</th>
+      <th class="text-center">Potential Income</th>
+      <th class="text-center">Status</th>
+      <th class="text-center">Succesful Date</th>
+      <th class="text-center">Invoice Date</th>
+      <th class="text-center">Invoice Amount</th>
+      <th class="text-center">VAT</th>
+      <th class="text-center">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for object in object_list %}
+    <tr>
+      <td class="text-center"><a href="{% url 'salespipes:detail' object.pk %}" title="view pipeline detail">{{ object.date }}</a></td>
+      <td class="text-center"><a href="{% url 'jobs:candidates_detail' object.job_candidate.job_id object.job_candidate_id %}" title="view job candidate detail">{{ object.job_candidate.candidate }}</a></td>
+      <td class="text-center"><a href="{% url 'jobs:detail' object.job_candidate.job_id %}" title="view job detail">{{ object.job_candidate.job.reference_number }}</a></td>
+      <td class="text-right">{{ object.potential_income|intcomma }}</td>
+      <td class="text-center">{{ object.status }}</td>
+      <td class="text-center">{{ object.successful_date|default_if_none:'' }}</td>
+      <td class="text-center">{{ object.invoice_date|default_if_none:'' }}</td>
+      <td class="text-right">{{ object.invoice_amount|intcomma }}</td>
+      <td class="text-right">{{ object.vat|intcomma }}</td>
+      <td class="text-center">
+        {% include "_includes/list_action_buttons.html" with edit_href=object.edit_href view_href=object.view_href %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
