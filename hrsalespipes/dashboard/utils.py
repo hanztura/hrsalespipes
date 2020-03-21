@@ -1,5 +1,8 @@
 import datetime
+
 from django.db.models import Q, Sum, Count
+
+from dateutil.relativedelta import relativedelta
 
 
 custom_permissions = [
@@ -70,10 +73,10 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
     sjatpi = sjatpi.order_by(field_lookup)
     sjatpi = [s for s in sjatpi]
 
-    # successful jobs per consultant. this month
-    successful_jobs_per_consultant = pipelines_per_consultant.filter(
+    successful_jobs_per_consultant_all_time = pipelines_per_consultant.filter(
         status__probability__gte=1)
-    successful_jobs_per_consultant = successful_jobs_per_consultant.filter(
+    # successful jobs per consultant. this month
+    successful_jobs_per_consultant = successful_jobs_per_consultant_all_time.filter(
         successful_date__month=today.month,
         successful_date__year=today.year)
     order_by = 'job_candidate__consultant__name'
@@ -93,6 +96,17 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
         {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipc
     ]
 
+    # total NFI per consultant for the last 12 months
+    past_12_month = today - relativedelta(months=12)
+    tnfipcp12m = successful_jobs_per_consultant_all_time.filter(
+        successful_date__year=past_12_month.year,
+        successful_date__month=past_12_month.month)
+    tnfipcp12m = tnfipcp12m.annotate(value=Sum('potential_income')).order_by(
+        order_by)  # order by jobconsultant name
+    tnfipcp12m = [
+        {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipcp12m
+    ]
+
     return (
         active_jobs,
         successful_jobs,
@@ -100,5 +114,6 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
         tpi_last_month,
         sjatpi,
         sjpc,
-        tnfipc
+        tnfipc,
+        tnfipcp12m
     )

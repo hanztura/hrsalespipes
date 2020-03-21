@@ -60,14 +60,14 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 context['data_note'] = \
                     'All employees\' data are used in this dashboard.'
 
-                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc = get_data_dashboard_items_number(all_pipelines)
+                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m = get_data_dashboard_items_number(all_pipelines)
             else:  # One Two dashboard
                 employee = None
                 if hasattr(user, 'as_employee'):
                     employee = user.as_employee
 
                 if employee:
-                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc = get_data_dashboard_items_number(all_pipelines, employee)
+                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m = get_data_dashboard_items_number(all_pipelines, employee)
 
                     # interview data
                     all_interviews = all_interviews.filter(done_by=employee)
@@ -82,6 +82,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     sjatpi = []
                     sjpc = []
                     tnfipc = []
+                    tnfipcp12m = []
                     all_interviews = Interview.objects.none()
                     cv_sent_to_clients = JobCandidate.objects.none()
 
@@ -139,6 +140,12 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 'type': 'graph',
                 'title': 'Total NFI generated per consultant this month',
                 'value': tnfipc
+            },
+            {
+                'code': 'tnfipcp12m',
+                'type': 'graph',
+                'title': 'Total NFI generated per consultant last 12 months',
+                'value': tnfipcp12m
             }
         ]
 
