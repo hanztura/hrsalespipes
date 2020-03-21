@@ -79,19 +79,16 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
     successful_jobs_per_consultant = successful_jobs_per_consultant_all_time.filter(
         successful_date__month=today.month,
         successful_date__year=today.year)
-    order_by = 'job_candidate__consultant__name'
+    key_field = 'job_candidate__consultant__name'
     sjpc = successful_jobs_per_consultant.values(
-        order_by)
+        key_field)
     sjpc = sjpc.annotate(value=Count('id')).order_by(
-        'job_candidate__consultant_name')
+        key_field)
     sjpc = [s for s in sjpc]
 
     # total NFI per consultant this.month
-    key_field = 'job_candidate__consultant__name'
-    tnfipc = successful_jobs_per_consultant.values(
-        key_field)
-    tnfipc = tnfipc.annotate(value=Sum('potential_income')).order_by(
-        order_by)
+    tnfipc = successful_jobs_per_consultant.values(key_field)
+    tnfipc = tnfipc.annotate(value=Sum('potential_income')).order_by(key_field)
     tnfipc = [
         {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipc
     ]
@@ -99,10 +96,11 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
     # total NFI per consultant for the last 12 months
     past_12_month = today - relativedelta(months=12)
     tnfipcp12m = successful_jobs_per_consultant_all_time.filter(
-        successful_date__year=past_12_month.year,
-        successful_date__month=past_12_month.month)
+        successful_date__gte=past_12_month.replace(day=1),
+        successful_date__lte=last_month)
+    tnfipcp12m = tnfipcp12m.values(key_field)
     tnfipcp12m = tnfipcp12m.annotate(value=Sum('potential_income')).order_by(
-        order_by)  # order by jobconsultant name
+        key_field)  # order by jobconsultant name
     tnfipcp12m = [
         {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipcp12m
     ]

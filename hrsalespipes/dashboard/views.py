@@ -1,9 +1,7 @@
-import datetime
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.humanize.templatetags import humanize
-from django.db.models import Q, Count
+from django.db.models import Q
 from django.views.generic import TemplateView
 
 from .utils import (
@@ -55,19 +53,22 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         if self.dashboard_index in [1, 2, 0]:  # dashboard for One Two Three
 
             # cv shared to client
-            cv_sent_to_clients = all_job_candidates.filter(cv_date_shared__isnull=False)
+            cv_sent_to_clients = all_job_candidates.filter(
+                cv_date_shared__isnull=False)
             if self.dashboard_index == 0:  # Three Dashboard
                 context['data_note'] = \
                     'All employees\' data are used in this dashboard.'
 
-                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m = get_data_dashboard_items_number(all_pipelines)
+                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m = get_data_dashboard_items_number(
+                    all_pipelines)
             else:  # One Two dashboard
                 employee = None
                 if hasattr(user, 'as_employee'):
                     employee = user.as_employee
 
                 if employee:
-                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m = get_data_dashboard_items_number(all_pipelines, employee)
+                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m = get_data_dashboard_items_number(
+                        all_pipelines, employee)
 
                     # interview data
                     all_interviews = all_interviews.filter(done_by=employee)

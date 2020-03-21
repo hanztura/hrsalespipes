@@ -12,7 +12,6 @@ class PipelineModelForm(CreateCommissionFormMixin, ModelForm):
         model = Pipeline
         fields = [
             'date',
-            'job',
             'job_candidate',
             'recruitment_term',
             'recruitment_rate',

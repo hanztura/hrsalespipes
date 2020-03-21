@@ -35,10 +35,9 @@ Pipeline - Edit
             :items="jobs"
             label="Job"
             v-model.lazy="job"
-            name='job'
+            disabled
             dense
-            outlined
-            required>
+            outlined>
           </v-autocomplete>
 
           <v-autocomplete
@@ -176,7 +175,7 @@ Pipeline - Edit
         }
       ],
       jobs: [],
-      job: '{{ form.job.value }}',
+      job: '{{ job_id }}',
       jobCandidates: [],
       jobCandidate: Number('{{ form.job_candidate.value }}'),
       statusChoices: [],
@@ -255,11 +254,8 @@ Pipeline - Edit
       this.setDataChoices('dataJobsChoices', 'jobs');
       this.setDataChoices('dataStatusChoices', 'statusChoices');
       this.updateBreadcrumbs();
-    },
-
-    mounted(){
       this.fetchJobCandidates();
-    }
+    },
 
   });
 </script>  
