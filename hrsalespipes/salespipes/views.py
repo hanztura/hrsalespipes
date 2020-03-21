@@ -69,6 +69,7 @@ class PipelineUpdateView(
         vat_rate = setting.vat_rate
 
         context['jobs'] = jobs
+        context['job_id'] = self.object.job_candidate.job_id
         context['status_objects'] = status_objects
         context['vat_rate'] = vat_rate
         return context

@@ -1,5 +1,8 @@
 import datetime
+
 from django.db.models import Q, Sum, Count
+
+from dateutil.relativedelta import relativedelta
 
 
 custom_permissions = [
@@ -27,11 +30,14 @@ template_names = (
 
 def get_data_dashboard_items_number(all_pipelines, employee=None):
     pipelines = all_pipelines
+    pipelines_per_consultant = all_pipelines
     if employee:
         pipelines = pipelines.filter(
             Q(job_candidate__associate_id=employee.pk) |
             Q(job_candidate__consultant_id=employee.pk)
         )
+        pipelines_per_consultant = pipelines.filter(
+            job_candidate__consultant_id=employee.pk)
 
     active_jobs = pipelines.filter(
         status__is_closed=False)
@@ -67,10 +73,45 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
     sjatpi = sjatpi.order_by(field_lookup)
     sjatpi = [s for s in sjatpi]
 
+    successful_jobs_per_consultant_all_time = pipelines_per_consultant.filter(
+        status__probability__gte=1)
+    # successful jobs per consultant. this month
+    successful_jobs_per_consultant = successful_jobs_per_consultant_all_time.filter(
+        successful_date__month=today.month,
+        successful_date__year=today.year)
+    key_field = 'job_candidate__consultant__name'
+    sjpc = successful_jobs_per_consultant.values(
+        key_field)
+    sjpc = sjpc.annotate(value=Count('id')).order_by(
+        key_field)
+    sjpc = [s for s in sjpc]
+
+    # total NFI per consultant this.month
+    tnfipc = successful_jobs_per_consultant.values(key_field)
+    tnfipc = tnfipc.annotate(value=Sum('potential_income')).order_by(key_field)
+    tnfipc = [
+        {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipc
+    ]
+
+    # total NFI per consultant for the last 12 months
+    past_12_month = today - relativedelta(months=12)
+    tnfipcp12m = successful_jobs_per_consultant_all_time.filter(
+        successful_date__gte=past_12_month.replace(day=1),
+        successful_date__lte=last_month)
+    tnfipcp12m = tnfipcp12m.values(key_field)
+    tnfipcp12m = tnfipcp12m.annotate(value=Sum('potential_income')).order_by(
+        key_field)  # order by jobconsultant name
+    tnfipcp12m = [
+        {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipcp12m
+    ]
+
     return (
         active_jobs,
         successful_jobs,
         tpi,
         tpi_last_month,
         sjatpi,
+        sjpc,
+        tnfipc,
+        tnfipcp12m
     )

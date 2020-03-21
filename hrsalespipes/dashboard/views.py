@@ -1,9 +1,7 @@
-import datetime
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.humanize.templatetags import humanize
-from django.db.models import Q, Sum, Count
+from django.db.models import Q
 from django.views.generic import TemplateView
 
 from .utils import (
@@ -55,20 +53,22 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         if self.dashboard_index in [1, 2, 0]:  # dashboard for One Two Three
 
             # cv shared to client
-            cv_sent_to_clients = all_job_candidates.filter(cv_date_shared__isnull=False)
+            cv_sent_to_clients = all_job_candidates.filter(
+                cv_date_shared__isnull=False)
             if self.dashboard_index == 0:  # Three Dashboard
                 context['data_note'] = \
                     'All employees\' data are used in this dashboard.'
 
-                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi = get_data_dashboard_items_number(all_pipelines)
-
+                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m = get_data_dashboard_items_number(
+                    all_pipelines)
             else:  # One Two dashboard
                 employee = None
                 if hasattr(user, 'as_employee'):
                     employee = user.as_employee
 
                 if employee:
-                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi = get_data_dashboard_items_number(all_pipelines, employee)
+                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m = get_data_dashboard_items_number(
+                        all_pipelines, employee)
 
                     # interview data
                     all_interviews = all_interviews.filter(done_by=employee)
@@ -81,6 +81,9 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     tpi = 0
                     tpi_last_month = 0
                     sjatpi = []
+                    sjpc = []
+                    tnfipc = []
+                    tnfipcp12m = []
                     all_interviews = Interview.objects.none()
                     cv_sent_to_clients = JobCandidate.objects.none()
 
@@ -120,12 +123,35 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
             dashboard_items_number += data
 
-        sjatpi = {
-            'type': 'graph',
-            'title': 'Successful jobs per industry',
-            'value': sjatpi
-        }
+        dashboard_items_graph = [
+            {
+                'code': 'sjatpi',
+                'type': 'graph',
+                'title': 'Successful jobs per industry',
+                'value': sjatpi
+            },
+            {
+                'code': 'sjpc',
+                'type': 'graph',
+                'title': 'Successful jobs per consultant this month',
+                'value': sjpc
+            },
+            {
+                'code': 'tnfipc',
+                'type': 'graph',
+                'title': 'Total NFI generated per consultant this month',
+                'value': tnfipc
+            },
+            {
+                'code': 'tnfipcp12m',
+                'type': 'graph',
+                'title': 'Total NFI generated per consultant last 12 months',
+                'value': tnfipcp12m
+            }
+        ]
 
-        context['sjatpi'] = json.dumps(sjatpi)
+        for graph_item in dashboard_items_graph:
+            context[graph_item['code']] = json.dumps(graph_item)
+
         context['dashboard_items_number'] = json.dumps(dashboard_items_number)
         return context

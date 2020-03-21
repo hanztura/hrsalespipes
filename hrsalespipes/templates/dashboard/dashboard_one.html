@@ -9,6 +9,9 @@ Dashboard
 {% block subcontent %}
   <input type="hidden" id="dataDashboardItemsNumber" value="{{ dashboard_items_number }}">
   <input type="hidden" id="dataSuccessfulJobsAllTimePerIndustry" value="{{ sjatpi }}">
+  <input type="hidden" id="dataSuccessfulJobsPerConsutant" value="{{ sjpc }}">
+  <input type="hidden" id="dataTNFIPerConsultant" value="{{ tnfipc }}">
+  <input type="hidden" id="dataTNFIPerConsultantLast12Months" value="{{ tnfipcp12m }}">
   <v-container
     fluid>
     <h1>Dashboard</h1>
@@ -28,24 +31,17 @@ Dashboard
       align="center"
       justify="center"
     >
-      <v-col cols=12 md=6>
-        <v-card
-          class="mx-auto text-center"
-          color="primary"
-          dark>
-          <v-card-text>
-            <div class="display-1 font-weight-thin">Successful jobs per industry</div>
-          </v-card-text>
-
-          <v-card-text>
-            <v-sheet color="rgba(0, 0, 0, .12)">
-              <g-chart
-                :type="chartType"
-                :data="sjatpi"
-              />
-            </v-sheet>
-          </v-card-text>
-        </v-card>
+      <v-col
+        cols=12
+        md=6
+        v-for="graph in graphItems"
+        :key="graph.title"
+        height="100%">
+        <graph-card
+          :chart-data="graph.data"
+          :default-chart-type="'ColumnChart'"
+          :chart-types="chartTypes"
+          :title="graph.title"></graph-card>
       </v-col>
     </v-row>
   </v-container>  
@@ -70,10 +66,12 @@ Dashboard
       <v-col cols="12" md="4">
         <v-card
           class="mx-auto text-center"
-          outlined>
+          outlined
+          elevation=1>
           <v-card-text>
             <p class="font-weight-black headline">
               <animated-number
+                class="display-1"
                 :value="value"
                 :duration="2000"
                 :round="0"/>
@@ -85,6 +83,79 @@ Dashboard
     `,
   }
 
+  Vue.component('graph-card', {
+    name: 'GraphCard',
+    props: [
+      'chartData',
+      'defaultChartType',
+      'chartTypes',
+      'title',
+    ],
+    data: () => {
+      return {
+        chartType: 'ColumnChart',
+      }
+    },
+
+    computed: {
+      hasData: function() {
+        return this.chartData.length > 1
+      }
+    },
+
+    mounted() {
+      this.chartType = this.defaultChartType;
+    },
+
+    template: `
+      <v-card
+        class="mx-auto text-center"
+        color="primary"
+        outlined
+        dark
+        elevation=1>
+        <v-card-text>
+          <div class="title font-weight-thin">[[ title ]]</div>
+        </v-card-text>
+
+        <template v-if="hasData">
+          <v-card-text>
+            <v-sheet>
+              <g-chart
+                :type="chartType"
+                :data="chartData"
+              />
+            </v-sheet>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-row align="center" justify="center">
+              <v-btn
+                class="mx-2"
+                v-for="ct in chartTypes"
+                :key="ct.type"
+                :title="ct.text"
+                @click="changeChartType(ct.type)">
+                <v-icon>[[ ct.icon ]]</v-icon>
+              </v-btn>
+            </v-row>
+          </v-card-actions>
+        </template>
+
+        <v-card-text v-else>
+          <v-sheet color="rgba(0, 0, 0, .12)">
+            <p>No data available.</p>
+          </v-sheet>
+        </v-card-text>
+      </v-card>
+    `,
+    methods: {
+      changeChartType: function(value) {
+        this.chartType = value;
+      },
+    }
+  })
+
   new Vue({
     name: 'DashboardApp',
     el: '#inspire',
@@ -93,38 +164,109 @@ Dashboard
     data: () => ({
       drawer: null,
       subBreadcrumbs: [],
-      chartType: 'ColumnChart',
+      chartTypes: [
+        {
+          'type': 'ColumnChart',
+          'text': 'Column',
+          'icon': 'fas fa-chart-bar',
+        },
+        {
+          'type': 'PieChart',
+          'text': 'Pie',
+          'icon': 'fas fa-chart-pie',
+        },
+        {
+          'type': 'LineChart',
+          'text': 'Line',
+          'icon': 'fas fa-chart-line',
+        },
+      ],
       dashboardItemsNumber: [],
       sjatpi: [["Industry","Successful jobs per industry"]],
+      sjpc: [["Consultant","Successful jobs per consultant this month"]],
+      tnfipc: [["Consultant", "Total NFI generated per consultant this month"]],
+      tnfipcp12m: [["Consultant", "Total NFI generated per consultant last 12 months"]],
+      transformTheseData: [
+        {
+          sourceId: 'dataSuccessfulJobsAllTimePerIndustry',
+          dataField: 'sjatpi',
+          titleField: 'job_candidate__job__client__industry',
+        },
+        {
+          sourceId: 'dataSuccessfulJobsPerConsutant',
+          dataField: 'sjpc',
+          titleField: 'job_candidate__consultant__name',
+        },
+        {
+          sourceId: 'dataTNFIPerConsultant',
+          dataField: 'tnfipc',
+          titleField: 'job_candidate__consultant__name',
+        },
+        {
+          sourceId: 'dataTNFIPerConsultantLast12Months',
+          dataField: 'tnfipcp12m',
+          titleField: 'job_candidate__consultant__name',
+        },
+      ],
     }),
+
+    computed: {
+      graphItems: function() {
+        return [
+          this.sjatpi,
+          this.sjpc,
+          this.tnfipc,
+          this.tnfipcp12m,
+        ]
+      },
+    },
 
     methods: {
       setDataChoices: function(sourceId, setDataVariable) {
         let data = document.getElementById(sourceId).value;
         this.$set(this, setDataVariable, JSON.parse(data));
       },
-      transformSJTPI: function(sourceId='dataSuccessfulJobsAllTimePerIndustry') {
+      changeChartType: function(property, value) {
+        this.$set(this, property, value);
+      },
+      transformGraphData: function(sourceId, dataField, titleField) {
         let data = document.getElementById(sourceId).value;
         data = JSON.parse(data);
 
         // set value label
-        this.sjatpi[0][1] = data.title;
+        this.$set(this[dataField][0], 1, data.title);
+        // this.sjpc[0][1] = data.title;
 
         // transform data to be consumed by a graph
+        title = data.title
         data = _.map(data.value, (graph) => {
           // graph is the value attribute from django
+
+          let value = graph.value ? graph.value : [];
           return [
-            graph.job_candidate__job__client__industry,
-            graph.value
+            graph[titleField],
+            value
           ]
         });
-
-        this.sjatpi = this.sjatpi.concat(data);
+        data = this[dataField].concat(data);
+        data = {
+          data: data,
+          title: title,
         }
+
+        this.$set(this, dataField, data);
+      },
+      setGraphData: function() {
+        let _this = this;
+
+        _.forEach(this.transformTheseData, (data) => {
+          _this.transformGraphData(data.sourceId, data.dataField, data.titleField);
+        });
+      }
     },
 
     beforeMount(){
-      this.transformSJTPI();
+      this.setGraphData();
     },
 
     mounted() {
