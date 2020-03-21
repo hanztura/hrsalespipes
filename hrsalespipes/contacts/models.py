@@ -90,6 +90,20 @@ class Candidate(ContactModel):
         max_length=200, blank=True)
     date_of_birth = models.DateField(blank=True, null=True)
 
+    # medical
+    is_medical = models.BooleanField(default=False, blank=True)
+    medical_experience_in_years = models.SmallIntegerField(
+        default=0,
+        blank=True)
+    specialization = models.TextField(
+        blank=True,
+        verbose_name='Field of specialization')
+    other_certifications = models.TextField(blank=True)
+    bls_acls_validity = models.DateField(null=True, blank=True)
+    haad_dha_license_validity = models.DateField(null=True, blank=True)
+    job_title_on_dha_haad = models.CharField(max_length=250, blank=True)
+    dataflow_last_update = models.DateField(null=True, blank=True)
+
     # others
     visa_status = models.ForeignKey(
         VisaStatus, on_delete=models.SET_NULL, null=True, blank=True)

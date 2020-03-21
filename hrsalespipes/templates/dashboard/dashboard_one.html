@@ -56,11 +56,12 @@ Dashboard
 {% if debug %}
   <script src="{% static "vendor/lodash/lodash.js" %}"></script>
   <script src="{% static "vendor/vue-google-charts/vue-google-charts.browser.js" %}"></script>
+  <script src="{% static "vendor/AnimatedNumber.umd.min.js" %}"></script>
 {% else %}
   <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue-google-charts@0.3.2/dist/vue-google-charts.browser.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animated-number-vue@1.0.0/dist/AnimatedNumber.umd.min.js"></script>
 {% endif %}
-<script src="https://cdn.jsdelivr.net/npm/animated-number-vue@1.0.0/dist/AnimatedNumber.umd.min.js"></script>
 <script>
   Vue.component('animated-number', AnimatedNumber)
   const DashboardValueCard = {
