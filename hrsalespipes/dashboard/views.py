@@ -132,7 +132,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             'value': sjpc
         }
 
-        context['sjpc'] = json.dumps(sjpc)
         context['sjatpi'] = json.dumps(sjatpi)
+        context['sjpc'] = json.dumps(sjpc)
         context['dashboard_items_number'] = json.dumps(dashboard_items_number)
         return context

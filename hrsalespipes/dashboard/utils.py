@@ -32,6 +32,8 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
             Q(job_candidate__associate_id=employee.pk) |
             Q(job_candidate__consultant_id=employee.pk)
         )
+        pipelines_for_sjpc = pipelines.filter(
+            job_candidate__consultant_id=employee.pk)
 
     active_jobs = pipelines.filter(
         status__is_closed=False)
@@ -68,8 +70,12 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
     sjatpi = [s for s in sjatpi]
 
     # successful jobs per consultant. this month
-    sjpc = successful_jobs.values(
-        'job_candidate__consultant__name')
+    sjpc = pipelines_for_sjpc.filter(
+        status__probability__gte=1)
+    sjpc = sjpc.filter(
+        successful_date__month=today.month,
+        successful_date__year=today.year)
+    sjpc = sjpc.values('job_candidate__consultant__name')
     sjpc = sjpc.annotate(value=Count('id')).order_by(
         'job_candidate__consultant_name')
     sjpc = [s for s in sjpc]
