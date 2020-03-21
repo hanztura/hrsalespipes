@@ -22,18 +22,15 @@
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
+
             <v-tabs
               v-model="tab"
               fixed-tabs>
-              <v-tab
-                v-for="tab in tabs"
-                :key="tab">
-                [[ tab ]]
-              </v-tab>
+              {% include "contacts/includes/v_tab.html" %}
             </v-tabs>
 
             <v-tabs-items v-model="tab">
-              <v-tab-item>
+              <v-tab-item eager>
 
                 <v-text-field
                   label="Code"
@@ -88,7 +85,7 @@
                 </v-autocomplete>
               </v-tab-item> <!-- Basic -->
 
-              <v-tab-item>
+              <v-tab-item eager>
                 <v-text-field
                   label="Name"
                   outlined
@@ -158,7 +155,7 @@
                 </v-text-field>
               </v-tab-item>  <!-- Personal -->
 
-              <v-tab-item>
+              <v-tab-item eager>
                 <v-text-field
                   label="Positiion"
                   outlined
@@ -188,7 +185,7 @@
                 ></v-textarea>
               </v-tab-item>  <!-- Work history -->
 
-              <v-tab-item>
+              <v-tab-item eager>
 
                 <v-select
                   :items="visaStatusChoices"
@@ -237,7 +234,62 @@
                   value="{{ form.notes.value }}">
                   </v-textarea>
               </v-tab-item>  <!-- Others -->
+
+              <v-tab-item eager>
+                <v-checkbox v-model="isMedical" label="Medical?"></v-checkbox>
+                <input type="hidden" name="is_medical" :value="isMedical">
+
+                <div v-show="isMedical">
+                  <v-slider
+                    v-model="medicalExperience"
+                    min="0"
+                    max="80"
+                    thumb-label="always"
+                    name="medical_experience_in_years"
+                    label="Medical Exp (Years)"></v-slider>
+
+                  <v-textarea
+                    name="specialization"
+                    label="Specialization"
+                    outlined
+                    value="{{ form.specialization.value }}"></v-textarea>
+
+                  <v-textarea
+                    name="other_certifications"
+                    label="Other Certification(s)"
+                    outlined
+                    value="{{ form.other_certifications.value }}"></v-textarea>
+
+                  <v-text-field
+                    label="Job Title on DHA/HAAD"
+                    outlined
+                    name="job_title_on_dha_haad"
+                    value="{{ form.job_title_on_dha_haad.value|default_if_none:'' }}"></v-text-field>
+
+                  <v-text-field
+                    outlined
+                    label="BLS/ACLS Validity"
+                    name="bls_acls_validity"
+                    type="date"
+                    value="{{ form.bls_acls_validity.value|date:"Y-m-d" }}"></v-text-field>
+
+                  <v-text-field
+                    outlined
+                    label="HAAD/DHA Licence Validity"
+                    name="haad_dha_license_validity"
+                    type="date"
+                    value="{{ form.haad_dha_license_validity.value|date:"Y-m-d" }}"></v-text-field>
+
+                  <v-text-field
+                    outlined
+                    label="Last Update of Dataflow"
+                    name="dataflow_last_update"
+                    type="date"
+                    value="{{ form.dataflow_last_update.value|date:"Y-m-d" }}"></v-text-field>
+                </div>
+              </v-tab-item>  <!-- Medical -->
             </v-tabs-items>
+
 
             <v-input>
               <v-btn block color="success" type="submit">Save</v-btn>
@@ -284,10 +336,26 @@
       ],
       tab: null,
       tabs: [
-        'Contact Details',
-        'Personal',
-        'Current/Previous Work',
-        'Others'
+        {
+          tab: 'Contact Details',
+          icon: 'fas fa-address-book',  
+        },
+        {
+          tab: 'Personal',
+          icon: 'fas fa-user',  
+        },
+        {
+          tab: 'Current/Previous Work',
+          icon: 'fas fa-undo',  
+        },
+        {
+          tab: 'Others',
+          icon: 'fas fa-info',  
+        },
+        {
+          tab: 'Medical',
+          icon: 'fas fa-notes-medical',  
+        },
       ],
       locations: [],
       location: '{{ form.location.value }}',
@@ -308,6 +376,8 @@
       visaStatus: '{{ form.visa_status.value|default_if_none:"0" }}',
       employees: [],
       candidateOwner: '{{ form.candidate_owner.value|default_if_none:'' }}',
+      isMedical: {{ form.is_medical.value|yesno:"true,false" }},
+      medicalExperience: {{ form.medical_experience_in_years.value }},
     }),
 
     methods: {

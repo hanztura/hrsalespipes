@@ -21,15 +21,11 @@
             <v-tabs
               v-model="tab"
               fixed-tabs>
-              <v-tab
-                v-for="tab in tabs"
-                :key="tab">
-                [[ tab ]]
-              </v-tab>
+              {% include "contacts/includes/v_tab.html" %}
             </v-tabs>
 
             <v-tabs-items v-model="tab">
-              <v-tab-item>
+              <v-tab-item eager>
                 <v-text-field
                   label="Name"
                   outlined
@@ -121,7 +117,10 @@
       ],
       tab: null,
       tabs: [
-        'Contact Details',
+        {
+          tab: 'Contact Details',
+          icon: 'fas fa-address-book',  
+        },
       ],
     }),
 

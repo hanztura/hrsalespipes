@@ -22,15 +22,11 @@
             <v-tabs
               v-model="tab"
               fixed-tabs>
-              <v-tab
-                v-for="tab in tabs"
-                :key="tab">
-                [[ tab ]]
-              </v-tab>
+              {% include "contacts/includes/v_tab.html" %}
             </v-tabs>
 
             <v-tabs-items v-model="tab">
-              <v-tab-item>
+              <v-tab-item eager>
                 <v-text-field
                   label="Name"
                   outlined
@@ -96,7 +92,7 @@
                 </v-text-field>
               </v-tab-item> <!-- Basic -->
 
-              <v-tab-item>
+              <v-tab-item eager>
 
                 <v-textarea
                   name="initial_approach"
@@ -189,8 +185,14 @@
       ],
       tab: null,
       tabs: [
-        'Contact Details',
-        'Others'
+        {
+          tab: 'Contact Details',
+          icon: 'fas fa-address-book',  
+        },
+        {
+          tab: 'Others',
+          icon: 'fas fa-info',  
+        },
       ],
       locations: [],
       location: '{{ form.location.value }}',

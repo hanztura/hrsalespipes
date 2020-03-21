@@ -52,6 +52,16 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
             'notice_period',
             'candidate_owner',
             'notes',
+
+            # medical
+            'is_medical',
+            'medical_experience_in_years',
+            'specialization',
+            'other_certifications',
+            'bls_acls_validity',
+            'haad_dha_license_validity',
+            'job_title_on_dha_haad',
+            'dataflow_last_update',
         ]
 
     def __init__(self, *args, **kwargs):
