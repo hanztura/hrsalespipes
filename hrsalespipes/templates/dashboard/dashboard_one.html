@@ -66,10 +66,12 @@ Dashboard
       <v-col cols="12" md="4">
         <v-card
           class="mx-auto text-center"
-          outlined>
+          outlined
+          elevation=1>
           <v-card-text>
             <p class="font-weight-black headline">
               <animated-number
+                class="display-1"
                 :value="value"
                 :duration="2000"
                 :round="0"/>
@@ -109,15 +111,16 @@ Dashboard
       <v-card
         class="mx-auto text-center"
         color="primary"
+        outlined
         dark
-        height="100%">
+        elevation=1>
         <v-card-text>
-          <div class="display-1 font-weight-thin">[[ title ]]</div>
+          <div class="title font-weight-thin">[[ title ]]</div>
         </v-card-text>
 
         <template v-if="hasData">
           <v-card-text>
-            <v-sheet color="rgba(0, 0, 0, .12)">
+            <v-sheet>
               <g-chart
                 :type="chartType"
                 :data="chartData"
