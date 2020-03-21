@@ -5,6 +5,10 @@ DEBUG = False
 ALLOWED_HOSTS = os.environ.setdefault('HRSALESPIPES_ALLOWED_HOST', '')
 ALLOWED_HOSTS = ALLOWED_HOSTS.split(',')
 
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
