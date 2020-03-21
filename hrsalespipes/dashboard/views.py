@@ -3,7 +3,7 @@ import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.humanize.templatetags import humanize
-from django.db.models import Q, Sum, Count
+from django.db.models import Q, Count
 from django.views.generic import TemplateView
 
 from .utils import (
@@ -60,15 +60,14 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 context['data_note'] = \
                     'All employees\' data are used in this dashboard.'
 
-                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi = get_data_dashboard_items_number(all_pipelines)
-
+                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc = get_data_dashboard_items_number(all_pipelines)
             else:  # One Two dashboard
                 employee = None
                 if hasattr(user, 'as_employee'):
                     employee = user.as_employee
 
                 if employee:
-                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi = get_data_dashboard_items_number(all_pipelines, employee)
+                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc = get_data_dashboard_items_number(all_pipelines, employee)
 
                     # interview data
                     all_interviews = all_interviews.filter(done_by=employee)
@@ -81,6 +80,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     tpi = 0
                     tpi_last_month = 0
                     sjatpi = []
+                    sjpc = []
                     all_interviews = Interview.objects.none()
                     cv_sent_to_clients = JobCandidate.objects.none()
 
@@ -126,6 +126,13 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             'value': sjatpi
         }
 
+        sjpc = {
+            'type': 'graph',
+            'title': 'Successful jobs per consultant this month',
+            'value': sjpc
+        }
+
+        context['sjpc'] = json.dumps(sjpc)
         context['sjatpi'] = json.dumps(sjatpi)
         context['dashboard_items_number'] = json.dumps(dashboard_items_number)
         return context

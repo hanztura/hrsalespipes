@@ -67,10 +67,18 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
     sjatpi = sjatpi.order_by(field_lookup)
     sjatpi = [s for s in sjatpi]
 
+    # successful jobs per consultant. this month
+    sjpc = successful_jobs.values(
+        'job_candidate__consultant__name')
+    sjpc = sjpc.annotate(value=Count('id')).order_by(
+        'job_candidate__consultant_name')
+    sjpc = [s for s in sjpc]
+
     return (
         active_jobs,
         successful_jobs,
         tpi,
         tpi_last_month,
         sjatpi,
+        sjpc
     )

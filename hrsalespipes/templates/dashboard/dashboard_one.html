@@ -9,6 +9,7 @@ Dashboard
 {% block subcontent %}
   <input type="hidden" id="dataDashboardItemsNumber" value="{{ dashboard_items_number }}">
   <input type="hidden" id="dataSuccessfulJobsAllTimePerIndustry" value="{{ sjatpi }}">
+  <input type="hidden" id="dataSuccessfulJobsPerConsutant" value="{{ sjpc }}">
   <v-container
     fluid>
     <h1>Dashboard</h1>
@@ -40,11 +41,57 @@ Dashboard
           <v-card-text>
             <v-sheet color="rgba(0, 0, 0, .12)">
               <g-chart
-                :type="chartType"
+                :type="sjatpiChartType"
                 :data="sjatpi"
               />
             </v-sheet>
           </v-card-text>
+
+          <v-card-actions>
+            <v-row align="center" justify="center">
+              <v-btn
+                class="mx-2"
+                v-for="ct in chartTypes"
+                :key="ct.type"
+                :title="ct.text"
+                @click="changeChartType('sjatpiChartType', ct.type)">
+                <v-icon>[[ ct.icon ]]</v-icon>
+              </v-btn>
+            </v-row>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+
+      <v-col cols=12 md=6>
+        <v-card
+          class="mx-auto text-center"
+          color="primary"
+          dark>
+          <v-card-text>
+            <div class="display-1 font-weight-thin">[[ sjpc[0][1] ]]</div>
+          </v-card-text>
+
+          <v-card-text>
+            <v-sheet color="rgba(0, 0, 0, .12)">
+              <g-chart
+                :type="sjpcChartType"
+                :data="sjpc"
+              />
+            </v-sheet>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-row align="center" justify="center">
+              <v-btn
+                class="mx-2"
+                v-for="ct in chartTypes"
+                :key="ct.type"
+                :title="ct.text"
+                @click="changeChartType('sjpcChartType', ct.type)">
+                <v-icon>[[ ct.icon ]]</v-icon>
+              </v-btn>
+            </v-row>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -93,15 +140,38 @@ Dashboard
     data: () => ({
       drawer: null,
       subBreadcrumbs: [],
-      chartType: 'ColumnChart',
+      chartTypes: [
+        {
+          'type': 'ColumnChart',
+          'text': 'Column',
+          'icon': 'fas fa-chart-bar',
+        },
+        {
+          'type': 'PieChart',
+          'text': 'Pie',
+          'icon': 'fas fa-chart-pie',
+        },
+        {
+          'type': 'LineChart',
+          'text': 'Line',
+          'icon': 'fas fa-chart-line',
+        },
+      ],
       dashboardItemsNumber: [],
       sjatpi: [["Industry","Successful jobs per industry"]],
+      sjatpiChartType: 'ColumnChart',
+      sjpc: [["Consultant","Successful jobs per consultant this month"]],
+      sjpcChartType: 'ColumnChart',
     }),
 
     methods: {
       setDataChoices: function(sourceId, setDataVariable) {
         let data = document.getElementById(sourceId).value;
         this.$set(this, setDataVariable, JSON.parse(data));
+      },
+      changeChartType: function(property, value) {
+        console.log(property);
+        this.$set(this, property, value);
       },
       transformSJTPI: function(sourceId='dataSuccessfulJobsAllTimePerIndustry') {
         let data = document.getElementById(sourceId).value;
@@ -120,11 +190,31 @@ Dashboard
         });
 
         this.sjatpi = this.sjatpi.concat(data);
+      },
+
+      transformSJPC: function(sourceId='dataSuccessfulJobsPerConsutant') {
+        let data = document.getElementById(sourceId).value;
+        data = JSON.parse(data);
+
+        // set value label
+        this.sjpc[0][1] = data.title;
+
+        // transform data to be consumed by a graph
+        data = _.map(data.value, (graph) => {
+          // graph is the value attribute from django
+          return [
+            graph.job_candidate__consultant__name,
+            graph.value
+          ]
+        });
+
+        this.sjpc = this.sjpc.concat(data);
         }
     },
 
     beforeMount(){
       this.transformSJTPI();
+      this.transformSJPC();
     },
 
     mounted() {
