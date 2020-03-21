@@ -10,6 +10,7 @@ Dashboard
   <input type="hidden" id="dataDashboardItemsNumber" value="{{ dashboard_items_number }}">
   <input type="hidden" id="dataSuccessfulJobsAllTimePerIndustry" value="{{ sjatpi }}">
   <input type="hidden" id="dataSuccessfulJobsPerConsutant" value="{{ sjpc }}">
+  <input type="hidden" id="dataTNFIPerConsultant" value="{{ tnfipc }}">
   <v-container
     fluid>
     <h1>Dashboard</h1>
@@ -94,6 +95,13 @@ Dashboard
           </v-card-actions>
         </v-card>
       </v-col>
+
+      <v-col cols=12 md=6>
+        <graph-card
+          :chart-data="tnfipc"
+          :default-chart-type="'ColumnChart'"
+          :chart-types="chartTypes"></graph-card>
+      </v-col>
     </v-row>
   </v-container>  
 {% endblock subcontent %}
@@ -132,6 +140,62 @@ Dashboard
     `,
   }
 
+  Vue.component('graph-card', {
+    name: 'GraphCard',
+    props: [
+      'chartData',
+      'defaultChartType',
+      'chartTypes',
+    ],
+    data: () => {
+      return {
+        chartType: 'ColumnChart',
+      }
+    },
+
+    mounted() {
+      this.chartType = this.defaultChartType;
+    },
+
+    template: `
+      <v-card
+        class="mx-auto text-center"
+        color="primary"
+        dark>
+        <v-card-text>
+          <div class="display-1 font-weight-thin">[[ chartData[0][1] ]]</div>
+        </v-card-text>
+
+        <v-card-text>
+          <v-sheet color="rgba(0, 0, 0, .12)">
+            <g-chart
+              :type="chartType"
+              :data="chartData"
+            />
+          </v-sheet>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-row align="center" justify="center">
+            <v-btn
+              class="mx-2"
+              v-for="ct in chartTypes"
+              :key="ct.type"
+              :title="ct.text"
+              @click="changeChartType(ct.type)">
+              <v-icon>[[ ct.icon ]]</v-icon>
+            </v-btn>
+          </v-row>
+        </v-card-actions>
+      </v-card>
+    `,
+    methods: {
+      changeChartType: function(value) {
+        this.chartType = value;
+      },
+    }
+  })
+
   new Vue({
     name: 'DashboardApp',
     el: '#inspire',
@@ -162,6 +226,8 @@ Dashboard
       sjatpiChartType: 'ColumnChart',
       sjpc: [["Consultant","Successful jobs per consultant this month"]],
       sjpcChartType: 'ColumnChart',
+      tnfipc: [["Consultant", "Total NFI generated per consultant this month"]],
+      tnfipcChartType: 'ColumnChart',
     }),
 
     methods: {
@@ -209,12 +275,33 @@ Dashboard
         });
 
         this.sjpc = this.sjpc.concat(data);
+        },
+        transformGraphData: function(sourceId, dataField, titleField) {
+          let data = document.getElementById(sourceId).value;
+          data = JSON.parse(data);
+
+          // set value label
+          this.$set(this[dataField][0], 1, data.title);
+          // this.sjpc[0][1] = data.title;
+
+          // transform data to be consumed by a graph
+          data = _.map(data.value, (graph) => {
+            // graph is the value attribute from django
+            return [
+              graph[titleField],
+              graph.value
+            ]
+          });
+
+          this.$set(this, dataField, this[dataField].concat(data));
+          // this.sjpc = this.sjpc.concat(data);
         }
     },
 
     beforeMount(){
-      this.transformSJTPI();
-      this.transformSJPC();
+      this.transformGraphData('dataSuccessfulJobsAllTimePerIndustry', 'sjatpi', 'job_candidate__job__client__industry');
+      this.transformGraphData('dataSuccessfulJobsPerConsutant', 'sjpc', 'job_candidate__consultant__name');
+      this.transformGraphData('dataTNFIPerConsultant', 'tnfipc', 'job_candidate__consultant__name');
     },
 
     mounted() {

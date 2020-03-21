@@ -27,12 +27,13 @@ template_names = (
 
 def get_data_dashboard_items_number(all_pipelines, employee=None):
     pipelines = all_pipelines
+    pipelines_per_consultant = all_pipelines
     if employee:
         pipelines = pipelines.filter(
             Q(job_candidate__associate_id=employee.pk) |
             Q(job_candidate__consultant_id=employee.pk)
         )
-        pipelines_for_sjpc = pipelines.filter(
+        pipelines_per_consultant = pipelines.filter(
             job_candidate__consultant_id=employee.pk)
 
     active_jobs = pipelines.filter(
@@ -70,15 +71,27 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
     sjatpi = [s for s in sjatpi]
 
     # successful jobs per consultant. this month
-    sjpc = pipelines_for_sjpc.filter(
+    successful_jobs_per_consultant = pipelines_per_consultant.filter(
         status__probability__gte=1)
-    sjpc = sjpc.filter(
+    successful_jobs_per_consultant = successful_jobs_per_consultant.filter(
         successful_date__month=today.month,
         successful_date__year=today.year)
-    sjpc = sjpc.values('job_candidate__consultant__name')
+    order_by = 'job_candidate__consultant__name'
+    sjpc = successful_jobs_per_consultant.values(
+        order_by)
     sjpc = sjpc.annotate(value=Count('id')).order_by(
         'job_candidate__consultant_name')
     sjpc = [s for s in sjpc]
+
+    # total NFI per consultant this.month
+    key_field = 'job_candidate__consultant__name'
+    tnfipc = successful_jobs_per_consultant.values(
+        key_field)
+    tnfipc = tnfipc.annotate(value=Sum('potential_income')).order_by(
+        order_by)
+    tnfipc = [
+        {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipc
+    ]
 
     return (
         active_jobs,
@@ -86,5 +99,6 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
         tpi,
         tpi_last_month,
         sjatpi,
-        sjpc
+        sjpc,
+        tnfipc
     )

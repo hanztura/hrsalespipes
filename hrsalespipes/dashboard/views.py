@@ -60,14 +60,14 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 context['data_note'] = \
                     'All employees\' data are used in this dashboard.'
 
-                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc = get_data_dashboard_items_number(all_pipelines)
+                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc = get_data_dashboard_items_number(all_pipelines)
             else:  # One Two dashboard
                 employee = None
                 if hasattr(user, 'as_employee'):
                     employee = user.as_employee
 
                 if employee:
-                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc = get_data_dashboard_items_number(all_pipelines, employee)
+                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc = get_data_dashboard_items_number(all_pipelines, employee)
 
                     # interview data
                     all_interviews = all_interviews.filter(done_by=employee)
@@ -81,6 +81,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     tpi_last_month = 0
                     sjatpi = []
                     sjpc = []
+                    tnfipc = []
                     all_interviews = Interview.objects.none()
                     cv_sent_to_clients = JobCandidate.objects.none()
 
@@ -120,19 +121,29 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
             dashboard_items_number += data
 
-        sjatpi = {
-            'type': 'graph',
-            'title': 'Successful jobs per industry',
-            'value': sjatpi
-        }
+        dashboard_items_graph = [
+            {
+                'code': 'sjatpi',
+                'type': 'graph',
+                'title': 'Successful jobs per industry',
+                'value': sjatpi
+            },
+            {
+                'code': 'sjpc',
+                'type': 'graph',
+                'title': 'Successful jobs per consultant this month',
+                'value': sjpc
+            },
+            {
+                'code': 'tnfipc',
+                'type': 'graph',
+                'title': 'Total NFI generated per consultant this month',
+                'value': tnfipc
+            }
+        ]
 
-        sjpc = {
-            'type': 'graph',
-            'title': 'Successful jobs per consultant this month',
-            'value': sjpc
-        }
+        for graph_item in dashboard_items_graph:
+            context[graph_item['code']] = json.dumps(graph_item)
 
-        context['sjatpi'] = json.dumps(sjatpi)
-        context['sjpc'] = json.dumps(sjpc)
         context['dashboard_items_number'] = json.dumps(dashboard_items_number)
         return context
