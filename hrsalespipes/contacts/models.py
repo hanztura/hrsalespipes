@@ -78,6 +78,7 @@ class Candidate(ContactModel):
     current_previous_company = models.CharField(max_length=200, blank=True, verbose_name='company')
     current_previous_salary_and_benefits = models.TextField(blank=True, verbose_name='salary and benefits')
     motivation_for_leaving = models.TextField(blank=True)
+    expected_salary_and_benefits = models.TextField(blank=True)
 
     # personal details
     nationality = models.CharField(max_length=64, blank=True)
@@ -107,7 +108,7 @@ class Candidate(ContactModel):
     # others
     visa_status = models.ForeignKey(
         VisaStatus, on_delete=models.SET_NULL, null=True, blank=True)
-    expected_salary_and_benefits = models.TextField(blank=True)
+    driving_license = models.CharField(max_length=100, blank=True)
     availability_for_interview = models.CharField(max_length=200, blank=True)
     notice_period = models.CharField(max_length=100, blank=True)
     candidate_owner = models.ForeignKey(
