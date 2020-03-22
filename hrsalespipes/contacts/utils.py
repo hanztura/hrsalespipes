@@ -79,13 +79,15 @@ class DocxResponseMixin(SingleObjectMixin):
         super().__init__(*args, **kwargs)
 
     def get_docx_template(self):
-        template = CURRENT_DIR.path('cv_templates').path(self.docx_template)
+        template = self.object.cv_template if self.object.cv_template else \
+            self.docx_template
+        template = CURRENT_DIR.path('cv_templates').path(template)
         return template
 
     def get_docx(self):
         """ Returns a docx.Document object"""
         document = DocxTemplate(self.get_docx_template())
-        instance = self.get_object()
+        instance = self.object
         try:
             cpsb = intcomma(instance.current_previous_salary)
             if cpsb:
@@ -146,4 +148,5 @@ class DocxResponseMixin(SingleObjectMixin):
 class DownloadCVBaseView(DocxResponseMixin, View):
 
     def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
         return self.response()

@@ -121,6 +121,7 @@ class Candidate(ContactModel):
         Employee,
         on_delete=models.PROTECT,
         null=True)
+    cv_template = models.CharField(max_digits=50, blank=True)
     notes = models.TextField(blank=True)
 
     def __str__(self):
