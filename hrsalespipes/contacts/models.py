@@ -78,10 +78,12 @@ class Candidate(ContactModel):
         max_length=200, blank=True, verbose_name='position')
     current_previous_company = models.CharField(
         max_length=200, blank=True, verbose_name='company')
-    current_previous_salary_and_benefits = models.TextField(
+    current_previous_benefits = models.TextField(
         blank=True, verbose_name='salary and benefits')
+    current_previous_salary = models.IntegerField(null=True, blank=True)
     motivation_for_leaving = models.TextField(blank=True)
-    expected_salary_and_benefits = models.TextField(blank=True)
+    expected_benefits = models.TextField(blank=True)
+    expected_salary = models.IntegerField(null=True, blank=True)
 
     # personal details
     nationality = models.CharField(max_length=64, blank=True)
@@ -123,6 +125,16 @@ class Candidate(ContactModel):
 
     def __str__(self):
         return self.name
+
+    @property
+    def current_previous_salary_and_benefits(self):
+        return '{}; {}'.format(
+            self.current_previous_salary,
+            self.current_previous_benefits)
+
+    @property
+    def expected_salary_and_benefits(self):
+        return '{}; {}'.format(self.expected_salary, self.expected_benefits)
 
     @property
     def edit_href(self):

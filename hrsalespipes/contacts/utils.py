@@ -1,6 +1,8 @@
 import environ
+from decimal import Decimal
 from uuid import uuid4
 
+from django.contrib.humanize.templatetags.humanize import intcomma
 from django.db import models
 from django.http import HttpResponse
 from django.views.generic.base import View
@@ -84,6 +86,20 @@ class DocxResponseMixin(SingleObjectMixin):
         """ Returns a docx.Document object"""
         document = DocxTemplate(self.get_docx_template())
         instance = self.get_object()
+        try:
+            cpsb = intcomma(instance.current_previous_salary)
+            cpsb = '{}; {}'.format(
+                cpsb, instance.current_previous_benefits)
+        except Exception as e:
+            cpsb = instance.current_previous_salary_and_benefits
+
+        try:
+            esb = intcomma(instance.expected_salary)
+            esb = '{}; {}'.format(
+                esb, instance.expected_benefits)
+        except Exception as e:
+            esb = instance.expected_salary_and_benefits
+
         context = {}
         if instance:
             context = {
@@ -91,8 +107,8 @@ class DocxResponseMixin(SingleObjectMixin):
                 'current_previous_position': instance.current_previous_position,
                 'current_previous_company': instance.current_previous_company,
                 'motivation_for_leaving': instance.motivation_for_leaving,
-                'current_previous_salary_and_benefits': instance.current_previous_salary_and_benefits,
-                'expected_salary_and_benefits': instance.expected_salary_and_benefits,
+                'current_previous_salary_and_benefits': cpsb,
+                'expected_salary_and_benefits': esb,
                 'location': instance.location,
                 'preferred_location': instance.preferred_location,
                 'nationality': instance.nationality,
