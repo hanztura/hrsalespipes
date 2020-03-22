@@ -2,13 +2,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, View
 
 from .forms import (ClientCreateModelForm, ContactCreateModelForm,
                     CandidateUpdateModelForm, ClientUpdateModelForm,
                     SupplierModelForm)
 from .models import Candidate, Client, Supplier, Employee
-from .utils import FilterNameMixin
+from .utils import FilterNameMixin, DownloadCVBaseView
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin)
@@ -175,3 +175,13 @@ class SupplierUpdateView(
 class SupplierDetailView(PermissionRequiredMixin, DetailView):
     model = Supplier
     permission_required = ('contacts.view_supplier')
+
+
+class DownloadCVView(PermissionRequiredMixin, DownloadCVBaseView):
+    model = Candidate
+    permission_required = 'contacts.view_candidate'
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+
+        self.position = request.GET.get('position', '')

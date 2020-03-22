@@ -1,10 +1,16 @@
+import environ
 from uuid import uuid4
 
 from django.db import models
+from django.http import HttpResponse
+from django.views.generic.base import View
+from django.views.generic.detail import SingleObjectMixin
 
 from django_extensions.db.models import TimeStampedModel
+from docxtpl import DocxTemplate
 
-from system.models import Location
+
+CURRENT_DIR = environ.Path(__file__) - 1
 
 
 class ContactModel(TimeStampedModel):
@@ -58,3 +64,63 @@ class FilterNameMixin:
         name = self.request.GET.get('name', '')
         context['search_name'] = name
         return context
+
+
+class DocxResponseMixin(SingleObjectMixin):
+    content_type = 'application/vnd.openxmlformats-officedocument.\
+        wordprocessingml.document'
+    docx_filename = None
+    docx_template = 'candidate_summary_sheet.docx'
+    positon = ''
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get_docx_template(self):
+        template = CURRENT_DIR.path('cv_templates').path(self.docx_template)
+        return template
+
+    def get_docx(self):
+        """ Returns a docx.Document object"""
+        document = DocxTemplate(self.get_docx_template())
+        instance = self.get_object()
+        context = {}
+        if instance:
+            context = {
+                'position': self.position,
+                'current_previous_position': instance.current_previous_position,
+                'current_previous_company': instance.current_previous_company,
+                'motivation_for_leaving': instance.motivation_for_leaving,
+                'current_previous_salary_and_benefits': instance.current_previous_salary_and_benefits,
+                'expected_salary_and_benefits': instance.expected_salary_and_benefits,
+                'location': instance.location,
+                'preferred_location': instance.preferred_location,
+                'nationality': instance.nationality,
+                'languages': instance.languages,
+                'civil_status': instance.civil_status,
+                'highest_educational_qualification': instance.highest_educational_qualification,
+                'date_of_birth': instance.date_of_birth,
+                'visa_status': instance.visa_status,
+                'driving_license': instance.driving_license,
+                'availability_for_interview': instance.availability_for_interview,
+                'notice_period': instance.notice_period,
+                'notes': instance.notes,
+            }
+        document.render(context)
+        return document.docx
+
+    def response(self):
+        content_disposition = 'attachment; filename=CV.docx'
+        response = HttpResponse(content_type=self.content_type)
+        response['Content-Disposition'] = content_disposition
+
+        docx = self.get_docx()
+        docx.save(response)
+
+        return response
+
+
+class DownloadCVBaseView(DocxResponseMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        return self.response()
