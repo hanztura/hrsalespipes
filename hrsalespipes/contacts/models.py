@@ -74,9 +74,12 @@ class Candidate(ContactModel):
         ('Se', 'Separated'))
 
     # work history
-    current_previous_position = models.CharField(max_length=200, blank=True, verbose_name='position')
-    current_previous_company = models.CharField(max_length=200, blank=True, verbose_name='company')
-    current_previous_salary_and_benefits = models.TextField(blank=True, verbose_name='salary and benefits')
+    current_previous_position = models.CharField(
+        max_length=200, blank=True, verbose_name='position')
+    current_previous_company = models.CharField(
+        max_length=200, blank=True, verbose_name='company')
+    current_previous_salary_and_benefits = models.TextField(
+        blank=True, verbose_name='salary and benefits')
     motivation_for_leaving = models.TextField(blank=True)
     expected_salary_and_benefits = models.TextField(blank=True)
 
@@ -84,7 +87,8 @@ class Candidate(ContactModel):
     nationality = models.CharField(max_length=64, blank=True)
     languages = models.TextField(max_length=200, blank=True)
     preferred_location = models.CharField(max_length=200, blank=True)
-    civil_status = models.CharField(max_length=16, blank=True, choices=CIVIL_STATUS_CHOICES)
+    civil_status = models.CharField(
+        max_length=16, blank=True, choices=CIVIL_STATUS_CHOICES)
     dependents = models.TextField(blank=True)
     gender = models.CharField(max_length=8, blank=True, choices=GENDER_CHOICES)
     highest_educational_qualification = models.CharField(
