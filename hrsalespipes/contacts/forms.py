@@ -34,8 +34,11 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
 
             'current_previous_position',
             'current_previous_company',
-            'current_previous_salary_and_benefits',
+            'current_previous_salary',
+            'current_previous_benefits',
             'motivation_for_leaving',
+            'expected_salary',
+            'expected_benefits',
 
             'nationality',
             'languages',
@@ -47,7 +50,6 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
             'date_of_birth',
 
             'visa_status',
-            'expected_salary_and_benefits',
             'availability_for_interview',
             'notice_period',
             'candidate_owner',

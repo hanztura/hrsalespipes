@@ -74,16 +74,23 @@ class Candidate(ContactModel):
         ('Se', 'Separated'))
 
     # work history
-    current_previous_position = models.CharField(max_length=200, blank=True, verbose_name='position')
-    current_previous_company = models.CharField(max_length=200, blank=True, verbose_name='company')
-    current_previous_salary_and_benefits = models.TextField(blank=True, verbose_name='salary and benefits')
+    current_previous_position = models.CharField(
+        max_length=200, blank=True, verbose_name='position')
+    current_previous_company = models.CharField(
+        max_length=200, blank=True, verbose_name='company')
+    current_previous_benefits = models.TextField(
+        blank=True, verbose_name='salary and benefits')
+    current_previous_salary = models.IntegerField(null=True, blank=True)
     motivation_for_leaving = models.TextField(blank=True)
+    expected_benefits = models.TextField(blank=True)
+    expected_salary = models.IntegerField(null=True, blank=True)
 
     # personal details
     nationality = models.CharField(max_length=64, blank=True)
     languages = models.TextField(max_length=200, blank=True)
     preferred_location = models.CharField(max_length=200, blank=True)
-    civil_status = models.CharField(max_length=16, blank=True, choices=CIVIL_STATUS_CHOICES)
+    civil_status = models.CharField(
+        max_length=16, blank=True, choices=CIVIL_STATUS_CHOICES)
     dependents = models.TextField(blank=True)
     gender = models.CharField(max_length=8, blank=True, choices=GENDER_CHOICES)
     highest_educational_qualification = models.CharField(
@@ -107,7 +114,7 @@ class Candidate(ContactModel):
     # others
     visa_status = models.ForeignKey(
         VisaStatus, on_delete=models.SET_NULL, null=True, blank=True)
-    expected_salary_and_benefits = models.TextField(blank=True)
+    driving_license = models.CharField(max_length=100, blank=True)
     availability_for_interview = models.CharField(max_length=200, blank=True)
     notice_period = models.CharField(max_length=100, blank=True)
     candidate_owner = models.ForeignKey(
@@ -118,6 +125,42 @@ class Candidate(ContactModel):
 
     def __str__(self):
         return self.name
+
+    @property
+    def current_previous_salary_and_benefits(self):
+        value = ''
+        if self.current_previous_salary:
+            if self.current_previous_benefits:
+                value = '{}; {}'.format(
+                    self.current_previous_salary,
+                    self.current_previous_benefits)
+            else:
+                value = self.current_previous_salary
+        else:  # if salary is null or 0
+            if self.current_previous_benefits:
+                value = self.current_previous_benefits
+            else:  # if both salary and benefits are 0 or None
+                pass
+
+        return value
+
+    @property
+    def expected_salary_and_benefits(self):
+        value = ''
+        if self.expected_salary:
+            if self.expected_benefits:  # both are with value
+                value = '{}; {}'.format(
+                    self.expected_salary,
+                    self.expected_benefits)
+            else:
+                value = self.expected_salary
+        else:  # if salary is null or 0
+            if self.expected_benefits:
+                value = self.expected_benefits
+            else:  # if both salary and benefits are 0 or None
+                pass
+
+        return value
 
     @property
     def edit_href(self):

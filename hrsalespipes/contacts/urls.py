@@ -4,13 +4,18 @@ from .views import (
     CandidateCreateView, CandidateUpdateView, CandidateDetailView,
     CandidateListView, ContactsTemplateView, ClientCreateView, ClientListView,
     ClientUpdateView, ClientDetailView, SupplierCreateView, SupplierDetailView,
-    SupplierListView, SupplierUpdateView)
+    SupplierListView, SupplierUpdateView, DownloadCVView)
 
 app_name = 'contacts'
 urlpatterns = [
     path(
+        'candidates/download-cv/<str:pk>/',
+        DownloadCVView.as_view(),
+        name='download_cv'),
+    path(
         'candidates/new/',
-        CandidateCreateView.as_view(), name='candidates_new'),
+        CandidateCreateView.as_view(),
+        name='candidates_new'),
     path('candidates/edit/<str:pk>/',
          CandidateUpdateView.as_view(), name='candidates_edit'),
     path('candidates/<str:pk>/', CandidateDetailView.as_view(),

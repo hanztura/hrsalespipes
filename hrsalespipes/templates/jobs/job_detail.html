@@ -98,6 +98,10 @@ Job Detail - {{ object.reference_number }}
                         <td>{{ candidate.actual_income|default_if_none:0 }}</td>
                         <td>{{ candidate.associate.name }}</td>
                         <td>
+                          <v-btn
+                            text
+                            title="download cv"
+                            href="{% url 'contacts:download_cv' candidate.candidate_id %}?position={{ candidate.job.position|urlencode }}">cv</v-btn>
                           {% include "_includes/list_action_buttons.html" with edit_href=candidate.edit_href view_href=candidate.view_href %}
                         </td>
                       </tr>

@@ -77,6 +77,7 @@
 
                 <v-autocomplete
                   :items="locations"
+                  item-value="text"
                   dense
                   label="Location"
                   outlined
@@ -170,19 +171,42 @@
                   value="{{ form.current_previous_company.value|default_if_none:'' }}">
                 </v-text-field>
 
-                <v-textarea
-                  name="current_previous_salary_and_benefits"
-                  label="Salary and Benefits"
+                <v-text-field
+                  name="current_previous_salary"
+                  label="Current/Previous Salary (Amount)"
+                  type="number"
                   outlined
-                  value="{{ form.current_previous_salary_and_benefits.value|default_if_none:'' }}">
-                  </v-textarea>
+                  value="{{ form.current_previous_salary.value }}">
+                  </v-text-field>
+
+                <v-text-field
+                  name="current_previous_benefits"
+                  label="Current/Previous Benefits"
+                  outlined
+                  value="{{ form.current_previous_benefits.value|default_if_none:'' }}">
+                  </v-text-field>
 
                 <v-textarea
                   name="motivation_for_leaving"
                   label="Motivation for leaving"
                   outlined
-                  value="{{ form.motivation_for_leaving.value|default_if_none:'' }}"
+                  value="{{ form.motivation_for_leaving.value }}"
                 ></v-textarea>
+
+                <v-text-field
+                  name="expected_salary"
+                  label="Expected Salary (Amount)"
+                  type="number"
+                  outlined
+                  value="{{ form.expected_salary.value|default_if_none:'' }}">
+                  </v-text-field>
+
+                <v-text-field
+                  name="expected_benefits"
+                  label="Expected Benefits"
+                  outlined
+                  value="{{ form.expected_benefits.value }}">
+                  </v-text-field>
               </v-tab-item>  <!-- Work history -->
 
               <v-tab-item eager>
@@ -195,13 +219,6 @@
                   id="visa_status"
                   data-default-value="{{ form.visa_status.value|default_if_none:'' }}"
                   v-model="visaStatus"></v-select>
-
-                <v-textarea
-                  name="expected_salary_and_benefits"
-                  label="Expected Salary and Benefits"
-                  outlined
-                  value="{{ form.expected_salary_and_benefits.value }}">
-                  </v-textarea>
 
                 <v-text-field
                   label="Availability for interview"
