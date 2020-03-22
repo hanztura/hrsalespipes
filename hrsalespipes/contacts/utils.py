@@ -88,15 +88,22 @@ class DocxResponseMixin(SingleObjectMixin):
         instance = self.get_object()
         try:
             cpsb = intcomma(instance.current_previous_salary)
-            cpsb = '{}; {}'.format(
-                cpsb, instance.current_previous_benefits)
+            if cpsb:
+                cpsb = '{}; {}'.format(
+                    cpsb, instance.current_previous_benefits)
+            else:
+                cpsb = instance.current_previous_benefits
+
         except Exception as e:
             cpsb = instance.current_previous_salary_and_benefits
 
         try:
             esb = intcomma(instance.expected_salary)
-            esb = '{}; {}'.format(
-                esb, instance.expected_benefits)
+            if esb:
+                esb = '{}; {}'.format(
+                    esb, instance.expected_benefits)
+            else:
+                esb = instance.expected_benefits
         except Exception as e:
             esb = instance.expected_salary_and_benefits
 

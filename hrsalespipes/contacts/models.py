@@ -128,13 +128,39 @@ class Candidate(ContactModel):
 
     @property
     def current_previous_salary_and_benefits(self):
-        return '{}; {}'.format(
-            self.current_previous_salary,
-            self.current_previous_benefits)
+        value = ''
+        if self.current_previous_salary:
+            if self.current_previous_benefits:
+                value = '{}; {}'.format(
+                    self.current_previous_salary,
+                    self.current_previous_benefits)
+            else:
+                value = self.current_previous_salary
+        else:  # if salary is null or 0
+            if self.current_previous_benefits:
+                value = self.current_previous_benefits
+            else:  # if both salary and benefits are 0 or None
+                pass
+
+        return value
 
     @property
     def expected_salary_and_benefits(self):
-        return '{}; {}'.format(self.expected_salary, self.expected_benefits)
+        value = ''
+        if self.expected_salary:
+            if self.expected_benefits:  # both are with value
+                value = '{}; {}'.format(
+                    self.expected_salary,
+                    self.expected_benefits)
+            else:
+                value = self.expected_salary
+        else:  # if salary is null or 0
+            if self.expected_benefits:
+                value = self.expected_benefits
+            else:  # if both salary and benefits are 0 or None
+                pass
+
+        return value
 
     @property
     def edit_href(self):
