@@ -1,7 +1,7 @@
 import environ
-from decimal import Decimal
 from uuid import uuid4
 
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.db import models
 from django.http import HttpResponse
@@ -72,17 +72,23 @@ class DocxResponseMixin(SingleObjectMixin):
     content_type = 'application/vnd.openxmlformats-officedocument.\
         wordprocessingml.document'
     docx_filename = None
-    docx_template = 'candidate_summary_sheet.docx'
     positon = ''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def get_docx_template(self):
-        template = self.object.cv_template if self.object.cv_template else \
-            self.docx_template
-        template = CURRENT_DIR.path('cv_templates').path(template)
-        return template
+        """returns file path of the template"""
+        cv_template = self.object.cv_template
+        if cv_template:
+            cv_template = cv_template
+        else:
+            CVTemplate = ContentType.objects.get(
+                app_label='contacts',
+                model='cvtemplate').model_class()
+            cv_template = CVTemplate.objects.filter(is_default=True).first()
+
+        return cv_template.template.file.name
 
     def get_docx(self):
         """ Returns a docx.Document object"""
