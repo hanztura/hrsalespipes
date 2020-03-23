@@ -96,13 +96,33 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
     # total NFI per consultant for the last 12 months
     past_12_month = today - relativedelta(months=12)
     tnfipcp12m = successful_jobs_per_consultant_all_time.filter(
-        successful_date__gte=past_12_month.replace(day=1),
-        successful_date__lte=last_month)
+        date__gte=past_12_month.replace(day=1),
+        date__lte=last_month)
     tnfipcp12m = tnfipcp12m.values(key_field)
     tnfipcp12m = tnfipcp12m.annotate(value=Sum('potential_income')).order_by(
         key_field)  # order by jobconsultant name
     tnfipcp12m = [
         {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipcp12m
+    ]
+
+    # YTD client performance
+    year_beginning = today.replace(month=1, day=1)
+    ytdcp = successful_jobs_all_time.filter(
+        date__gte=year_beginning,
+        date__lte=today)
+    ytdcp = ytdcp.values(
+        'job_candidate__job__client',
+        'job_candidate__job__client__name',
+        'job_candidate__cv_source')
+    ytdcp = ytdcp.annotate(value=Sum('potential_income')).order_by(
+        'job_candidate__job__client__name')
+    ytdcp = [
+        {
+            'id': str(s['job_candidate__job__client']),
+            'client': s['job_candidate__job__client__name'],
+            'cvSource': s['job_candidate__cv_source'],
+            'value': float(s['value'])
+        } for s in ytdcp
     ]
 
     return (
@@ -113,5 +133,6 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
         sjatpi,
         sjpc,
         tnfipc,
-        tnfipcp12m
+        tnfipcp12m,
+        ytdcp
     )

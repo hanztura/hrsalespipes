@@ -36,7 +36,7 @@ Pipeline Summary - Reports
 
       <v-col cols="12" class="text-center">
         <v-simple-table>
-          <table>
+          <template v-slot:default>
             <thead>
               <tr>
                 <th class="text-center">Pipeline</th>
@@ -98,7 +98,7 @@ Pipeline Summary - Reports
               </tr>
             </tfoot>
             {% endif %}
-          </table>
+          </template>
         </v-simple-table>
       </v-col>
     </v-row>

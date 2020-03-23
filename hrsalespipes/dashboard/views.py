@@ -59,7 +59,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 context['data_note'] = \
                     'All employees\' data are used in this dashboard.'
 
-                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m = get_data_dashboard_items_number(
+                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m, ytdcp = get_data_dashboard_items_number(
                     all_pipelines)
             else:  # One Two dashboard
                 employee = None
@@ -67,7 +67,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     employee = user.as_employee
 
                 if employee:
-                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m = get_data_dashboard_items_number(
+                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m, ytdcp = get_data_dashboard_items_number(
                         all_pipelines, employee)
 
                     # interview data
@@ -84,6 +84,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     sjpc = []
                     tnfipc = []
                     tnfipcp12m = []
+                    ytdcp = []
                     all_interviews = Interview.objects.none()
                     cv_sent_to_clients = JobCandidate.objects.none()
 
@@ -147,6 +148,12 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 'type': 'graph',
                 'title': 'Total NFI generated per consultant last 12 months',
                 'value': tnfipcp12m
+            },
+            {
+                'code': 'ytdcp',
+                'type': 'graph',
+                'title': 'YTD Client Performance',
+                'value': ytdcp
             }
         ]
 
