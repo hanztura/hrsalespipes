@@ -62,6 +62,18 @@ class Employee(ContactModel):
         return self.name
 
 
+class CVTemplate(models.Model):
+    name = models.CharField(max_length=100)
+    template = models.FileField(upload_to='CV_TEMPLATES')
+    is_default = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = 'name', 'id'
+
+    def __str_(self):
+        return self.name
+
+
 class Candidate(ContactModel):
     GENDER_CHOICES = (
         ('M', 'Male'),
@@ -106,8 +118,15 @@ class Candidate(ContactModel):
         blank=True,
         verbose_name='Field of specialization')
     other_certifications = models.TextField(blank=True)
-    bls_acls_validity = models.DateField(null=True, blank=True)
+    bls_validity = models.DateField(null=True, blank=True)
+    acls_validity = models.DateField(null=True, blank=True)
     haad_dha_license_validity = models.DateField(null=True, blank=True)
+    haad_dha_license_type = models.CharField(
+        max_length=5,
+        blank=True,
+        choices=(
+        ('HAAD', 'HAAD'),
+        ('DHA', 'DHA')))
     job_title_on_dha_haad = models.CharField(max_length=250, blank=True)
     dataflow_last_update = models.DateField(null=True, blank=True)
 
@@ -121,7 +140,10 @@ class Candidate(ContactModel):
         Employee,
         on_delete=models.PROTECT,
         null=True)
-    cv_template = models.CharField(max_length=50, blank=True)
+    cv_template = models.ForeignKey(
+        CVTemplate,
+        on_delete=models.PROTECT,
+        null=True)
     notes = models.TextField(blank=True)
 
     def __str__(self):

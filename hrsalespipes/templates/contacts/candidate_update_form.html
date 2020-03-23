@@ -285,10 +285,24 @@
 
                   <v-text-field
                     outlined
-                    label="BLS/ACLS Validity"
-                    name="bls_acls_validity"
+                    label="BLS Validity"
+                    name="bls_validity"
                     type="date"
-                    value="{{ form.bls_acls_validity.value|date:"Y-m-d" }}"></v-text-field>
+                    value="{{ form.bls_validity.value|date:"Y-m-d" }}"></v-text-field>
+
+                  <v-text-field
+                    outlined
+                    label="ACLS Validity"
+                    name="acls_validity"
+                    type="date"
+                    value="{{ form.acls_validity.value|date:"Y-m-d" }}"></v-text-field>
+
+                  <v-select
+                    filled
+                    :items="haadDhaLicenseTypes"
+                    name="haad_dha_license_type"
+                    label="HAAD/DHA Licence Type"
+                  ></v-select>
 
                   <v-text-field
                     outlined
@@ -395,6 +409,16 @@
       candidateOwner: '{{ form.candidate_owner.value|default_if_none:'' }}',
       isMedical: {{ form.is_medical.value|yesno:"true,false" }},
       medicalExperience: {{ form.medical_experience_in_years.value }},
+      haadDhaLicenseTypes: [
+        {
+          text: 'HAAD',
+          value: 'HAAD'
+        },
+        {
+          text: 'DHA',
+          value: 'DHA'
+        },
+      ]
     }),
 
     methods: {

@@ -53,6 +53,7 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
             'availability_for_interview',
             'notice_period',
             'candidate_owner',
+            # 'cv_template',
             'notes',
 
             # medical
@@ -60,7 +61,9 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
             'medical_experience_in_years',
             'specialization',
             'other_certifications',
-            'bls_acls_validity',
+            'bls_validity',
+            'acls_validity',
+            'haad_dha_license_type',
             'haad_dha_license_validity',
             'job_title_on_dha_haad',
             'dataflow_last_update',

@@ -11,4 +11,5 @@ class StatusAdmin(admin.ModelAdmin):
     ]
     list_display = ('name', 'probability')
 
+
 admin.site.register(Status, StatusAdmin)
