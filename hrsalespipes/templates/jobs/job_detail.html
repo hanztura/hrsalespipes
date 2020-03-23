@@ -17,13 +17,8 @@ Job Detail - {{ object.reference_number }}
         <v-tabs
           v-model="tab"
           fixed-tabs>
-          <v-tab
-            v-for="tabItem in tabs"
-            :key="tabItem"
-            :href="'#' + tabItem"
-            :target="tabItem">
-            [[ tabItem ]]
-          </v-tab>
+          
+          {% include "_includes/v_tab.html" %}
 
           <v-tabs-items v-model="tab">
             <v-tab-item id="Details">
@@ -160,9 +155,18 @@ Job Detail - {{ object.reference_number }}
       ],
       tab: null,
       tabs: [
-        'Details',
-        'Candidates',
-        'Pipelines'
+        {
+          tab: 'Details',
+          icon: 'fas fa-info',  
+        },
+        {
+          tab: 'Candidates',
+          icon: 'fas fa-users-cog',  
+        },
+        {
+          tab: 'Pipelines',
+          icon: 'fas fa-filter',  
+        },
       ],
     }),
 
