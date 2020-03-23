@@ -7,7 +7,7 @@ from django.views.generic.base import TemplateView, View
 from .forms import (ClientCreateModelForm, ContactCreateModelForm,
                     CandidateUpdateModelForm, ClientUpdateModelForm,
                     SupplierModelForm)
-from .models import Candidate, Client, Supplier, Employee
+from .models import Candidate, Client, Supplier, Employee, CVTemplate
 from .utils import FilterNameMixin, DownloadCVBaseView
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.utils import (
@@ -60,6 +60,7 @@ class CandidateUpdateView(
         context = super().get_context_data(**kwargs)
 
         context['visa_status_objects'] = get_objects_as_choices(VisaStatus)
+        context['cv_templates'] = get_objects_as_choices(CVTemplate)
         context['employees'] = get_objects_as_choices(Employee)
         context['locations'] = get_objects_as_choices(Location)
         context['nationalities'] = get_objects_as_choices(Nationality)
@@ -77,7 +78,8 @@ class CandidateDetailView(PermissionRequiredMixin, DetailView):
 
     def get_queryset(self, **kwargs):
         queryset = super().get_queryset(**kwargs)
-        queryset = queryset.select_related('visa_status', 'candidate_owner')
+        queryset = queryset.select_related(
+            'visa_status', 'candidate_owner', 'cv_template')
         return queryset
 
 

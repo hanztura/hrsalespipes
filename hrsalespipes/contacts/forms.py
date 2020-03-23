@@ -53,7 +53,7 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
             'availability_for_interview',
             'notice_period',
             'candidate_owner',
-            # 'cv_template',
+            'cv_template',
             'notes',
 
             # medical

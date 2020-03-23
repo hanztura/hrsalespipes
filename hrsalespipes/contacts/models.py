@@ -76,14 +76,62 @@ class CVTemplate(models.Model):
 
 class Candidate(ContactModel):
     GENDER_CHOICES = (
-        ('M', 'Male'),
-        ('F', 'Female'))
+        ('Male', 'Male'),
+        ('Female', 'Female'))
     CIVIL_STATUS_CHOICES = (
-        ('S', 'Single'),
-        ('M', 'Married'),
-        ('W', 'Widowed'),
-        ('D', 'Divorced'),
-        ('Se', 'Separated'))
+        ('Single', 'Single'),
+        ('Married', 'Married'),
+        ('Widowed', 'Widowed'),
+        ('Divorced', 'Divorced'),
+        ('Separated', 'Separated'))
+
+    CV_FIELDS = (
+        'code',
+        'name',
+        'contact_number',
+        'alternate_contact_number',
+        'whatsapp_link',
+        'email_address',
+        'skype_id',
+        'ms_teams_id',
+        'location',
+
+        'current_previous_position',
+        'current_previous_company',
+        'current_previous_benefits',
+        'current_previous_salary',
+        'motivation_for_leaving',
+        'expected_benefits',
+        'expected_salary',
+
+        'nationality',
+        'languages',
+        'preferred_location',
+        'civil_status',
+        'dependents',
+        'gender',
+        'highest_educational_qualification',
+        'date_of_birth',
+
+        'is_medical',
+        'medical_experience_in_years',
+        'specialization',
+        'other_certifications',
+        'bls_validity',
+        'acls_validity',
+        'haad_dha_license_validity',
+        'haad_dha_license_type',
+        'job_title_on_dha_haad',
+        'dataflow_last_update',
+
+        'visa_status',
+        'driving_license',
+        'availability_for_interview',
+        'notice_period',
+        'candidate_owner',
+        'cv_template',
+        'notes',
+    )
 
     # work history
     current_previous_position = models.CharField(

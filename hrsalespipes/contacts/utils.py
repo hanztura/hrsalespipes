@@ -4,6 +4,7 @@ from uuid import uuid4
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.db import models
+from django.forms.models import model_to_dict
 from django.http import HttpResponse
 from django.views.generic.base import View
 from django.views.generic.detail import SingleObjectMixin
@@ -94,49 +95,14 @@ class DocxResponseMixin(SingleObjectMixin):
         """ Returns a docx.Document object"""
         document = DocxTemplate(self.get_docx_template())
         instance = self.object
-        try:
-            cpsb = intcomma(instance.current_previous_salary)
-            if cpsb:
-                cpsb = '{}; {}'.format(
-                    cpsb, instance.current_previous_benefits)
-            else:
-                cpsb = instance.current_previous_benefits
-
-        except Exception as e:
-            cpsb = instance.current_previous_salary_and_benefits
-
-        try:
-            esb = intcomma(instance.expected_salary)
-            if esb:
-                esb = '{}; {}'.format(
-                    esb, instance.expected_benefits)
-            else:
-                esb = instance.expected_benefits
-        except Exception as e:
-            esb = instance.expected_salary_and_benefits
 
         context = {}
         if instance:
-            context = {
-                'position': self.position,
-                'current_previous_position': instance.current_previous_position,
-                'current_previous_company': instance.current_previous_company,
-                'motivation_for_leaving': instance.motivation_for_leaving,
-                'current_previous_salary_and_benefits': cpsb,
-                'expected_salary_and_benefits': esb,
-                'location': instance.location,
-                'preferred_location': instance.preferred_location,
-                'nationality': instance.nationality,
-                'languages': instance.languages,
-                'civil_status': instance.civil_status,
-                'highest_educational_qualification': instance.highest_educational_qualification,
-                'date_of_birth': instance.date_of_birth,
-                'visa_status': instance.visa_status,
-                'driving_license': instance.driving_license,
-                'availability_for_interview': instance.availability_for_interview,
-                'notice_period': instance.notice_period,
-                'notes': instance.notes,
-            }
+            Candidate = ContentType.objects.get(
+                app_label='contacts',
+                model='candidate').model_class()
+            context = model_to_dict(instance, fields=Candidate.CV_FIELDS)
+            context['position'] = self.positon
         document.render(context)
         return document.docx
 

@@ -15,6 +15,7 @@
       <v-col cols="12" class="text-center">
         <form method="post" id="form--candidate">
           <input type="hidden" id="dataVisaStatusChoices" value="{{ visa_status_objects }}">
+          <input type="hidden" id="dataCVTemplatesChoices" value="{{ cv_templates }}">
           <input type="hidden" id="dataCandidateOwnerChoices" value="{{ employees }}">
           <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
           <input type="hidden" id="dataNationalityChoices" value="{{ nationalities }}">
@@ -234,6 +235,14 @@
                   value="{{ form.notice_period.value }}">
                 </v-text-field>
 
+                <v-select
+                  outlined
+                  :items="cvTemplates"
+                  label="CV Template"
+                  name="cv_template"
+                  id="cv_template"
+                  v-model="cvTemplate"></v-select>
+
                 <v-autocomplete
                   name='candidate_owner'
                   :items="employees"
@@ -393,15 +402,15 @@
       nationalities: [],
       nationality: '{{ form.nationality.value }}',
       civilStatusChoices: [
-        {value: 'S', text: 'Single'},
-        {value: 'M', text: 'Married'},
-        {value: 'W', text: 'Widowed'},
-        {value: 'D', text: 'Divorced'},
-        {value: 'Se', text: 'Separated'},
+        {value: 'Single', text: 'Single'},
+        {value: 'Married', text: 'Married'},
+        {value: 'Widowed', text: 'Widowed'},
+        {value: 'Divorced', text: 'Divorced'},
+        {value: 'Separated', text: 'Separated'},
       ],
       genders: [
-        {value: 'F', text: 'Female'},
-        {value: 'M', text: 'Male'},
+        {value: 'Female', text: 'Female'},
+        {value: 'Male', text: 'Male'},
       ],
       visaStatusChoices: [],
       visaStatus: '{{ form.visa_status.value|default_if_none:"0" }}',
@@ -418,21 +427,12 @@
           text: 'DHA',
           value: 'DHA'
         },
-      ]
+      ],
+      cvTemplates: [],
+      cvTemplate: '{{ form.cv_template.value|default_if_none:'' }}',
     }),
 
     methods: {
-      setVisaStatusChoices: function() {
-        // get value
-        let data = document.getElementById('dataVisaStatusChoices').value;
-        this.visaStatusChoices = JSON.parse(data);
-
-        // let defaultValue = document.getElementById('visa_status').getAttribute('data-default-value');
-        // defaultValue = Number(defaultValue);
-        // if (defaultValue || defaultValue == 0) {
-        //   this.visaStatus = defaultValue;
-        // }
-      },
       setDataChoices: function(sourceId, setDataVariable) {
         let data = document.getElementById(sourceId).value;
         this.$set(this, setDataVariable, JSON.parse(data));
@@ -440,7 +440,8 @@
     },
 
     beforeMount(){
-      this.setVisaStatusChoices();
+      this.setDataChoices('dataVisaStatusChoices', 'visaStatusChoices');
+      this.setDataChoices('dataCVTemplatesChoices', 'cvTemplates');
       this.setDataChoices('dataCandidateOwnerChoices', 'employees');
       this.setDataChoices('dataLocationChoices', 'locations');
       this.setDataChoices('dataNationalityChoices', 'nationalities');
