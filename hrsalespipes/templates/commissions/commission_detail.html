@@ -22,7 +22,11 @@ Commission Detail ({{ object.pipeline.job.reference_number }}) - {{ object.emplo
               </tr>
               <tr>
                 <th>Pipeline Reference Number:</th>
-                <td>{{ object.pipeline.job.reference_number }}</td>
+                <td><a href="{% url 'salespipes:detail' object.pipeline_id %}" title="view pipeline detail">{{ object.pipeline.job_candidate.job.reference_number }}</a></td>
+              </tr>
+              <tr>
+                <th>Candidate:</th>
+                <td><a href="{% url 'jobs:candidates_detail' object.pipeline.job_candidate.job_id object.pipeline.job_candidate_id %}" title="view job candidate detail">{{ object.pipeline.job_candidate.candidate.name }}</a></td>
               </tr>
               <tr>
                 <th>Employee:</th>

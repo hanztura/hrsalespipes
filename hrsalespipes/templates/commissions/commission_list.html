@@ -50,6 +50,7 @@ Commissions - List
             <thead>
               <th class="text-center">Date</th>
               <th class="text-center">Pipeline</th>
+              <th class="text-center">Candidate</th>
               <th class="text-center">Employee</th>
               <th class="text-center">Rate Role Type</th>
               <th class="text-center">Amount</th>
@@ -59,8 +60,9 @@ Commissions - List
               {% if object_list %}
                 {% for object in object_list %}
                 <tr>
-                  <td class="text-center">{{ object.date }}</td>
-                  <td class="text-center"><a href="{% url 'salespipes:detail' object.pipeline_id %}">{{ object.pipeline.job_candidate.job.reference_number }}</a></td>
+                  <td class="text-center"><a href="{{object.view_href}}" title="view commission detail">{{ object.date }}</a></td>
+                  <td class="text-center"><a href="{% url 'salespipes:detail' object.pipeline_id %}" title="view pipeline detail">{{ object.pipeline.job_candidate.job.reference_number }}</a></td>
+                  <td class="text-center"><a href="{% url 'jobs:candidates_detail' object.pipeline.job_candidate.job_id object.pipeline.job_candidate_id %}" title="view job candidate detail">{{ object.pipeline.job_candidate.candidate.name }}</a></td>
                   <td class="text-center">{{ object.employee.name }}</td>
                   <td class="text-center">{{ object.rate_role_type }}</td>
                   <td class="text-right">{{ object.amount|intcomma }}</td>

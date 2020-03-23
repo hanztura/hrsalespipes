@@ -92,7 +92,10 @@ class CommissionDetailView(
 
     def get_queryset(self, **kwargs):
         q = super().get_queryset(**kwargs)
-        q = q.select_related('pipeline__job', 'employee')
+        q = q.select_related(
+            'pipeline__job_candidate__job',
+            'pipeline__job_candidate__candidate',
+            'employee')
 
         return q
 

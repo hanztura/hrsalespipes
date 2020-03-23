@@ -42,7 +42,7 @@ class MonthlyInvoicesSummaryListView(
         q = super().get_queryset().filter(invoice_amount__gt=0)
         q = q.select_related(
             'job_candidate__job__client',
-            'job_candidate__candidate__candidate_owner')
+            'job_candidate__consultant')
 
         # filter consultant (optional)
         consultant_pk = self.request.GET.get('consultant', '')  # employee id
@@ -52,7 +52,7 @@ class MonthlyInvoicesSummaryListView(
             if consultant.exists():
                 self.consultant = consultant.first()
                 q = q.filter(
-                    job_candidate__candidate__candidate_owner=self.consultant)
+                    job_candidate__consultant=self.consultant)
 
         return q
 
@@ -144,7 +144,7 @@ class MonthlyInvoicesSummaryExcelView(
             Pipeline,
             (
                 'job_candidate__job__client',
-                'job_candidate__candidate__candidate_owner'
+                'job_candidate__consultant'
             ),
             values_list,
             (
