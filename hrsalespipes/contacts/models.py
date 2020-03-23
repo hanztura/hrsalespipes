@@ -62,28 +62,95 @@ class Employee(ContactModel):
         return self.name
 
 
+class CVTemplate(models.Model):
+    name = models.CharField(max_length=100)
+    template = models.FileField(upload_to='CV_TEMPLATES')
+    is_default = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = 'name', 'id'
+
+    def __str_(self):
+        return self.name
+
+
 class Candidate(ContactModel):
     GENDER_CHOICES = (
-        ('M', 'Male'),
-        ('F', 'Female'))
+        ('Male', 'Male'),
+        ('Female', 'Female'))
     CIVIL_STATUS_CHOICES = (
-        ('S', 'Single'),
-        ('M', 'Married'),
-        ('W', 'Widowed'),
-        ('D', 'Divorced'),
-        ('Se', 'Separated'))
+        ('Single', 'Single'),
+        ('Married', 'Married'),
+        ('Widowed', 'Widowed'),
+        ('Divorced', 'Divorced'),
+        ('Separated', 'Separated'))
+
+    CV_FIELDS = (
+        'code',
+        'name',
+        'contact_number',
+        'alternate_contact_number',
+        'whatsapp_link',
+        'email_address',
+        'skype_id',
+        'ms_teams_id',
+        'location',
+
+        'current_previous_position',
+        'current_previous_company',
+        'current_previous_benefits',
+        'current_previous_salary',
+        'motivation_for_leaving',
+        'expected_benefits',
+        'expected_salary',
+
+        'nationality',
+        'languages',
+        'preferred_location',
+        'civil_status',
+        'dependents',
+        'gender',
+        'highest_educational_qualification',
+        'date_of_birth',
+
+        'is_medical',
+        'medical_experience_in_years',
+        'specialization',
+        'other_certifications',
+        'bls_validity',
+        'acls_validity',
+        'haad_dha_license_validity',
+        'haad_dha_license_type',
+        'job_title_on_dha_haad',
+        'dataflow_last_update',
+
+        'visa_status',
+        'driving_license',
+        'availability_for_interview',
+        'notice_period',
+        'candidate_owner',
+        'cv_template',
+        'notes',
+    )
 
     # work history
-    current_previous_position = models.CharField(max_length=200, blank=True, verbose_name='position')
-    current_previous_company = models.CharField(max_length=200, blank=True, verbose_name='company')
-    current_previous_salary_and_benefits = models.TextField(blank=True, verbose_name='salary and benefits')
+    current_previous_position = models.CharField(
+        max_length=200, blank=True, verbose_name='position')
+    current_previous_company = models.CharField(
+        max_length=200, blank=True, verbose_name='company')
+    current_previous_benefits = models.TextField(
+        blank=True, verbose_name='salary and benefits')
+    current_previous_salary = models.IntegerField(null=True, blank=True)
     motivation_for_leaving = models.TextField(blank=True)
+    expected_benefits = models.TextField(blank=True)
+    expected_salary = models.IntegerField(null=True, blank=True)
 
     # personal details
     nationality = models.CharField(max_length=64, blank=True)
     languages = models.TextField(max_length=200, blank=True)
     preferred_location = models.CharField(max_length=200, blank=True)
-    civil_status = models.CharField(max_length=16, blank=True, choices=CIVIL_STATUS_CHOICES)
+    civil_status = models.CharField(
+        max_length=16, blank=True, choices=CIVIL_STATUS_CHOICES)
     dependents = models.TextField(blank=True)
     gender = models.CharField(max_length=8, blank=True, choices=GENDER_CHOICES)
     highest_educational_qualification = models.CharField(
@@ -99,25 +166,72 @@ class Candidate(ContactModel):
         blank=True,
         verbose_name='Field of specialization')
     other_certifications = models.TextField(blank=True)
-    bls_acls_validity = models.DateField(null=True, blank=True)
+    bls_validity = models.DateField(null=True, blank=True)
+    acls_validity = models.DateField(null=True, blank=True)
     haad_dha_license_validity = models.DateField(null=True, blank=True)
+    haad_dha_license_type = models.CharField(
+        max_length=5,
+        blank=True,
+        choices=(
+        ('HAAD', 'HAAD'),
+        ('DHA', 'DHA')))
     job_title_on_dha_haad = models.CharField(max_length=250, blank=True)
     dataflow_last_update = models.DateField(null=True, blank=True)
 
     # others
     visa_status = models.ForeignKey(
         VisaStatus, on_delete=models.SET_NULL, null=True, blank=True)
-    expected_salary_and_benefits = models.TextField(blank=True)
+    driving_license = models.CharField(max_length=100, blank=True)
     availability_for_interview = models.CharField(max_length=200, blank=True)
     notice_period = models.CharField(max_length=100, blank=True)
     candidate_owner = models.ForeignKey(
         Employee,
         on_delete=models.PROTECT,
         null=True)
+    cv_template = models.ForeignKey(
+        CVTemplate,
+        on_delete=models.PROTECT,
+        null=True)
     notes = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
+
+    @property
+    def current_previous_salary_and_benefits(self):
+        value = ''
+        if self.current_previous_salary:
+            if self.current_previous_benefits:
+                value = '{}; {}'.format(
+                    self.current_previous_salary,
+                    self.current_previous_benefits)
+            else:
+                value = self.current_previous_salary
+        else:  # if salary is null or 0
+            if self.current_previous_benefits:
+                value = self.current_previous_benefits
+            else:  # if both salary and benefits are 0 or None
+                pass
+
+        return value
+
+    @property
+    def expected_salary_and_benefits(self):
+        value = ''
+        if self.expected_salary:
+            if self.expected_benefits:  # both are with value
+                value = '{}; {}'.format(
+                    self.expected_salary,
+                    self.expected_benefits)
+            else:
+                value = self.expected_salary
+        else:  # if salary is null or 0
+            if self.expected_benefits:
+                value = self.expected_benefits
+            else:  # if both salary and benefits are 0 or None
+                pass
+
+        return value
 
     @property
     def edit_href(self):

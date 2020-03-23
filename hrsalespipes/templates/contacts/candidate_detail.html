@@ -1,4 +1,5 @@
 {% extends "contacts/base.html" %}
+{% load humanize %}
 
 {% block title %}
 Candidate Detail - {{ object.name }}
@@ -16,11 +17,8 @@ Candidate Detail - {{ object.name }}
         <v-tabs
           v-model="tab"
           fixed-tabs>
-          <v-tab
-            v-for="tab in tabs"
-            :key="tab">
-            [[ tab ]]
-          </v-tab>
+              {% include "contacts/includes/v_tab.html" %}
+        </v-tabs>
 
           <v-tabs-items v-model="tab">
             <v-tab-item>
@@ -100,7 +98,7 @@ Candidate Detail - {{ object.name }}
                     </tr>
                     <tr>
                       <th>Date of Birth:</th>
-                      <td>{{ object.date_of_birth }}</td>
+                      <td>{{ object.date_of_birth|date:'d-M-Y' }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -121,12 +119,26 @@ Candidate Detail - {{ object.name }}
                       <td>{{ object.current_previous_company }}</td>
                     </tr>
                     <tr>
-                      <th>Salary and Benefits:</th>
-                      <td>{{ object.current_previous_salary_and_benefits }}</td>
+                      <th>Current/Previous Salary:</th>
+                      <td>{{ object.current_previous_salary|default_if_none:0|intcomma }}</td>
                     </tr>
+                    <tr>
+                      <th>Current/Previous Benefits:</th>
+                      <td>{{ object.current_previous_benefits }}</td>
+                    </tr>
+
                     <tr>
                       <th>Motivation for leaving:</th>
                       <td>{{ object.motivation_for_leaving }}</td>
+                    </tr>
+
+                    <tr>
+                      <th>Expected Salary:</th>
+                      <td>{{ object.expected_salary|default_if_none:0|intcomma }}</td>
+                    </tr>
+                    <tr>
+                      <th>Expected Benefits:</th>
+                      <td>{{ object.expected_benefits }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -143,10 +155,6 @@ Candidate Detail - {{ object.name }}
                       <td>{{ object.visa_status }}</td>
                     </tr>
                     <tr>
-                      <th>Expected Salary and Benefits:</th>
-                      <td>{{ object.expected_salary_and_benefits }}</td>
-                    </tr>
-                    <tr>
                       <th>Availablity for Interview:</th>
                       <td>{{ object.availability_for_interview }}</td>
                     </tr>
@@ -159,6 +167,10 @@ Candidate Detail - {{ object.name }}
                       <td>{{ object.candidate_owner }}</td>
                     </tr>
                     <tr>
+                      <th>CV Template:</th>
+                      <td>{{ object.cv_template.name }}</td>
+                    </tr>
+                    <tr>
                       <th>Notes/Remarks:</th>
                       <td>{{ object.notes }}</td>
                     </tr>
@@ -166,9 +178,67 @@ Candidate Detail - {{ object.name }}
                 </table>
               </v-simple-table>
             </v-tab-item>
+
+            <v-tab-item>
+              <v-simple-table
+                dense>
+                <table>
+                  <tbody v-if="isMedical">
+                    <tr>
+                      <th>Medical Experience(years):</th>
+                      <td>{{ object.medical_experience_in_years }}</td>
+                    </tr>
+                    <tr>
+                      <th>Specialization:</th>
+                      <td>{{ object.specialization }}</td>
+                    </tr>
+                    <tr>
+                      <th>Other Certifications:</th>
+                      <td>{{ object.other_certifications }}</td>
+                    </tr>
+                    <tr>
+                      <th>BLS Validity:</th>
+                      <td>{{ object.bls_validity }}</td>
+                    </tr>
+                    <tr>
+                      <th>ACLS Validity:</th>
+                      <td>{{ object.acls_validity }}</td>
+                    </tr>
+                    <tr>
+                      <th>HAAD/DHA Validity:</th>
+                      <td>{{ object.haad_dha_license_validity }}</td>
+                    </tr>
+                    <tr>
+                      <th>HAAD/DHA License Type:</th>
+                      <td>{{ object.haad_dha_license_type }}</td>
+                    </tr>
+                    <tr>
+                      <th>Job title on DHA/HAAD:</th>
+                      <td>{{ object.job_title_on_dha_haad }}</td>
+                    </tr>
+                    <tr>
+                      <th>Last update on dataflow:</th>
+                      <td>{{ object.dataflow_last_update }}</td>
+                    </tr>
+                  </tbody>
+                  <tbody v-else>
+                    <tr>
+                      <td>Non-medical</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </v-simple-table>
+            </v-tab-item>
           </v-tabs-items>
-        </v-tabs>
       </v-col>
+      
+      <v-col cols="12" class="text-center">
+        <v-btn
+          block
+          color="primary"
+          text
+          outlined
+          href="{% url 'contacts:download_cv' object.pk %}">Download CV</v-btn>
       
       <v-col cols="12" class="text-center">
         <v-btn
@@ -211,10 +281,26 @@ Candidate Detail - {{ object.name }}
       ],
       tab: null,
       tabs: [
-        'Contact Details',
-        'Personal',
-        'Current/Previous Work',
-        'Others'
+        {
+          tab: 'Contact Details',
+          icon: 'fas fa-address-book',  
+        },
+        {
+          tab: 'Personal',
+          icon: 'fas fa-user',  
+        },
+        {
+          tab: 'Current/Previous Work',
+          icon: 'fas fa-undo',  
+        },
+        {
+          tab: 'Others',
+          icon: 'fas fa-info',  
+        },
+        {
+          tab: 'Medical',
+          icon: 'fas fa-notes-medical',  
+        },
       ],
       locations: [
         'Philippines',
@@ -236,7 +322,8 @@ Candidate Detail - {{ object.name }}
       genders: [
         {value: 'F', text: 'Female'},
         {value: 'M', text: 'Male'},
-      ]
+      ],
+      isMedical: {{object.is_medical|yesno:'true,false'}},
     }),
 
     mounted(){

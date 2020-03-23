@@ -34,8 +34,11 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
 
             'current_previous_position',
             'current_previous_company',
-            'current_previous_salary_and_benefits',
+            'current_previous_salary',
+            'current_previous_benefits',
             'motivation_for_leaving',
+            'expected_salary',
+            'expected_benefits',
 
             'nationality',
             'languages',
@@ -47,10 +50,10 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
             'date_of_birth',
 
             'visa_status',
-            'expected_salary_and_benefits',
             'availability_for_interview',
             'notice_period',
             'candidate_owner',
+            'cv_template',
             'notes',
 
             # medical
@@ -58,7 +61,9 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
             'medical_experience_in_years',
             'specialization',
             'other_certifications',
-            'bls_acls_validity',
+            'bls_validity',
+            'acls_validity',
+            'haad_dha_license_type',
             'haad_dha_license_validity',
             'job_title_on_dha_haad',
             'dataflow_last_update',

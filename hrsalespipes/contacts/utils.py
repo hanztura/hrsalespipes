@@ -1,10 +1,19 @@
+import environ
 from uuid import uuid4
 
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.humanize.templatetags.humanize import intcomma
 from django.db import models
+from django.forms.models import model_to_dict
+from django.http import HttpResponse
+from django.views.generic.base import View
+from django.views.generic.detail import SingleObjectMixin
 
 from django_extensions.db.models import TimeStampedModel
+from docxtpl import DocxTemplate
 
-from system.models import Location
+
+CURRENT_DIR = environ.Path(__file__) - 1
 
 
 class ContactModel(TimeStampedModel):
@@ -58,3 +67,58 @@ class FilterNameMixin:
         name = self.request.GET.get('name', '')
         context['search_name'] = name
         return context
+
+
+class DocxResponseMixin(SingleObjectMixin):
+    content_type = 'application/vnd.openxmlformats-officedocument.\
+        wordprocessingml.document'
+    docx_filename = None
+    positon = ''
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get_docx_template(self):
+        """returns file path of the template"""
+        cv_template = self.object.cv_template
+        if cv_template:
+            cv_template = cv_template
+        else:
+            CVTemplate = ContentType.objects.get(
+                app_label='contacts',
+                model='cvtemplate').model_class()
+            cv_template = CVTemplate.objects.filter(is_default=True).first()
+
+        return cv_template.template.file.name
+
+    def get_docx(self):
+        """ Returns a docx.Document object"""
+        document = DocxTemplate(self.get_docx_template())
+        instance = self.object
+
+        context = {}
+        if instance:
+            Candidate = ContentType.objects.get(
+                app_label='contacts',
+                model='candidate').model_class()
+            context = model_to_dict(instance, fields=Candidate.CV_FIELDS)
+            context['position'] = self.positon
+        document.render(context)
+        return document.docx
+
+    def response(self):
+        content_disposition = 'attachment; filename=CV.docx'
+        response = HttpResponse(content_type=self.content_type)
+        response['Content-Disposition'] = content_disposition
+
+        docx = self.get_docx()
+        docx.save(response)
+
+        return response
+
+
+class DownloadCVBaseView(DocxResponseMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return self.response()

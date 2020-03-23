@@ -15,6 +15,7 @@
       <v-col cols="12" class="text-center">
         <form method="post" id="form--candidate">
           <input type="hidden" id="dataVisaStatusChoices" value="{{ visa_status_objects }}">
+          <input type="hidden" id="dataCVTemplatesChoices" value="{{ cv_templates }}">
           <input type="hidden" id="dataCandidateOwnerChoices" value="{{ employees }}">
           <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
           <input type="hidden" id="dataNationalityChoices" value="{{ nationalities }}">
@@ -77,6 +78,7 @@
 
                 <v-autocomplete
                   :items="locations"
+                  item-value="text"
                   dense
                   label="Location"
                   outlined
@@ -170,19 +172,42 @@
                   value="{{ form.current_previous_company.value|default_if_none:'' }}">
                 </v-text-field>
 
-                <v-textarea
-                  name="current_previous_salary_and_benefits"
-                  label="Salary and Benefits"
+                <v-text-field
+                  name="current_previous_salary"
+                  label="Current/Previous Salary (Amount)"
+                  type="number"
                   outlined
-                  value="{{ form.current_previous_salary_and_benefits.value|default_if_none:'' }}">
-                  </v-textarea>
+                  value="{{ form.current_previous_salary.value }}">
+                  </v-text-field>
+
+                <v-text-field
+                  name="current_previous_benefits"
+                  label="Current/Previous Benefits"
+                  outlined
+                  value="{{ form.current_previous_benefits.value|default_if_none:'' }}">
+                  </v-text-field>
 
                 <v-textarea
                   name="motivation_for_leaving"
                   label="Motivation for leaving"
                   outlined
-                  value="{{ form.motivation_for_leaving.value|default_if_none:'' }}"
+                  value="{{ form.motivation_for_leaving.value }}"
                 ></v-textarea>
+
+                <v-text-field
+                  name="expected_salary"
+                  label="Expected Salary (Amount)"
+                  type="number"
+                  outlined
+                  value="{{ form.expected_salary.value|default_if_none:'' }}">
+                  </v-text-field>
+
+                <v-text-field
+                  name="expected_benefits"
+                  label="Expected Benefits"
+                  outlined
+                  value="{{ form.expected_benefits.value }}">
+                  </v-text-field>
               </v-tab-item>  <!-- Work history -->
 
               <v-tab-item eager>
@@ -195,13 +220,6 @@
                   id="visa_status"
                   data-default-value="{{ form.visa_status.value|default_if_none:'' }}"
                   v-model="visaStatus"></v-select>
-
-                <v-textarea
-                  name="expected_salary_and_benefits"
-                  label="Expected Salary and Benefits"
-                  outlined
-                  value="{{ form.expected_salary_and_benefits.value }}">
-                  </v-textarea>
 
                 <v-text-field
                   label="Availability for interview"
@@ -216,6 +234,14 @@
                   name="notice_period"
                   value="{{ form.notice_period.value }}">
                 </v-text-field>
+
+                <v-select
+                  outlined
+                  :items="cvTemplates"
+                  label="CV Template"
+                  name="cv_template"
+                  id="cv_template"
+                  v-model="cvTemplate"></v-select>
 
                 <v-autocomplete
                   name='candidate_owner'
@@ -268,10 +294,24 @@
 
                   <v-text-field
                     outlined
-                    label="BLS/ACLS Validity"
-                    name="bls_acls_validity"
+                    label="BLS Validity"
+                    name="bls_validity"
                     type="date"
-                    value="{{ form.bls_acls_validity.value|date:"Y-m-d" }}"></v-text-field>
+                    value="{{ form.bls_validity.value|date:"Y-m-d" }}"></v-text-field>
+
+                  <v-text-field
+                    outlined
+                    label="ACLS Validity"
+                    name="acls_validity"
+                    type="date"
+                    value="{{ form.acls_validity.value|date:"Y-m-d" }}"></v-text-field>
+
+                  <v-select
+                    filled
+                    :items="haadDhaLicenseTypes"
+                    name="haad_dha_license_type"
+                    label="HAAD/DHA Licence Type"
+                  ></v-select>
 
                   <v-text-field
                     outlined
@@ -362,15 +402,15 @@
       nationalities: [],
       nationality: '{{ form.nationality.value }}',
       civilStatusChoices: [
-        {value: 'S', text: 'Single'},
-        {value: 'M', text: 'Married'},
-        {value: 'W', text: 'Widowed'},
-        {value: 'D', text: 'Divorced'},
-        {value: 'Se', text: 'Separated'},
+        {value: 'Single', text: 'Single'},
+        {value: 'Married', text: 'Married'},
+        {value: 'Widowed', text: 'Widowed'},
+        {value: 'Divorced', text: 'Divorced'},
+        {value: 'Separated', text: 'Separated'},
       ],
       genders: [
-        {value: 'F', text: 'Female'},
-        {value: 'M', text: 'Male'},
+        {value: 'Female', text: 'Female'},
+        {value: 'Male', text: 'Male'},
       ],
       visaStatusChoices: [],
       visaStatus: '{{ form.visa_status.value|default_if_none:"0" }}',
@@ -378,20 +418,21 @@
       candidateOwner: '{{ form.candidate_owner.value|default_if_none:'' }}',
       isMedical: {{ form.is_medical.value|yesno:"true,false" }},
       medicalExperience: {{ form.medical_experience_in_years.value }},
+      haadDhaLicenseTypes: [
+        {
+          text: 'HAAD',
+          value: 'HAAD'
+        },
+        {
+          text: 'DHA',
+          value: 'DHA'
+        },
+      ],
+      cvTemplates: [],
+      cvTemplate: '{{ form.cv_template.value|default_if_none:'' }}',
     }),
 
     methods: {
-      setVisaStatusChoices: function() {
-        // get value
-        let data = document.getElementById('dataVisaStatusChoices').value;
-        this.visaStatusChoices = JSON.parse(data);
-
-        // let defaultValue = document.getElementById('visa_status').getAttribute('data-default-value');
-        // defaultValue = Number(defaultValue);
-        // if (defaultValue || defaultValue == 0) {
-        //   this.visaStatus = defaultValue;
-        // }
-      },
       setDataChoices: function(sourceId, setDataVariable) {
         let data = document.getElementById(sourceId).value;
         this.$set(this, setDataVariable, JSON.parse(data));
@@ -399,7 +440,8 @@
     },
 
     beforeMount(){
-      this.setVisaStatusChoices();
+      this.setDataChoices('dataVisaStatusChoices', 'visaStatusChoices');
+      this.setDataChoices('dataCVTemplatesChoices', 'cvTemplates');
       this.setDataChoices('dataCandidateOwnerChoices', 'employees');
       this.setDataChoices('dataLocationChoices', 'locations');
       this.setDataChoices('dataNationalityChoices', 'nationalities');
