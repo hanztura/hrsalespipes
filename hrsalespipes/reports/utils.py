@@ -71,7 +71,7 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
                     # used for aggreg.
                     data = data.filter(employee_id=contact_id)
                 else:  # consultant
-                    data = data.filter(job_candidate__candidate__candidate_owner_id=contact_id)
+                    data = data.filter(job_candidate__consultant_id=contact_id)
 
             rows = data.values_list(*values_list)  # final value of rows
         except Exception as e:
