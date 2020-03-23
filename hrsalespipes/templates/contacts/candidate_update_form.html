@@ -27,11 +27,11 @@
             <v-tabs
               v-model="tab"
               fixed-tabs>
-              {% include "contacts/includes/v_tab.html" %}
+              {% include "_includes/v_tab.html" %}
             </v-tabs>
 
             <v-tabs-items v-model="tab">
-              <v-tab-item eager>
+              <v-tab-item id="Contact Details" eager>
 
                 <v-text-field
                   label="Code"
@@ -87,7 +87,7 @@
                 </v-autocomplete>
               </v-tab-item> <!-- Basic -->
 
-              <v-tab-item eager>
+              <v-tab-item id="Personal" eager>
                 <v-text-field
                   label="Name"
                   outlined
@@ -157,7 +157,7 @@
                 </v-text-field>
               </v-tab-item>  <!-- Personal -->
 
-              <v-tab-item eager>
+              <v-tab-item id="Current/Previous Work" eager>
                 <v-text-field
                   label="Positiion"
                   outlined
@@ -210,7 +210,7 @@
                   </v-text-field>
               </v-tab-item>  <!-- Work history -->
 
-              <v-tab-item eager>
+              <v-tab-item id="Others" eager>
 
                 <v-select
                   :items="visaStatusChoices"
@@ -261,7 +261,7 @@
                   </v-textarea>
               </v-tab-item>  <!-- Others -->
 
-              <v-tab-item eager>
+              <v-tab-item id="Medical" eager>
                 <v-checkbox v-model="isMedical" label="Medical?"></v-checkbox>
                 <input type="hidden" name="is_medical" :value="isMedical">
 
