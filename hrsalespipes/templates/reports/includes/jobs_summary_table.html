@@ -1,0 +1,41 @@
+{% load humanize %}
+
+<table>
+  <thead>
+    <tr>
+      <th class="text-center">Date</th>
+      <th class="text-center">Reference Number</th>
+      <th class="text-center">Client</th>
+      <th class="text-center">Position</th>
+      <th class="text-center">Location</th>
+      <th class="text-center">Potential Income</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if object_list %}
+      {% for object in object_list %}
+      <tr>
+        <td>{{ object.date }}</td>
+        <td>{{ object.reference_number }}</td>
+        <td>{{ object.client.name }}</td>
+        <td>{{ object.position }}</td>
+        <td>{{ object.location }}</td>
+        <td class="text-right">{{ object.potential_income|intcomma }}</td>
+      </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td colspan="5">No data available.</td>
+      </tr>
+    {% endif %}
+  </tbody>
+
+  {% if object_list %}
+  <tfoot>
+      <tr>
+        <td class="text-right" colspan="5">Total</td>
+        <td class="text-right"><strong>{{ potential_income__sum|floatformat:2|intcomma }}</strong></td>
+      </tr>
+  </tfoot>
+  {% endif %}
+</table>

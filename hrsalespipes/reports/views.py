@@ -498,7 +498,7 @@ class JobsSummaryListView(
 
     def get_queryset(self):
         q = super().get_queryset()
-        q = q.select_related('board', 'client')
+        q = q.select_related('client')
         return q
 
     def get_context_data(self, **kwargs):
@@ -544,10 +544,10 @@ class JobsSummaryExcelView(
         date_from = request.GET.get('from', self.month_first_day)
         date_to = request.GET.get('to', self.month_last_day)
 
-        columns = ['Date', 'Board', 'Reference Number', 'Client',
+        columns = ['Date', 'Reference Number', 'Client',
                    'Position', 'Location', 'Potential Income', ]
         values_list = [
-            'date', 'board__name', 'reference_number', 'client__name',
+            'date', 'reference_number', 'client__name',
             'position', 'location', 'potential_income'
         ]
 
@@ -557,10 +557,10 @@ class JobsSummaryExcelView(
             date_to,
             columns,
             Job,
-            ('board', 'client'),
+            ('client',),
             values_list,
-            ((6, 'potential_income'), ),
-            5
+            ((5, 'potential_income'), ),
+            4
         )
 
         wb.save(response)
