@@ -22,11 +22,11 @@
             <v-tabs
               v-model="tab"
               fixed-tabs>
-              {% include "contacts/includes/v_tab.html" %}
+              {% include "_includes/v_tab.html" %}
             </v-tabs>
 
             <v-tabs-items v-model="tab">
-              <v-tab-item eager>
+              <v-tab-item id="Contact Details" eager>
                 <v-text-field
                   label="Name"
                   outlined
@@ -92,7 +92,7 @@
                 </v-text-field>
               </v-tab-item> <!-- Basic -->
 
-              <v-tab-item eager>
+              <v-tab-item id="Others" eager>
 
                 <v-textarea
                   name="initial_approach"
