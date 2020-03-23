@@ -20,6 +20,7 @@
         <th class="text-center">Candidate</th>
         <th class="text-center">Client</th>
         <th class="text-center">Industry</th>
+        <th class="text-center">Consultant</th>
         <th class="text-center">Invoice Date</th>
         <th class="text-center">Invoice Number</th>
         <th class="text-center">Invoice Amount</th>
@@ -41,6 +42,7 @@
 
             <td class="text-right">{{ object.job_candidate.job.client.name }}</td>
             <td class="text-right">{{ object.job_candidate.job.client.industry }}</td>
+            <td class="text-right">{{ object.job_candidate.consultant.name }}</td>
             <td class="text-right">{{ object.invoice_date|default_if_none:'' }}</td>
             <td class="text-right">{{ object.invoice_number|intcomma }}</td>
             <td class="text-right">{{ object.invoice_amount|intcomma }}</td>

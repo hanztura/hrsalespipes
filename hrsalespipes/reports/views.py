@@ -288,7 +288,18 @@ class PipelineSummaryListView(
             'status',
             'job',
             'job_candidate__candidate',
-            'job_candidate__job__client')
+            'job_candidate__job__client',
+            'job_candidate__consultant')
+
+        # filter consultant (optional)
+        consultant_pk = self.request.GET.get('consultant', '')  # employee id
+        self.consultant = None
+        if consultant_pk:
+            consultant = Employee.objects.filter(id=consultant_pk)
+            if consultant.exists():
+                self.consultant = consultant.first()
+                q = q.filter(
+                    job_candidate__consultant=self.consultant)
 
         return q
 
@@ -299,8 +310,16 @@ class PipelineSummaryListView(
         aggregate_fields = ['invoice_amount', 'vat']
         aggregate_fields = [Sum(field) for field in aggregate_fields]
         sums = q.aggregate(*aggregate_fields)
+
         context['invoice_amount__sum'] = sums['invoice_amount__sum']
         context['vat__sum'] = sums['vat__sum']
+
+        context['consultant'] = self.consultant
+        context['consultant_pk'] = None
+        if self.consultant:
+            context['consultant_pk'] = self.consultant.pk
+
+        context['consultants'] = get_objects_as_choices(Employee)
         return context
 
 
@@ -339,6 +358,8 @@ class PipelineSummaryExcelView(
         date_from = request.GET.get('from', self.month_first_day)
         date_to = request.GET.get('to', self.month_last_day)
 
+        consultant_pk = self.request.GET.get('consultant', '')
+
         columns = (
             'Date',
             'Status',
@@ -349,6 +370,7 @@ class PipelineSummaryExcelView(
             'Candidate',
             'Client',
             'Industry',
+            'Consultant',
             'Invoice Date',
             'Invoice Number',
             'Invoice Amount',
@@ -368,6 +390,7 @@ class PipelineSummaryExcelView(
             Setting.objects.first().company_name,
             'For the period {} to {}'.format(date_from, date_to)
         ]
+
         for head in heading:
             ws.write(row_num, 0, head, font_style)
             row_num += 1
@@ -382,13 +405,20 @@ class PipelineSummaryExcelView(
         rows = Pipeline.objects.all()
 
         rows = rows.select_related(
-            'status', 'job_candidate__candidate', 'job_candidate__job__client')
+            'status', 'job_candidate__candidate', 'job_candidate__job__client',
+            'job_candidate__consultant')
 
         if date_from and date_to:
             try:
-                data = rows.filter(date__gte=date_from, date__lte=date_to)
+                rows = rows.filter(date__gte=date_from, date__lte=date_to)
+
+                if consultant_pk:
+                    consultant = Employee.objects.filter(id=consultant_pk)
+                    if consultant.exists():
+                        consultant = consultant.first()
+                        rows = rows.filter(
+                            job_candidate__consultant=consultant)
             except Exception as e:
-                data = None
                 rows = Pipeline.objects.none()
 
         for row in rows:
@@ -398,9 +428,14 @@ class PipelineSummaryExcelView(
                 candidate = job_candidate.candidate
                 candidate_name = candidate.name
                 candidate_code = candidate.code
+                consultant_name = ''
+                if hasattr(job_candidate, 'consultant'):
+                    consultant_name = job_candidate.consultant.name
+
             else:
                 candidate_name = ''
                 candidate_code = ''
+                consultant_name = ''
 
             job = row.job_candidate.job
             client = job.client
@@ -415,6 +450,7 @@ class PipelineSummaryExcelView(
                 candidate_name,
                 client.name,
                 client.industry,
+                consultant_name,
                 row.invoice_date,
                 row.invoice_number,
                 row.invoice_amount,
@@ -426,23 +462,24 @@ class PipelineSummaryExcelView(
 
         # total row
         row_num += 1
-        if data:
-            sums = data.aggregate(Sum('invoice_amount'), Sum('vat'))
+        total_index = 11
+        if rows:
+            sums = rows.aggregate(Sum('invoice_amount'), Sum('vat'))
             ws.write(
                 row_num,
-                10,
+                total_index,
                 'TOTAL',
                 font_style)
 
             ws.write(
                 row_num,
-                11,
+                total_index + 1,
                 sums['invoice_amount__sum'],
                 font_style)
 
             ws.write(
                 row_num,
-                12,
+                total_index + 2,
                 sums['vat__sum'],
                 font_style)
 
