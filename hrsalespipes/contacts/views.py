@@ -182,8 +182,3 @@ class SupplierDetailView(PermissionRequiredMixin, DetailView):
 class DownloadCVView(PermissionRequiredMixin, DownloadCVBaseView):
     model = Candidate
     permission_required = 'contacts.view_candidate'
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-
-        self.position = request.GET.get('position', '')

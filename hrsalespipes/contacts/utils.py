@@ -73,7 +73,7 @@ class DocxResponseMixin(SingleObjectMixin):
     content_type = 'application/vnd.openxmlformats-officedocument.\
         wordprocessingml.document'
     docx_filename = None
-    positon = ''
+    position = ''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -102,11 +102,12 @@ class DocxResponseMixin(SingleObjectMixin):
                 app_label='contacts',
                 model='candidate').model_class()
             context = model_to_dict(instance, fields=Candidate.CV_FIELDS)
-            context['position'] = self.positon
+            context['position'] = self.position
         document.render(context)
         return document.docx
 
     def response(self):
+
         content_disposition = 'attachment; filename=CV.docx'
         response = HttpResponse(content_type=self.content_type)
         response['Content-Disposition'] = content_disposition
@@ -120,5 +121,6 @@ class DocxResponseMixin(SingleObjectMixin):
 class DownloadCVBaseView(DocxResponseMixin, View):
 
     def get(self, request, *args, **kwargs):
+        self.position = request.GET.get('position', '')
         self.object = self.get_object()
         return self.response()
