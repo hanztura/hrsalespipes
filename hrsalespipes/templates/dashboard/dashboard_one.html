@@ -12,6 +12,7 @@ Dashboard
   <input type="hidden" id="dataSuccessfulJobsPerConsutant" value="{{ sjpc }}">
   <input type="hidden" id="dataTNFIPerConsultant" value="{{ tnfipc }}">
   <input type="hidden" id="dataTNFIPerConsultantLast12Months" value="{{ tnfipcp12m }}">
+  <input type="hidden" id="dataYTDClientPerformance" value="{{ ytdcp }}">
   <v-container
     fluid>
     <h1>Dashboard</h1>
@@ -63,7 +64,7 @@ Dashboard
   const DashboardValueCard = {
     props: ['value', 'text'],
     template: `
-      <v-col cols="12" md="4">
+      <v-col cols="12" md=4>
         <v-card
           class="mx-auto text-center"
           outlined
@@ -171,6 +172,11 @@ Dashboard
           'icon': 'fas fa-chart-bar',
         },
         {
+          'type': 'BarChart',
+          'text': 'Bar',
+          'icon': 'fas fa-chart-bar fa-rotate-90',
+        },
+        {
           'type': 'PieChart',
           'text': 'Pie',
           'icon': 'fas fa-chart-pie',
@@ -186,6 +192,7 @@ Dashboard
       sjpc: [["Consultant","Successful jobs per consultant this month"]],
       tnfipc: [["Consultant", "Total NFI generated per consultant this month"]],
       tnfipcp12m: [["Consultant", "Total NFI generated per consultant last 12 months"]],
+      ytdcp: [],
       transformTheseData: [
         {
           sourceId: 'dataSuccessfulJobsAllTimePerIndustry',
@@ -217,8 +224,61 @@ Dashboard
           this.sjpc,
           this.tnfipc,
           this.tnfipcp12m,
+          this.ytdcpData,
         ]
       },
+      ytdcpDataBySources: function(){
+        // get sources
+        let sources = _.groupBy(this.ytdcp.value, 'cvSource');
+        return sources;
+      },
+      ytdcpDataByClientId: function(){
+        let clients = _.groupBy(this.ytdcp.value, 'id');
+        return clients
+      },
+      transformedYTDCP: function(){
+        ytdcp = [
+          ['Client', 'Total'],
+        ]
+        let sources = _.keys(this.ytdcpDataBySources);
+
+        _.forEach(sources, (source, index) => {
+          ytdcp[0].push(source) - 1;
+
+          // _.forEach(_this.ytdcpDataBySources[source], (row) => {
+          //   let data = new Array(sources.length + 1);
+          //   data[0] = row.client;
+          //   data[sourceIndex] = row.value;
+          //   ytdcp.push(data);
+          // });
+        });
+
+        _.forEach(this.ytdcpDataByClientId, (rows, clientId)=>{
+          let data = new Array(sources.length + 2);
+          let total = 0;
+
+          _.forEach(rows, (row, index) => {
+            let source = row.cvSource;
+            let sourceIndex = ytdcp[0].indexOf(source);
+
+            // set client name
+            if (index == 0) { data[0] = row.client }
+            data[sourceIndex] = row.value;
+            total += row.value;
+          });
+
+          data[1] = total;
+          ytdcp.push(data);
+        });
+        return ytdcp;
+      },
+      ytdcpData: function() {
+        let data = {
+          title: this.ytdcp.title,
+          data: this.transformedYTDCP
+        }
+        return data;
+      }
     },
 
     methods: {
@@ -272,6 +332,7 @@ Dashboard
     mounted() {
       this.updateBreadcrumbs();
       this.setDataChoices('dataDashboardItemsNumber', 'dashboardItemsNumber');
+      this.setDataChoices('dataYTDClientPerformance', 'ytdcp');
     },
 
     components: {
