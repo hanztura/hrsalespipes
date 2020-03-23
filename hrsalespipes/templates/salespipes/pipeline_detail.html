@@ -17,14 +17,11 @@ Pipeline Detail - Job {{ object.job_candidate.job.reference_number }}
         <v-tabs
           v-model="tab"
           fixed-tabs>
-          <v-tab
-            v-for="tab in tabs"
-            :key="tab">
-            [[ tab ]]
-          </v-tab>
+          
+          {% include "_includes/v_tab.html" %}
 
           <v-tabs-items v-model="tab">
-            <v-tab-item>
+            <v-tab-item id="Pipeline Detail">
               <v-simple-table>
                 <table>
                   <tbody>
@@ -95,7 +92,7 @@ Pipeline Detail - Job {{ object.job_candidate.job.reference_number }}
                       href="{% url 'salespipes:edit' object.pk %}">Edit Pipeline</v-btn>
             </v-tab-item>
 
-            <v-tab-item>
+            <v-tab-item id="Job Candidate">
               {% if candidate %}
                 {% include "jobs/includes/jobcandidate_detail_table.html" with object=candidate %}
               {% else %}
@@ -129,8 +126,14 @@ Pipeline Detail - Job {{ object.job_candidate.job.reference_number }}
       ],
       tab: null,
       tabs: [
-        'Pipeline Detail',
-        'Job Candidate',
+        {
+          tab: 'Pipeline Detail',
+          icon: 'fas fa-filter',  
+        },
+        {
+          tab: 'Job Candidate',
+          icon: 'fas fa-user',  
+        },
       ],
     }),
 

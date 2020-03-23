@@ -17,14 +17,11 @@ Client Detail - {{ object.name }}
         <v-tabs
           v-model="tab"
           fixed-tabs>
-          <v-tab
-            v-for="tab in tabs"
-            :key="tab">
-            [[ tab ]]
-          </v-tab>
+
+          {% include "_includes/v_tab.html" %}
 
           <v-tabs-items v-model="tab">
-            <v-tab-item>
+            <v-tab-item id="Contact Details">
               <v-simple-table
                 dense>
                 <table>
@@ -66,7 +63,7 @@ Client Detail - {{ object.name }}
               </v-simple-table>
             </v-tab-item>
 
-            <v-tab-item>
+            <v-tab-item id="Others">
               <v-simple-table
                 dense>
                 <table>
@@ -149,8 +146,14 @@ Client Detail - {{ object.name }}
       ],
       tab: null,
       tabs: [
-        'Contact Details',
-        'Others'
+        {
+          tab: 'Contact Details',
+          icon: 'fas fa-address-book',  
+        },
+        {
+          tab: 'Others',
+          icon: 'fas fa-info',  
+        },
       ],
     })
 

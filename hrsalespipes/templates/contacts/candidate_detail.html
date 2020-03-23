@@ -17,11 +17,11 @@ Candidate Detail - {{ object.name }}
         <v-tabs
           v-model="tab"
           fixed-tabs>
-              {% include "contacts/includes/v_tab.html" %}
-        </v-tabs>
+          
+          {% include "_includes/v_tab.html" %}
 
           <v-tabs-items v-model="tab">
-            <v-tab-item>
+            <v-tab-item id="Contact Details">
               <v-simple-table
                 dense>
                 <table>
@@ -63,7 +63,7 @@ Candidate Detail - {{ object.name }}
               </v-simple-table>
             </v-tab-item>
 
-            <v-tab-item>
+            <v-tab-item id="Personal">
               <v-simple-table
                 dense>
                 <table>
@@ -105,7 +105,7 @@ Candidate Detail - {{ object.name }}
               </v-simple-table>
             </v-tab-item>
 
-            <v-tab-item>
+            <v-tab-item id="Current/Previous Work">
               <v-simple-table
                 dense>
                 <table>
@@ -145,7 +145,7 @@ Candidate Detail - {{ object.name }}
               </v-simple-table>
             </v-tab-item>
 
-            <v-tab-item>
+            <v-tab-item id="Others">
               <v-simple-table
                 dense>
                 <table>
@@ -179,7 +179,7 @@ Candidate Detail - {{ object.name }}
               </v-simple-table>
             </v-tab-item>
 
-            <v-tab-item>
+            <v-tab-item id="Medical">
               <v-simple-table
                 dense>
                 <table>
@@ -230,8 +230,9 @@ Candidate Detail - {{ object.name }}
               </v-simple-table>
             </v-tab-item>
           </v-tabs-items>
+        </v-tabs>
       </v-col>
-      
+
       <v-col cols="12" class="text-center">
         <v-btn
           block
@@ -239,8 +240,6 @@ Candidate Detail - {{ object.name }}
           text
           outlined
           href="{% url 'contacts:download_cv' object.pk %}">Download CV</v-btn>
-      
-      <v-col cols="12" class="text-center">
         <v-btn
           block
           color="primary"
