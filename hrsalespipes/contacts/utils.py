@@ -4,17 +4,20 @@ from uuid import uuid4
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.db import models
+from django.template.defaultfilters import date as date_filter
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
 from django.views.generic.base import View
 from django.views.generic.detail import SingleObjectMixin
 
+import jinja2
 from django_extensions.db.models import TimeStampedModel
 from docxtpl import DocxTemplate
 
 
 CURRENT_DIR = environ.Path(__file__) - 1
-
+jinja_env = jinja2.Environment()
+jinja_env.filters['date'] = date_filter
 
 class ContactModel(TimeStampedModel):
 
@@ -103,7 +106,7 @@ class DocxResponseMixin(SingleObjectMixin):
                 model='candidate').model_class()
             context = model_to_dict(instance, fields=Candidate.CV_FIELDS)
             context['position'] = self.position
-        document.render(context)
+        document.render(context,jinja_env)
         return document.docx
 
     def response(self):
