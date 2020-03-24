@@ -66,6 +66,14 @@ class JobCandidateUpdateModelForm(ModelForm):
         self.fields['consultant'].required = True
         self.fields['cv_source'].required = True
 
+        # check if pipeline exists, then disable status ff yes
+        job_candidate = self.instance
+        try:
+            if job_candidate.pipeline:
+                self.fields['status'].disabled = True
+        except Exception as e:
+            pass
+
     @transaction.atomic
     def save(self, commit=True):
         instance = super().save(commit)
