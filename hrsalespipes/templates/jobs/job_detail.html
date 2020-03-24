@@ -110,7 +110,7 @@ Job Detail - {{ object.reference_number }}
                       {% endfor %}
                     {% else %}
                       <tr>
-                        <td colspan="8">No data yet. <a href="{% url 'jobs:candidates_new' object.pk %}">Add now</a>.</td>
+                        <td colspan="11">No data yet. <a href="{% url 'jobs:candidates_new' object.pk %}">Add now</a>.</td>
                       </tr>
                     {% endif %}
                   </tbody>
