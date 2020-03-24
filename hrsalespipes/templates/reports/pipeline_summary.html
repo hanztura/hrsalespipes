@@ -93,7 +93,7 @@ Pipeline Summary - Reports
                 <th class="text-center">Job</th>
                 <th class="text-center">Candidate</th>
                 <th class="text-center">Client</th>
-                <th class="text-center">Invoice</th>
+                <th class="text-center">Amounts</th>
               </tr>
             </thead>
             <tbody>
@@ -123,10 +123,11 @@ Pipeline Summary - Reports
                     <p>Industry: {{ object.job_candidate.job.client.industry }}</p>
                   </td>
                   <td class="text-left">
-                    <p>Date: {{ object.invoice_date }}</p>
-                    <p>Number: {{ object.invoice_number }}</p>
-                    <p>Amount: {{ object.invoice_amount|intcomma }}</p>
-                    <p>VAT: {{ object.vat|intcomma }}</p>
+                    <p>Potential Income: <strong>{{ object.potential_income|intcomma }}</strong></p>
+                    <p>Invoice Amount: <strong>{{ object.invoice_amount|intcomma }}</strong></p>
+                    <p>VAT: <strong>{{ object.vat|intcomma }}</strong></p>
+                    <p class="caption">Invoice Date: {{ object.invoice_date }}</p>
+                    <p class="caption">Invoice Number: {{ object.invoice_number }}</p>
                   </td>
                 </tr>
                 {% endfor %}
@@ -139,6 +140,10 @@ Pipeline Summary - Reports
 
             {% if object_list %}
             <tfoot>
+              <tr>
+                <td class="text-right" colspan="4">Total Potential Income</td>
+                <td class="text-left"><strong>{{ potential_income__sum|floatformat:2|intcomma }}</strong></td>
+              </tr>
               <tr>
                 <td class="text-right" colspan="4">Total Invoice Amount</td>
                 <td class="text-left"><strong>{{ invoice_amount__sum|floatformat:2|intcomma }}</strong></td>

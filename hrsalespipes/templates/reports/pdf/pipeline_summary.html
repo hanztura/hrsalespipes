@@ -21,6 +21,7 @@
         <th class="text-center">Client</th>
         <th class="text-center">Industry</th>
         <th class="text-center">Consultant</th>
+        <th class="text-center">Potential Income</th>
         <th class="text-center">Invoice Date</th>
         <th class="text-center">Invoice Number</th>
         <th class="text-center">Invoice Amount</th>
@@ -36,13 +37,12 @@
           <td class="text-center">{{ object.job_candidate.job.reference_number }}</td>
           <td class="text-center">{{ object.job.date }}</td>
           <td class="text-center">{{ object.job.position }}</td>
-
           <td class="text-center">{{ object.job_candidate.candidate.code }}</td>
           <td class="text-center">{{ object.job_candidate.candidate.name }}</td>
-
             <td class="text-right">{{ object.job_candidate.job.client.name }}</td>
             <td class="text-right">{{ object.job_candidate.job.client.industry }}</td>
             <td class="text-right">{{ object.job_candidate.consultant.name }}</td>
+            <td class="text-right">{{ object.potential_income|intcomma }}</td>
             <td class="text-right">{{ object.invoice_date|default_if_none:'' }}</td>
             <td class="text-right">{{ object.invoice_number|intcomma }}</td>
             <td class="text-right">{{ object.invoice_amount|intcomma }}</td>
@@ -59,7 +59,9 @@
     {% if object_list %}
     <tfoot>
       <tr>
-        <td class="text-right" colspan="12">Total</td>
+        <td class="text-right" colspan="10">Totals</td>
+        <td class="text-right"><strong>{{ potential_income__sum|floatformat:2|intcomma }}</strong></td>
+        <td colspan="2"></td>
         <td class="text-right"><strong>{{ invoice_amount__sum|floatformat:2|intcomma }}</strong></td>
         <td class="text-right"><strong>{{ vat__sum|floatformat:2|intcomma }}</strong></td>
       </tr>
