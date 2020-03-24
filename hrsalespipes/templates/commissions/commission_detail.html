@@ -1,13 +1,13 @@
 {% extends "commissions/base.html" %}
 
 {% block title %}
-Commission Detail ({{ object.pipeline.job.reference_number }}) - {{ object.employee.name }}
+Commission Detail ({{ object.pipeline.job_candidate.job.reference_number }}) - {{ object.employee.name }}
 {% endblock title %}
 
 {% block subcontent %}
   <v-container
     fluid>
-    <h1>Commission Detail (<a href="{% url 'salespipes:detail' object.pipeline_id %}" title="view pipeline detail">{{ object.pipeline.job.reference_number }}</a>) - {{ object.employee.name }}</h1>
+    <h1>Commission Detail (<a href="{% url 'salespipes:detail' object.pipeline_id %}" title="view pipeline detail">{{ object.pipeline.job_candidate.job.reference_number }}</a>) - {{ object.employee.name }}</h1>
     <v-row
       align="center"
       justify="center"
@@ -76,7 +76,7 @@ Commission Detail ({{ object.pipeline.job.reference_number }}) - {{ object.emplo
           href: '{% url "commissions:list" %}',
         },
         {
-          text: '({{ object.pipeline.job.reference_number }}) {{ object.employee.name }}',
+          text: '({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.employee.name }}',
         },
       ],
     }),
