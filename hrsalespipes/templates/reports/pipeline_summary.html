@@ -13,7 +13,7 @@ Pipeline Summary - Reports
       align="center"
       justify="center"
     >
-      <v-col cols="12">
+      <v-col cols="12"> <!-- Filter form -->
         <input type="hidden" id="dataConsultantChoices" value="{{ consultants }}">
         <form id="searchForm" ref="searchForm">
           <v-container fluid>
@@ -65,7 +65,7 @@ Pipeline Summary - Reports
             </v-row>
           </v-container>
         </form>
-      </v-col>
+      </v-col>  <!-- Filter form end -->
 
       <v-col cols='12' class="text-right my-0 py-0">
         <v-btn
@@ -102,14 +102,16 @@ Pipeline Summary - Reports
                 <tr>
                   <td class="text-left">
                     <p>Status: <strong>{{ object.status }}</strong></p>
-                    <p>Date: <a href="{% url 'salespipes:detail' object.id %}" title="view pipeline detail">{{ object.date }}</a></p>
+                    <p>Date: <a href="{% url 'salespipes:detail' object.id %}" title="view pipeline detail">{{ object.date|date:display_date_format }}</a></p>
                   </td>
+
                   <td class="text-left">
                     <p>Reference Number: <a href="{% url 'jobs:detail' object.job_id %}" title="view job detail">{{ object.job_candidate.job.reference_number }}</a></p>
-                    <p>Date: {{ object.job_candidate.job.date }}</p>
+                    <p>Date: {{ object.job_candidate.job.date|date:display_date_format }}</p>
                     <p>Position: {{ object.job_candidate.job.position }}</p>
-                      <p>Consultant: {{ object.job_candidate.consultant.name }}</p>
+                    <p>Consultant: {{ object.job_candidate.consultant.name }}</p>
                   </td>
+
                   <td class="text-left">
                     {% if object.job_candidate %}
                       <p><a href="{% url 'contacts:candidates_detail' object.job_candidate.candidate_id %}" title="view candidate detail">{{ object.job_candidate.candidate.name }}</a></p>
@@ -118,15 +120,17 @@ Pipeline Summary - Reports
                       <p>None</p>
                     {% endif %}
                   </td>
+
                   <td class="text-left">
                     <p><a href="{% url 'contacts:clients_detail' object.job_candidate.job.client_id %}" title="view client detail">{{ object.job_candidate.job.client.name }}</a></p>
                     <p>Industry: {{ object.job_candidate.job.client.industry }}</p>
                   </td>
+                  
                   <td class="text-left">
                     <p>Potential Income: <strong>{{ object.potential_income|intcomma }}</strong></p>
                     <p>Invoice Amount: <strong>{{ object.invoice_amount|intcomma }}</strong></p>
                     <p>VAT: <strong>{{ object.vat|intcomma }}</strong></p>
-                    <p class="caption">Invoice Date: {{ object.invoice_date }}</p>
+                    <p class="caption">Invoice Date: {{ object.invoice_date|date:display_date_format }}</p>
                     <p class="caption">Invoice Number: {{ object.invoice_number }}</p>
                   </td>
                 </tr>

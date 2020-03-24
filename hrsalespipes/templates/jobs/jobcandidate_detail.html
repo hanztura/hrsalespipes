@@ -16,18 +16,15 @@
         <v-tabs
           v-model="tab"
           fixed-tabs>
-          <v-tab
-            v-for="tab in tabs"
-            :key="tab">
-            [[ tab ]]
-          </v-tab>
+          
+          {% include "_includes/v_tab.html" %}
 
           <v-tabs-items v-model="tab">
-            <v-tab-item>
+            <v-tab-item id="Job Candidate Detail">
               {% include "jobs/includes/jobcandidate_detail_table.html" %}
             </v-tab-item>
 
-            <v-tab-item>
+            <v-tab-item id="Interviews">
               <v-simple-table>
                 <table>
                   <thead>
@@ -42,7 +39,7 @@
                   <tbody>
                     {% for interview in interviews %}
                     <tr>
-                      <td>{{ interview.date }}</td>
+                      <td>{{ interview.date|date:display_date_format }}</td>
                       <td>{{ interview.mode }}</td>
                       <td>{{ interview.status }}</td>
                       <td>{{ interview.done_by.name }}</td>
@@ -108,8 +105,17 @@
       tab: null,
       tabs: [
         'Details',
-        'Interviews',
-        'CV'
+        'Interviews'
+      ],
+      tabs: [
+        {
+          tab: 'Job Candidate Detail',
+          icon: 'fas fa-user-cog',  
+        },
+        {
+          tab: 'Interviews',
+          icon: 'fas fa-headset',  
+        },
       ],
     }),
 

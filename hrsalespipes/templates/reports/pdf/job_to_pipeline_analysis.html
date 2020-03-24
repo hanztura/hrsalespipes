@@ -8,56 +8,6 @@
   <h1>Job to Pipeline Analysis</h1>
   <p class="my-0 py-0"><strong>{{ COMPANY }}</strong></p>
   <p class="my-0 py-0">For the period {{ from }} to {{ to }}</p>
-  <table>
-    <thead>
-      <tr>
-        <th class="text-center">Candidate</th>
-        <th class="text-center">Reference Number</th>
-        <th class="text-center">Client</th>
-        <th class="text-center">Position</th>
-        <th class="text-center">Registration Date</th>
-        <th class="text-center">Pipeline Date</th>
-        <th class="text-center">Job to Pipeline # of Days</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% if object_list %}
-        {% for object in object_list %}
-        <tr>
-          <td class="text-center">{{ object.candidate.name }}</td>
-          <td class="text-center">{{ object.job.reference_number }}</td>
-          <td class="text-center">{{ object.job.client.name }}</td>
-          <td class="text-center">{{ object.job.position }}</td>
-          <td class="text-center">{{ object.registration_date }}</td>
-          <td class="text-center">{{ object.pipeline.date }}</td>
-          <td class="text-center">{{ object.num_of_days }}</td>
-        </tr>
-        {% endfor %}
-      {% else %}
-        <tr>
-          <td colspan="6">No data available.</td>
-        </tr>
-      {% endif %}
-    </tbody>
-
-            {% if object_list %}
-            <tfoot>
-              {% with colspan=6  %}
-              <tr>
-                <td class="text-right" colspan="{{ colspan }}">Average number of days</td>
-                <td class="text-center"><strong>{{ AVERAGE }}</strong></td>
-              </tr>
-              <tr>
-                <td class="text-right" colspan="{{ colspan }}">Longest number of days</td>
-                <td class="text-center"><strong>{{ MAX }}</strong></td>
-              </tr>
-              <tr>
-                <td class="text-right" colspan="{{ colspan }}">Shortest number of days</td>
-                <td class="text-center"><strong>{{ MIN }}</strong></td>
-              </tr>
-              {% endwith %}
-            </tfoot>
-            {% endif %}
-  </table>
+  {% include "reports/includes/job_to_pipeline_table.html" %}
 </content>
 {% endblock content %}

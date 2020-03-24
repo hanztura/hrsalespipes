@@ -41,6 +41,16 @@ Pipeline - Edit
           </v-autocomplete>
 
           <v-autocomplete
+            :items="statusChoices"
+            label="Status"
+            v-model.lazy="status"
+            name='status'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
+          <v-autocomplete
             :items="jobCandidates"
             label="Job Candidate"
             v-model.lazy="jobCandidate"
@@ -85,16 +95,6 @@ Pipeline - Edit
             step="0.01"
             v-model.lazy="potentialIncome">
           </v-text-field>
-
-          <v-autocomplete
-            :items="statusChoices"
-            label="Status"
-            v-model.lazy="status"
-            name='status'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
 
           <v-text-field
             label="Invoice Date"

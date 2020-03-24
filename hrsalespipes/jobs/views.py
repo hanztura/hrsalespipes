@@ -16,7 +16,7 @@ from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.models import InterviewMode, Location
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin,
-    FromToViewFilterMixin)
+    FromToViewFilterMixin, DisplayDateFormatMixin)
 
 
 class JobCreateView(
@@ -64,7 +64,9 @@ class JobUpdateView(
             args=[str(self.object.pk), ])
 
 
-class JobListView(FromToViewFilterMixin, PermissionRequiredMixin, ListView):
+class JobListView(
+        DisplayDateFormatMixin, FromToViewFilterMixin,
+        PermissionRequiredMixin, ListView):
     model = Job
     permission_required = 'jobs.view_job'
 
@@ -74,7 +76,8 @@ class JobListView(FromToViewFilterMixin, PermissionRequiredMixin, ListView):
         return queryset
 
 
-class JobDetailView(PermissionRequiredMixin, DetailView):
+class JobDetailView(
+        DisplayDateFormatMixin, PermissionRequiredMixin, DetailView):
     model = Job
     permission_required = 'jobs.view_job'
 
@@ -176,7 +179,10 @@ class JobCandidateUpdateView(
         return context
 
 
-class JobCandidateDetailView(PermissionRequiredMixin, DetailView):
+class JobCandidateDetailView(
+        DisplayDateFormatMixin,
+        PermissionRequiredMixin,
+        DetailView):
     model = JobCandidate
     permission_required = 'jobs.view_jobcandidate'
 

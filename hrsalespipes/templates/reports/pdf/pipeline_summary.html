@@ -32,21 +32,21 @@
       {% if object_list %}
         {% for object in object_list %}
         <tr>
-          <td class="text-center">{{ object.date|date:'d M Y' }}</td>
+          <td class="text-center">{{ object.date|date:display_date_format }}</td>
           <td class="text-center">{{ object.status.name }}</td>
           <td class="text-center">{{ object.job_candidate.job.reference_number }}</td>
-          <td class="text-center">{{ object.job.date }}</td>
+          <td class="text-center">{{ object.job.date|date:display_date_format }}</td>
           <td class="text-center">{{ object.job.position }}</td>
           <td class="text-center">{{ object.job_candidate.candidate.code }}</td>
           <td class="text-center">{{ object.job_candidate.candidate.name }}</td>
-            <td class="text-right">{{ object.job_candidate.job.client.name }}</td>
-            <td class="text-right">{{ object.job_candidate.job.client.industry }}</td>
-            <td class="text-right">{{ object.job_candidate.consultant.name }}</td>
-            <td class="text-right">{{ object.potential_income|intcomma }}</td>
-            <td class="text-right">{{ object.invoice_date|default_if_none:'' }}</td>
-            <td class="text-right">{{ object.invoice_number|intcomma }}</td>
-            <td class="text-right">{{ object.invoice_amount|intcomma }}</td>
-            <td class="text-right">{{ object.vat|intcomma }}</td>
+          <td class="text-right">{{ object.job_candidate.job.client.name }}</td>
+          <td class="text-right">{{ object.job_candidate.job.client.industry }}</td>
+          <td class="text-right">{{ object.job_candidate.consultant.name }}</td>
+          <td class="text-right">{{ object.potential_income|intcomma }}</td>
+          <td class="text-right">{{ object.invoice_date|date:display_date_format }}</td>
+          <td class="text-right">{{ object.invoice_number|intcomma }}</td>
+          <td class="text-right">{{ object.invoice_amount|intcomma }}</td>
+          <td class="text-right">{{ object.vat|intcomma }}</td>
         </tr>
         {% endfor %}
       {% else %}

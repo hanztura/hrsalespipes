@@ -36,6 +36,16 @@ class Setting(SingletonModel):
     vat_rate = models.DecimalField(
         max_digits=2, decimal_places=2, default=0.05)
     company_name = models.CharField(max_length=128, blank=True)
+    display_date_format = models.CharField(
+        max_length=50,
+        choices=(
+            ('d M Y', '01 Jan 2020'),
+            ('d F Y', '01 January 2020'),
+            ('M d, Y', 'Jan 01, 2020'),
+            ('F d, Y', 'January 01, 2020'),
+        ),
+        default='d M Y'
+    )
 
 
 class VisaStatus(models.Model):

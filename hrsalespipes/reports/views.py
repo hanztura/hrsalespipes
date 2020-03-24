@@ -19,7 +19,7 @@ from system.helpers import get_objects_as_choices
 from salespipes.models import Pipeline
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin, FromToViewFilterMixin,
-    MonthFilterViewMixin)
+    MonthFilterViewMixin, DisplayDateFormatMixin)
 from system.models import Setting
 
 
@@ -28,6 +28,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
 
 class MonthlyInvoicesSummaryListView(
+        DisplayDateFormatMixin,
         MonthFilterViewMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
@@ -160,6 +161,7 @@ class MonthlyInvoicesSummaryExcelView(
 
 
 class CommissionsEarnedSummaryListView(
+        DisplayDateFormatMixin,
         FromToViewFilterMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
@@ -272,6 +274,7 @@ class CommissionsEarnedSummaryExcelView(
 
 
 class PipelineSummaryListView(
+        DisplayDateFormatMixin,
         FromToViewFilterMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
@@ -495,6 +498,7 @@ class PipelineSummaryExcelView(
 
 
 class JobsSummaryListView(
+        DisplayDateFormatMixin,
         FromToViewFilterMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
@@ -575,6 +579,7 @@ class JobsSummaryExcelView(
 
 
 class JobToPipelineAnalysisListView(
+        DisplayDateFormatMixin,
         FromToViewFilterMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):

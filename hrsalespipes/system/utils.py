@@ -5,6 +5,23 @@ from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import render
 from django.utils import timezone
 
+from .models import Setting
+
+
+def get_system_setting():
+    return Setting.objects.first()
+
+
+class DisplayDateFormatMixin:
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        system_setting = get_system_setting()
+        context['display_date_format'] = system_setting.display_date_format
+
+        return context
+
 
 class PermissionRequiredWithCustomMessageMixin(PermissionRequiredMixin):
     permission_denied_message = 'Sorry you might not have the permission to \
