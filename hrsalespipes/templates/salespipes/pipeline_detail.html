@@ -89,7 +89,8 @@ Pipeline Detail - Job {{ object.job_candidate.job.reference_number }}
                     <v-btn
                       block
                       color="primary"
-                      href="{% url 'salespipes:edit' object.pk %}">Edit Pipeline</v-btn>
+                      href="{% url 'salespipes:edit' object.pk %}"
+                      {% if edit_not_allowed %}disabled{% endif %}>Edit Pipeline</v-btn>
             </v-tab-item>
 
             <v-tab-item id="Job Candidate">

@@ -11,6 +11,10 @@ from system.models import InterviewMode
 
 
 class Status(models.Model):
+    """Status to be used by the candidate"""
+    class Meta:
+        verbose_name = 'Job Candidate Status'
+
     name = models.CharField(max_length=100)
     probability = models.DecimalField(
         max_digits=3, decimal_places=2, blank=True, null=True)
@@ -20,6 +24,26 @@ class Status(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class JobStatus(models.Model):
+    """Status to be used by Job"""
+    class Meta:
+        ordering = 'order',
+
+    name = models.CharField(max_length=100)
+    is_job_open = models.BooleanField(default=True)
+    is_default = models.BooleanField(default=False, blank=True)
+    order = models.PositiveSmallIntegerField(
+        help_text='Display order. 1 positioned at the top',
+        unique=True)
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def job_is_closed(self):
+        return not self.is_job_open
 
 
 class Job(TimeStampedModel):
@@ -38,6 +62,11 @@ class Job(TimeStampedModel):
         null=True,
         blank=True,
         verbose_name=settings.JOB_POTENTIAL_INCOME_ALIAS)
+    status = models.ForeignKey(
+        JobStatus,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True)
 
     class Meta:
         ordering = ['-date', '-reference_number']
@@ -50,6 +79,10 @@ class Job(TimeStampedModel):
                 'view_report_job_to_pipeline_analysis',
                 'Can view report Job to Pipeline Analysis'
             ),
+            (
+                'can_edit_closed_job',
+                'Can edit closed Job'
+            )
         ]
 
     def __str__(self):
@@ -62,6 +95,11 @@ class Job(TimeStampedModel):
     @property
     def view_href(self):
         return reverse('jobs:detail', args=[str(self.pk), ])
+
+    @property
+    def closed_job_msg(self):
+        return 'Job is closed, and your account is not allowed to edit. \
+                Please contact your admin if you wish to continue.'
 
     def get_absolute_url(self):
         return self.edit_href

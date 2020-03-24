@@ -1,4 +1,5 @@
 {% extends "jobs/base.html" %}
+{% load static %}
 
 {% block title %}
 {{ object.reference_number }} - Update Job
@@ -17,6 +18,7 @@
           {% csrf_token %}
           <input type="hidden" id="dataClientChoices" value="{{ clients }}">
           <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
+          <input type="hidden" id="dataStatusChoices" value="{{ job_status_objects }}">
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
@@ -31,12 +33,33 @@
 
           <v-text-field
             label="{{ form.date.label }}"
+            v-model="date"
             outlined
             name="date"
             required
-            type="date"
-            value="{{ form.date.value|date:'Y-m-d' }}">
+            type="date">
           </v-text-field>
+
+          <v-autocomplete
+            :items="statusChoices"
+            item-text="name"
+            item-value="id"
+            label="Status"
+            v-model.lazy="status"
+            name='status'
+            dense
+            outlined
+            required>
+          </v-autocomplete>
+
+          <v-checkbox
+            v-show="needToConfirm"
+            on-icon="far fa-check-square"
+            off-icon="far fa-square"
+            v-model="hasConfirmed"
+            :error="needToConfirm"
+            label="Please confirm to close this Job."></v-checkbox>
+          <input type="hidden" name="has_confirmed" :required="needToConfirm" :value="hasConfirmed">
 
           <v-autocomplete
             :items="clients"
@@ -86,6 +109,13 @@
 {% endblock subcontent %}
 
 {% block script %}
+
+{% if debug %}
+  <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+{% else %}
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+{% endif %}
+
 <script>
   new Vue({
     el: '#inspire',
@@ -113,7 +143,39 @@
       client: '{{ form.client.value|default_if_none:"" }}',
       locations: [],
       location: '{{ form.location.value|default_if_none:"" }}',
+      statusChoices: [],
+      initialStatus: '{{ form.initial.status|default_if_none:'' }}',
+      status: {{ form.status.value|default_if_none:"''" }},
+      hasConfirmed: {{ form.has_confirmed.value|yesno:'true,false' }},
+      date: '{{ form.instance.date|date:"Y-m-d" }}',
     }),
+
+    computed: {
+      statusIsOpen: function() {
+        let status = this.status;
+        if (!status) { return true; }
+
+        status = _.find(this.statusChoices, (s) => { return s.id == status; });
+        return status.is_job_open;
+      },
+      statusIsClose: function () {
+        return !this.statusIsOpen;
+      },
+      initialStatusIsOpen: function(){
+        let initialStatus = this.initialStatus;
+        if (!initialStatus) { return true; }
+
+        initialStatus = _.find(this.statusChoices, (s) => { return s.id == initialStatus; });
+        return initialStatus.is_job_open;
+      },
+      needToConfirm: function () {
+        let close = this.statusIsClose;
+        let hasNotConfirmed = !this.hasConfirmed;
+        let initialStatusIsOpen = this.initialStatusIsOpen;
+
+        return close && hasNotConfirmed && initialStatusIsOpen;
+      }
+    },
 
     methods: {
       setClientsChoices: function() {
@@ -129,6 +191,7 @@
     beforeMount(){
       this.setDataChoices('dataClientChoices', 'clients');
       this.setDataChoices('dataLocationChoices', 'locations');
+      this.setDataChoices('dataStatusChoices', 'statusChoices');
       this.updateBreadcrumbs();
     },
 

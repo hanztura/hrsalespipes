@@ -1,5 +1,6 @@
 import json
 
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView
@@ -8,6 +9,7 @@ from django.views.generic import DetailView, ListView
 from .forms import PipelineCreateModelForm, PipelineModelForm
 from .models import Pipeline, Status
 from jobs.models import Job
+from jobs.utils import JobIsClosedMixin, JobIsClosedContextMixin
 from system.models import Setting
 from system.helpers import ActionMessageViewMixin
 from system.utils import (
@@ -43,6 +45,7 @@ class PipelineCreateView(
 
 
 class PipelineUpdateView(
+        JobIsClosedMixin,
         PermissionRequiredMixin,
         ActionMessageViewMixin,
         UpdateView):
@@ -51,6 +54,20 @@ class PipelineUpdateView(
     template_name = 'salespipes/pipeline_update_form.html'
     permission_required = 'salespipes.change_pipeline'
     success_msg = 'Pipeline updated.'
+
+    def get_job_object(self):
+        pipeline = self._kwargs['pk']
+        self._pipeline = Pipeline.objects.select_related(
+            'job_candidate__job').filter(pk=pipeline).first()
+        if self._pipeline:
+            return self._pipeline.job_candidate.job
+
+        return None
+
+    def redirect_to_if_closed(self, job):
+        return redirect(
+            'salespipes:detail', pk=str(self._pipeline.pk)
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -97,11 +114,15 @@ class PipelineListView(
 
 
 class PipelineDetailView(
+        JobIsClosedContextMixin,
         DisplayDateFormatMixin,
         PermissionRequiredMixin,
         DetailView):
     model = Pipeline
     permission_required = 'salespipes.view_pipeline'
+
+    def get_job_object(self):
+        return self.object.job_candidate.job
 
     def get_queryset(self):
         q = super().get_queryset()

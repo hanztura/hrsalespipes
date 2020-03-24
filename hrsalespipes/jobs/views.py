@@ -2,15 +2,19 @@ import json
 
 from django.contrib import messages
 from django.conf import settings
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
-from .forms import (JobCreateModelForm, JobUpdateModelForm,
-                    JobCandidateCreateModelForm, JobCandidateUpdateModelForm,
-                    InterviewCreateModelForm, InterviewUpdateModelForm)
+from .forms import (
+    JobCreateModelForm, JobUpdateModelForm,
+    JobCandidateCreateModelForm, JobCandidateUpdateModelForm,
+    InterviewCreateModelForm, InterviewUpdateModelForm, JobStatus)
 from .models import Job, JobCandidate, Status, Interview
+from .rules import is_allowed_to_edit_close_job
+from .utils import JobIsClosedMixin, JobIsClosedContextMixin
 from contacts.models import Client, Candidate, Employee, Supplier as Board
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.models import InterviewMode, Location
@@ -29,11 +33,6 @@ class JobCreateView(
     permission_required = 'jobs.add_job'
     success_msg = 'Job created.'
 
-    def form_valid(self, form):
-        form.instance.date = timezone.localdate()
-
-        return super().form_valid(form)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -42,6 +41,7 @@ class JobCreateView(
 
 
 class JobUpdateView(
+        JobIsClosedMixin,
         PermissionRequiredMixin,
         ActionMessageViewMixin,
         UpdateView):
@@ -51,11 +51,22 @@ class JobUpdateView(
     permission_required = 'jobs.change_job'
     success_msg = 'Job updated.'
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context['clients'] = get_objects_as_choices(Client)
         context['locations'] = get_objects_as_choices(Location)
+
+        # Job Status
+        status_objects = JobStatus.objects.values()
+        status_objects = [status for status in status_objects]
+        context['job_status_objects'] = json.dumps(status_objects)
         return context
 
     def get_success_url(self):
@@ -72,12 +83,16 @@ class JobListView(
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.select_related('client')
+        queryset = queryset.select_related('client', 'status')
+        queryset = queryset.prefetch_related('candidates')
         return queryset
 
 
 class JobDetailView(
-        DisplayDateFormatMixin, PermissionRequiredMixin, DetailView):
+        JobIsClosedContextMixin,
+        DisplayDateFormatMixin,
+        PermissionRequiredMixin,
+        DetailView):
     model = Job
     permission_required = 'jobs.view_job'
 
@@ -86,7 +101,7 @@ class JobDetailView(
         q = q.prefetch_related(
             'candidates', 'candidates__candidate',
             'candidates__status', 'candidates__associate',
-            'candidates__pipeline__status',)
+            'candidates__pipeline__status', 'status')
         return q
 
     def get_context_data(self, **kwargs):
@@ -151,6 +166,7 @@ class JobCandidateCreateView(
 
 
 class JobCandidateUpdateView(
+        JobIsClosedMixin,
         PermissionRequiredMixin,
         ActionMessageViewMixin,
         UpdateView):
@@ -159,6 +175,7 @@ class JobCandidateUpdateView(
     template_name = 'jobs/jobcandidate_update_form.html'
     permission_required = 'jobs.change_jobcandidate'
     success_msg = 'Job Candidate updated.'
+    job_pk_kwarg = 'job_pk'
 
     def get_queryset(self):
         q = super().get_queryset()
@@ -180,6 +197,7 @@ class JobCandidateUpdateView(
 
 
 class JobCandidateDetailView(
+        JobIsClosedContextMixin,
         DisplayDateFormatMixin,
         PermissionRequiredMixin,
         DetailView):
@@ -188,12 +206,17 @@ class JobCandidateDetailView(
 
     def get_queryset(self):
         q = super().get_queryset().select_related(
-            'associate', 'consultant', 'status', 'job', 'candidate')
+            'associate', 'consultant', 'status', 'job', 'candidate',
+            'job__status')
         q = q.prefetch_related('interviews__done_by')
         return q
 
+    def get_job_object(self):
+        return self.object.job
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         context['interviews'] = self.object.interviews.all()
         return context
 
