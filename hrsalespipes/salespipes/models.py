@@ -1,9 +1,9 @@
-import datetime
 from uuid import uuid4
 
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 from django_extensions.db.models import TimeStampedModel
 
@@ -47,7 +47,7 @@ class Pipeline(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     date = models.DateField(
         verbose_name=settings.PIPELINE_DATE_ALIAS,
-        default=datetime.date.today)
+        default=timezone.localdate)
     successful_date = models.DateField(null=True, blank=True)
     job = models.OneToOneField(  # DEPRECIATED!!!
         Job,

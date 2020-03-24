@@ -1,7 +1,7 @@
-import datetime
 import json
 
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
@@ -26,7 +26,7 @@ class PipelineCreateView(
     success_msg = 'Pipeline created.'
 
     def form_valid(self, form):
-        form.instance.date = datetime.date.today()
+        form.instance.date = timezone.localdate()
 
         return super().form_valid(form)
 
@@ -80,14 +80,16 @@ class PipelineUpdateView(
             args=[str(self.object.pk), ])
 
 
-class PipelineListView(FromToViewFilterMixin, PermissionRequiredMixin, ListView):
+class PipelineListView(
+        FromToViewFilterMixin, PermissionRequiredMixin, ListView):
     model = Pipeline
     permission_required = 'salespipes.view_pipeline'
     paginate_by = 25
 
     def get_queryset(self):
         q = super().get_queryset().select_related('status')
-        q = q.prefetch_related('job_candidate__job', 'job_candidate__candidate')
+        q = q.prefetch_related(
+            'job_candidate__job', 'job_candidate__candidate')
         return q
 
 

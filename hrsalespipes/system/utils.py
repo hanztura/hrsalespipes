@@ -1,9 +1,9 @@
 import calendar
-import datetime
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import render
+from django.utils import timezone
 
 
 class PermissionRequiredWithCustomMessageMixin(PermissionRequiredMixin):
@@ -13,11 +13,14 @@ class PermissionRequiredWithCustomMessageMixin(PermissionRequiredMixin):
 
     def handle_no_permission(self):
         if self.raise_exception or self.request.user.is_authenticated:
-            context = {
-                'permission_denied_message': self.get_permission_denied_message()
-            }
+            msg = self.get_permission_denied_message()
+            context = {'permission_denied_message': msg}
             return render(self.request, 'system/403.html', context)
-        return redirect_to_login(self.request.get_full_path(), self.get_login_url(), self.get_redirect_field_name())
+        return redirect_to_login(
+            self.request.get_full_path(),
+            self.get_login_url(),
+            self.get_redirect_field_name()
+        )
 
 
 class FromToViewFilterMixin:
@@ -26,7 +29,7 @@ class FromToViewFilterMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        today = datetime.date.today()
+        today = timezone.localdate()
         last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
         self.month_first_day = str(today.replace(day=1))
         self.month_last_day = str(today.replace(day=last_day_of_the_month))
@@ -62,7 +65,7 @@ class MonthFilterViewMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        today = datetime.date.today()
+        today = timezone.localdate()
         self.month = today.strftime('%Y-%m')
 
     def get_queryset(self):

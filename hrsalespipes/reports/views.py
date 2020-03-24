@@ -1,12 +1,11 @@
 import calendar
-import datetime
 import math
 import xlwt
 
 from django.db.models import Sum
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import TemplateView, ListView
 from django.views.generic.base import View
 
@@ -103,7 +102,7 @@ class MonthlyInvoicesSummaryExcelView(
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        today = datetime.date.today()
+        today = timezone.localdate()
         self.month = today.strftime('%Y-%m')
 
     def get(self, request, *args, **kwargs):
@@ -224,7 +223,7 @@ class CommissionsEarnedSummaryExcelView(
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        today = datetime.date.today()
+        today = timezone.localdate()
         last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
         self.month_first_day = str(today.replace(day=1))
         self.month_last_day = str(today.replace(day=last_day_of_the_month))
@@ -346,7 +345,7 @@ class PipelineSummaryExcelView(
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        today = datetime.date.today()
+        today = timezone.localdate()
         last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
         self.month_first_day = str(today.replace(day=1))
         self.month_last_day = str(today.replace(day=last_day_of_the_month))
@@ -540,7 +539,7 @@ class JobsSummaryExcelView(
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        today = datetime.date.today()
+        today = timezone.localdate()
         last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
         self.month_first_day = str(today.replace(day=1))
         self.month_last_day = str(today.replace(day=last_day_of_the_month))
@@ -596,7 +595,7 @@ class JobToPipelineAnalysisListView(
             if hasattr(job_candidate, 'pipeline'):
                 pipeline_date = job_candidate.pipeline.date
             else:
-                pipeline_date = datetime.date.today()
+                pipeline_date = timezone.localdate()
 
             num_of_days = pipeline_date - registration_date
             num_of_days = num_of_days.days
@@ -641,7 +640,7 @@ class JobToPipelineAnalysisExcelView(
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        today = datetime.date.today()
+        today = timezone.localdate()
         last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
         self.month_first_day = str(today.replace(day=1))
         self.month_last_day = str(today.replace(day=last_day_of_the_month))
@@ -707,7 +706,7 @@ class JobToPipelineAnalysisExcelView(
                     if hasattr(job_candidate, 'pipeline'):
                         pipeline_date = job_candidate.pipeline.date
                     else:
-                        pipeline_date = datetime.date.today()
+                        pipeline_date = timezone.localdate()
 
                     num_of_days = pipeline_date - job_date
                     num_of_days = num_of_days.days
@@ -728,7 +727,7 @@ class JobToPipelineAnalysisExcelView(
             if hasattr(row, 'pipeline'):
                 pipeline_date = row.pipeline.date
             else:
-                pipeline_date = datetime.date.today()
+                pipeline_date = timezone.localdate()
 
             values = [
                 row.candidate.name,

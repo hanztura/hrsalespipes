@@ -1,7 +1,6 @@
-import datetime
-
 from django.db import transaction
 from django.forms import ModelForm
+from django.utils import timezone
 
 from .models import Job, JobCandidate, Interview
 from salespipes.forms import (
@@ -97,7 +96,7 @@ class JobCandidateUpdateModelForm(ModelForm):
                     'job_candidate': instance.pk,
                     'status': related_pipeline_status_pk,
                     'base_amount': instance.salary_offered,
-                    'date': datetime.date.today(),
+                    'date': timezone.localdate(),
                 }
                 new_pipeline_form = PipelineModelForm(data)
 
@@ -139,7 +138,7 @@ class InterviewCreateModelForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['date'].initial = datetime.date.today()
+        self.fields['date'].initial = timezone.localdate()
 
 
 class InterviewUpdateModelForm(InterviewCreateModelForm):

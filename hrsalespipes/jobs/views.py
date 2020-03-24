@@ -1,9 +1,9 @@
-import datetime
 import json
 
 from django.contrib import messages
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
@@ -30,7 +30,7 @@ class JobCreateView(
     success_msg = 'Job created.'
 
     def form_valid(self, form):
-        form.instance.date = datetime.date.today()
+        form.instance.date = timezone.localdate()
 
         return super().form_valid(form)
 
@@ -130,7 +130,7 @@ class JobCandidateCreateView(
                 'Contact admin for employee profile.')
             form.add_error(None, 'Your Employee profile required')
 
-        form.instance.registration_date = datetime.date.today()
+        form.instance.registration_date = timezone.localdate()
 
         return super().form_valid(form)
 

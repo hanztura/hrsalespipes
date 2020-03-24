@@ -1,6 +1,6 @@
-import datetime
 from django.db import transaction
 from django.forms import ModelForm
+from django.utils import timezone
 
 from .models import Pipeline, Status
 from .utils import CreateCommissionFormMixin
@@ -94,7 +94,7 @@ class PipelineModelForm(CreateCommissionFormMixin, ModelForm):
         if status.has_changed(initial, data):
             # set successful date
             if instance.status.probability >= 1:
-                today = datetime.date.today()
+                today = timezone.localdate()
                 instance.successful_date = today
             else:
                 instance.successful_date = None
