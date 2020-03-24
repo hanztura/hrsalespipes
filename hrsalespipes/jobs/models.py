@@ -98,7 +98,8 @@ class Job(TimeStampedModel):
 
     @property
     def closed_job_msg(self):
-        return 'Job is closed, and your account is not allowed to edit'
+        return 'Job is closed, and your account is not allowed to edit. \
+                Please contact your admin if you wish to continue.'
 
     def get_absolute_url(self):
         return self.edit_href

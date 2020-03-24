@@ -21,17 +21,21 @@ class JobIsClosedMixin:
 
         return job
 
+    def redirect_to_if_closed(self, job):
+        """Redirect here. Override if needed"""
+        return redirect(
+            'jobs:detail', pk=str(job.pk)
+        )
+
     def dispatch(self, request, *args, **kwargs):
         # check if status is closed and redirect to detail if yes
         self._kwargs = kwargs
         job = self.get_job_object()
         if not is_allowed_to_edit_close_job(request.user, job):
-            msg = 'Job is closed, you account is not allowed to edit.'
+            msg = job.closed_job_msg
             messages.info(request, msg)
 
-            return redirect(
-                'jobs:detail', pk=str(job.pk)
-            )
+            return self.redirect_to_if_closed(job)
 
         return super().dispatch(request, *args, **kwargs)
 

@@ -1,5 +1,6 @@
 import json
 
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView
@@ -56,12 +57,17 @@ class PipelineUpdateView(
 
     def get_job_object(self):
         pipeline = self._kwargs['pk']
-        pipeline = Pipeline.objects.select_related(
+        self._pipeline = Pipeline.objects.select_related(
             'job_candidate__job').filter(pk=pipeline).first()
-        if pipeline:
-            return pipeline.job_candidate.job
+        if self._pipeline:
+            return self._pipeline.job_candidate.job
 
         return None
+
+    def redirect_to_if_closed(self, job):
+        return redirect(
+            'salespipes:detail', pk=str(self._pipeline.pk)
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
