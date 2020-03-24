@@ -58,7 +58,8 @@
                 absolute
                 right
                 color="primary"
-                href="{% url 'jobs:interviews_new' object.job_id object.pk %}">Add an interview</v-btn>
+                href="{% url 'jobs:interviews_new' object.job_id object.pk %}"
+                {% if edit_not_allowed %}disabled{% endif %}>Add an interview</v-btn>
 
             </v-tab-item>
           </v-tabs-items>

@@ -8,7 +8,7 @@ Job Detail - {{ object.reference_number }}
 {% block subcontent %}
   <v-container
     fluid>
-    <h1>{{ object.reference_number }} - Job Detail</h1>
+    <h1>{{ object.reference_number }} - Job Detail<v-chip class="ma-2">{{ object.status.name }}</v-chip></h1>
     <v-row
       align="center"
       justify="center"
@@ -34,6 +34,10 @@ Job Detail - {{ object.reference_number }}
                       <td>{{ object.date|date:display_date_format }}</td>
                     </tr>
                     <tr>
+                      <th>Status:</th>
+                      <td>{{ object.status.name }}</td>
+                    </tr>
+                    <tr>
                       <th>Client:</th>
                       <td><a href="{% url 'contacts:clients_detail' object.client_id %}" title="view client detail">{{ object.client.name }}</a></td>
                     </tr>
@@ -56,7 +60,8 @@ Job Detail - {{ object.reference_number }}
               <v-btn
                 block
                 color="primary"
-                href="{% url 'jobs:edit' object.pk %}">Edit</v-btn>
+                href="{% url 'jobs:edit' object.pk %}"
+                {% if edit_not_allowed %}disabled{% endif %}>Edit</v-btn>
 
             </v-tab-item>
 
@@ -113,7 +118,8 @@ Job Detail - {{ object.reference_number }}
               <v-btn
                 color="primary"
                 block
-                href="{% url 'jobs:candidates_new' object.pk %}">Add a candidate</v-btn>
+                href="{% url 'jobs:candidates_new' object.pk %}"
+                {% if edit_not_allowed %}disabled{% endif %}>Add a candidate</v-btn>
 
             </v-tab-item>
 

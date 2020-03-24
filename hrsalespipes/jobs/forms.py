@@ -1,8 +1,9 @@
+from django.contrib import messages
 from django.db import transaction
-from django.forms import ModelForm
+from django.forms import ModelForm, BooleanField
 from django.utils import timezone
 
-from .models import Job, JobCandidate, Interview
+from .models import Job, JobCandidate, Interview, JobStatus
 from salespipes.forms import (
     Pipeline, PipelineModelForm, PipelineUpdateStatusModelForm)
 
@@ -17,8 +18,24 @@ class JobCreateModelForm(ModelForm):
             'position',
         ]
 
+    def is_valid(self):
+        """Set default date and status here."""
+        is_valid = super().is_valid()
+
+        if is_valid:
+            instance = self.instance
+
+            # set default job status
+            default_status = JobStatus.objects.filter(is_default=True).first()
+            instance.status = default_status
+
+            instance.date = timezone.localdate()
+
+        return is_valid
+
 
 class JobUpdateModelForm(ModelForm):
+    has_confirmed = BooleanField(initial=False, required=False)
 
     class Meta:
         model = Job
@@ -29,7 +46,25 @@ class JobUpdateModelForm(ModelForm):
             'position',
             'location',
             'potential_income',
+            'status'
         ]
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+
+        super().__init__(*args, **kwargs)
+
+        self.fields['status'].required = True
+
+    def clean(self):
+        cleaned_data = super().clean()
+        status = cleaned_data['status']
+        has_confirmed = cleaned_data['has_confirmed']
+
+        if status.job_is_closed and not has_confirmed:
+            msg = 'Please confirm to close this Job.'
+            messages.info(self.request, msg)
+            self.add_error('has_confirmed', msg)
 
 
 class JobCandidateCreateModelForm(ModelForm):

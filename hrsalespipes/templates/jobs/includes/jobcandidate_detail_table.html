@@ -52,4 +52,5 @@
 <v-btn
   block
   color="primary"
-  href="{% url 'jobs:candidates_edit' object.job_id object.pk %}">Edit</v-btn>
+  href="{% url 'jobs:candidates_edit' object.job_id object.pk %}"
+  {% if edit_not_allowed %}disabled{% endif %}>Edit</v-btn>
