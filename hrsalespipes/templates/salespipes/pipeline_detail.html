@@ -8,7 +8,10 @@ Pipeline Detail - Job {{ object.job_candidate.job.reference_number }}
 {% block subcontent %}
   <v-container
     fluid>
-    <h1>Job {{ object.job_candidate.job.reference_number }} - Pipeline Detail</h1>    
+    <h1>
+      Job {{ object.job_candidate.job.reference_number }} - Pipeline Detail
+    </h1>
+    <p><v-chip class="ma-2">Job Status: {{ object.job_candidate.job.status.name }}</v-chip></p>    
     <v-row
       align="center"
       justify="center"

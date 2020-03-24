@@ -509,7 +509,7 @@ class JobsSummaryListView(
 
     def get_queryset(self):
         q = super().get_queryset()
-        q = q.select_related('client')
+        q = q.select_related('client', 'status')
         return q
 
     def get_context_data(self, **kwargs):
@@ -555,13 +555,21 @@ class JobsSummaryExcelView(
         date_from = request.GET.get('from', self.month_first_day)
         date_to = request.GET.get('to', self.month_last_day)
 
-        columns = ['Date', 'Reference Number', 'Client',
-                   'Position', 'Location', 'Potential Income', ]
+        columns = [
+            'Date',
+            'Status',
+            'Reference Number',
+            'Client',
+            'Position',
+            'Location',
+            'Potential Income',
+        ]
         values_list = [
-            'date', 'reference_number', 'client__name',
+            'date', 'status__name', 'reference_number', 'client__name',
             'position', 'location', 'potential_income'
         ]
 
+        total_index = 5
         wb = generate_excel(
             'Jobs Summary',
             date_from,
@@ -570,8 +578,8 @@ class JobsSummaryExcelView(
             Job,
             ('client',),
             values_list,
-            ((5, 'potential_income'), ),
-            4
+            ((total_index + 1, 'potential_income'), ),
+            total_index
         )
 
         wb.save(response)
@@ -590,7 +598,8 @@ class JobToPipelineAnalysisListView(
 
     def get_queryset(self):
         q = super().get_queryset()
-        q = q.select_related('job', 'candidate').prefetch_related('pipeline')
+        q = q.select_related(
+            'job__status', 'candidate').prefetch_related('pipeline')
         q = q.filter(pipeline__isnull=False)
 
         # compute job to pipeline days
@@ -659,6 +668,7 @@ class JobToPipelineAnalysisExcelView(
         date_to = request.GET.get('to', self.month_last_day)
 
         columns = [
+            'Job Status',
             'Candidate',
             'Reference Number',
             'Client',
@@ -694,7 +704,8 @@ class JobToPipelineAnalysisExcelView(
         # Sheet body, remaining rows
         font_style = xlwt.XFStyle()
 
-        rows = JobCandidate.objects.all().select_related('job', 'candidate')
+        rows = JobCandidate.objects.all().select_related(
+            'job__status', 'candidate')
         rows = rows.prefetch_related('pipeline', 'job__client')
         rows = rows.filter(pipeline__isnull=False)
 
@@ -734,7 +745,9 @@ class JobToPipelineAnalysisExcelView(
             else:
                 pipeline_date = timezone.localdate()
 
+            job_status = row.job.status
             values = [
+                job_status.name if job_status else '',
                 row.candidate.name,
                 row.job.reference_number,
                 row.job.client.name,
@@ -747,7 +760,7 @@ class JobToPipelineAnalysisExcelView(
                 ws.write(row_num, i, value, font_style)
 
         # total row
-        footer_label_index = 5
+        footer_label_index = 6
         footer = (('AVERAGE', AVERAGE), ('MAX', MAX), ('MIN', MIN))
         for label, value in footer:
             row_num += 1

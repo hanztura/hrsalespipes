@@ -4,6 +4,7 @@
   <thead>
     <tr>
       <th class="text-center">Date</th>
+      <th class="text-center">Status</th>
       <th class="text-center">Reference Number</th>
       <th class="text-center">Client</th>
       <th class="text-center">Position</th>
@@ -16,6 +17,7 @@
       {% for object in object_list %}
       <tr>
         <td class="text-center">{{ object.date|date:display_date_format }}</td>
+        <td class="text-center">{{ object.status.name }}</td>
         <td class="text-center">{{ object.reference_number }}</td>
         <td class="text-center">{{ object.client.name }}</td>
         <td class="text-center">{{ object.position }}</td>
@@ -33,7 +35,7 @@
   {% if object_list %}
   <tfoot>
       <tr>
-        <td class="text-right" colspan="5">Total</td>
+        <td class="text-right" colspan="6">Total</td>
         <td class="text-right"><strong>{{ potential_income__sum|floatformat:2|intcomma }}</strong></td>
       </tr>
   </tfoot>
