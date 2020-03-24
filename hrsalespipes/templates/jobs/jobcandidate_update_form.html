@@ -49,7 +49,12 @@
             name='status'
             dense
             outlined
-            required>
+            required
+            {% if form.status.field.disabled %}
+            disabled
+            hint="Pipeline record exists. Status editing disabled."
+            persistent-hint
+            {% endif %}>
           </v-autocomplete>
 
           <v-autocomplete

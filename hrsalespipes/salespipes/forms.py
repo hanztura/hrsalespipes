@@ -1,7 +1,8 @@
 import datetime
+from django.db import transaction
 from django.forms import ModelForm
 
-from .models import Pipeline
+from .models import Pipeline, Status
 from .utils import CreateCommissionFormMixin
 from system.models import Setting
 
@@ -74,17 +75,34 @@ class PipelineModelForm(CreateCommissionFormMixin, ModelForm):
 
         return cleaned_data
 
+    @transaction.atomic
     def save(self, commit=True):
+        """Update Pipeline record.
+
+        If pipeline status changes INTO probability >= 1 then
+        set successful date.
+
+        If Pipeline status changes, update Job Candidate status
+        accordingly.
+        """
         # update success date if status has changed
         status = self.fields['status']
         initial = self.initial.get('status', None)
         data = self.cleaned_data['status'].pk
+        instance = self.instance
+
         if status.has_changed(initial, data):
-            if self.instance.status.probability >= 1:
+            # set successful date
+            if instance.status.probability >= 1:
                 today = datetime.date.today()
-                self.instance.successful_date = today
+                instance.successful_date = today
             else:
-                self.instance.successful_date = None
+                instance.successful_date = None
+
+            # update job candidate status accordingly
+            job_candidate = instance.job_candidate
+            job_candidate.status_id = self.instance.status.job_status_id
+            job_candidate.save()
 
         return super().save(commit)
 
@@ -111,3 +129,20 @@ class PipelineUpdateStatusModelForm(CreateCommissionFormMixin, ModelForm):
         fields = [
             'status'
         ]
+
+
+class StatusModelForm(ModelForm):
+
+    class Meta:
+        model = Status
+        fields = [
+            'name',
+            'probability',
+            'job_status',
+            'is_closed',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['job_status'].required = True

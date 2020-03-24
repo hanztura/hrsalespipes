@@ -307,12 +307,13 @@ class PipelineSummaryListView(
         context = super().get_context_data(**kwargs)
 
         q = context['object_list']
-        aggregate_fields = ['invoice_amount', 'vat']
+        aggregate_fields = ['invoice_amount', 'vat', 'potential_income']
         aggregate_fields = [Sum(field) for field in aggregate_fields]
         sums = q.aggregate(*aggregate_fields)
 
-        context['invoice_amount__sum'] = sums['invoice_amount__sum']
-        context['vat__sum'] = sums['vat__sum']
+        # create context item for aggregate fields
+        for key, value in sums.items():
+            context[key] = value
 
         context['consultant'] = self.consultant
         context['consultant_pk'] = None
@@ -371,6 +372,7 @@ class PipelineSummaryExcelView(
             'Client',
             'Industry',
             'Consultant',
+            'Potential Income',
             'Invoice Date',
             'Invoice Number',
             'Invoice Amount',
@@ -451,6 +453,7 @@ class PipelineSummaryExcelView(
                 client.name,
                 client.industry,
                 consultant_name,
+                row.potential_income,
                 row.invoice_date,
                 row.invoice_number,
                 row.invoice_amount,
@@ -462,26 +465,31 @@ class PipelineSummaryExcelView(
 
         # total row
         row_num += 1
-        total_index = 11
+        total_index = 9
         if rows:
-            sums = rows.aggregate(Sum('invoice_amount'), Sum('vat'))
+            aggregate_fields = [
+                ('invoice_amount', total_index + 1),
+                ('vat', total_index + 4),
+                ('potential_income', total_index + 5)
+            ]
+            aggregate_fields_name = [
+                Sum(field[0]) for field in aggregate_fields
+            ]
+            sums = rows.aggregate(*aggregate_fields_name)
+
             ws.write(
                 row_num,
                 total_index,
                 'TOTAL',
                 font_style)
 
-            ws.write(
-                row_num,
-                total_index + 1,
-                sums['invoice_amount__sum'],
-                font_style)
-
-            ws.write(
-                row_num,
-                total_index + 2,
-                sums['vat__sum'],
-                font_style)
+            for field, index in aggregate_fields:
+                aggregate_name = '{}__sum'.format(field)
+                ws.write(
+                    row_num,
+                    index,
+                    sums[aggregate_name],
+                    font_style)
 
         wb.save(response)
         return response
