@@ -27,6 +27,20 @@ class PipelineCreateView(
     permission_required = 'salespipes.add_pipeline'
     success_msg = 'Pipeline created.'
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def get_job_object(self):
+        pipeline = self._kwargs['pk']
+        self._pipeline = Pipeline.objects.select_related(
+            'job_candidate__job').filter(pk=pipeline).first()
+        if self._pipeline:
+            return self._pipeline.job_candidate.job
+
+        return None
+
     def form_valid(self, form):
         form.instance.date = timezone.localdate()
 
@@ -35,7 +49,8 @@ class PipelineCreateView(
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        jobs = Job.objects.all()
+        # get only jobs that are not closed
+        jobs = Job.objects.filter(status__is_job_open=True)
         jobs = [{'value': str(data.pk), 'text': data.reference_number}
                 for data in jobs]
         jobs = json.dumps(jobs)

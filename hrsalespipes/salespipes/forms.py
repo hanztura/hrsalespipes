@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.db import transaction
 from django.forms import ModelForm
 from django.utils import timezone
@@ -112,14 +113,33 @@ class PipelineCreateModelForm(ModelForm):
     class Meta:
         model = Pipeline
         fields = [
-            'job',
             'job_candidate',
         ]
 
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+
         super().__init__(*args, **kwargs)
 
         self.fields['job_candidate'].required = True
+
+    def clean_job_candidate(self):
+        """Don't allow job candidate of job that is closed.
+        """
+        job_candidate = self.cleaned_data['job_candidate']
+        if job_candidate:
+            # check if job status is closed, then add error
+            job = job_candidate.job
+            job_status = job.status
+            if job_status:
+                if not job_status.is_job_open:
+                    msg = job_candidate.job.closed_job_msg
+                    messages.info(self.request, msg)
+                    self.add_error(
+                        'job_candidate',
+                        msg
+                    )
+        return job_candidate
 
 
 class PipelineUpdateStatusModelForm(CreateCommissionFormMixin, ModelForm):
