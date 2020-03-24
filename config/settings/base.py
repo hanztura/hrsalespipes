@@ -136,11 +136,13 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = os.environ.setdefault('HRSALESPIPES_TIME_ZONE', 'UTC')
 
-USE_I18N = True
+USE_I18N = False
 
 USE_L10N = True
 
 USE_TZ = True
+
+USE_THOUSAND_SEPARATOR = True
 
 
 # Static files (CSS, JavaScript, Images)
