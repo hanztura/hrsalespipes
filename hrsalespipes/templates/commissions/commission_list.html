@@ -44,7 +44,7 @@ Commissions - List
           <span>To create a new commission, open a Pipeline record and hit the "Create a commission" button.</span>
         </v-tooltip>
       </v-col>
-      <v-col cols="12">
+      <v-col cols="12" class="text-center">
         <v-simple-table>
           <table>
             <thead>
@@ -53,6 +53,7 @@ Commissions - List
               <th class="text-center">Candidate</th>
               <th class="text-center">Employee</th>
               <th class="text-center">Rate Role Type</th>
+              <th class="text-center">Paid?</th>
               <th class="text-center">Amount</th>
               <th class="text-center">Actions</th>
             </thead>
@@ -60,20 +61,23 @@ Commissions - List
               {% if object_list %}
                 {% for object in object_list %}
                 <tr>
-                  <td class="text-center"><a href="{{object.view_href}}" title="view commission detail">{{ object.date }}</a></td>
-                  <td class="text-center"><a href="{% url 'salespipes:detail' object.pipeline_id %}" title="view pipeline detail">{{ object.pipeline.job_candidate.job.reference_number }}</a></td>
-                  <td class="text-center"><a href="{% url 'jobs:candidates_detail' object.pipeline.job_candidate.job_id object.pipeline.job_candidate_id %}" title="view job candidate detail">{{ object.pipeline.job_candidate.candidate.name }}</a></td>
-                  <td class="text-center">{{ object.employee.name }}</td>
-                  <td class="text-center">{{ object.rate_role_type }}</td>
+                  <td><a href="{{object.view_href}}" title="view commission detail">{{ object.date }}</a></td>
+                  <td><a href="{% url 'salespipes:detail' object.pipeline_id %}" title="view pipeline detail">{{ object.pipeline.job_candidate.job.reference_number }}</a></td>
+                  <td><a href="{% url 'jobs:candidates_detail' object.pipeline.job_candidate.job_id object.pipeline.job_candidate_id %}" title="view job candidate detail">{{ object.pipeline.job_candidate.candidate.name }}</a></td>
+                  <td>{{ object.employee.name }}</td>
+                  <td>{{ object.rate_role_type }}</td>
+                  <td>
+                    {% include "_includes/icon_true_or_false.html" with condition=object.is_paid %}
+                  </td>
                   <td class="text-right">{{ object.amount|intcomma }}</td>
-                  <td class="text-center">
+                  <td>
                     {% include "_includes/list_action_buttons.html" with edit_href=object.edit_href view_href=object.view_href %}
                   </td>
                 </tr>
                 {% endfor %}
               {% else %}
                 <tr>
-                  <td class="text-center" colspan="5">No data available.</td>
+                  <td colspan="5">No data available.</td>
                 </tr>
               {% endif %}
             </tbody>

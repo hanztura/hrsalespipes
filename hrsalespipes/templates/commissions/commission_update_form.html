@@ -73,7 +73,7 @@ Commission ({{ object.pipeline.job.reference_number }}) {{ object.employee.name 
             v-model="isPaid"
             label="Is Paid?"
           ></v-checkbox>
-
+          <input type="hidden" name="is_paid" :value="isPaid">
           <v-input>
             <v-btn block color="success" type="submit">Save</v-btn>
           </v-input>

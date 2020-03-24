@@ -106,15 +106,7 @@ Commissions Earned Summary - Reports
                   <td>{{ object.employee.name }}</td>
                   <td>{{ object.rate_role_type }}</td>
                   <td>
-                    {% if object.is_paid %}
-                    <v-icon class="green--text" small>
-                      fas fa-check
-                    </v-icon>
-                    {% else %}
-                    <v-icon small>
-                      fas fa-times
-                    </v-icon>
-                    {% endif %}
+                    {% include "_includes/icon_true_or_false.html" with condition=object.is_paid %}
                   </td>
                   <td class="text-right">{{ object.amount|intcomma }}</td>
                 </tr>
