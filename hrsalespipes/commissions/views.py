@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
+from .forms import CommissionCreateModelForm
 from .models import Commission
 from contacts.models import Employee
 from salespipes.models import Pipeline
@@ -19,19 +20,26 @@ class CommissionCreateView(
         CreateView):
     model = Commission
     permission_required = 'commissions.add_commission'
-    fields = [
-        'employee',
-        'rate_role_type',
-        'rate_used',
-        'amount',
-    ]
     success_msg = 'Commission created.'
+    form_class = CommissionCreateModelForm
 
-    def form_valid(self, form):
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+
         pipeline = self.kwargs['pipeline_pk']
         pipeline = get_object_or_404(Pipeline, pk=pipeline)
+        self.pipeline = pipeline
 
-        form.instance.pipeline = pipeline
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['pipeline'] = self.pipeline
+        kwargs['request'] = self.request
+
+        return kwargs
+
+    def form_valid(self, form):
+
+        form.instance.pipeline = self.pipeline
         form.instance.date = datetime.date.today()
 
         return super().form_valid(form)
