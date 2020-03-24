@@ -134,7 +134,7 @@ ADMIN_URL = os.environ.setdefault('HRSALESPIPES_ADMIN_URL', 'admin/')
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.environ.setdefault('HRSALESPIPES_TIME_ZONE', 'UTC')
 
 USE_I18N = True
 
