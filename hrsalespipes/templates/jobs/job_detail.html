@@ -31,7 +31,7 @@ Job Detail - {{ object.reference_number }}
                     </tr>
                     <tr>
                       <th>Date:</th>
-                      <td>{{ object.date }}</td>
+                      <td>{{ object.date|date:display_date_format }}</td>
                     </tr>
                     <tr>
                       <th>Client:</th>
@@ -84,12 +84,12 @@ Job Detail - {{ object.reference_number }}
                         <td>
                           <a href="{% url 'contacts:candidates_detail' candidate.candidate_id %}" title="view contact detail">{{ candidate.candidate.name }}</a>
                         </td>
-                        <td>{{ candidate.registration_date }}</td>
+                        <td>{{ candidate.registration_date|date:display_date_format }}</td>
                         <td>{{ candidate.status }}</td>
                         <td>{{ candidate.salary_offered_currency }} {{ candidate.salary_offered }}</td>
-                        <td>{{ candidate.tentative_date_of_joining }}</td>
+                        <td>{{ candidate.tentative_date_of_joining|date:display_date_format }}</td>
                         <td>{{ candidate.cv_source }}</td>
-                        <td>{{ candidate.cv_date_shared|default_if_none:'' }}</td>
+                        <td>{{ candidate.cv_date_shared|date:display_date_format }}</td>
                         <td>{{ candidate.actual_income|default_if_none:0 }}</td>
                         <td>{{ candidate.associate.name }}</td>
                         <td>

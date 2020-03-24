@@ -18,7 +18,7 @@ Commission Detail ({{ object.pipeline.job_candidate.job.reference_number }}) - {
             <tbody>
               <tr>
                 <th>Date:</th>
-                <td>{{ object.date }}</td>
+                <td>{{ object.date|date:display_date_format }}</td>
               </tr>
               <tr>
                 <th>Pipeline Reference Number:</th>

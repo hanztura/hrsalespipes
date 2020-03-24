@@ -12,7 +12,7 @@ from system.models import Setting
 from system.helpers import ActionMessageViewMixin
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin,
-    FromToViewFilterMixin)
+    FromToViewFilterMixin, DisplayDateFormatMixin)
 
 
 class PipelineCreateView(
@@ -81,7 +81,10 @@ class PipelineUpdateView(
 
 
 class PipelineListView(
-        FromToViewFilterMixin, PermissionRequiredMixin, ListView):
+        DisplayDateFormatMixin,
+        FromToViewFilterMixin,
+        PermissionRequiredMixin,
+        ListView):
     model = Pipeline
     permission_required = 'salespipes.view_pipeline'
     paginate_by = 25
@@ -93,7 +96,10 @@ class PipelineListView(
         return q
 
 
-class PipelineDetailView(PermissionRequiredMixin, DetailView):
+class PipelineDetailView(
+        DisplayDateFormatMixin,
+        PermissionRequiredMixin,
+        DetailView):
     model = Pipeline
     permission_required = 'salespipes.view_pipeline'
 

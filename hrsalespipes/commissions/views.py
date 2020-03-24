@@ -11,7 +11,8 @@ from .models import Commission
 from contacts.models import Employee
 from salespipes.models import Pipeline
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
-from system.utils import PermissionRequiredWithCustomMessageMixin
+from system.utils import (
+    PermissionRequiredWithCustomMessageMixin, DisplayDateFormatMixin)
 
 
 class CommissionCreateView(
@@ -93,6 +94,7 @@ class CommissionUpdateView(
 
 
 class CommissionDetailView(
+        DisplayDateFormatMixin,
         PermissionRequiredWithCustomMessageMixin,
         DetailView):
     model = Commission
@@ -109,6 +111,7 @@ class CommissionDetailView(
 
 
 class CommissionListView(
+        DisplayDateFormatMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
     model = Commission

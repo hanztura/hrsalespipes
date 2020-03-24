@@ -101,7 +101,8 @@ Commissions Earned Summary - Reports
               {% if object_list %}
                 {% for object in object_list %}
                 <tr>
-                  <td><a href="{% url 'commissions:detail' object.pk %}" title="view Commission Detail">{{ object.date }}</a></td>
+                  <td>
+                    <a href="{% url 'commissions:detail' object.pk %}" title="view Commission Detail">{{ object.date|date:display_date_format }}</a></td>
                   <td>{{ object.pipeline.job_candidate.job.reference_number }}</td>
                   <td>{{ object.employee.name }}</td>
                   <td>{{ object.rate_role_type }}</td>

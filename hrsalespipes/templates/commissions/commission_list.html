@@ -48,9 +48,9 @@ Commissions - List
         <v-simple-table>
           <table>
             <thead>
-              <th class="text-center">Date</th>
               <th class="text-center">Pipeline</th>
               <th class="text-center">Candidate</th>
+              <th class="text-center">Date</th>
               <th class="text-center">Employee</th>
               <th class="text-center">Rate Role Type</th>
               <th class="text-center">Paid?</th>
@@ -61,9 +61,25 @@ Commissions - List
               {% if object_list %}
                 {% for object in object_list %}
                 <tr>
-                  <td><a href="{{object.view_href}}" title="view commission detail">{{ object.date }}</a></td>
-                  <td><a href="{% url 'salespipes:detail' object.pipeline_id %}" title="view pipeline detail">{{ object.pipeline.job_candidate.job.reference_number }}</a></td>
-                  <td><a href="{% url 'jobs:candidates_detail' object.pipeline.job_candidate.job_id object.pipeline.job_candidate_id %}" title="view job candidate detail">{{ object.pipeline.job_candidate.candidate.name }}</a></td>
+                  <td>
+                    <a
+                      href="{% url 'salespipes:detail' object.pipeline_id %}"
+                      title="view pipeline detail">
+                      {{ object.pipeline.job_candidate.job.reference_number }}
+                    </a>
+                  </td>
+                  <td>
+                    <a
+                      href="{% url 'jobs:candidates_detail' object.pipeline.job_candidate.job_id object.pipeline.job_candidate_id %}"
+                      title="view job candidate detail">
+                        {{ object.pipeline.job_candidate.candidate.name }}
+                    </a>
+                  </td>
+                  <td>
+                    <a href="{{object.view_href}}" title="view commission detail">
+                      {{ object.date|date:display_date_format }}
+                    </a>
+                  </td>
                   <td>{{ object.employee.name }}</td>
                   <td>{{ object.rate_role_type }}</td>
                   <td>

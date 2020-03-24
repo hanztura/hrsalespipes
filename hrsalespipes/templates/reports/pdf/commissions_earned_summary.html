@@ -26,7 +26,7 @@
       {% if object_list %}
         {% for object in object_list %}
         <tr>
-          <td class="text-center"><a href="{% url 'commissions:detail' object.pk %}" title="view Commission Detail">{{ object.date }}</a></td>
+          <td class="text-center"><a href="{% url 'commissions:detail' object.pk %}" title="view Commission Detail">{{ object.date|date:display_date_format }}</a></td>
           <td class="text-center">{{ object.pipeline.job_candidate.job.reference_number }}</td>
           <td class="text-center">{{ object.employee.name }}</td>
           <td class="text-center">{{ object.rate_role_type }}</td>

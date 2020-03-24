@@ -5,16 +5,14 @@
 <head>
   <title>{% block title %}{% endblock title %} | HRSalesPipes</title>
 
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
   {% if debug %}
-    <link rel="stylesheet" type="text/css" href="{% static "vendor/materialdesignicons.min.css" %}">
   {% else %}
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-    {# <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet"> #}
   {% endif %}
 
   <link rel="stylesheet" type="text/css" href="{% static "vendor/vuetify/vuetify.min.css" %}">
-  
+
   <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
   <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
@@ -79,9 +77,13 @@
         app
         color="primary"
         dark>
-        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer">
+          <v-icon>fas fa-bars</v-icon>
+        </v-app-bar-nav-icon>
 
-        <v-toolbar-title>HRSalesPipes</v-toolbar-title>
+        <v-toolbar-title>
+          <a class="white--text" title="Home" href="/" style="text-decoration: none !important;">HRSalesPipes</a>
+        </v-toolbar-title>
 
         <v-spacer></v-spacer>
 
