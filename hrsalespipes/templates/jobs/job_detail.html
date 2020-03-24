@@ -78,6 +78,7 @@ Job Detail - {{ object.reference_number }}
                       <th class="text-center">CV Source</th>
                       <th class="text-center">CV Date Shared</th>
                       <th class="text-center">NFI</th>
+                      <th class="text-center">Interviews</th>
                       <th class="text-center">Associate</th>
                       <th class="text-center">Actions</th>
                     </tr>
@@ -96,6 +97,7 @@ Job Detail - {{ object.reference_number }}
                         <td>{{ candidate.cv_source }}</td>
                         <td>{{ candidate.cv_date_shared|date:display_date_format }}</td>
                         <td>{{ candidate.actual_income|default_if_none:0 }}</td>
+                        <td>{{ candidate.interviews.all.count }}</td>
                         <td>{{ candidate.associate.name }}</td>
                         <td>
                           <v-btn

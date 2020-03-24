@@ -2,7 +2,7 @@ import json
 
 from django.contrib import messages
 from django.conf import settings
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView
@@ -13,7 +13,6 @@ from .forms import (
     JobCandidateCreateModelForm, JobCandidateUpdateModelForm,
     InterviewCreateModelForm, InterviewUpdateModelForm, JobStatus)
 from .models import Job, JobCandidate, Status, Interview
-from .rules import is_allowed_to_edit_close_job
 from .utils import JobIsClosedMixin, JobIsClosedContextMixin
 from contacts.models import Client, Candidate, Employee, Supplier as Board
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
@@ -101,7 +100,8 @@ class JobDetailView(
         q = q.prefetch_related(
             'candidates', 'candidates__candidate',
             'candidates__status', 'candidates__associate',
-            'candidates__pipeline__status', 'status')
+            'candidates__pipeline__status', 'status',
+            'candidates__interviews')
         return q
 
     def get_context_data(self, **kwargs):
@@ -121,6 +121,7 @@ class JobDetailView(
 
 
 class JobCandidateCreateView(
+        JobIsClosedMixin,
         PermissionRequiredMixin,
         ActionMessageViewMixin,
         CreateView):
@@ -129,6 +130,7 @@ class JobCandidateCreateView(
     template_name = 'jobs/jobcandidate_create_form.html'
     permission_required = 'jobs.add_jobcandidate'
     success_msg = 'Job Candidate created.'
+    job_pk_kwarg = 'job_pk'
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -222,6 +224,7 @@ class JobCandidateDetailView(
 
 
 class InterviewCreateView(
+        JobIsClosedMixin,
         PermissionRequiredMixin,
         ActionMessageViewMixin,
         CreateView):
@@ -229,6 +232,16 @@ class InterviewCreateView(
     form_class = InterviewCreateModelForm
     permission_required = 'jobs.add_interview'
     success_msg = 'Interview created.'
+    job_pk_kwarg = 'job_pk'
+
+    def redirect_to_if_closed(self, job):
+        """Redirect here. Override if needed"""
+        job_candidate_pk = self._kwargs['candidate_pk']
+        return redirect(
+            'jobs:candidates_detail',
+            pk=job_candidate_pk,
+            job_pk=job.pk
+        )
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -268,6 +281,7 @@ class InterviewCreateView(
 
 
 class InterviewUpdateView(
+        JobIsClosedMixin,
         PermissionRequiredMixin,
         ActionMessageViewMixin,
         UpdateView):
@@ -275,6 +289,16 @@ class InterviewUpdateView(
     form_class = InterviewUpdateModelForm
     permission_required = 'jobs.change_interview'
     success_msg = 'Interview updated.'
+    job_pk_kwarg = 'job_pk'
+
+    def redirect_to_if_closed(self, job):
+        """Redirect here. Override if needed"""
+        job_candidate_pk = self._kwargs['candidate_pk']
+        return redirect(
+            'jobs:candidates_detail',
+            pk=job_candidate_pk,
+            job_pk=job.pk
+        )
 
     def get_object(self):
         pk = self.kwargs['pk']
