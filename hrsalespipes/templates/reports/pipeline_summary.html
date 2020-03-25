@@ -68,19 +68,7 @@ Pipeline Summary - Reports
       </v-col>  <!-- Filter form end -->
 
       <v-col cols='12' class="text-right my-0 py-0">
-        <v-btn
-          icon
-          right
-          title="Export as PDF"
-          href="{% url 'reports:pdf_pipeline_summary' %}?from={{ from }}&to={{ to }}&consultant={{ consultant_pk|default_if_none:'' }}">
-          <v-icon class="red--text">fas fa-file-pdf</v-icon>
-        </v-btn>
-        <v-btn
-          icon
-          right
-          title="Export as Excel"
-          href="{% url 'reports:excel_pipeline_summary' %}?from={{ from }}&to={{ to }}&consultant={{ consultant_pk|default_if_none:'' }}">
-          <v-icon class="green--text">fas fa-file-excel</v-icon>
+        {% include "reports/includes/buttons_download.html" %}
         </v-btn>
       </v-col>
 

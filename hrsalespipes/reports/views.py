@@ -31,6 +31,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
 class MonthlyInvoicesSummaryListView(
         DisplayDateFormatMixin,
+        ContextUrlBuildersMixin,
         MonthFilterViewMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
@@ -39,6 +40,15 @@ class MonthlyInvoicesSummaryListView(
     permission_required = 'salespipes.view_report_monthly_invoices_summary'
     paginate_by = 0
     TITLE = 'Monthly Invoices Summary'
+    context_urls_filter_fields = ('month', 'consultant')
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_monthly_invoices_summary')),
+            ('excel_url', reverse('reports:excel_monthly_invoices_summary')),
+        )
+        return context_urls
 
     def get_queryset(self):
         q = super().get_queryset().filter(invoice_amount__gt=0)
@@ -164,6 +174,7 @@ class MonthlyInvoicesSummaryExcelView(
 
 class CommissionsEarnedSummaryListView(
         DisplayDateFormatMixin,
+        ContextUrlBuildersMixin,
         FromToViewFilterMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
@@ -171,6 +182,15 @@ class CommissionsEarnedSummaryListView(
     template_name = 'reports/commissions_earned_summary.html'
     permission_required = 'commissions.view_report_commissions_earned_summary'
     paginate_by = 0
+    context_urls_filter_fields = ('from', 'to', 'employee')
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_commissions_earned_summary')),
+            ('excel_url', reverse('reports:excel_commissions_earned_summary')),
+        )
+        return context_urls
 
     def get_queryset(self):
         q = super().get_queryset()
@@ -277,6 +297,7 @@ class CommissionsEarnedSummaryExcelView(
 
 class PipelineSummaryListView(
         DisplayDateFormatMixin,
+        ContextUrlBuildersMixin,
         FromToViewFilterMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
@@ -284,6 +305,15 @@ class PipelineSummaryListView(
     template_name = 'reports/pipeline_summary.html'
     permission_required = 'salespipes.view_report_pipeline_summary'
     paginate_by = 0
+    context_urls_filter_fields = ('from', 'to', 'consultant')
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_pipeline_summary')),
+            ('excel_url', reverse('reports:excel_pipeline_summary')),
+        )
+        return context_urls
 
     def get_queryset(self):
         q = super().get_queryset()

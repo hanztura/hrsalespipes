@@ -19,20 +19,7 @@ Commissions Earned Summary - Reports
       </v-col>
 
       <v-col cols='12' class="text-right my-0 py-0">
-        <v-btn
-          icon
-          right
-          title="Export as PDF"
-          href="{% url 'reports:pdf_commissions_earned_summary' %}?from={{ from }}&to={{ to }}&employee={{ employee_pk|default_if_none:'' }}">
-          <v-icon class="red--text">fas fa-file-pdf</v-icon>
-        </v-btn>
-        <v-btn
-          icon
-          right
-          title="Export as Excel"
-          href="{% url 'reports:excel_commissions_earned_summary' %}?from={{ from }}&to={{ to }}&employee={{ employee_pk|default_if_none:'' }}">
-          <v-icon class="green--text">fas fa-file-excel</v-icon>
-        </v-btn>
+        {% include "reports/includes/buttons_download.html" %}
       </v-col>
 
       <v-col cols="12" class="text-center">

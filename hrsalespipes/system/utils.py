@@ -117,8 +117,10 @@ class ContextUrlBuildersMixin:
         filter_fields = self.get_context_urls_filter_fields()
         for name, url in urls:
             filter_string = [
-                '{}={}'.format(f, context[f]) for f in filter_fields
-            ]
+                '{}={}'.format(
+                    f, context.get(f, self.request.GET.get(
+                        f, ''))) for f in filter_fields
+            ]  # get from request if f is not in context
             filter_string = '&'.join(filter_string)
             filter_string = '?{}'.format(filter_string)
             context[name] = '{}{}'.format(url, filter_string)
