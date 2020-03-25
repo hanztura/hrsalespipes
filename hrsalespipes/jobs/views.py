@@ -19,7 +19,7 @@ from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.models import InterviewMode, Location
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin,
-    FromToViewFilterMixin, DisplayDateFormatMixin)
+    DisplayDateFormatMixin, DateAndStatusFilterMixin)
 
 
 class JobCreateView(
@@ -75,7 +75,8 @@ class JobUpdateView(
 
 
 class JobListView(
-        DisplayDateFormatMixin, FromToViewFilterMixin,
+        DisplayDateFormatMixin,
+        DateAndStatusFilterMixin,
         PermissionRequiredMixin, ListView):
     model = Job
     permission_required = 'jobs.view_job'
@@ -84,7 +85,13 @@ class JobListView(
         queryset = super().get_queryset()
         queryset = queryset.select_related('client', 'status')
         queryset = queryset.prefetch_related('candidates')
+
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status_objects'] = get_objects_as_choices(JobStatus)
+        return context
 
 
 class JobDetailView(

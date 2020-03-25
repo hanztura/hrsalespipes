@@ -1,0 +1,17 @@
+{% extends "_includes/filter_form.html" %}
+
+{% block fields %}
+  {{ block.super }}  
+
+  <v-col cols="12" md="3" class="py-0">
+    <v-autocomplete
+      :items="employees"
+      label="Employee"
+      v-model.lazy="employee"
+      name='employee'
+      prepend-inner-icon="fas fa-user"
+      dense
+      outlined>
+    </v-autocomplete>
+  </v-col>
+{% endblock fields %}

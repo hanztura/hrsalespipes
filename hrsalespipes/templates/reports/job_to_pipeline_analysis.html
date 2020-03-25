@@ -18,20 +18,7 @@ Job to Pipeline Analysis - Reports
       </v-col>
 
       <v-col cols='12' class="text-right my-0 py-0">
-        <v-btn
-          icon
-          right
-          title="Export as PDF"
-          href="{% url 'reports:pdf_job_to_pipeline_analysis' %}?from={{ from }}&to={{ to }}">
-          <v-icon class="red--text">fas fa-file-pdf</v-icon>
-        </v-btn>
-        <v-btn
-          icon
-          right
-          title="Export as Excel"
-          href="{% url 'reports:excel_job_to_pipeline_analysis' %}?from={{ from }}&to={{ to }}">
-          <v-icon class="green--text">fas fa-file-excel</v-icon>
-        </v-btn>
+        {% include "reports/includes/buttons_download.html" %}
       </v-col>
 
       <v-col cols="12" class="text-center">

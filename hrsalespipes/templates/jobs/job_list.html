@@ -13,7 +13,8 @@ Jobs - List
       justify="center"
     >
       <v-col cols="12">
-        {% include "_includes/filter_date_from_and_to.html" %}
+        <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
+        {% include "_includes/filter_form_with_status.html" %}
       </v-col>
   
       <v-col cols="12">
@@ -80,9 +81,16 @@ Jobs - List
       ],
       page: {{ page_obj.number|default_if_none:0 }},
       pageLength: {{ paginator.num_pages|default_if_none:0 }},
+      statusChoices: [],
+      status: '{{ status|default_if_none:'' }}',
     }),
 
     methods:{
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      },
+
       pageGoTo: function (page) {
         let url = '{% url "reports:pipeline_summary" %}';
         url = `${url}?page=${this.page}`;
@@ -91,6 +99,7 @@ Jobs - List
     },
 
     mounted() {
+      this.setDataChoices('dataStatusChoices', 'statusChoices')
       this.updateBreadcrumbs();
     }
 

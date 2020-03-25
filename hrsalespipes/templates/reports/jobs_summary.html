@@ -13,24 +13,12 @@ Jobs Summary - Reports
       justify="center"
     >
       <v-col cols="12">
-        {% include "_includes/filter_date_from_and_to.html" %}
+        <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
+        {% include "_includes/filter_form_with_status.html" %}
       </v-col>
 
       <v-col cols='12' class="text-right my-0 py-0">
-        <v-btn
-          icon
-          right
-          title="Export as PDF"
-          href="{% url 'reports:pdf_jobs_summary' %}?from={{ from }}&to={{ to }}">
-          <v-icon class="red--text">fas fa-file-pdf</v-icon>
-        </v-btn>
-        <v-btn
-          icon
-          right
-          title="Export as Excel"
-          href="{% url 'reports:excel_jobs_summary' %}?from={{ from }}&to={{ to }}">
-          <v-icon class="green--text">fas fa-file-excel</v-icon>
-        </v-btn>
+        {% include "reports/includes/buttons_download.html" %}
       </v-col>
 
       <v-col cols="12" class="text-center">
@@ -60,11 +48,26 @@ Jobs Summary - Reports
           text: 'Jobs Summary',
         },
       ],
+      statusChoices: [],
+      status: '{{ status|default_if_none:'' }}',
     }),
 
-    mounted(){
-      this.updateBreadcrumbs();
+    methods:{
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      },
+      clearStatus: function () {
+        this.status = '';
+        console.log('hellow');
+      }
     },
+
+    mounted() {
+      this.setDataChoices('dataStatusChoices', 'statusChoices');
+      this.statusChoices.unshift({ text: 'All', value:''})
+      this.updateBreadcrumbs();
+    }
 
   });
 </script>  

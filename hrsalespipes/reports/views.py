@@ -5,6 +5,7 @@ import xlwt
 from django.db.models import Sum
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import TemplateView, ListView
 from django.views.generic.base import View
@@ -14,12 +15,13 @@ from django_weasyprint import WeasyTemplateResponseMixin
 from .utils import generate_excel
 from contacts.models import Employee
 from commissions.models import Commission
-from jobs.models import Job, JobCandidate
+from jobs.models import Job, JobCandidate, JobStatus
 from system.helpers import get_objects_as_choices
 from salespipes.models import Pipeline
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin, FromToViewFilterMixin,
-    MonthFilterViewMixin, DisplayDateFormatMixin)
+    MonthFilterViewMixin, DisplayDateFormatMixin, DateAndStatusFilterMixin,
+    ContextUrlBuildersMixin)
 from system.models import Setting
 
 
@@ -29,6 +31,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
 class MonthlyInvoicesSummaryListView(
         DisplayDateFormatMixin,
+        ContextUrlBuildersMixin,
         MonthFilterViewMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
@@ -37,6 +40,15 @@ class MonthlyInvoicesSummaryListView(
     permission_required = 'salespipes.view_report_monthly_invoices_summary'
     paginate_by = 0
     TITLE = 'Monthly Invoices Summary'
+    context_urls_filter_fields = ('month', 'consultant')
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_monthly_invoices_summary')),
+            ('excel_url', reverse('reports:excel_monthly_invoices_summary')),
+        )
+        return context_urls
 
     def get_queryset(self):
         q = super().get_queryset().filter(invoice_amount__gt=0)
@@ -162,6 +174,7 @@ class MonthlyInvoicesSummaryExcelView(
 
 class CommissionsEarnedSummaryListView(
         DisplayDateFormatMixin,
+        ContextUrlBuildersMixin,
         FromToViewFilterMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
@@ -169,6 +182,15 @@ class CommissionsEarnedSummaryListView(
     template_name = 'reports/commissions_earned_summary.html'
     permission_required = 'commissions.view_report_commissions_earned_summary'
     paginate_by = 0
+    context_urls_filter_fields = ('from', 'to', 'employee')
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_commissions_earned_summary')),
+            ('excel_url', reverse('reports:excel_commissions_earned_summary')),
+        )
+        return context_urls
 
     def get_queryset(self):
         q = super().get_queryset()
@@ -275,6 +297,7 @@ class CommissionsEarnedSummaryExcelView(
 
 class PipelineSummaryListView(
         DisplayDateFormatMixin,
+        ContextUrlBuildersMixin,
         FromToViewFilterMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
@@ -282,6 +305,15 @@ class PipelineSummaryListView(
     template_name = 'reports/pipeline_summary.html'
     permission_required = 'salespipes.view_report_pipeline_summary'
     paginate_by = 0
+    context_urls_filter_fields = ('from', 'to', 'consultant')
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_pipeline_summary')),
+            ('excel_url', reverse('reports:excel_pipeline_summary')),
+        )
+        return context_urls
 
     def get_queryset(self):
         q = super().get_queryset()
@@ -499,13 +531,15 @@ class PipelineSummaryExcelView(
 
 class JobsSummaryListView(
         DisplayDateFormatMixin,
-        FromToViewFilterMixin,
+        ContextUrlBuildersMixin,
+        DateAndStatusFilterMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
     model = Job
     template_name = 'reports/jobs_summary.html'
     permission_required = 'jobs.view_report_jobs_summary'
     paginate_by = 0
+    context_urls_filter_fields = ('from', 'to', 'status')
 
     def get_queryset(self):
         q = super().get_queryset()
@@ -518,6 +552,7 @@ class JobsSummaryListView(
         q = context['object_list']
         sums = q.aggregate(Sum('potential_income'))
         context['potential_income__sum'] = sums['potential_income__sum']
+        context['status_objects'] = get_objects_as_choices(JobStatus)
         return context
 
 
@@ -554,6 +589,7 @@ class JobsSummaryExcelView(
 
         date_from = request.GET.get('from', self.month_first_day)
         date_to = request.GET.get('to', self.month_last_day)
+        status_pk = request.GET.get('status', '')
 
         columns = [
             'Date',
@@ -579,7 +615,8 @@ class JobsSummaryExcelView(
             ('client',),
             values_list,
             ((total_index + 1, 'potential_income'), ),
-            total_index
+            total_index,
+            job_status_pk=status_pk
         )
 
         wb.save(response)
@@ -588,6 +625,7 @@ class JobsSummaryExcelView(
 
 class JobToPipelineAnalysisListView(
         DisplayDateFormatMixin,
+        ContextUrlBuildersMixin,
         FromToViewFilterMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
@@ -595,6 +633,14 @@ class JobToPipelineAnalysisListView(
     template_name = 'reports/job_to_pipeline_analysis.html'
     permission_required = 'jobs.view_report_job_to_pipeline_analysis'
     paginate_by = 0
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_job_to_pipeline_analysis')),
+            ('excel_url', reverse('reports:excel_job_to_pipeline_analysis')),
+        )
+        return context_urls
 
     def get_queryset(self):
         q = super().get_queryset()
