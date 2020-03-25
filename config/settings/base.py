@@ -38,6 +38,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -190,3 +191,7 @@ COMMISSION_RATE_ROLE_TYPE_THREE_ALIAS = os.environ.setdefault(
     'COMMISSION_RATE_ROLE_TYPE_THREE_ALIAS', 'Level Three')
 COMMISSION_RATE_ROLE_TYPE_OTHERS_ALIAS = os.environ.setdefault(
     'COMMISSION_RATE_ROLE_TYPE_OTHERS_ALIAS', 'Others')
+
+# GRAPPELLI
+GRAPPELLI_ADMIN_TITLE = os.environ.setdefault(
+    'HRSALESPIPES_ADMIN_TITLE', 'HRSalesPipes')

@@ -34,6 +34,7 @@ urlpatterns = [
     path('reports/', include('reports.urls')),
     path('', include('system.urls')),
 
+    path('grappelli/', include('grappelli.urls')),
     path(settings.ADMIN_URL, admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
