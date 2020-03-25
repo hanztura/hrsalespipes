@@ -26,6 +26,7 @@ urlpatterns = [
         'api/job-candidates/',
         JobCandidateListAPIView.as_view(),
         name='api_job_candidates'),
+    path('backups/', include('backups.urls')),
     path('contacts/', include('contacts.urls')),
     path('commissions/', include('commissions.urls')),
     path('jobs/', include('jobs.urls')),

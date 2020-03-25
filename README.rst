@@ -14,12 +14,12 @@ Server Specifications:
     Django2.2
 
 Set-up Postgresql Database
-    CREATE DATABASE database_name;
-    CREATE USER your_username WITH PASSWORD your_password;
-    ALTER ROLE your_username SET client_encoding TO 'utf8';
-    ALTER ROLE your_username SET default_transaction_isolation TO 'read committed';
-    ALTER ROLE your_username SET timezone TO 'UTC';
-    GRANT ALL PRIVILEGES ON DATABASE database_name TO your_username;
+    CREATE DATABASE hrsalespipes;
+    CREATE USER hrsalespipes WITH PASSWORD 'hrsalespipes';
+    ALTER ROLE hrsalespipes SET client_encoding TO 'utf8';
+    ALTER ROLE hrsalespipes SET default_transaction_isolation TO 'read committed';
+    ALTER ROLE hrsalespipes SET timezone TO 'UTC';
+    GRANT ALL PRIVILEGES ON DATABASE hrsalespipes TO hrsalespipes;            
 
 Set-up Gunicorn
     [Unit]
