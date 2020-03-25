@@ -14,12 +14,13 @@ from django_weasyprint import WeasyTemplateResponseMixin
 from .utils import generate_excel
 from contacts.models import Employee
 from commissions.models import Commission
-from jobs.models import Job, JobCandidate
+from jobs.models import Job, JobCandidate, JobStatus
 from system.helpers import get_objects_as_choices
 from salespipes.models import Pipeline
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin, FromToViewFilterMixin,
-    MonthFilterViewMixin, DisplayDateFormatMixin)
+    MonthFilterViewMixin, DisplayDateFormatMixin, DateAndStatusFilterMixin,
+    ContextUrlBuildersMixin)
 from system.models import Setting
 
 
@@ -499,13 +500,15 @@ class PipelineSummaryExcelView(
 
 class JobsSummaryListView(
         DisplayDateFormatMixin,
-        FromToViewFilterMixin,
+        ContextUrlBuildersMixin,
+        DateAndStatusFilterMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
     model = Job
     template_name = 'reports/jobs_summary.html'
     permission_required = 'jobs.view_report_jobs_summary'
     paginate_by = 0
+    context_urls_filter_fields = ('from', 'to', 'status')
 
     def get_queryset(self):
         q = super().get_queryset()
@@ -518,6 +521,7 @@ class JobsSummaryListView(
         q = context['object_list']
         sums = q.aggregate(Sum('potential_income'))
         context['potential_income__sum'] = sums['potential_income__sum']
+        context['status_objects'] = get_objects_as_choices(JobStatus)
         return context
 
 
@@ -554,6 +558,7 @@ class JobsSummaryExcelView(
 
         date_from = request.GET.get('from', self.month_first_day)
         date_to = request.GET.get('to', self.month_last_day)
+        status_pk = request.GET.get('status', '')
 
         columns = [
             'Date',
@@ -579,7 +584,8 @@ class JobsSummaryExcelView(
             ('client',),
             values_list,
             ((total_index + 1, 'potential_income'), ),
-            total_index
+            total_index,
+            job_status_pk=status_pk
         )
 
         wb.save(response)

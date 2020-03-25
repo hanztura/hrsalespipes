@@ -3,6 +3,7 @@ import calendar
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import render
+from django.urls import reverse
 from django.utils import timezone
 
 from .models import Setting
@@ -73,6 +74,54 @@ class FromToViewFilterMixin:
             self.month_last_day)
         context['from'] = date_from
         context['to'] = date_to
+        return context
+
+
+class DateAndStatusFilterMixin(FromToViewFilterMixin):
+
+    def get_queryset(self):
+        q = super().get_queryset()
+
+        # filter status
+        status = self.request.GET.get('status', '')
+        if status:
+            q = q.filter(status_id=status)
+
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status'] = self.request.GET.get('status', '')
+        return context
+
+
+class ContextUrlBuildersMixin:
+    context_urls_filter_fields = ('from', 'to')
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_jobs_summary'), ),
+            ('excel_url', reverse('reports:excel_jobs_summary'), ),
+        )
+        return context_urls
+
+    def get_context_urls_filter_fields(self):
+        return self.context_urls_filter_fields
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # pdf/excel buttons url builder
+        urls = self.get_context_urls()
+        filter_fields = self.get_context_urls_filter_fields()
+        for name, url in urls:
+            filter_string = [
+                '{}={}'.format(f, context[f]) for f in filter_fields
+            ]
+            filter_string = '&'.join(filter_string)
+            filter_string = '?{}'.format(filter_string)
+            context[name] = '{}{}'.format(url, filter_string)
         return context
 
 

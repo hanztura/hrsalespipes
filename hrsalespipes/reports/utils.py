@@ -10,7 +10,8 @@ from system.models import Setting
 def generate_excel(heading_title, date_from, date_to, columns, model,
                    select_related, values_list, aggregate_fields,
                    total_label_position, employee_id=None,
-                   is_month_filter=False, consultant_id=None):
+                   is_month_filter=False, consultant_id=None,
+                   job_status_pk=''):
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet(heading_title)
 
@@ -58,6 +59,11 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
 
     if date_from and date_to:
         try:
+            # filter job status
+            if job_status_pk:
+                rows = rows.filter(
+                    status_id=job_status_pk)
+
             # filter date
             if is_month_filter:
                 year, month = date_from.split('-')
