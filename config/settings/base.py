@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import environ
-
+import secrets
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(
@@ -38,7 +38,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_honeypot',
     'grappelli',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -127,7 +129,10 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 AUTH_USER_MODEL = 'system.User'
-ADMIN_URL = os.environ.setdefault('HRSALESPIPES_ADMIN_URL', 'admin/')
+
+# admin url is random if not set with value
+RANDOM_ADMIN_URL = '{}/'.format(secrets.token_urlsafe(6))
+ADMIN_URL = os.environ.setdefault('HRSALESPIPES_ADMIN_URL', RANDOM_ADMIN_URL)
 
 
 # Internationalization
