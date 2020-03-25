@@ -47,6 +47,9 @@ class Setting(SingletonModel):
         default='d M Y'
     )
 
+    def __str__(self):
+        return 'System Wide Settings'
+
 
 class VisaStatus(models.Model):
 
