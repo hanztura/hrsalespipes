@@ -42,6 +42,7 @@ class BackupListView(
         ListView):
     model = Backup
     permission_required = 'backups.view_backup'
+    paginate_by = 25
 
     def get_queryset(self):
         q = super().get_queryset()

@@ -235,20 +235,32 @@
             },
           ],
           subBreadcrumbs: [],
-          isCommissionAllowed: Boolean('{{ perms.commissions.view_commission }}' != 'False'),
+          isCommissionAllowed: {{ perms.commissions.view_commission|yesno:'true,false' }},
+          isBackupAllowed: {{ perms.backups.view_backup|yesno:'true,false' }},
         }),
         methods: {
+          updateNavigationDrawerItems() {
+
+          },
           updateBreadcrumbs() {
             this.breadcrumbs = this.breadcrumbs.concat(this.subBreadcrumbs);
 
             // add commission to navigation drawer
             if (this.isCommissionAllowed) {
-              data = {
+              this.navigationDrawerItems.push({
                 action: 'fas fa-calculator',
                 title: 'Commissions',
                 href: '{% url "commissions:list" %}',
-              }
-              this.navigationDrawerItems.push(data);
+              });
+            }
+
+            // add backups to navigation drawer
+            if (this.isBackupAllowed) {
+              this.navigationDrawerItems.push({
+                action: 'fas fa-database',
+                title: 'Backups',
+                href: '{% url "backups:list" %}',
+              });
             }
           }
         }

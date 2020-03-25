@@ -69,9 +69,16 @@ Backups
           text: 'Backups',
         },
       ],
+      page: {{ page_obj.number|default_if_none:0 }},
+      pageLength: {{ paginator.num_pages|default_if_none:0 }},
     }),
 
     methods:{
+      pageGoTo: function (page) {
+        let url = '{% url "reports:pipeline_summary" %}';
+        url = `${url}?page=${this.page}`;
+        window.location.href = url;
+      }
     },
 
     mounted() {

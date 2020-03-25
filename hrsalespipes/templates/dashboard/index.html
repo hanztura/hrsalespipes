@@ -7,43 +7,17 @@ Dashboard
 
 
 {% block subcontent %}
-  <h1>Dashboard</h1>
   <v-container
     fluid>
+    
+    <h1>Dashboard</h1>
+
     <v-row
       align="center"
       justify="center"
     >
-      <p>Dashboard under development...</p>
       <v-col cols=12>
-
-      <v-card
-        class="mx-auto text-center"
-        color="green"
-        dark
-        max-width="600"
-      >
-        <v-card-text>
-          <v-sheet color="rgba(0, 0, 0, .12)">
-            <g-chart
-              :type="chartType"
-              :data="chartData"
-              :options="chartOptions"
-            />
-            </v-sparkline>
-          </v-sheet>
-        </v-card-text>
-
-        <v-card-text>
-          <div class="display-1 font-weight-thin">Sales Last 24h</div>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions class="justify-center">
-          <v-btn block text>Go to Report</v-btn>
-        </v-card-actions>
-      </v-card>
+        <p>Please contact your administrator for your dashboard rights...</p>
       </v-col>
     </v-row>
   </v-container>  
@@ -65,20 +39,6 @@ Dashboard
     data: () => ({
       drawer: null,
       subBreadcrumbs: [],
-      chartData: [
-        ['Year', 'Sales', 'Expenses', 'Profit'],
-        ['2014', 1000, 400, 200],
-        ['2015', 1170, 460, 250],
-        ['2016', 660, 1120, 300],
-        ['2017', 1030, 540, 350]
-      ],
-      chartOptions: {
-        chart: {
-          title: 'Company Performance',
-          subtitle: 'Sales, Expenses, and Profit: 2014-2017',
-        }
-      },
-      chartType: 'ColumnChart'
     }),
 
     mounted() {

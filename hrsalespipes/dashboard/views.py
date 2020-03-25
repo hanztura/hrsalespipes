@@ -124,41 +124,41 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
             dashboard_items_number += data
 
-        dashboard_items_graph = [
-            {
-                'code': 'sjatpi',
-                'type': 'graph',
-                'title': 'Successful jobs per industry',
-                'value': sjatpi
-            },
-            {
-                'code': 'sjpc',
-                'type': 'graph',
-                'title': 'Successful jobs per consultant this month',
-                'value': sjpc
-            },
-            {
-                'code': 'tnfipc',
-                'type': 'graph',
-                'title': 'Total NFI generated per consultant this month',
-                'value': tnfipc
-            },
-            {
-                'code': 'tnfipcp12m',
-                'type': 'graph',
-                'title': 'Total NFI generated per consultant last 12 months',
-                'value': tnfipcp12m
-            },
-            {
-                'code': 'ytdcp',
-                'type': 'graph',
-                'title': 'YTD Client Performance',
-                'value': ytdcp
-            }
-        ]
+            dashboard_items_graph = [
+                {
+                    'code': 'sjatpi',
+                    'type': 'graph',
+                    'title': 'Successful jobs per industry',
+                    'value': sjatpi
+                },
+                {
+                    'code': 'sjpc',
+                    'type': 'graph',
+                    'title': 'Successful jobs per consultant this month',
+                    'value': sjpc
+                },
+                {
+                    'code': 'tnfipc',
+                    'type': 'graph',
+                    'title': 'Total NFI generated per consultant this month',
+                    'value': tnfipc
+                },
+                {
+                    'code': 'tnfipcp12m',
+                    'type': 'graph',
+                    'title': 'Total NFI generated per consultant last 12 months',
+                    'value': tnfipcp12m
+                },
+                {
+                    'code': 'ytdcp',
+                    'type': 'graph',
+                    'title': 'YTD Client Performance',
+                    'value': ytdcp
+                }
+            ]
 
-        for graph_item in dashboard_items_graph:
-            context[graph_item['code']] = json.dumps(graph_item)
+            for graph_item in dashboard_items_graph:
+                context[graph_item['code']] = json.dumps(graph_item)
 
         context['dashboard_items_number'] = json.dumps(dashboard_items_number)
         return context
