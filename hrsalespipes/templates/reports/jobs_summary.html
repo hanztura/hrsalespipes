@@ -18,20 +18,7 @@ Jobs Summary - Reports
       </v-col>
 
       <v-col cols='12' class="text-right my-0 py-0">
-        <v-btn
-          icon
-          right
-          title="Export as PDF"
-          href="{{ pdf_url }}">
-          <v-icon class="red--text">fas fa-file-pdf</v-icon>
-        </v-btn>
-        <v-btn
-          icon
-          right
-          title="Export as Excel"
-          href="{{ excel_url }}">
-          <v-icon class="green--text">fas fa-file-excel</v-icon>
-        </v-btn>
+        {% include "reports/includes/buttons_download.html" %}
       </v-col>
 
       <v-col cols="12" class="text-center">
@@ -70,10 +57,15 @@ Jobs Summary - Reports
         let data = document.getElementById(sourceId).value;
         this.$set(this, setDataVariable, JSON.parse(data));
       },
+      clearStatus: function () {
+        this.status = '';
+        console.log('hellow');
+      }
     },
 
     mounted() {
-      this.setDataChoices('dataStatusChoices', 'statusChoices')
+      this.setDataChoices('dataStatusChoices', 'statusChoices');
+      this.statusChoices.unshift({ text: 'All', value:''})
       this.updateBreadcrumbs();
     }
 

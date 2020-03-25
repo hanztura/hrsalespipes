@@ -5,6 +5,7 @@ import xlwt
 from django.db.models import Sum
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import TemplateView, ListView
 from django.views.generic.base import View
@@ -594,6 +595,7 @@ class JobsSummaryExcelView(
 
 class JobToPipelineAnalysisListView(
         DisplayDateFormatMixin,
+        ContextUrlBuildersMixin,
         FromToViewFilterMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
@@ -601,6 +603,14 @@ class JobToPipelineAnalysisListView(
     template_name = 'reports/job_to_pipeline_analysis.html'
     permission_required = 'jobs.view_report_job_to_pipeline_analysis'
     paginate_by = 0
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_job_to_pipeline_analysis')),
+            ('excel_url', reverse('reports:excel_job_to_pipeline_analysis')),
+        )
+        return context_urls
 
     def get_queryset(self):
         q = super().get_queryset()
