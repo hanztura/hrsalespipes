@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div>
+    <v-breadcrumbs :items="breadcrumbs" divider=">"></v-breadcrumbs>
+  </div>
+
+  {% if messages %}
+    {% include "_includes/messages.html" %}
+  {% endif %}
+  
+  {% block subcontent %}{% endblock subcontent %}  
+{% endblock content %}

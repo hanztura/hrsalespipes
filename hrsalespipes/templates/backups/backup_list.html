@@ -1,0 +1,83 @@
+{% extends "backups/base.html" %}
+{% load humanize %}
+
+{% block title %}
+Backups
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>Backups</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12">
+        {% include "_includes/filter_date_from_and_to.html" %}
+      </v-col>
+      <v-col cols="12" class="py-0">
+        <v-btn href="{% url 'backups:new' %}" absolute right color="primary">New</v-btn>
+      </v-col>
+      <v-col cols="12" class="text-center">
+        <v-simple-table>
+          <table>
+            <thead>
+              <th class="text-center">Name</th>
+              <th class="text-center">Created on</th>
+              <th class="text-center">Created by</th>
+              <th class="text-center">Actions</th>
+            </thead>
+            <tbody>
+              {% for object in object_list %}
+                <tr>
+                  <td>{{ object.name }}</td>
+                  <td>{{ object.created }}</td>
+                  <td>{{ object.created_by }}</td>
+                  <td>
+                    <v-btn
+                      class="blue--text"
+                      outlined
+                      href="{% url 'backups:download' object.pk %}">download</v-btn>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </v-simple-table>
+      </v-col>
+
+      <v-col cols="12">
+        <v-container class="max-width">
+          {% include "_includes/pagination.html" %}
+        </v-container>
+      </v-col> <!-- Pagination -->
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Backups',
+        },
+      ],
+    }),
+
+    methods:{
+    },
+
+    mounted() {
+      this.updateBreadcrumbs();
+    }
+
+  });
+</script>  
+{% endblock script %}

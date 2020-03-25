@@ -104,6 +104,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+BACKUPS_STORAGE_ROOT = ROOT_DIR.path('db').path('backups')
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
