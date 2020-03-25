@@ -6,6 +6,7 @@ db.sqlite3
 local.sqlite3
 test.sqlite3
 media/
+db/
 *.sass-cache/
 
 docs/_build/
