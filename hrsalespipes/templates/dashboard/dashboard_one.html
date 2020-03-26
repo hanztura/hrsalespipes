@@ -41,6 +41,7 @@ Dashboard
         :value="item.value"
         :icon="item.icon"></dash-card>
     </v-row>
+
     <v-row
       align="center"
       justify="center"
@@ -104,15 +105,14 @@ Dashboard
       <v-col cols="12" md=4>
         <v-card
           class="mx-auto"
-          max-width="344"
           outlined>
           <v-list-item three-line>
             <v-list-item-avatar>
-              <v-icon>[[ icon ]]</v-icon>
+              <v-icon large>[[ icon ]]</v-icon>
             </v-list-item-avatar>
 
             <v-list-item-content>
-              <v-list-item-title class="headline mb-1">[[ value ]]</v-list-item-title>
+              <v-list-item-title class="headline mb-1 primary--text">[[ value ]]</v-list-item-title>
               <v-list-item-subtitle>[[ text ]]</v-list-item-subtitle>
             </v-list-item-content>
 
