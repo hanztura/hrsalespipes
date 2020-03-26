@@ -50,8 +50,7 @@ class Job(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     reference_number = models.CharField(
         max_length=100,
-        verbose_name=settings.JOB_REFERENCE_NUMBER_ALIAS,
-        unique=True)
+        verbose_name=settings.JOB_REFERENCE_NUMBER_ALIAS)
     date = models.DateField(verbose_name=settings.JOB_DATE_ALIAS)
     client = models.ForeignKey(Client, on_delete=models.PROTECT)
     position = models.CharField(max_length=100)
@@ -132,12 +131,15 @@ class JobCandidate(TimeStampedModel):
     associate = models.ForeignKey(
         Employee,
         on_delete=models.PROTECT,
-        related_name='as_associate')
+        related_name='as_associate',
+        null=True,
+        blank=True)
     consultant = models.ForeignKey(
         Employee,
         on_delete=models.PROTECT,
         related_name='as_consultant',
-        null=True)
+        null=True,
+        blank=True)
 
     class Meta:
         ordering = ['-registration_date', 'job', 'candidate__name']

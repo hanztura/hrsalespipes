@@ -153,8 +153,7 @@ class Candidate(ContactModel):
         max_length=16, blank=True, choices=CIVIL_STATUS_CHOICES)
     dependents = models.TextField(blank=True)
     gender = models.CharField(max_length=8, blank=True, choices=GENDER_CHOICES)
-    highest_educational_qualification = models.CharField(
-        max_length=200, blank=True)
+    highest_educational_qualification = models.TextField(blank=True)
     date_of_birth = models.DateField(blank=True, null=True)
 
     # medical

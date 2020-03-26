@@ -38,6 +38,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_admin_env_notice',
     'admin_honeypot',
     'grappelli',
 
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'guardian',
     'rest_framework',
     'django_filters',
+    'import_export',
 
     'system',
     'commissions',
@@ -87,6 +89,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django_admin_env_notice.context_processors.from_settings',
             ],
         },
     },
@@ -201,3 +204,7 @@ COMMISSION_RATE_ROLE_TYPE_OTHERS_ALIAS = os.environ.setdefault(
 # GRAPPELLI
 GRAPPELLI_ADMIN_TITLE = os.environ.setdefault(
     'HRSALESPIPES_ADMIN_TITLE', 'HRSalesPipes')
+
+ENVIRONMENT_NAME = "Production server"
+ENVIRONMENT_COLOR = "#FF2222"
+ENVIRONMENT_FLOAT = True

@@ -3,6 +3,7 @@ from .base import *
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+ADMIN_URL = 'sysadmin/'
 
 INSTALLED_APPS += ['debug_toolbar', ]
 MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', ]
@@ -27,3 +28,6 @@ DATABASES = {
         'PORT': os.environ.setdefault('HRSALESPIPES_DATABASE_PORT', ''),
     }
 }
+
+ENVIRONMENT_NAME = "Devlopment server"
+ENVIRONMENT_COLOR = "#9E9E9E"

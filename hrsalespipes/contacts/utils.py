@@ -2,7 +2,6 @@ import environ
 from uuid import uuid4
 
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.humanize.templatetags.humanize import intcomma
 from django.db import models
 from django.template.defaultfilters import date as date_filter
 from django.forms.models import model_to_dict
@@ -18,6 +17,7 @@ from docxtpl import DocxTemplate
 CURRENT_DIR = environ.Path(__file__) - 1
 jinja_env = jinja2.Environment()
 jinja_env.filters['date'] = date_filter
+
 
 class ContactModel(TimeStampedModel):
 
