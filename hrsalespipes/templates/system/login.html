@@ -30,14 +30,14 @@
           </v-text-field>
 
           <v-text-field
-            label="Password"
+            v-model="password"
             outlined
+            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="[rules.required,]"
+            :type="show1 ? 'text' : 'password'"
             name="password"
-            required
-            type='password'
-            value="{{ form.password.value|default_if_none:'' }}"
-            error-messages="{{ form.username.errors }}">
-          </v-text-field>
+            @click:append="show1 = !show1"
+          ></v-text-field>
 
           <v-btn block class="primary" type="submit">Login</v-btn>
         </form>
@@ -55,6 +55,11 @@
     data: () => ({
       drawer: null,
       breadcrumbs: [],
+      show1: false,
+      password: '{{ form.password.value|default_if_none:'' }}',
+      rules: {
+        required: value => !!value || 'Required.',
+      },
     })
 
   });
