@@ -57,7 +57,6 @@ Contacts
         d. Location
            
     Candidates sub-module can store these extra information:
-        Personal Details
         a. Language spoken
         b. Civil Status
         c. Gender
@@ -75,9 +74,38 @@ Contacts
         o. Candidate Owner
         p. CV Template
         q. Notes/Remarks
+        r. Medical Fields (if medical related candidate).
+        
+    You can download a CV out of this canidate information using a template built with a docx document. And that is awesome.
+
+    Clients have the following extra information:
+        a. Initial Approach
+        b. Meeting Arranged
+        c. Agreement Terms
+        d. Agreement Fee
+        e. Refund Scheme
+        f. Validity
+        
+    Suppliers and Employee are pretty much basic. But a user can be connected with a particular user account.
 
 Jobs
 ****
+    You can manage all of the Jobs your client needs here.
+    
+    These are the information that you can store in this module:
+        a. Job Reference Number
+        b. Date
+        c. Status
+        d. Client
+        e. Positoin
+        f. Location
+        g. Potential Income
+        h. Job Candidates (sub-module)
+    
+    Job Candidates is a sub-module of the Job module. In this sub-module you can manage all the prospect candidates for the specific Job record.
+    
+    A Job canidate may have the following information:
+        a. 
 
 Pipeline
 ********
