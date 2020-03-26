@@ -28,7 +28,8 @@ template_names = (
 )
 
 
-def get_data_dashboard_items_number(all_pipelines, employee=None):
+def get_data_dashboard_items_number(
+        all_pipelines, employee=None, all_jobs=None):
     pipelines = all_pipelines
     pipelines_per_consultant = all_pipelines
     if employee:
@@ -39,10 +40,10 @@ def get_data_dashboard_items_number(all_pipelines, employee=None):
         pipelines_per_consultant = pipelines.filter(
             job_candidate__consultant_id=employee.pk)
 
-    active_jobs = pipelines.filter(
-        status__is_closed=False)
+    active_jobs = all_jobs.filter(
+        status__is_job_open=True)
 
-    # compute amount of successful jobs
+    # compute amount of SUCCESSFUL JOB PLACEMENTS
     today = datetime.date.today()
     successful_jobs_all_time = pipelines.filter(
         status__probability__gte=1)

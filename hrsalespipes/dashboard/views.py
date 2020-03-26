@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 
 from .utils import (
     custom_permissions, template_names, get_data_dashboard_items_number)
-from jobs.models import Interview, JobCandidate
+from jobs.models import Interview, JobCandidate, Job
 from salespipes.models import Pipeline
 
 
@@ -47,6 +47,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         all_interviews = Interview.objects.all().select_related(
             'job_candidate__associate', 'job_candidate__consultant')
         all_job_candidates = JobCandidate.objects.all()
+        all_jobs = Job.objects.all().select_related('status')
 
         # prepare data for dashboard items
         dashboard_items_number = []
@@ -59,16 +60,25 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 context['data_note'] = \
                     'All employees\' data are used in this dashboard.'
 
-                active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m, ytdcp = get_data_dashboard_items_number(
-                    all_pipelines)
+                (active_jobs, successful_jobs,
+                 tpi, tpi_last_month,
+                 sjatpi, sjpc, tnfipc,
+                 tnfipcp12m, ytdcp) = get_data_dashboard_items_number(
+                    all_pipelines, all_jobs=all_jobs)
             else:  # One Two dashboard
+                context['data_note'] = \
+                    'Only your data are used in this dashboard. \
+                     Unless not applicable'
                 employee = None
                 if hasattr(user, 'as_employee'):
                     employee = user.as_employee
 
                 if employee:
-                    active_jobs, successful_jobs, tpi, tpi_last_month, sjatpi, sjpc, tnfipc, tnfipcp12m, ytdcp = get_data_dashboard_items_number(
-                        all_pipelines, employee)
+                    (active_jobs, successful_jobs,
+                     tpi, tpi_last_month,
+                     sjatpi, sjpc, tnfipc,
+                     tnfipcp12m, ytdcp) = get_data_dashboard_items_number(
+                        all_pipelines, employee=employee, all_jobs=all_jobs)
 
                     # interview data
                     all_interviews = all_interviews.filter(done_by=employee)
@@ -97,7 +107,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 },
                 {
                     'type': 'number',
-                    'title': 'Succesful jobs this month',
+                    'title': 'Succesful job placements this month',
                     'value': successful_jobs.count()
                 },
                 {
@@ -128,13 +138,13 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 {
                     'code': 'sjatpi',
                     'type': 'graph',
-                    'title': 'Successful jobs per industry',
+                    'title': 'Successful job placements per industry',
                     'value': sjatpi
                 },
                 {
                     'code': 'sjpc',
                     'type': 'graph',
-                    'title': 'Successful jobs per consultant this month',
+                    'title': 'Successful job placements per consultant this month',
                     'value': sjpc
                 },
                 {
