@@ -91,13 +91,7 @@ Jobs - List
         this.$set(this, setDataVariable, JSON.parse(data));
       },
 
-      pageGoTo: function (page) {
-        let url = location.href;
-        if (!url.indexOf('?')){ url += '?' }
-
-        url = `${url}&page=${this.page}`;
-        location.href = url;
-      }
+      {% include "_includes/js/pageGoTo.js" %},
     },
 
     mounted() {

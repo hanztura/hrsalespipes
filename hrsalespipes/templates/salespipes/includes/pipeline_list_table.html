@@ -32,5 +32,11 @@
       </td>
     </tr>
     {% endfor %}
+
+    {% if not object_list %}
+      <tr>
+        <td class="text-center" colspan="10">No data.</td>
+      </tr> 
+    {% endif %}
   </tbody>
 </table>
