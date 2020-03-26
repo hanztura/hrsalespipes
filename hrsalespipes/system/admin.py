@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from import_export import resources
 from import_export.admin import ExportMixin
@@ -17,7 +18,7 @@ class UserResource(resources.ModelResource):
         )
 
 
-class UserAdmin(ExportMixin, admin.ModelAdmin):
+class UserAdmin(ExportMixin, BaseUserAdmin):
     resource_class = UserResource
 
 
