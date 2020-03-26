@@ -80,11 +80,7 @@ Candidates - List
     }),
 
     methods:{
-      pageGoTo: function (page) {
-        let url = '{% url "reports:pipeline_summary" %}';
-        url = `${url}?page=${this.page}`;
-        window.location.href = url;
-      }
+      {% include "_includes/js/pageGoTo.js" %}
     },
 
     mounted(){
