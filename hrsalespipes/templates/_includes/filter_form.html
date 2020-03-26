@@ -4,11 +4,11 @@
     <v-row>
       {% block fields %}
         <v-col cols="12" md="3" class="py-0">
-          {% include "_includes/_text_field_calendar.html" with label="From" name="from" type="date" value="{{ from|default_if_none:'' }}" %}
+          {% include "_includes/_text_field_calendar.html" with label="From" name="from" type="date" value=from %}
         </v-col>
 
         <v-col cols="12" md="3" class="py-0">
-          {% include "_includes/_text_field_calendar.html" with label="To" name="to" type="date" value="{{ to|default_if_none:'' }}" %}
+          {% include "_includes/_text_field_calendar.html" with label="To" name="to" type="date" value=to %}
         </v-col>
       {% endblock fields %}
 
