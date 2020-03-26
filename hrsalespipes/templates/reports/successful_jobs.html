@@ -1,0 +1,108 @@
+{% extends "reports/pipeline_summary.html" %}
+
+{% block title %}Successful Jobs - Reports{% endblock title %}
+
+{% block h1 %}<h1>Successful Jobs - Report</h1>{% endblock h1 %}
+
+{% block form_fields %}
+
+  <v-col cols="12" md="3" class="py-0">
+    {% include "_includes/_text_field_calendar.html" with label="From (Successful Date)" name="from" type="date" value=from %}
+  </v-col>
+
+  <v-col cols="12" md="3" class="py-0">
+    {% include "_includes/_text_field_calendar.html" with label="To (Successful Date)" name="to" type="date" value=to %}
+  </v-col>
+
+  <v-col cols="12" md="3" class="py-0">
+    {% include "_includes/_auto_complete.html" with label="Consultant" name="consultant" items="consultants" model="consultant" prepend_inner_icon="mdi-account-cog" %}
+  </v-col>
+
+  <v-col cols="12" md="2" class="py-0">
+    {% include "_includes/_auto_complete.html" with label="Industry" name="industry" items="industries" model="industry" prepend_inner_icon=ICON_SUPPLIERS %}
+  </v-col>
+{% endblock form_fields %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Reports',
+          href: '{% url "reports:index" %}'
+        },
+        {
+          text: 'Successful Jobs',
+        },
+      ],
+      consultants: [],
+      consultant: '{{ consultant_pk|default_if_none:"" }}',
+      industry: '{{ industry|default_if_none:"" }}',
+      industries: [
+        {
+          'text': 'Retail',
+          'value': 'Retail',
+        },
+        {
+          'text': 'Government',
+          'value': 'Government',
+        },
+        {
+          'text': 'Interior Design',
+          'value': 'Interior Design',
+        },
+        {
+          'text': 'Legal',
+          'value': 'Legal',
+        },
+        {
+          'text': 'Investment',
+          'value': 'Investment',
+        },
+        {
+          'text': 'Consultancy',
+          'value': 'Consultancy',
+        },
+        {
+          'text': 'Healthcare',
+          'value': 'Healthcare',
+        },
+        {
+          'text': 'FMCG',
+          'value': 'FMCG',
+        },
+        {
+          'text': 'Trading ',
+          'value': 'Trading ',
+        },
+        {
+          'text': 'Defence',
+          'value': 'Defence',
+        },
+        {
+          'text': 'Oil & Gas',
+          'value': 'Oil & Gas',
+        },
+      ],
+    }),
+
+    methods: {
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      },
+    },
+
+    mounted(){
+      this.setDataChoices('dataConsultantChoices', 'consultants');
+      this.updateBreadcrumbs();
+    },
+
+  });
+</script>  
+{% endblock script %}

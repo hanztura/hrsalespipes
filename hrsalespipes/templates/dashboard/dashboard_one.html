@@ -54,7 +54,8 @@ Dashboard
           :chart-data="graph.data"
           :default-chart-type="'ColumnChart'"
           :chart-types="chartTypes"
-          :title="graph.title"></graph-card>
+          :title="graph.title"
+          :href="graph.href"></graph-card>
       </v-col>
     </v-row>
   </v-container>  
@@ -103,6 +104,7 @@ Dashboard
       'defaultChartType',
       'chartTypes',
       'title',
+      'href',
     ],
     data: () => {
       return {
@@ -128,7 +130,7 @@ Dashboard
         dark
         elevation=1>
         <v-card-text>
-          <div class="title font-weight-thin">[[ title ]]</div>
+          <div class="title font-weight-thin"><a class="white--text" :href="href">[[ title ]]</a></div>
         </v-card-text>
 
         <template v-if="hasData">
@@ -287,7 +289,8 @@ Dashboard
       ytdcpData: function() {
         let data = {
           title: this.ytdcp.title,
-          data: this.transformedYTDCP
+          data: this.transformedYTDCP,
+          href: this.ytdcp.url
         }
         return data;
       }
@@ -310,10 +313,10 @@ Dashboard
         // this.sjpc[0][1] = data.title;
 
         // transform data to be consumed by a graph
-        title = data.title
+        let title = data.title;
+        let href = data.url;
         data = _.map(data.value, (graph) => {
           // graph is the value attribute from django
-
           let value = graph.value ? graph.value : [];
           return [
             graph[titleField],
@@ -324,6 +327,7 @@ Dashboard
         data = {
           data: data,
           title: title,
+          href: href
         }
 
         this.$set(this, dataField, data);

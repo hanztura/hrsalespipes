@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from django_extensions.db.models import TimeStampedModel
 
+from .helpers import SuccessfulJobsManager
 from jobs.models import Job, JobCandidate, Status as JobStatus
 
 
@@ -40,6 +41,10 @@ class Pipeline(TimeStampedModel):
             (
                 'view_report_monthly_invoices_summary',
                 'Can view report Monthly Invoices Summary'
+            ),
+            (
+                'view_report_successful_jobs',
+                'Can view report on Successful Jobs'
             ),
         ]
         ordering = ['-date', '-job']
@@ -87,6 +92,9 @@ class Pipeline(TimeStampedModel):
         decimal_places=2,
         default=0,
         blank=True)
+
+    objects = models.Manager()
+    successful_jobs = SuccessfulJobsManager()
 
     @property
     def candidate(self):

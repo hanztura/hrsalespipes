@@ -12,6 +12,7 @@ from django.views.generic.base import View
 
 from django_weasyprint import WeasyTemplateResponseMixin
 
+from .helpers import get_successful_jobs_queryset
 from .utils import generate_excel
 from contacts.models import Employee
 from commissions.models import Commission
@@ -527,6 +528,65 @@ class PipelineSummaryExcelView(
 
         wb.save(response)
         return response
+
+
+class SuccessfulJobsListView(
+        PipelineSummaryListView):
+    template_name = 'reports/successful_jobs.html'
+    permission_required = 'salespipes.view_report_successful_jobs'
+    paginate_by = 0
+    TITLE = 'Successful Jobs'
+    context_urls_filter_fields = ('from', 'to', 'consultant', 'industry')
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_successful_jobs')),
+            # ('excel_url', reverse('reports:excel_monthly_invoices_summary')),
+        )
+        return context_urls
+
+    def get_queryset(self):
+        q = self.model.successful_jobs.all()
+        q = q.select_related(
+            'job_candidate__job__client',
+            'job_candidate__consultant')
+
+        date_from = self.request.GET.get('from', self.month_first_day)
+        date_to = self.request.GET.get('to', self.month_last_day)
+
+        # filter consultant (optional)
+        consultant_pk = self.request.GET.get('consultant', '')  # employee id
+        industry = self.request.GET.get('industry', '')  # string
+        self.industry = industry  # industry is charfield
+        self.consultant = None
+        if consultant_pk:
+            consultant = Employee.objects.filter(id=consultant_pk)
+            if consultant.exists():
+                self.consultant = consultant.first()
+
+        return get_successful_jobs_queryset(
+            q, date_from, date_to, consultant_pk, industry)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['industry'] = self.industry
+
+        return context
+
+
+class SuccessfulJobsPDFView(
+        WeasyTemplateResponseMixin,
+        SuccessfulJobsListView):
+    template_name = 'reports/pdf/successful_jobs.html'
+    pdf_attachment = True
+    pdf_filename = 'Successful Jobs.pdf'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['COMPANY'] = Setting.objects.first().company_name
+        return context
 
 
 class JobsSummaryListView(

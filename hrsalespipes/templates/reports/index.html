@@ -44,6 +44,11 @@ Reports
           title: 'Pipeline Summary'
         },
         {
+          icon: 'mdi-briefcase-check',
+          href: "{% url 'reports:successful_jobs' %}",
+          title: 'Successful Jobs'
+        },
+        {
           icon: '{{ ICON_JOBS }}',
           href: "{% url 'reports:jobs_summary' %}",
           title: 'Jobs Summary',

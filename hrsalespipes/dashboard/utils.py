@@ -1,8 +1,11 @@
 import datetime
 
 from django.db.models import Q, Sum, Count
+from django.utils import timezone
 
 from dateutil.relativedelta import relativedelta
+
+from reports.helpers import get_successful_jobs_queryset
 
 
 custom_permissions = [
@@ -44,9 +47,9 @@ def get_data_dashboard_items_number(
         status__is_job_open=True)
 
     # compute amount of SUCCESSFUL JOB PLACEMENTS
-    today = datetime.date.today()
-    successful_jobs_all_time = pipelines.filter(
-        status__probability__gte=1)
+    today = timezone.localdate()
+    successful_jobs_all_time = get_successful_jobs_queryset(
+        pipelines, date_from="ALL", date_to="ALL")
     successful_jobs = successful_jobs_all_time.filter(
         successful_date__month=today.month,
         successful_date__year=today.year)
@@ -74,21 +77,23 @@ def get_data_dashboard_items_number(
     sjatpi = sjatpi.order_by(field_lookup)
     sjatpi = [s for s in sjatpi]
 
-    successful_jobs_per_consultant_all_time = pipelines_per_consultant.filter(
-        status__probability__gte=1)
+    sj_per_consultant_all_time = successful_jobs_all_time
+    if employee:
+        sj_per_consultant_all_time = sj_per_consultant_all_time.filter(
+            job_candidate__consultant_id=employee.pk)
     # successful jobs per consultant. this month
-    successful_jobs_per_consultant = successful_jobs_per_consultant_all_time.filter(
+    sj_per_consultant = sj_per_consultant_all_time.filter(
         successful_date__month=today.month,
         successful_date__year=today.year)
     key_field = 'job_candidate__consultant__name'
-    sjpc = successful_jobs_per_consultant.values(
+    sjpc = sj_per_consultant.values(
         key_field)
     sjpc = sjpc.annotate(value=Count('id')).order_by(
         key_field)
     sjpc = [s for s in sjpc]
 
     # total NFI per consultant this.month
-    tnfipc = successful_jobs_per_consultant.values(key_field)
+    tnfipc = sj_per_consultant.values(key_field)
     tnfipc = tnfipc.annotate(value=Sum('potential_income')).order_by(key_field)
     tnfipc = [
         {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipc
@@ -96,9 +101,10 @@ def get_data_dashboard_items_number(
 
     # total NFI per consultant for the last 12 months
     past_12_month = today - relativedelta(months=12)
-    tnfipcp12m = successful_jobs_per_consultant_all_time.filter(
-        date__gte=past_12_month.replace(day=1),
-        date__lte=last_month)
+    tnfipcp12m = get_successful_jobs_queryset(
+        sj_per_consultant_all_time,
+        date_from=past_12_month.replace(day=1),
+        date_to=last_month)
     tnfipcp12m = tnfipcp12m.values(key_field)
     tnfipcp12m = tnfipcp12m.annotate(value=Sum('potential_income')).order_by(
         key_field)  # order by jobconsultant name
@@ -108,9 +114,8 @@ def get_data_dashboard_items_number(
 
     # YTD client performance
     year_beginning = today.replace(month=1, day=1)
-    ytdcp = successful_jobs_all_time.filter(
-        date__gte=year_beginning,
-        date__lte=today)
+    ytdcp = get_successful_jobs_queryset(
+        successful_jobs_all_time, date_from=year_beginning, date_to=today)
     ytdcp = ytdcp.values(
         'job_candidate__job__client',
         'job_candidate__job__client__name',

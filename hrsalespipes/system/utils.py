@@ -14,7 +14,8 @@ def get_system_setting():
 
 
 class DisplayDateFormatMixin:
-
+    """Insert to the context the date format from settings
+    """
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -41,8 +42,7 @@ class PermissionRequiredWithCustomMessageMixin(PermissionRequiredMixin):
         )
 
 
-class FromToViewFilterMixin:
-    paginate_by = 25
+class ContextFromToMixin:
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -51,6 +51,21 @@ class FromToViewFilterMixin:
         last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
         self.month_first_day = str(today.replace(day=1))
         self.month_last_day = str(today.replace(day=last_day_of_the_month))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        date_from = self.request.GET.get('from', self.month_first_day)
+        date_to = self.request.GET.get(
+            'to',
+            self.month_last_day)
+        context['from'] = date_from
+        context['to'] = date_to
+        return context
+
+
+class FromToViewFilterMixin(ContextFromToMixin):
+    paginate_by = 25
 
     def get_queryset(self):
         q = super().get_queryset()
@@ -64,17 +79,6 @@ class FromToViewFilterMixin:
                 pass
 
         return q
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        date_from = self.request.GET.get('from', self.month_first_day)
-        date_to = self.request.GET.get(
-            'to',
-            self.month_last_day)
-        context['from'] = date_from
-        context['to'] = date_to
-        return context
 
 
 class DateAndStatusFilterMixin(FromToViewFilterMixin):

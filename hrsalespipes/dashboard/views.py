@@ -2,19 +2,27 @@ import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import TemplateView
+
+from dateutil.relativedelta import relativedelta
 
 from .utils import (
     custom_permissions, template_names, get_data_dashboard_items_number)
 from jobs.models import Interview, JobCandidate, Job
 from salespipes.models import Pipeline
+from system.utils import ContextFromToMixin
 
 
 class DashboardTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard/index.html'
 
 
-class DashboardView(LoginRequiredMixin, TemplateView):
+class DashboardView(
+    ContextFromToMixin,
+    LoginRequiredMixin,
+    TemplateView):
     dashboard_index = None  # 1 2 3 4
 
     def setup(self, request, *args, **kwargs):
@@ -134,36 +142,74 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
             dashboard_items_number += data
 
+            from_to_url_params_this_month = '?from{}&to={}'.format(
+                self.month_first_day,
+                self.month_last_day)
+            successful_jobs_url = reverse('reports:successful_jobs')
+            sjatpi_url = '{}?from=ALL&to=ALL'.format(successful_jobs_url)
+            sjpc_url = '{}{}'.format(
+                successful_jobs_url,
+                from_to_url_params_this_month)
+            tnfipc_url = '{}{}'.format(
+                successful_jobs_url,
+                from_to_url_params_this_month)
+
+            today = timezone.localdate()
+            first_day = today.replace(day=1)
+            last_month = first_day - relativedelta(days=1)
+            past_12_month = today - relativedelta(months=12)
+
+            from_to_url_params_last_12_months = '?from={}&to={}'.format(
+                past_12_month.replace(day=1),
+                last_month)
+            tnfipcp12m_url = '{}{}'.format(
+                successful_jobs_url,
+                from_to_url_params_last_12_months)
+
+            from_to_url_params_ytd = '?from={}&to={}'.format(
+                today.replace(month=1, day=1),
+                today)
+            ytdcp_url = '{}{}'.format(
+                successful_jobs_url,
+                from_to_url_params_ytd)
+
             dashboard_items_graph = [
                 {
                     'code': 'sjatpi',
                     'type': 'graph',
                     'title': 'Successful job placements per industry',
-                    'value': sjatpi
+                    'value': sjatpi,
+                    'url': sjatpi_url
                 },
                 {
                     'code': 'sjpc',
                     'type': 'graph',
-                    'title': 'Successful job placements per consultant this month',
-                    'value': sjpc
+                    'title': 'Successful job placements per consultant \
+                              this month',
+                    'value': sjpc,
+                    'url': sjpc_url
                 },
                 {
                     'code': 'tnfipc',
                     'type': 'graph',
                     'title': 'Total NFI generated per consultant this month',
-                    'value': tnfipc
+                    'value': tnfipc,
+                    'url': tnfipc_url
                 },
                 {
                     'code': 'tnfipcp12m',
                     'type': 'graph',
-                    'title': 'Total NFI generated per consultant last 12 months',
-                    'value': tnfipcp12m
+                    'title': 'Total NFI generated per consultant last 12 \
+                              months',
+                    'value': tnfipcp12m,
+                    'url': tnfipcp12m_url
                 },
                 {
                     'code': 'ytdcp',
                     'type': 'graph',
                     'title': 'YTD Client Performance',
-                    'value': ytdcp
+                    'value': ytdcp,
+                    'url': ytdcp_url
                 }
             ]
 

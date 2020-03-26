@@ -5,7 +5,7 @@
 
 {% block content %}
 <content>
-  <h1>Pipeline Summary</h1>
+  {% block h1 %}<h1>Pipeline Summary</h1>{% endblock h1 %}
   <p class="my-0 py-0"><strong>{{ COMPANY }}</strong></p>
   <p class="my-0 py-0">For the period {{ from }} to {{ to }}</p>
   <table>

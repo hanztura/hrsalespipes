@@ -8,59 +8,33 @@ Pipeline Summary - Reports
 {% block subcontent %}
   <v-container
     fluid>
-    <h1>Pipeline Summary - Reports</h1>
+    {% block h1 %}<h1>Pipeline Summary - Reports</h1>{% endblock h1 %}
     <v-row
       align="center"
       justify="center"
     >
       <v-col cols="12"> <!-- Filter form -->
         <input type="hidden" id="dataConsultantChoices" value="{{ consultants }}">
+
         <form id="searchForm" ref="searchForm">
           <v-container fluid>
             <v-row>
-              <v-col cols="12" md="3" class="py-0">
-                <v-text-field
-                  outlined
-                  required
-                  dense
-                  prepend-inner-icon="fas fa-calendar-alt"
-                  label="From"
-                  name="from"
-                  type="date"
-                  value="{{ from|default_if_none:'' }}">
-                </v-text-field>
-              </v-col>
+              {% block form_fields %}
+                <v-col cols="12" md="3" class="py-0">
+                  {% include "_includes/_text_field_calendar.html" with label="From" name="from" type="date" value=from %}
+                </v-col>
 
-              <v-col cols="12" md="3" class="py-0">
-                <v-text-field
-                  outlined
-                  required
-                  dense
-                  prepend-inner-icon="fas fa-calendar-alt"
-                  label="To"
-                  name="to"
-                  type="date"
-                  value="{{ to|default_if_none:'' }}">
-                </v-text-field>
-              </v-col>
+                <v-col cols="12" md="3" class="py-0">
+                  {% include "_includes/_text_field_calendar.html" with label="To" name="to" type="date" value=to %}
+                </v-col>
 
-              <v-col cols="12" md="3" class="py-0">
-                <v-autocomplete
-                  :items="consultants"
-                  label="Consultant"
-                  v-model.lazy="consultant"
-                  name='consultant'
-                  prepend-inner-icon="fas fa-user"
-                  dense
-                  outlined
-                  clearable>
-                </v-autocomplete>
-              </v-col>
+                <v-col cols="12" md="3" class="py-0">
+                  {% include "_includes/_auto_complete.html" with label="Consultant" name="consultant" items="consultants" model="consultant" prepend_inner_icon="mdi-account-cog" %}
+                </v-col>
+              {% endblock form_fields %}
 
               <v-col cols="12" md="1" class="pa-0">
-                <v-btn type="submit" block text>
-                  <v-icon>fas fa-search</v-icon>
-                </v-btn>
+                  {% include "_includes/_button_search.html" %}
               </v-col>
             </v-row>
           </v-container>
@@ -91,6 +65,7 @@ Pipeline Summary - Reports
                   <td class="text-left">
                     <p>Status: <strong>{{ object.status }}</strong></p>
                     <p>Date: <a href="{% url 'salespipes:detail' object.id %}" title="view pipeline detail">{{ object.date|date:display_date_format }}</a></p>
+                    <p>Successful Date: {{ object.successful_date|date:display_date_format }}</p>
                   </td>
 
                   <td class="text-left">
