@@ -6,32 +6,34 @@ Overview
     
     HRSalesPipes is an open-source *business web application* that can be used to manage core operations of an **HR Recruitment Agency** (or whatever the name is of bussinesses that deliver similar services).
 
-    Get free from using multiple separate spreadsheet(excel) files. Yes, HRSalesPipes solves all the problem relating to managing your data specially if your business is still using multiple spreadsheets.
+    Get free from using multiple separate spreadsheet(excel) files. Yes, HRSalesPipes *solves all the problem relating to managing our data* specially if our business is still using multiple spreadsheets.
 
-    Produce real-time reports to make well informed, better, smart, and on-time decisions.
+    Produce real-time reports to make *well informed, better, smart, and on-time decisions*.
 
-    With its Dashboard, you can directly and conveniently know how your business is performing. Even your employees will get to know how they are doing that might help them get motivated to perform better and achieve better results.
+    With its Dashboard, we can *directly and conveniently know how our business is performing*. Even our employees will get to know how they are doing that might help them get motivated to perform better and achieve better results.
 
-    Improve the security of your data by on-demand backups and secured transfer protocol(HTTPS).
+    *Improve the security* of our data by on-demand backups and secured transfer protocol(HTTPS).
 
-    And you don't even have to worry about getting computer hardwares, location to place all this equipments, hiring another IT personnel to set-up and maintain a server because HRSalesPipes is built for the cloud.
+    Related to improving the security are the different user permissions and that we can give to all sorts of user roles. This enable us to control which user can do this or that action(s).
 
-    **Access your system anytime and anywhere**.
+    And we don't even have to worry about getting computer hardwares, location to place all this equipments, hiring another IT personnel to set-up and maintain a server because HRSalesPipes is built for the cloud.
 
-    For $0.00, yes Z-E-R-O f----ing dollar, you can already have this system live in production in less than 30 mins (not overstating here guys).
+    **Access our system anytime and anywhere**.
 
-    Here are the core operations of your business that HRSalesPipes can manage:
+    For $0.00, yes Z-E-R-O f----ing dollar, we can already have this system live in production in less than 30 mins (not overstating here guys).
+
+    Here are the core operations of our business that HRSalesPipes can manage:
         1. Sales Pipeline
         2. Job Board Management
         3. Candidates, Clients, and Supplier Management
         4. Commissions
         5. Reports
 
-    Oh by the way, since HRSalesPipes is OPEN-SOURCE, ahemmm.... yeah you can entirely have this awesome tool for **FREE**.
+    Oh by the way, since HRSalesPipes is OPEN-SOURCE, ahemmm.... yeah we can entirely have this awesome tool for **FREE**.
 
-    Not just that it is free, you can even sell this software and not even spending a penny or spend a single second of coding.
+    Not just that it is free, we can even sell this software and not even spending a penny or spend a single second of coding.
 
-    Now if you think HRSalesPipes can do something for you and your business, then let us start talking about what is HRSalesPipes and how to use it.
+    Now if we think HRSalesPipes can do something for we and our business, then let us start talking about what is HRSalesPipes and how to use it.
 
 
 Modules
@@ -46,7 +48,7 @@ Modules
        
 Contacts
 ********
-    Manage your contacts here.
+    Manage our contacts here.
 
     Contacts includes Candidates, Clients, Suppliers, and Employees.
 
@@ -90,9 +92,9 @@ Contacts
 
 Jobs
 ****
-    You can manage all of the Jobs your client needs here.
+    We can manage all of the Jobs our client needs here.
     
-    These are the information that you can store in this module:
+    These are the information that we can store in this module:
         a. Job Reference Number
         b. Date
         c. Status
@@ -101,17 +103,145 @@ Jobs
         f. Location
         g. Potential Income
         h. Job Candidates (sub-module)
+        i. Interviews (sub-module)
     
-    Job Candidates is a sub-module of the Job module. In this sub-module you can manage all the prospect candidates for the specific Job record.
+    Job Candidates is a sub-module of the Job module. In this sub-module we can manage all the prospect candidates for the specific Job record.
     
     A Job canidate may have the following information:
-        a. 
+        a. Registration Date
+        b. Status
+        c. CV Source
+        d. Date the cv was shared to the client
+        e. Remarks
+        f. Salary Offered
+        g. Tentative date of joining
+        h. Associate
+        i. Consultant
+    
+    Interviews sub-module is where we can record all the interviews made with our job candidates.
 
 Pipeline
 ********
+    Pipelne module is where we manage our sales pipeline.
+
+    As soon as a job candidate progresses to a status where it is set-up to automatically create a Pipeline record, then the system will automatically generate a pipeline record and compute the related amounts for us.
+
+    A pipeline record can have the following information:
+        a. Date
+        b. Successful Date
+        c. Job Candidate
+        d. Recruitment Terms
+        e. Recruitment Rate
+        f. Base Amount
+        g. Potential Income
+        h. Status
+        i. Invoice Date
+        j. Invoice Number
+        k. Invoice Amount
+        l. VAT
+    
+    Once a Pipeline progresses into a 100%, then the system will automatically compute and generate commission records for us. These commission records can be edited at a later time.
 
 Commissions
 ***********
+    Here commissions are being managed.
+
+    A Commission record may have the following information:
+        a. Pipeline record
+        b. Employee
+        c. Rate used
+        d. Amount of the commission
+        e. If this record is paid
+           
+    What is amazing, is that we can set-up the commission rates. So the system adjusts itself according to our commssion schemes.
+
+Reports
+*******
+    Here we can generate and export in PDF or Excel format business reports that we need.
+
+    Here are the reports that are available:
+        a. Pipeline Summary
+        b. Jobs Summary
+        c. Job to Pipeline Analysis
+        d. Commissions Earned Summary
+        e. Monthly Invoices Summary
+           
+    If a report is a missing, we can let the developer of HRSalesPipes know by sending him an email to hanz@xofytech.com. Or create a feature request on the project's official repository https://github.com/hanztura/hrsalespipes.
+
+
+Dashboard
+*********
+    As soon as a user log's in to the system, they are redirected into the Dashboard.
+
+    In Dashboard we can see directly the different statistics of our business through dashboard cards and graphs.
+
+    These are some of Dashboard items:
+        a. Active Jobs
+        b. Succesful job placements this month
+        c. Interviews Arranged
+        d. CVs sent to clients\
+        e. Income generated this month
+        f. Income generated last month
+        g. Successful job placements per industry
+        h. Successful job placements per consultant this month
+        i. Total Income generated per consultant this month
+        j. Total Income generated per consultant last 12 months
+        k. YTD Client Performance
+           
+System Administration
+*********************
+    In this module, we are able to manage all the system related data.
+
+    It is very important to note to not share the admin page url to anyone that is not meant to know this information.
+
+    Included here are:
+        a. Admin Page Honeypot login attempts
+        b. Authentication and Authorization
+        c. Commission Rates
+        d. CV Templates
+        e. Employees
+        f. Job Status
+        g. Job Candidate Status
+        h. Pipeline Status
+        i. Interview Modes
+        j. Locations
+        k. Settings
+        l. Users
+        m. Visa Status
+           
+    This is where we control the permissions each users or group of users may have.
+
+    Be extremely careful in giving a user an access to this module.
+
+
+Technical Specifications
+########################
+    This part of this documents are meant for developers or anyone who is interested on how HRSalesPipes was built and developed.
+
+    These are the main software technologies used in this project:
+        a. `Python <http://www.python.org/>`_ - Python is a programming language that lets you work more quickly and integrate your systems more effectively.
+        b. `Django <https://www.djangoproject.com/>`_- The Web framework for perfectionists with deadlines.
+        c. `VueJS <https://vuejs.org/>`_ - The Progressive JavaScript Framework.
+        d. `Vuetify <vuetifyjs.com//>`_ - Vue Material Design Component Framework.
+
+    For the detailed list of the packages used by the project, see the requirements file on the config>>requirements directory of this project.
+
+    Also, the author of HRSalesPipes recommend to deploy the app in Ubuntu - The leading operating system for PCs, IoT devices, servers and the cloud.
+
+
+About the Author
+################
+    Lets talk a little about the author.
+
+    Meet me, Hanz Tura.
+
+    A self-taught programmer who is currently registered in the Philippines with the business name "X of Y Business and Services" and works us a full stack web developer mainly with Django and VueJS.
+
+    Hanz is a passionate learner. 
+
+    He found a great love for programming, specially with Python.
+
+    Send him a message at `hanz@xofytech.com <mailto:hanz@xofytech.com/>`_!
 
 
 Deployment
