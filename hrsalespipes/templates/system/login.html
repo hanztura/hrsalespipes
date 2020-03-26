@@ -30,8 +30,9 @@
           </v-text-field>
 
           <v-text-field
-            v-model="password"
             outlined
+            v-model="password"
+            label="Password"
             :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="[rules.required,]"
             :type="show1 ? 'text' : 'password'"
