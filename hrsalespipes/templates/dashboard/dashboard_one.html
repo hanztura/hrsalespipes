@@ -109,6 +109,11 @@ Dashboard
     data: () => {
       return {
         chartType: 'ColumnChart',
+        options: {
+          legend: {
+            position: 'bottom'
+          }
+        }
       }
     },
 
@@ -139,6 +144,7 @@ Dashboard
               <g-chart
                 :type="chartType"
                 :data="chartData"
+                :options="options"
               />
             </v-sheet>
           </v-card-text>
@@ -150,7 +156,7 @@ Dashboard
                 v-for="ct in chartTypes"
                 :key="ct.type"
                 :title="ct.text"
-                @click="changeChartType(ct.type)">
+                @click="changeChartType(ct.type, ct.options)">
                 <v-icon>[[ ct.icon ]]</v-icon>
               </v-btn>
             </v-row>
@@ -165,8 +171,9 @@ Dashboard
       </v-card>
     `,
     methods: {
-      changeChartType: function(value) {
+      changeChartType: function(value, options={}) {
         this.chartType = value;
+        if (options) { this.options = options; }
       },
     }
   })
@@ -183,20 +190,40 @@ Dashboard
         {
           'type': 'ColumnChart',
           'text': 'Column',
+          'options': {
+            legend: {
+              position: 'bottom'
+            }
+          },
           'icon': 'mdi-chart-bar',
         },
         {
           'type': 'BarChart',
           'text': 'Bar',
+          'options': {
+            legend: {
+              position: 'bottom'
+            }
+          },
           'icon': 'mdi-chart-bar rotate-90',
         },
         {
           'type': 'PieChart',
           'text': 'Pie',
+          'options': {
+            legend: {
+              position: 'bottom'
+            }
+          },
           'icon': 'mdi-chart-pie',
         },
         {
           'type': 'LineChart',
+          'options': {
+            legend: {
+              position: 'bottom'
+            }
+          },
           'text': 'Line',
           'icon': 'mdi-chart-line',
         },
