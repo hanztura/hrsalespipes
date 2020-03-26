@@ -1,0 +1,14 @@
+{% extends "_includes/filter_form_with_status.html" %}
+
+{% block other_fields %}
+  <v-col cols="12" md="2" class="py-0">
+    <v-text-field
+      outlined
+      dense
+      name="q"
+      clearable
+      label="{{ q_label }}"
+      value="{{ q|default_if_none:'' }}">
+    </v-text-field>
+  </v-col>
+{% endblock other_fields %}

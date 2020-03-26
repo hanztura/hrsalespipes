@@ -2,6 +2,7 @@ import json
 
 from django.contrib import messages
 from django.conf import settings
+from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -86,10 +87,21 @@ class JobListView(
         queryset = queryset.select_related('client', 'status')
         queryset = queryset.prefetch_related('candidates')
 
+        # filter by reference number
+        search = self.request.GET.get('q', '')
+        if search:
+
+            queryset = queryset.filter(
+                Q(reference_number__icontains=search) |
+                Q(client__name__icontains=search))
+
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        # filter by reference number
+        context['q'] = self.request.GET.get('q', '')
         context['status_objects'] = get_objects_as_choices(JobStatus)
         return context
 

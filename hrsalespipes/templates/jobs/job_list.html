@@ -14,7 +14,7 @@ Jobs - List
     >
       <v-col cols="12">
         <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
-        {% include "_includes/filter_form_with_status.html" %}
+        {% include "_includes/filter_form_with_q.html" with q_label="Reference number or client" %}
       </v-col>
   
       <v-col cols="12">
@@ -92,9 +92,11 @@ Jobs - List
       },
 
       pageGoTo: function (page) {
-        let url = '{% url "reports:pipeline_summary" %}';
-        url = `${url}?page=${this.page}`;
-        window.location.href = url;
+        let url = location.href;
+        if (!url.indexOf('?')){ url += '?' }
+
+        url = `${url}&page=${this.page}`;
+        location.href = url;
       }
     },
 
