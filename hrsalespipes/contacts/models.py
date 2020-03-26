@@ -134,8 +134,8 @@ class Candidate(ContactModel):
     )
 
     # work history
-    current_previous_position = models.CharField(
-        max_length=200, blank=True, verbose_name='position')
+    current_previous_position = models.TextField(
+        blank=True, verbose_name='position')
     current_previous_company = models.CharField(
         max_length=200, blank=True, verbose_name='company')
     current_previous_benefits = models.TextField(
@@ -182,7 +182,7 @@ class Candidate(ContactModel):
         VisaStatus, on_delete=models.SET_NULL, null=True, blank=True)
     driving_license = models.CharField(max_length=100, blank=True)
     availability_for_interview = models.CharField(max_length=200, blank=True)
-    notice_period = models.CharField(max_length=100, blank=True)
+    notice_period = models.TextField(blank=True)
     candidate_owner = models.ForeignKey(
         Employee,
         on_delete=models.PROTECT,
