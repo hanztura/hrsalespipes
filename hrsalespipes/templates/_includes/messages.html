@@ -3,17 +3,10 @@
   <v-alert
     dense
     dismissible
-    icon="fas fa-info"
     outlined
     type="{{ message.level_tag }}"
     id="message_{{ forloop.counter }}">
     {{ message }}
-
-    <template v-slot:close="{ toggle }">
-      <v-btn icon @click="toggle" class="hidden-sm-and-down">
-        <v-icon small>fas fa-times</v-icon>
-      </v-btn>
-    </template>
   </v-alert>
   {% endfor %}
 </div>
