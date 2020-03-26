@@ -4,36 +4,16 @@
     <v-row>
       {% block fields %}
         <v-col cols="12" md="3" class="py-0">
-          <v-text-field
-            outlined
-            required
-            dense
-            prepend-inner-icon="fas fa-calendar-alt"
-            label="From"
-            name="from"
-            type="date"
-            value="{{ from|default_if_none:'' }}">
-          </v-text-field>
+          {% include "_includes/_text_field_calendar.html" with label="From" name="from" type="date" value="{{ from|default_if_none:'' }}" %}
         </v-col>
 
         <v-col cols="12" md="3" class="py-0">
-          <v-text-field
-            outlined
-            required
-            dense
-            prepend-inner-icon="fas fa-calendar-alt"
-            label="To"
-            name="to"
-            type="date"
-            value="{{ to|default_if_none:'' }}">
-          </v-text-field>
+          {% include "_includes/_text_field_calendar.html" with label="To" name="to" type="date" value="{{ to|default_if_none:'' }}" %}
         </v-col>
       {% endblock fields %}
 
       <v-col cols="12" md="1" class="pa-0">
-        <v-btn type="submit" block text>
-          <v-icon>fas fa-search</v-icon>
-        </v-btn>
+        {% include "_includes/_button_search.html" %}
       </v-col>
     </v-row>
   </v-container>

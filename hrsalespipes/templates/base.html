@@ -22,7 +22,6 @@
   {% block headblock %}{% endblock headblock %}
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-  <script defer src='{% static "vendor/fontawesome.js" %}'></script>
 <body>
   <div id="app">
     <v-app id="inspire">
@@ -50,7 +49,11 @@
                 v-for="subItem in item.items"
                 :key="subItem.title"
                 :href="subItem.href"
+                class="mx-0"
               >
+                <v-list-item-icon>
+                  <v-icon small>[[ subItem.action ]]</v-icon>
+                </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title v-text="subItem.title"></v-list-item-title>
                 </v-list-item-content>
@@ -94,33 +97,47 @@
           class="hidden-sm-and-down">
           <template v-slot:activator="{ on }">
             <v-btn icon v-on="on" title="Contacts" class="hidden-sm-and-down">
-              <v-icon>fas fa-address-book</v-icon>
+              <v-icon>{{ ICON_CONTACTS }}</v-icon>
             </v-btn>
           </template>
 
           <v-list class="hidden-sm-and-down">
             <v-list-item href="{% url 'contacts:candidates_list' %}">
-              Candidates
+              <v-list-item-icon>
+                <v-icon small>{{ ICON_CANDIDATES }}</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>Candidates</v-list-item-content>
             </v-list-item>
+
             <v-list-item href="{% url 'contacts:clients_list' %}">
-              Clients
+              <v-list-item-icon>
+                <v-icon small>{{ ICON_CLIENTS }}</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>Clients</v-list-item-content>
             </v-list-item>
+
             <v-list-item href="{% url 'contacts:suppliers_list' %}">
-              Suppliers
+              <v-list-item-icon>
+                <v-icon small>{{ ICON_SUPPLIERS }}</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>Suppliers</v-list-item-content>
             </v-list-item>
           </v-list>
         </v-menu>
 
         <v-btn icon href="{% url 'jobs:list' %}" title='Jobs' class="hidden-sm-and-down">
-          <v-icon>fas fa-suitcase</v-icon>
+          <v-icon>{{ ICON_JOBS }}</v-icon>
         </v-btn>
 
         <v-btn icon href="{% url 'salespipes:list' %}" title='Pipeline'class="hidden-sm-and-down">
-          <v-icon>fas fa-filter</v-icon>
+          <v-icon>{{ ICON_PIPELINE }}</v-icon>
         </v-btn>
 
         <v-btn icon href="{% url 'reports:index' %}" title='Reports'class="hidden-sm-and-down">
-          <v-icon>fas fa-file</v-icon>
+          <v-icon>{{ ICON_REPORTS }}</v-icon>
         </v-btn>
 
         <v-menu
@@ -128,7 +145,7 @@
           bottom>
           <template v-slot:activator="{ on }">
             <v-btn icon v-on="on" title="Account">
-              <v-icon>fas fa-user-circle</v-icon>
+              <v-icon>{{ ICON_ACCOUNT }}</v-icon>
             </v-btn>
           </template>
 
@@ -179,43 +196,46 @@
   <script>
     const NAVIGATION_DRAWER_ITEMS = [
         {
-          action: 'fas fa-home',
+          action: '{{ ICON_DASHBOARD }}',
           title: 'Dashboard',
           href: '{% url "dashboard:index" %}',
           iconColor: 'primary--text',
         },
         {
-          action: 'fas fa-address-book',
+          action: '{{ ICON_CONTACTS }}',
           title: 'Contacts',
           items: [
             { title: 'Candidates',
               href: '{% url "contacts:candidates_list" %}',
               iconColor: 'primary--text',
+              action: '{{ ICON_CANDIDATES }}',
             },
             { title: 'Clients',
               href: '{% url "contacts:clients_list" %}',
               iconColor: 'primary--text',
+              action: '{{ ICON_CLIENTS }}',
             },
             { title: 'Suppliers',
               href: '{% url "contacts:suppliers_list" %}',
               iconColor: 'primary--text',
+              action: '{{ ICON_SUPPLIERS }}',
             },
           ],
         },
         {
-          action: 'fas fa-suitcase',
+          action: '{{ ICON_JOBS }}',
           title: 'Jobs',
           href: '{% url "jobs:list" %}',
           iconColor: 'primary--text',
         },
         {
-          action: 'fas fa-filter',
+          action: '{{ ICON_PIPELINE }}',
           title: 'Pipeline',
           href: '{% url "salespipes:list" %}',
           iconColor: 'primary--text',
         },
         {
-          action: 'fas fa-file',
+          action: '{{ ICON_REPORTS }}',
           title: 'Reports',
           href: '{% url "reports:index" %}',
           iconColor: 'primary--text',
@@ -249,7 +269,7 @@
             // add commission to navigation drawer
             if (this.isCommissionAllowed) {
               this.navigationDrawerItems.push({
-                action: 'fas fa-calculator',
+                action: '{{ ICON_COMMISSIONS }}',
                 title: 'Commissions',
                 href: '{% url "commissions:list" %}',
               });
@@ -258,7 +278,7 @@
             // add backups to navigation drawer
             if (this.isBackupAllowed) {
               this.navigationDrawerItems.push({
-                action: 'fas fa-database',
+                action: '{{ ICON_BACKUPS }}',
                 title: 'Backups',
                 href: '{% url "backups:list" %}',
               });

@@ -90,6 +90,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django_admin_env_notice.context_processors.from_settings',
+
+                'system.context_processors.get_icons'
             ],
         },
     },
@@ -210,3 +212,16 @@ GRAPPELLI_ADMIN_TITLE = os.environ.setdefault(
 ENVIRONMENT_NAME = "Production server"
 ENVIRONMENT_COLOR = "#FF2222"
 ENVIRONMENT_FLOAT = True
+
+# system wide icons
+ICON_DASHBOARD = 'mdi-view-dashboard-variant'
+ICON_CONTACTS = 'mdi-contacts'
+ICON_JOBS = 'mdi-briefcase-search'
+ICON_PIPELINE = 'mdi-pipe'
+ICON_REPORTS = 'mdi-file-document'
+ICON_COMMISSIONS = 'mdi-calculator'
+ICON_BACKUPS = 'mdi-database'
+ICON_ACCOUNT = 'mdi-account-circle'
+ICON_CANDIDATES = 'mdi-account-tie'
+ICON_CLIENTS = 'mdi-currency-usd'
+ICON_SUPPLIERS = 'mdi-truck'
