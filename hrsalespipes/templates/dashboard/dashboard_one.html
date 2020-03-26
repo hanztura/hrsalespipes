@@ -5,6 +5,18 @@
 Dashboard
 {% endblock title %}
 
+{% block headblock %}
+  <style>
+    .rotate-90 {
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        transform: rotate(90deg);
+    }
+  </style>  
+{% endblock headblock %}
+
 
 {% block subcontent %}
   <input type="hidden" id="dataDashboardItemsNumber" value="{{ dashboard_items_number }}">
@@ -169,22 +181,22 @@ Dashboard
         {
           'type': 'ColumnChart',
           'text': 'Column',
-          'icon': 'fas fa-chart-bar',
+          'icon': 'mdi-chart-bar',
         },
         {
           'type': 'BarChart',
           'text': 'Bar',
-          'icon': 'fas fa-chart-bar fa-rotate-90',
+          'icon': 'mdi-chart-bar rotate-90',
         },
         {
           'type': 'PieChart',
           'text': 'Pie',
-          'icon': 'fas fa-chart-pie',
+          'icon': 'mdi-chart-pie',
         },
         {
           'type': 'LineChart',
           'text': 'Line',
-          'icon': 'fas fa-chart-line',
+          'icon': 'mdi-chart-line',
         },
       ],
       dashboardItemsNumber: [],
