@@ -4,6 +4,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 from .models import Employee, CVTemplate, Client, Supplier, Candidate
+from system.helpers import register_optional_admin_items
 
 
 class EmployeeResource(resources.ModelResource):
@@ -117,6 +118,11 @@ class CVTemplateAdmin(admin.ModelAdmin):
 
 admin.site.register(CVTemplate, CVTemplateAdmin)
 admin.site.register(Employee, EmployeeAdmin)
-admin.site.register(Client, ClientAdmin)
-admin.site.register(Supplier, SupplierAdmin)
-admin.site.register(Candidate, CandidateAdmin)
+
+# only enable import export if allowed
+situational_admin_items = (
+    (Client, ClientAdmin),
+    (Supplier, SupplierAdmin),
+    (Candidate, CandidateAdmin),
+)
+register_optional_admin_items(situational_admin_items)

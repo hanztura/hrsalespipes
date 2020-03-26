@@ -4,6 +4,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 from .models import Status, JobStatus, Job
+from system.helpers import register_optional_admin_items
 
 
 class JobResource(resources.ModelResource):
@@ -51,4 +52,6 @@ class JobStatusAdmin(admin.ModelAdmin):
 
 admin.site.register(Status, StatusAdmin)
 admin.site.register(JobStatus, JobStatusAdmin)
-admin.site.register(Job, JobAdmin)
+
+# only enable import export if allowed
+register_optional_admin_items(((Job, JobAdmin), ))

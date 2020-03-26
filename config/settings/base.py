@@ -108,6 +108,8 @@ DATABASES = {
     }
 }
 BACKUPS_STORAGE_ROOT = ROOT_DIR.path('db').path('backups')
+ENABLE_IMPORT_EXPORT_IN_ADMIN = os.environ.setdefault(
+    'HRSALESPIPES_ENABLE_ENABLE_IMPORT_EXPORT_IN_ADMIN', 'no')
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

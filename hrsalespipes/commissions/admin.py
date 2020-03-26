@@ -20,4 +20,3 @@ class RateAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Rate, RateAdmin)
-admin.site.register(Commission)

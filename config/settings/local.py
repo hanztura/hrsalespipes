@@ -24,10 +24,12 @@ DATABASES = {
         'PASSWORD': os.environ.setdefault(
             'HRSALESPIPES_DATABASE_PASSWORD',
             'hrsalespipes'),
-        'HOST': os.environ.setdefault('HRSALESPIPES_DATABASE_HOST', 'localhost'),
+        'HOST': os.environ.setdefault(
+            'HRSALESPIPES_DATABASE_HOST', 'localhost'),
         'PORT': os.environ.setdefault('HRSALESPIPES_DATABASE_PORT', ''),
     }
 }
+ENABLE_IMPORT_EXPORT_IN_ADMIN = 'yes'
 
 ENVIRONMENT_NAME = "Devlopment server"
 ENVIRONMENT_COLOR = "#9E9E9E"

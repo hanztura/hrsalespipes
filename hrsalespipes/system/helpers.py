@@ -1,6 +1,7 @@
 import json
 
-from django.contrib import messages
+from django.conf import settings
+from django.contrib import admin, messages
 
 
 def get_objects_as_choices(model):
@@ -10,6 +11,14 @@ def get_objects_as_choices(model):
     objects = json.dumps(objects)
 
     return objects
+
+
+def register_optional_admin_items(items):
+    enable_import_export = settings.ENABLE_IMPORT_EXPORT_IN_ADMIN
+
+    if enable_import_export not in ['No', 'no', 'NO', False]:
+        for model, admin_type in items:
+            admin.site.register(model, admin_type)
 
 
 class ActionMessageViewMixin:
