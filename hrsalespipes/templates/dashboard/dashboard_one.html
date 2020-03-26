@@ -34,11 +34,12 @@ Dashboard
       align="center"
       justify="center"
     >
-      <dashboard-value-card
+      <dash-card
         v-for="item in dashboardItemsNumber"
         :key="item.title"
         :text="item.title"
-        :value="item.value"></dashboard-value-card>
+        :value="item.value"
+        :icon="item.icon"></dash-card>
     </v-row>
     <v-row
       align="center"
@@ -95,6 +96,30 @@ Dashboard
         </v-card>
       </v-col>
     `,
+  }
+  const DashboardValueCard2 = {
+    name: 'DashCard',
+    props: ['value', 'text', 'icon'],
+    template: `
+      <v-col cols="12" md=4>
+        <v-card
+          class="mx-auto"
+          max-width="344"
+          outlined>
+          <v-list-item three-line>
+            <v-list-item-avatar>
+              <v-icon>[[ icon ]]</v-icon>
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title class="headline mb-1">[[ value ]]</v-list-item-title>
+              <v-list-item-subtitle>[[ text ]]</v-list-item-subtitle>
+            </v-list-item-content>
+
+          </v-list-item>
+        </v-card>
+      </v-col>
+    `
   }
 
   Vue.component('graph-card', {
@@ -380,6 +405,7 @@ Dashboard
 
     components: {
       'dashboard-value-card': DashboardValueCard,
+      'dash-card': DashboardValueCard2
     }
 
   });

@@ -111,32 +111,38 @@ class DashboardView(
                 {
                     'type': 'number',  # number, graph
                     'title': 'Active jobs',
-                    'value': active_jobs.count()
+                    'value': active_jobs.count(),
+                    'icon': 'mdi-briefcase-account'
                 },
                 {
                     'type': 'number',
                     'title': 'Succesful job placements this month',
-                    'value': successful_jobs.count()
+                    'value': successful_jobs.count(),
+                    'icon': 'mdi-briefcase-account'
                 },
                 {
                     'type': 'number',
                     'title': 'Interviews Arranged',
-                    'value': round(float(all_interviews.count()))
+                    'value': round(float(all_interviews.count())),
+                    'icon': 'mdi-briefcase-check'
                 },
                 {
                     'type': 'number',
                     'title': 'CVs sent to clients',
-                    'value': round(float(cv_sent_to_clients.count()))
+                    'value': round(float(cv_sent_to_clients.count())),
+                    'icon': 'mdi-send-check'
                 },
                 {
                     'type': 'number',
                     'title': 'NFI generated this month',
-                    'value': round(float(tpi))
+                    'value': round(float(tpi)),
+                    'icon': 'mdi-calendar-month'
                 },
                 {
                     'type': 'number',
                     'title': 'NFI generated last month',
-                    'value': round(float(tpi_last_month))
+                    'value': round(float(tpi_last_month)),
+                    'icon': 'mdi-calendar-import'
                 },
             ]
 
