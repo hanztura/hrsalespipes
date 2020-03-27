@@ -85,13 +85,13 @@ Commissions - List
                   </td>
                   <td class="text-right">{{ object.amount|intcomma }}</td>
                   <td>
-                    {% include "_includes/list_action_buttons.html" with edit_href=object.edit_href view_href=object.view_href %}
+                    {% include "_includes/list_action_buttons_with_delete.html" with edit_href=object.edit_href view_href=object.view_href delete_href=object.delete_href %}
                   </td>
                 </tr>
                 {% endfor %}
               {% else %}
                 <tr>
-                  <td colspan="5">No data available.</td>
+                  <td colspan="8">No data available.</td>
                 </tr>
               {% endif %}
             </tbody>

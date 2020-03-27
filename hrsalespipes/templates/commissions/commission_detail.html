@@ -51,11 +51,8 @@ Commission Detail ({{ object.pipeline.job_candidate.job.reference_number }}) - {
             </tbody>
           </table>
         </v-simple-table>
-
-              <v-btn
-                block
-                color="primary"
-                href="{% url 'commissions:edit' object.pk %}">Edit</v-btn>
+          {% include "_includes/button.html" with block='block' outlined='outlined' text='Delete' text_type="text" class="my-2" href=object.delete_href %}
+          {% include "_includes/button.html" with block='block' color="primary" text='Edit' class="my-2" href=object.edit_href %}
       </v-col>
     </v-row>
   </v-container>  

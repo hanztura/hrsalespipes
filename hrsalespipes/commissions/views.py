@@ -2,8 +2,8 @@ import datetime
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
-from django.views.generic.edit import CreateView, UpdateView
+from django.urls import reverse, reverse_lazy
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import DetailView, ListView
 
 from .forms import CommissionCreateModelForm
@@ -138,3 +138,11 @@ class CommissionListView(
         search_q = self.request.GET.get('q', '')
         context['search_q'] = search_q
         return context
+
+
+class CommissionDeleteView(
+    PermissionRequiredWithCustomMessageMixin,
+    DeleteView):
+    model = Commission
+    permission_required = 'commissions.delete_commission'
+    success_url = reverse_lazy('commissions:list')

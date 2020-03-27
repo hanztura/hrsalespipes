@@ -7,7 +7,8 @@ Commission ({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.
 {% block subcontent %}
   <v-container
     fluid>
-    <h1>Commission (<a href="{% url 'salespipes:detail' object.pipeline_id %}" title="view pipeline detail">{{ object.pipeline.job_candidate.job.reference_number }}</a>) {{ object.employee.name }} - Edit</h1>
+    {% block h1 %}<h1>Commission (<a href="{% url 'salespipes:detail' object.pipeline_id %}" title="view pipeline detail">{{ object.pipeline.job_candidate.job.reference_number }}</a>) {{ object.employee.name }} - Edit</h1>{% endblock h1 %}
+    
     <v-row
       align="center"
       justify="center"
@@ -15,68 +16,72 @@ Commission ({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.
       <v-col cols="12" class="text-center">
         <form method="post">
           {% csrf_token %}
-          <input type="hidden" id="dataEmployeesChoices" value="{{ employees }}">
-          {% for error in form.errors %}
-            <v-list-item>{{ error }}</v-list-item>
-          {% endfor %}
 
-          <v-text-field
-            outlined
-            required
-            label="Date"
-            name="date"
-            type='date'
-            value="{{ form.date.value|date:'Y-m-d' }}">
-          </v-text-field>
+          {% block form_fields %}
+            <input type="hidden" id="dataEmployeesChoices" value="{{ employees }}">
+            {% for error in form.errors %}
+              <v-list-item>{{ error }}</v-list-item>
+            {% endfor %}
 
-          <v-autocomplete
-            :items="employees"
-            label="Employee"
-            v-model.lazy="employee"
-            name='employee'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
+            <v-text-field
+              outlined
+              required
+              label="Date"
+              name="date"
+              type='date'
+              value="{{ form.date.value|date:'Y-m-d' }}">
+            </v-text-field>
 
-          <v-autocomplete
-            :items="rateRoleTypes"
-            label="Rate Role Type"
-            v-model.lazy="rateRoleType"
-            name='rate_role_type'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
+            <v-autocomplete
+              :items="employees"
+              label="Employee"
+              v-model.lazy="employee"
+              name='employee'
+              dense
+              outlined
+              required>
+            </v-autocomplete>
 
-          <v-text-field
-            outlined
-            required
-            label="Rate Used"
-            name="rate_used"
-            type='number'
-            step='0.01'
-            value="{{ form.rate_used.value|default_if_none:0 }}">
-          </v-text-field>
+            <v-autocomplete
+              :items="rateRoleTypes"
+              label="Rate Role Type"
+              v-model.lazy="rateRoleType"
+              name='rate_role_type'
+              dense
+              outlined
+              required>
+            </v-autocomplete>
 
-          <v-text-field
-            outlined
-            required
-            label="Amount"
-            name="amount"
-            type='number'
-            step='0.01'
-            value="{{ form.amount.value|default_if_none:0 }}">
-          </v-text-field>
+            <v-text-field
+              outlined
+              required
+              label="Rate Used"
+              name="rate_used"
+              type='number'
+              step='0.01'
+              value="{{ form.rate_used.value|default_if_none:0 }}">
+            </v-text-field>
 
-          <v-checkbox
-            v-model="isPaid"
-            label="Is Paid?"
-          ></v-checkbox>
-          <input type="hidden" name="is_paid" :value="isPaid">
-          <v-input>
-            <v-btn block color="success" type="submit">Save</v-btn>
-          </v-input>
+            <v-text-field
+              outlined
+              required
+              label="Amount"
+              name="amount"
+              type='number'
+              step='0.01'
+              value="{{ form.amount.value|default_if_none:0 }}">
+            </v-text-field>
+
+            <v-checkbox
+              v-model="isPaid"
+              label="Is Paid?"
+            ></v-checkbox>
+            <input type="hidden" name="is_paid" :value="isPaid">
+          {% endblock form_fields %}
+
+          {% block form_buttons %}
+            {% include "_includes/_input_button.html" with block="block" text="Save" color="primary" %}
+          {% endblock form_buttons %}
         </form>
       </v-col>
     </v-row>

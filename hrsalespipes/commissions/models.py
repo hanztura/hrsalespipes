@@ -7,6 +7,7 @@ from django.urls import reverse
 
 from contacts.models import Employee
 from salespipes.models import Pipeline
+from system.db import IsDeletedAbstractModel
 
 
 class Rate(models.Model):
@@ -75,7 +76,7 @@ class RateDetail(models.Model):
     rate_value = models.DecimalField(max_digits=10, decimal_places=2)
 
 
-class Commission(models.Model):
+class Commission(IsDeletedAbstractModel):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     date = models.DateField()
     pipeline = models.ForeignKey(
@@ -112,6 +113,10 @@ class Commission(models.Model):
     @property
     def view_href(self):
         return reverse('commissions:detail', args=[str(self.pk), ])
+
+    @property
+    def delete_href(self):
+        return reverse('commissions:delete', args=[str(self.pk), ])
 
     def get_absolute_url(self):
         return self.view_href
