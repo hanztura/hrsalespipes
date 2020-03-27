@@ -1,0 +1,53 @@
+{% extends "commissions/commission_update_form.html" %}
+
+{% block title %}
+Commission ({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.employee.name }} - Confirm Deletion
+{% endblock title %}
+
+{% block h1 %}<h1>CONFIRM deletion of Commission (<a href="{% url 'commissions:detail' object.pk %}" title="view commisison detail">{{ object.pipeline.job_candidate.job.reference_number }}</a>) {{ object.employee.name }}!</h1>{% endblock h1 %}
+
+{% block form_buttons %}
+  {% include "_includes/_input_button.html" with block="block" text="Delete" color="warning" outlined="outlined" %}
+{% endblock form_buttons %}
+
+{% block form_fields %}<input type="hidden">{% endblock form_fields %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Commissions',
+          disabled: false,
+          href: '{% url "commissions:list" %}',
+        },
+        {
+          text: '({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.employee.name }}',
+          disabled: false,
+          href: '{% url "commissions:detail" object.pk %}',
+        },
+        {
+          text: 'Delete',
+        }
+      ],
+    }),
+
+    methods: {
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      }
+    },
+
+    beforeMount(){
+      this.updateBreadcrumbs();
+    },
+
+  });
+</script>  
+{% endblock script %}
