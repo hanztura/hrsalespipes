@@ -104,9 +104,12 @@ class DocxResponseMixin(SingleObjectMixin):
             Candidate = ContentType.objects.get(
                 app_label='contacts',
                 model='candidate').model_class()
-            context = model_to_dict(instance, fields=Candidate.CV_FIELDS)
+            fields = Candidate.CV_FIELDS
+            for field in fields:
+                context[field] = str(getattr(instance, field, ''))
             context['position'] = self.position
-        document.render(context,jinja_env)
+
+        document.render(context, jinja_env)
         return document.docx
 
     def response(self):

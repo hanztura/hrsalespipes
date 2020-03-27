@@ -1,6 +1,6 @@
 from .production import *
 
-DEBUG = False
+DEBUG = True
 
 ENVIRONMENT_NAME = "Testing server"
 ENVIRONMENT_COLOR = "#76FF03"
