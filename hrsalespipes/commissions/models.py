@@ -104,7 +104,12 @@ class Commission(IsDeletedAbstractModel):
             (
                 'view_report_commissions_earned_summary',
                 'Can view report Commissions Earned Summary'
-            )]
+            ),
+            (
+                'view_all_commissions',
+                'Can view all commission records'
+            ),
+        ]
 
     @property
     def edit_href(self):

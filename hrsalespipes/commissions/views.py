@@ -9,6 +9,7 @@ from django.views.generic import DetailView, ListView
 from .forms import CommissionCreateModelForm
 from .models import Commission
 from contacts.models import Employee
+from reports.utils import EmployeeFilterMixin
 from salespipes.models import Pipeline
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.utils import (
@@ -111,12 +112,24 @@ class CommissionDetailView(
 
 
 class CommissionListView(
+        EmployeeFilterMixin,
         DisplayDateFormatMixin,
         PermissionRequiredWithCustomMessageMixin,
         ListView):
     model = Commission
     permission_required = 'commissions.view_commission'
     paginate_by = 25
+
+    # EmployeeFilterMixin
+    empty_if_no_filter = True
+
+    def get_filter_expression(self):
+        filter_expression = None
+
+        employee = getattr(self.request.user, 'as_employee', None)
+        if employee:
+            filter_expression = Q(employee__id=employee.pk)
+        return filter_expression
 
     def get_queryset(self, **kwargs):
         q = super().get_queryset(**kwargs)

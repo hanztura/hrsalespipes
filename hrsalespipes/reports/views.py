@@ -2,7 +2,7 @@ import calendar
 import math
 import xlwt
 
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse
@@ -16,6 +16,7 @@ from .helpers import get_successful_jobs_queryset
 from .utils import generate_excel, EmployeeFilterMixin
 from contacts.models import Employee
 from commissions.models import Commission
+from commissions.views import CommissionListView
 from jobs.models import Job, JobCandidate, JobStatus
 from system.helpers import get_objects_as_choices
 from salespipes.models import Pipeline
@@ -176,11 +177,9 @@ class MonthlyInvoicesSummaryExcelView(
 
 
 class CommissionsEarnedSummaryListView(
-        DisplayDateFormatMixin,
         ContextUrlBuildersMixin,
         FromToViewFilterMixin,
-        PermissionRequiredWithCustomMessageMixin,
-        ListView):
+        CommissionListView):
     model = Commission
     template_name = 'reports/commissions_earned_summary.html'
     permission_required = 'commissions.view_report_commissions_earned_summary'
@@ -197,9 +196,6 @@ class CommissionsEarnedSummaryListView(
 
     def get_queryset(self):
         q = super().get_queryset()
-        q = q.select_related(
-            'pipeline__job_candidate__job',
-            'employee')
 
         # filter employee
         employee_pk = self.request.GET.get('employee', '')  # employee id
@@ -281,6 +277,14 @@ class CommissionsEarnedSummaryExcelView(
             'amount',
         ]
 
+        employee = getattr(self.request.user, 'as_employee', None)
+        empty_if_no_filter = False
+        filter_expression = None
+        filter_expression_employee_pk = getattr(employee, 'pk', None)
+        if filter_expression_employee_pk:
+            filter_expression = Q(employee__id=employee.pk)
+            empty_if_no_filter = True
+
         wb = generate_excel(
             'Commissions Earned Summary',
             date_from,
@@ -291,7 +295,10 @@ class CommissionsEarnedSummaryExcelView(
             values_list,
             ((5, 'amount'), ),
             4,
-            employee_pk
+            employee_pk,
+            user=self.request.user,
+            filter_expression=filter_expression,
+            empty_if_no_filter=empty_if_no_filter
         )
 
         wb.save(response)

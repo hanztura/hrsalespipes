@@ -7,13 +7,25 @@ from contacts.models import Employee
 from system.models import Setting
 
 
-def filter_querset_by_employee(queryset, user, model):
+def filter_queryset_by_employee(
+        queryset,
+        user,
+        model,
+        filter_expression=None,
+        empty_if_no_filter=False):
+
     if not user.has_perm('view_all_pipelines'):
         employee = getattr(user, 'as_employee', None)
         if employee:
-            queryset = queryset.filter(
-                Q(job_candidate__consultant_id=employee.pk) |
-                Q(job_candidate__associate_id=employee.pk))
+            if not filter_expression:
+                if empty_if_no_filter:
+                    queryset = model.objects.none()
+                else:
+                    queryset = queryset.filter(
+                        Q(job_candidate__consultant_id=employee.pk) |
+                        Q(job_candidate__associate_id=employee.pk))
+            else:
+                queryset = queryset.filter(filter_expression)
         else:
             # return empty queryset
             queryset = model.objects.none()
@@ -25,7 +37,8 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
                    select_related, values_list, aggregate_fields,
                    total_label_position, employee_id=None,
                    is_month_filter=False, consultant_id=None,
-                   job_status_pk='', user=None):
+                   job_status_pk='', user=None, filter_expression=None,
+                   empty_if_no_filter=False):
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet(heading_title)
 
@@ -72,7 +85,8 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
     rows = model.objects.all().select_related(*select_related)
     # filter rows by user employee
     if user:
-        rows = filter_querset_by_employee(rows, user, model)
+        rows = filter_queryset_by_employee(
+            rows, user, model, filter_expression, empty_if_no_filter)
 
     if date_from and date_to:
         try:
@@ -143,9 +157,19 @@ class EmployeeFilterMixin:
 
     Return all if allowed to view all records
     """
+    filter_expression = None
+    empty_if_no_filter = False
+
+    def get_filter_expression(self):
+        return self.filter_expression
+
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = filter_querset_by_employee(
-            queryset, self.request.user, self.model)
+        queryset = filter_queryset_by_employee(
+            queryset,
+            self.request.user,
+            self.model,
+            self.get_filter_expression(),
+            self.empty_if_no_filter)
 
         return queryset
