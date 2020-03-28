@@ -158,20 +158,12 @@ class JobCandidateCreateView(
         job = Job.objects.get(pk=job)
         self.job = job
 
-    def form_valid(self, form):
-        form.instance.job = self.job
-
-        if hasattr(self.request.user, 'as_employee'):
-            form.instance.associate = self.request.user.as_employee
-        else:
-            messages.warning(
-                self.request,
-                'Contact admin for employee profile.')
-            form.add_error(None, 'Your Employee profile required')
-
-        form.instance.registration_date = timezone.localdate()
-
-        return super().form_valid(form)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['job'] = self.job
+        kwargs['employee'] = getattr(self.request.user, 'as_employee', None)
+        kwargs['request'] = self.request
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -197,6 +189,11 @@ class JobCandidateUpdateView(
     permission_required = 'jobs.change_jobcandidate'
     success_msg = 'Job Candidate updated.'
     job_pk_kwarg = 'job_pk'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
     def get_queryset(self):
         q = super().get_queryset()
