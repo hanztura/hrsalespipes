@@ -16,6 +16,7 @@ from .forms import (
 from .models import Job, JobCandidate, Status, Interview
 from .utils import JobIsClosedMixin, JobIsClosedContextMixin
 from contacts.models import Client, Candidate, Employee, Supplier as Board
+from reports.utils import EmployeeFilterMixin
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.models import InterviewMode, Location
 from system.utils import (

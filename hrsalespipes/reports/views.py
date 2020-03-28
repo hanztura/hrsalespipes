@@ -284,7 +284,7 @@ class CommissionsEarnedSummaryExcelView(
         filter_expression = None
         filter_expression_employee_pk = getattr(employee, 'pk', None)
         if filter_expression_employee_pk:
-            filter_expression = Q(employee__id=employee.pk)
+            filter_expression = Q(employee_id=employee.pk)
             empty_if_no_filter = True
 
         wb = generate_excel(
@@ -688,6 +688,7 @@ class JobsSummaryExcelView(
 
 
 class JobToPipelineAnalysisListView(
+        EmployeeFilterMixin,
         DisplayDateFormatMixin,
         ContextUrlBuildersMixin,
         FromToViewFilterMixin,
@@ -697,6 +698,18 @@ class JobToPipelineAnalysisListView(
     template_name = 'reports/job_to_pipeline_analysis.html'
     permission_required = 'jobs.view_report_job_to_pipeline_analysis'
     paginate_by = 0
+
+    # EmployeeFilterMixin
+    empty_if_no_filter = True
+
+    def get_filter_expression(self):
+        filter_expression = None
+
+        employee = getattr(self.request.user, 'as_employee', None)
+        if employee:
+            filter_expression = (Q(consultant_id=employee.pk) |
+                Q(associate_id=employee.pk))
+        return filter_expression
 
     def get_context_urls(self):
         # pdf/excel buttons url builder
@@ -818,6 +831,20 @@ class JobToPipelineAnalysisExcelView(
             'job__status', 'candidate')
         rows = rows.prefetch_related('pipeline', 'job__client')
         rows = rows.filter(pipeline__isnull=False)
+
+        # filter by employee or allowed all
+        employee = getattr(self.request.user, 'as_employee', None)
+        empty_if_no_filter = False
+        filter_expression = None
+        filter_expression_employee_pk = getattr(employee, 'pk', None)
+        if filter_expression_employee_pk:
+            filter_expression = (Q(consultant_id=employee.pk) |
+                                 Q(associate_id=employee.pk))
+            empty_if_no_filter = True
+
+        rows = filter_queryset_by_employee(
+            rows, self.request.user, Pipeline,
+            filter_expression, empty_if_no_filter)
 
         if date_from and date_to:
             try:
