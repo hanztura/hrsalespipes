@@ -6,6 +6,7 @@ django-filter==2.2.0
 django-grappelli==2.14.1
 django-guardian==2.2.0
 django-import-export==2.0.2
+django-recaptcha==2.0.6
 django-simple-captcha==0.5.12
 django-simple-history==2.8.0
 django-weasyprint==0.5.5
