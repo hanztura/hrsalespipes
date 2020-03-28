@@ -11,6 +11,7 @@ from .models import Pipeline, Status
 from .utils import IsAllowedToViewOrEditMixin
 from jobs.models import Job
 from jobs.utils import JobIsClosedMixin, JobIsClosedContextMixin
+from reports.utils import EmployeeFilterMixin
 from system.models import Setting
 from system.helpers import ActionMessageViewMixin
 from system.utils import (
@@ -115,6 +116,7 @@ class PipelineUpdateView(
 
 
 class PipelineListView(
+        EmployeeFilterMixin,
         DisplayDateFormatMixin,
         FromToViewFilterMixin,
         PermissionRequiredMixin,
@@ -124,9 +126,14 @@ class PipelineListView(
     paginate_by = 25
 
     def get_queryset(self):
-        q = super().get_queryset().select_related('status')
-        q = q.prefetch_related(
-            'job_candidate__job', 'job_candidate__candidate')
+        q = super().get_queryset()
+        q = q.select_related(
+            'status',
+            'job',
+            'job_candidate__candidate',
+            'job_candidate__job__client',
+            'job_candidate__consultant',
+            'job_candidate__associate')
         return q
 
 

@@ -13,13 +13,15 @@ from django.views.generic.base import View
 from django_weasyprint import WeasyTemplateResponseMixin
 
 from .helpers import get_successful_jobs_queryset
-from .utils import generate_excel, EmployeeFilterMixin
+from .utils import (
+    generate_excel, EmployeeFilterMixin, filter_queryset_by_employee)
 from contacts.models import Employee
 from commissions.models import Commission
 from commissions.views import CommissionListView
 from jobs.models import Job, JobCandidate, JobStatus
 from system.helpers import get_objects_as_choices
 from salespipes.models import Pipeline
+from salespipes.views import PipelineListView
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin, FromToViewFilterMixin,
     MonthFilterViewMixin, DisplayDateFormatMixin, DateAndStatusFilterMixin,
@@ -306,11 +308,8 @@ class CommissionsEarnedSummaryExcelView(
 
 
 class PipelineSummaryListView(
-        DisplayDateFormatMixin,
         ContextUrlBuildersMixin,
-        FromToViewFilterMixin,
-        PermissionRequiredWithCustomMessageMixin,
-        ListView):
+        PipelineListView):
     model = Pipeline
     template_name = 'reports/pipeline_summary.html'
     permission_required = 'salespipes.view_report_pipeline_summary'
@@ -327,13 +326,6 @@ class PipelineSummaryListView(
 
     def get_queryset(self):
         q = super().get_queryset()
-
-        q = q.select_related(
-            'status',
-            'job',
-            'job_candidate__candidate',
-            'job_candidate__job__client',
-            'job_candidate__consultant')
 
         # filter consultant (optional)
         consultant_pk = self.request.GET.get('consultant', '')  # employee id
@@ -453,6 +445,9 @@ class PipelineSummaryExcelView(
         rows = rows.select_related(
             'status', 'job_candidate__candidate', 'job_candidate__job__client',
             'job_candidate__consultant')
+
+        # filter by employee or allowed all
+        rows = filter_queryset_by_employee(rows, self.request.user, Pipeline)
 
         if date_from and date_to:
             try:

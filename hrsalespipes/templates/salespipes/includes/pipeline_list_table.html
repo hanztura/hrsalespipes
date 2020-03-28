@@ -7,6 +7,8 @@
       <th class="text-center">Candidate</th>
       <th class="text-center">Job Reference Number</th>
       <th class="text-center">Status</th>
+      <th class="text-center">Consultant</th>
+      <th class="text-center">Associate</th>
       <th class="text-center">Invoice Date</th>
       <th class="text-center">Actions</th>
     </tr>
@@ -18,6 +20,8 @@
       <td class="text-center">{{ object.job_candidate.candidate }}</td>
       <td class="text-center"><a href="{% url 'salespipes:detail' object.pk %}" title="view pipeline detail">{{ object.job_candidate.job.reference_number }}</a></td>
       <td class="text-center">{{ object.status }}</td>
+      <td class="text-center">{{ object.job_candidate.consultant.name }}</td>
+      <td class="text-center">{{ object.job_candidate.associate.name }}</td>
       <td class="text-center">{{ object.invoice_date|date:display_date_format }}</td>
       <td class="text-center">
         {% include "_includes/list_action_buttons.html" with edit_href=object.edit_href view_href=object.view_href %}

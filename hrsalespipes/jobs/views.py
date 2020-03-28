@@ -120,7 +120,8 @@ class JobDetailView(
             'candidates', 'candidates__candidate',
             'candidates__status', 'candidates__associate',
             'candidates__pipeline__status', 'status',
-            'candidates__interviews')
+            'candidates__interviews', 'candidates__pipeline__job_candidate__consultant',
+            'candidates__pipeline__job_candidate__associate',)
         return q
 
     def get_context_data(self, **kwargs):
