@@ -1,17 +1,31 @@
 import uuid
 import xlwt
 
-from django.db.models import Sum
+from django.db.models import Sum, Q
 
 from contacts.models import Employee
 from system.models import Setting
+
+
+def filter_querset_by_employee(queryset, user, model):
+    if not user.has_perm('view_all_pipelines'):
+        employee = getattr(user, 'as_employee', None)
+        if employee:
+            queryset = queryset.filter(
+                Q(job_candidate__consultant_id=employee.pk) |
+                Q(job_candidate__associate_id=employee.pk))
+        else:
+            # return empty queryset
+            queryset = model.objects.none()
+
+    return queryset
 
 
 def generate_excel(heading_title, date_from, date_to, columns, model,
                    select_related, values_list, aggregate_fields,
                    total_label_position, employee_id=None,
                    is_month_filter=False, consultant_id=None,
-                   job_status_pk=''):
+                   job_status_pk='', user=None):
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet(heading_title)
 
@@ -56,6 +70,9 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
     font_style = xlwt.XFStyle()
 
     rows = model.objects.all().select_related(*select_related)
+    # filter rows by user employee
+    if user:
+        rows = filter_querset_by_employee(rows, user, model)
 
     if date_from and date_to:
         try:
@@ -119,3 +136,16 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
                 font_style)
 
     return wb
+
+
+class EmployeeFilterMixin:
+    """Filter results of Reports according to employee record.
+
+    Return all if allowed to view all records
+    """
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = filter_querset_by_employee(
+            queryset, self.request.user, self.model)
+
+        return queryset

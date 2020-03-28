@@ -28,7 +28,9 @@ class JobIsClosedMixin:
         )
 
     def dispatch(self, request, *args, **kwargs):
-        # check if status is closed and redirect to detail if yes
+        """check if status is closed and redirect if not
+           allowed to edit
+        """
         self._kwargs = kwargs
         job = self.get_job_object()
         if not is_allowed_to_edit_close_job(request.user, job):

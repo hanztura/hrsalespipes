@@ -8,6 +8,7 @@ from django.views.generic import DetailView, ListView
 
 from .forms import PipelineCreateModelForm, PipelineModelForm
 from .models import Pipeline, Status
+from .utils import IsAllowedToViewOrEditMixin
 from jobs.models import Job
 from jobs.utils import JobIsClosedMixin, JobIsClosedContextMixin
 from system.models import Setting
@@ -61,6 +62,7 @@ class PipelineCreateView(
 
 class PipelineUpdateView(
         JobIsClosedMixin,
+        IsAllowedToViewOrEditMixin,
         PermissionRequiredMixin,
         ActionMessageViewMixin,
         UpdateView):
@@ -130,6 +132,7 @@ class PipelineListView(
 
 class PipelineDetailView(
         JobIsClosedContextMixin,
+        IsAllowedToViewOrEditMixin,
         DisplayDateFormatMixin,
         PermissionRequiredMixin,
         DetailView):

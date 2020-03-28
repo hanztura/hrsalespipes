@@ -14,6 +14,7 @@ class Status(models.Model):
     """Status to be used by the candidate"""
     class Meta:
         verbose_name = 'Job Candidate Status'
+        ordering = 'probability', 'name'
 
     name = models.CharField(max_length=100)
     probability = models.DecimalField(

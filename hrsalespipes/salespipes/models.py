@@ -47,6 +47,10 @@ class Pipeline(TimeStampedModel):
                 'view_report_successful_jobs',
                 'Can view report on Successful Jobs'
             ),
+            (
+                'view_all_pipelines',
+                'Can view all Pipeline records'
+            ),
         ]
         ordering = ['-date', '-job']
 

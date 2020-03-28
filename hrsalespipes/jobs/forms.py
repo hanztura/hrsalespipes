@@ -75,6 +75,30 @@ class JobCandidateCreateModelForm(ModelForm):
             'candidate',
         ]
 
+    def __init__(self, *args, **kwargs):
+        self.job = kwargs.pop('job')
+        self.employee = kwargs.pop('employee')
+        self.request = kwargs.pop('request')
+
+        super().__init__(*args, **kwargs)
+
+    def is_valid(self, *args, **kwargs):
+        """set default job, default associate and registration date"""
+        self.instance.job = self.job
+
+        # set associate
+        if self.employee:
+            self.instance.associate = self.employee
+        else:
+            messages.warning(
+                self.request,
+                'Contact admin for employee profile.')
+            self.add_error(None, 'Your Employee profile is required')
+
+        self.instance.registration_date = timezone.localdate()
+
+        return super().is_valid(*args, **kwargs)
+
 
 class JobCandidateUpdateModelForm(ModelForm):
 
@@ -95,6 +119,8 @@ class JobCandidateUpdateModelForm(ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+
         super().__init__(*args, **kwargs)
 
         self.fields['consultant'].required = True
@@ -137,6 +163,12 @@ class JobCandidateUpdateModelForm(ModelForm):
 
                 if new_pipeline_form.is_valid():
                     new_pipeline_form.save()
+                else:
+                    msg = 'Pipeline not created due to {}. Please manually \
+                        create a pipeline record.'
+                    msg = msg.format(str(new_pipeline_form.errors))
+                    messages.info(self.request, msg)
+
 
             # only update status if not created and if probability is upgrade
             # then update pipeline status
