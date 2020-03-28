@@ -3,16 +3,20 @@ def is_associate_or_consultant_to_pipeline(user, pipeline):
     pipeline record.
     """
     # if user no employee assigned, then not allowed
-    employee = getattr(object, 'as_employee', None)
+    employee = getattr(user, 'as_employee', None)
     if not employee:
         return False
 
-    if pipeline.job_candidate.associate_id:
-        if pipeline.associate_id == employee.pk:
+    associate_id = pipeline.job_candidate.associate_id
+    if associate_id:
+        print(associate_id, employee.pk)
+        if associate_id == employee.pk:
             return True
 
-    if pipeline.job_candidate.consultant_id:
-        if pipeline.consultant_id == employee.pk:
+    consultant_id = pipeline.job_candidate.consultant_id
+    if consultant_id:
+        print(consultant_id, employee.pk)
+        if consultant_id == employee.pk:
             return True
 
     return False

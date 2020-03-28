@@ -13,7 +13,7 @@ from django.views.generic.base import View
 from django_weasyprint import WeasyTemplateResponseMixin
 
 from .helpers import get_successful_jobs_queryset
-from .utils import generate_excel
+from .utils import generate_excel, EmployeeFilterMixin
 from contacts.models import Employee
 from commissions.models import Commission
 from jobs.models import Job, JobCandidate, JobStatus
@@ -31,6 +31,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
 
 class MonthlyInvoicesSummaryListView(
+        EmployeeFilterMixin,
         DisplayDateFormatMixin,
         ContextUrlBuildersMixin,
         MonthFilterViewMixin,
@@ -166,7 +167,8 @@ class MonthlyInvoicesSummaryExcelView(
             ),  # aggregate fields
             invoice_amount_index - 1,  # totals label
             is_month_filter=True,
-            consultant_id=consultant_pk
+            consultant_id=consultant_pk,
+            user=self.request.user
         )
 
         wb.save(response)

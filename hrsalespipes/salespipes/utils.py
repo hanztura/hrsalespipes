@@ -20,8 +20,8 @@ class CreateCommissionFormMixin:
 class IsAllowedToViewOrEditMixin:
     model_pk_kwarg = 'pk'
     redirect_to_single_object_url_pattern = 'salespipes:list'
-    not_allowed_message = 'Sorry you are not allowed do this action. \
-        Please contact your administrator if you are supposed to.'
+    not_allowed_message = 'Sorry you are not an associate or consultant \
+        of this record. You are not allowed to do this action.'
 
     def get_model_pk_kwarg(self):
         return self.model_pk_kwarg
