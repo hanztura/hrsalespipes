@@ -20,6 +20,7 @@ class Status(models.Model):
         related_name='related_pipeline_status',
         verbose_name='equivalent job status',
         null=True)
+    should_have_invoice = models.BooleanField(default=False, blank=True)
     is_closed = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
@@ -53,7 +54,9 @@ class Pipeline(TimeStampedModel):
     date = models.DateField(
         verbose_name=settings.PIPELINE_DATE_ALIAS,
         default=timezone.localdate)
-    successful_date = models.DateField(null=True, blank=True)
+
+    # successful date DEPRECIATED!!!
+    # successful_date = models.DateField(null=True, blank=True)
     job = models.OneToOneField(  # DEPRECIATED!!!
         Job,
         on_delete=models.PROTECT,

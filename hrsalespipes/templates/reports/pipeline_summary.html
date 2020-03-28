@@ -65,7 +65,6 @@ Pipeline Summary - Reports
                   <td class="text-left">
                     <p>Status: <strong>{{ object.status }}</strong></p>
                     <p>Date: <a href="{% url 'salespipes:detail' object.id %}" title="view pipeline detail">{{ object.date|date:display_date_format }}</a></p>
-                    <p>Successful Date: {{ object.successful_date|date:display_date_format }}</p>
                   </td>
 
                   <td class="text-left">

@@ -57,10 +57,6 @@ Pipeline Detail - Job {{ object.job_candidate.job.reference_number }}
                       <td>{{ object.potential_income|intcomma }}</td>
                     </tr>
                     <tr>
-                      <th>Succesful Date:</th>
-                      <td>{{ object.successful_date|date:display_date_format }}</td>
-                    </tr>
-                    <tr>
                       <th>Invoice Date:</th>
                       <td>{{ object.invoice_date|date:display_date_format }}</td>
                     </tr>

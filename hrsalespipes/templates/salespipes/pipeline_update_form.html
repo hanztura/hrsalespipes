@@ -28,7 +28,7 @@ Pipeline - Edit
             name="date"
             required
             type="date"
-            value="{{ form.date.value|date:'Y-m-d' }}">
+            value="{{ form.instance.date|date:'Y-m-d' }}">
           </v-text-field>
 
           <v-autocomplete
@@ -166,7 +166,7 @@ Pipeline - Edit
           href: '{% url "salespipes:list" %}',
         },
         {
-          text: '{{ object.job.reference_number }}',
+          text: '{{ object.job_candidate.job.reference_number }}',
           disabled: false,
           href: '{% url "salespipes:detail" object.pk %}',
         },
