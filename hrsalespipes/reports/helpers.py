@@ -20,12 +20,12 @@ def get_successful_jobs_queryset(
     if date_to == 'ALL':
         # until today
         today = timezone.localdate()
-        q = q.filter(successful_date__lte=today)
+        q = q.filter(invoice_date__lte=today)
 
     elif date_to:
         # until a certain date that is may not be today
         try:
-            q = q.filter(successful_date__lte=date_to)
+            q = q.filter(invoice_date__lte=date_to)
         except Exception as e:
             pass
 
@@ -36,7 +36,7 @@ def get_successful_jobs_queryset(
     elif date_from:
         # from a certain point of time
         try:
-            q = q.filter(successful_date__gte=date_from)
+            q = q.filter(invoice__gte=date_from)
         except Exception as e:
             pass
 

@@ -74,6 +74,17 @@ class PipelineModelForm(CreateCommissionFormMixin, ModelForm):
         cleaned_data['vat'] = vat
         cleaned_data['invoice_amount'] = invoice_amount
 
+        # if status is greater or equal to 1 then invoice details
+        # should be provided
+        if cleaned_data['status'].should_have_invoice:
+            if not cleaned_data['invoice_date']:
+                msg = 'Provide invoice date.'
+                self.add_error('invoice_date', msg)
+
+            if not cleaned_data['invoice_number']:
+                msg = 'Provide invoice number.'
+                self.add_error('invoice_number', msg)
+
         return cleaned_data
 
     @transaction.atomic

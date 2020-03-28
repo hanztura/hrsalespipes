@@ -9,9 +9,10 @@ class StatusAdmin(admin.ModelAdmin):
     fields = [
         'name',
         'probability',
+        'should_have_invoice',
         'job_status',
     ]
-    list_display = ('name', 'probability', 'job_status')
+    list_display = ('name', 'probability', 'should_have_invoice', 'job_status')
 
 
 admin.site.register(Status, StatusAdmin)

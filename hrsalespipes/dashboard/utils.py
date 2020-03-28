@@ -51,8 +51,8 @@ def get_data_dashboard_items_number(
     successful_jobs_all_time = get_successful_jobs_queryset(
         pipelines, date_from="ALL", date_to="ALL")
     successful_jobs = successful_jobs_all_time.filter(
-        successful_date__month=today.month,
-        successful_date__year=today.year)
+        invoice_date__month=today.month,
+        invoice_date__year=today.year)
 
     # this month's potential income
     total_potential_income = successful_jobs.aggregate(
@@ -63,8 +63,8 @@ def get_data_dashboard_items_number(
     first_day = today.replace(day=1)
     last_month = first_day - datetime.timedelta(days=1)
     successful_jobs_last_month = pipelines.filter(
-        successful_date__month=last_month.month,
-        successful_date__year=last_month.year)
+        invoice_date__month=last_month.month,
+        invoice_date__year=last_month.year)
 
     tpi_last_month = successful_jobs_last_month.aggregate(
         Sum('potential_income'))['potential_income__sum']
@@ -83,8 +83,8 @@ def get_data_dashboard_items_number(
             job_candidate__consultant_id=employee.pk)
     # successful jobs per consultant. this month
     sj_per_consultant = sj_per_consultant_all_time.filter(
-        successful_date__month=today.month,
-        successful_date__year=today.year)
+        invoice_date__month=today.month,
+        invoice_date__year=today.year)
     key_field = 'job_candidate__consultant__name'
     sjpc = sj_per_consultant.values(
         key_field)
