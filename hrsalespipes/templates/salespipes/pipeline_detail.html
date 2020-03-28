@@ -2,14 +2,14 @@
 {% load humanize %}
 
 {% block title %}
-Pipeline Detail - Job {{ object.job_candidate.job.reference_number }}
+{{ object.job_candidate.candidate.name }} ({{ object.job_candidate.job.reference_number }}) - Pipeline Detail
 {% endblock title %}
 
 {% block subcontent %}
   <v-container
     fluid>
     <h1>
-      Job {{ object.job_candidate.job.reference_number }} - Pipeline Detail
+      {{ object.job_candidate.candidate.name }} ({{ object.job_candidate.job.reference_number }}) - Pipeline Detail
     </h1>
     <p><v-chip class="ma-2">Job Status: {{ object.job_candidate.job.status.name }}</v-chip></p>    
     <v-row
@@ -121,7 +121,7 @@ Pipeline Detail - Job {{ object.job_candidate.job.reference_number }}
           href: '{% url "salespipes:list" %}',
         },
         {
-          text: '{{ object.job_candidate.job.reference_number }}',
+          text: '{{ object.job_candidate.candidate.name }} ({{ object.job_candidate.job.reference_number }})',
         },
       ],
       tab: null,

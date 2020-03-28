@@ -2,13 +2,13 @@
 {% load static %}
 
 {% block title %}
-Pipeline - Edit
+{{ object.job_candidate.candidate.name }} ({{ object.job_candidate.job.reference_number }}) - Pipeline Edit
 {% endblock title %}
 
 {% block subcontent %}
   <v-container
     fluid>
-    <h1>{{ object.job_candidate.job.reference_number }} - Pipeline Edit</h1>
+    <h1>{{ object.job_candidate.candidate.name }} ({{ object.job_candidate.job.reference_number }}) - Pipeline Edit</h1>
     <v-row
       align="center"
       justify="center"
@@ -166,7 +166,7 @@ Pipeline - Edit
           href: '{% url "salespipes:list" %}',
         },
         {
-          text: '{{ object.job_candidate.job.reference_number }}',
+          text: '{{ object.job_candidate.candidate.name }} ({{ object.job_candidate.job.reference_number }})',
           disabled: false,
           href: '{% url "salespipes:detail" object.pk %}',
         },
