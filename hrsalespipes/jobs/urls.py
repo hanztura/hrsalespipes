@@ -25,6 +25,5 @@ urlpatterns = [
 
     path('<str:pk>/', JobDetailView.as_view(), name='detail'),
 
-
     path('', JobListView.as_view(), name='list'),
 ]

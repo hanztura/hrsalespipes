@@ -34,6 +34,9 @@ class IsAllowedToViewOrEditMixin:
 
         return model_object
 
+    def get_rule_to_pass(self, user, instance):
+        return is_allowed_to_view_or_edit_pipeline(user, instance)
+
     def redirect_to_if_not_allowed(self, model_object):
         """Redirect here. Override if needed"""
         return redirect(self.redirect_to_single_object_url_pattern)
@@ -45,7 +48,7 @@ class IsAllowedToViewOrEditMixin:
         self._kwargs = kwargs
         model_object = self.get_model_object()
         user = request.user
-        if not is_allowed_to_view_or_edit_pipeline(user, model_object):
+        if not self.get_rule_to_pass(user, model_object):
             messages.info(request, self.not_allowed_message)
 
             return self.redirect_to_if_not_allowed(model_object)

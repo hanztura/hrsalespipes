@@ -82,7 +82,7 @@ class Job(TimeStampedModel):
             (
                 'can_edit_closed_job',
                 'Can edit closed Job'
-            )
+            ),
         ]
 
     def __str__(self):
@@ -106,6 +106,15 @@ class Job(TimeStampedModel):
 
 
 class JobCandidate(TimeStampedModel):
+    class Meta:
+        ordering = ['-registration_date', 'job', 'candidate__name']
+        permissions = [
+            (
+                'view_all_job_candidates',
+                'Can view all Job Candidates'
+            ),
+        ]
+
     job = models.ForeignKey(
         Job, on_delete=models.PROTECT, related_name='candidates')
     candidate = models.ForeignKey(
@@ -142,12 +151,15 @@ class JobCandidate(TimeStampedModel):
         null=True,
         blank=True)
 
-    class Meta:
-        ordering = ['-registration_date', 'job', 'candidate__name']
-
     def get_absolute_url(self):
         return reverse('jobs:detail',
                        args=[str(self.job_id)])
+
+    @property
+    def job_view_href(self):
+        return reverse(
+            'jobs:detail',
+            args=[str(self.job_id)])
 
     @property
     def edit_href(self):

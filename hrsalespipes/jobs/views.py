@@ -14,9 +14,11 @@ from .forms import (
     JobCandidateCreateModelForm, JobCandidateUpdateModelForm,
     InterviewCreateModelForm, InterviewUpdateModelForm, JobStatus)
 from .models import Job, JobCandidate, Status, Interview
+from .rules import is_allowed_to_view_or_edit
 from .utils import JobIsClosedMixin, JobIsClosedContextMixin
 from contacts.models import Client, Candidate, Employee, Supplier as Board
 from reports.utils import EmployeeFilterMixin
+from salespipes.utils import IsAllowedToViewOrEditMixin
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.models import InterviewMode, Location
 from system.utils import (
@@ -182,6 +184,7 @@ class JobCandidateCreateView(
 
 class JobCandidateUpdateView(
         JobIsClosedMixin,
+        IsAllowedToViewOrEditMixin,
         PermissionRequiredMixin,
         ActionMessageViewMixin,
         UpdateView):
@@ -191,6 +194,13 @@ class JobCandidateUpdateView(
     permission_required = 'jobs.change_jobcandidate'
     success_msg = 'Job Candidate updated.'
     job_pk_kwarg = 'job_pk'
+
+    def redirect_to_if_not_allowed(self, model_object):
+        job_candidate = self.get_object()
+        return redirect('jobs:detail', pk=str(job_candidate.job_id))
+
+    def get_rule_to_pass(self, user, instance):
+        return is_allowed_to_view_or_edit(user, instance)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -218,11 +228,19 @@ class JobCandidateUpdateView(
 
 class JobCandidateDetailView(
         JobIsClosedContextMixin,
+        IsAllowedToViewOrEditMixin,
         DisplayDateFormatMixin,
         PermissionRequiredMixin,
         DetailView):
     model = JobCandidate
     permission_required = 'jobs.view_jobcandidate'
+
+    def redirect_to_if_not_allowed(self, model_object):
+        job_candidate = self.get_object()
+        return redirect('jobs:detail', pk=str(job_candidate.job_id))
+
+    def get_rule_to_pass(self, user, instance):
+        return is_allowed_to_view_or_edit(user, instance)
 
     def get_queryset(self):
         q = super().get_queryset().select_related(
