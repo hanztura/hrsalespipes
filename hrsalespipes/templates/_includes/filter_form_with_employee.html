@@ -6,10 +6,11 @@
   <v-col cols="12" md="3" class="py-0">
     <v-autocomplete
       :items="employees"
-      label="Employee"
+      label="{{ label|default_if_none:'Employee' }}"
       v-model.lazy="employee"
       name='employee'
-      prepend-inner-icon="fas fa-user"
+      prepend-inner-icon="mdi-account-cog"
+      clearable
       dense
       outlined>
     </v-autocomplete>

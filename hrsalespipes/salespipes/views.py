@@ -1,5 +1,6 @@
 import json
 
+from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -9,11 +10,12 @@ from django.views.generic import DetailView, ListView
 from .forms import PipelineCreateModelForm, PipelineModelForm
 from .models import Pipeline, Status
 from .utils import IsAllowedToViewOrEditMixin
+from contacts.models import Employee
 from jobs.models import Job
 from jobs.utils import JobIsClosedMixin, JobIsClosedContextMixin
 from reports.utils import EmployeeFilterMixin
 from system.models import Setting
-from system.helpers import ActionMessageViewMixin
+from system.helpers import ActionMessageViewMixin, get_objects_as_choices
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin,
     FromToViewFilterMixin, DisplayDateFormatMixin)
@@ -134,7 +136,21 @@ class PipelineListView(
             'job_candidate__job__client',
             'job_candidate__consultant',
             'job_candidate__associate')
+
+        # filter associate or consultant
+        self.assoc_consult = self.request.GET.get('employee', '')
+        if self.assoc_consult:
+            q = q.filter(
+                Q(job_candidate__associate_id=self.assoc_consult) |
+                Q(job_candidate__consultant_id=self.assoc_consult))
+
         return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['employees'] = get_objects_as_choices(Employee)
+        context['employee'] = self.assoc_consult
+        return context
 
 
 class PipelineDetailView(
