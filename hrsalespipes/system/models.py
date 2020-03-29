@@ -81,3 +81,14 @@ class InterviewMode(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Industry(models.Model):
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name_plural = 'Industries'
+        ordering = 'name',
+
+    def __str__(self):
+        return self.name

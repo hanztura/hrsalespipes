@@ -12,7 +12,7 @@ from .utils import FilterNameMixin, DownloadCVBaseView
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin)
-from system.models import VisaStatus, Location, Nationality
+from system.models import VisaStatus, Location, Nationality, Industry
 
 
 class ContactsTemplateView(LoginRequiredMixin, TemplateView):
@@ -130,9 +130,8 @@ class ClientUpdateView(
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        locations = get_objects_as_choices(Location)
-
-        context['locations'] = locations
+        context['locations'] = get_objects_as_choices(Location)
+        context['industries'] = get_objects_as_choices(Industry)
         return context
 
     def get_success_url(self):

@@ -4,7 +4,8 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from import_export import resources
 from import_export.admin import ExportMixin
 
-from .models import User, Setting, VisaStatus, InterviewMode, Location
+from .models import (
+    User, Setting, VisaStatus, InterviewMode, Location, Industry)
 
 
 class UserResource(resources.ModelResource):
@@ -41,3 +42,4 @@ admin.site.register(Setting)
 admin.site.register(VisaStatus, VisaStatusAdmin)
 admin.site.register(InterviewMode)
 admin.site.register(Location)
+admin.site.register(Industry)

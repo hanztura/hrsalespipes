@@ -16,6 +16,7 @@
         <form method="post">
           {% csrf_token %}
           <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
+          <input type="hidden" id="dataIndustryChoices" value="{{ industries }}">
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
@@ -40,6 +41,7 @@
                   label="Industry"
                   v-model.lazy="industry"
                   name="industry"
+                  item-value="text"
                   dense
                   outlined
                   required>
@@ -196,52 +198,7 @@
       ],
       locations: [],
       location: '{{ form.location.value }}',
-      industries: [
-        {
-          'text': 'Retail',
-          'value': 'Retail',
-        },
-        {
-          'text': 'Government',
-          'value': 'Government',
-        },
-        {
-          'text': 'Interior Design',
-          'value': 'Interior Design',
-        },
-        {
-          'text': 'Legal',
-          'value': 'Legal',
-        },
-        {
-          'text': 'Investment',
-          'value': 'Investment',
-        },
-        {
-          'text': 'Consultancy',
-          'value': 'Consultancy',
-        },
-        {
-          'text': 'Healthcare',
-          'value': 'Healthcare',
-        },
-        {
-          'text': 'FMCG',
-          'value': 'FMCG',
-        },
-        {
-          'text': 'Trading ',
-          'value': 'Trading ',
-        },
-        {
-          'text': 'Defence',
-          'value': 'Defence',
-        },
-        {
-          'text': 'Oil & Gas',
-          'value': 'Oil & Gas',
-        },
-      ],
+      industries: [],
       industry: '{{ form.industry.value }}',
     }),
 
@@ -254,6 +211,7 @@
 
     beforeMount(){
       this.setDataChoices('dataLocationChoices', 'locations');
+      this.setDataChoices('dataIndustryChoices', 'industries');
       this.updateBreadcrumbs();
     },
 

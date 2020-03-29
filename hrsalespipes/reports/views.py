@@ -22,11 +22,11 @@ from jobs.models import Job, JobCandidate, JobStatus
 from system.helpers import get_objects_as_choices
 from salespipes.models import Pipeline
 from salespipes.views import PipelineListView
+from system.models import Setting, Industry
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin, FromToViewFilterMixin,
     MonthFilterViewMixin, DisplayDateFormatMixin, DateAndStatusFilterMixin,
     ContextUrlBuildersMixin)
-from system.models import Setting
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
@@ -575,6 +575,7 @@ class SuccessfulJobsListView(
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['industry'] = self.industry
+        context['industries'] = get_objects_as_choices(Industry)
 
         return context
 

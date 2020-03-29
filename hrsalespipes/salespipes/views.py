@@ -126,6 +126,7 @@ class PipelineListView(
     model = Pipeline
     permission_required = 'salespipes.view_pipeline'
     paginate_by = 25
+    assoc_consult = ''
 
     def get_queryset(self):
         q = super().get_queryset()
