@@ -7,7 +7,7 @@ from faker import Faker
 from faker.providers import internet, phone_number, python, lorem
 
 from contacts.forms import (
-    ContactCreateModelForm, CandidateUpdateModelForm)
+    CandidateCreateModelForm, CandidateUpdateModelForm)
 from contacts.models import Employee, Client, Supplier, Candidate, CVTemplate
 from jobs.forms import (
     JobCreateModelForm, JobUpdateModelForm, JobCandidateCreateModelForm,
@@ -46,7 +46,7 @@ class Command(BaseCommand):
             users_created_profile.append(user_profile)
 
         msg = '{} created: {}'.format('Users', len(objects_created))
-        print(msg)
+        print(msg)  
 
         # create employees based on users created
         employees_created = []
@@ -108,7 +108,8 @@ class Command(BaseCommand):
         civil_statuses = Candidate.CIVIL_STATUS_CHOICES
         visas = list(
             VisaStatus.objects.values_list('id', flat=True))
-        employees = list(Employee.objects.all())
+        employees = list(Employee.objects.all())  # objects
+        users = list(User.objects.all())  # objects
         templates = list(
             CVTemplate.objects.values_list('id', flat=True))
 
@@ -121,7 +122,9 @@ class Command(BaseCommand):
                 'email_address': profile['mail'],
                 'location': random.sample(locations, 1)[0],
             }
-            form = ContactCreateModelForm(data)
+            form = CandidateCreateModelForm(
+                data, user=random.sample(users, 1)[0])
+
             if form.is_valid():
                 form.save()
                 objects_created.append(form.instance)
@@ -187,6 +190,7 @@ class Command(BaseCommand):
             current_salary,
             expected_salary,
             motivation,
+            users,
             note,
             data,
             form
@@ -205,7 +209,7 @@ class Command(BaseCommand):
         job_candidates_created = []
         clients = list(Client.objects.values_list('id', flat=True))
         candidates = list(Candidate.objects.values_list('id', flat=True))
-        suppliers = list(Supplier.objects.values_list('id', flat=True))
+        suppliers = list(Supplier.objects.values_list('name', flat=True))
         job_candidate_statuses = list(
             JobCandidateStatus.objects.values_list('id', flat=True))
         for i in range(objects_to_create):
@@ -263,7 +267,7 @@ class Command(BaseCommand):
                                 job_candidate.registration_date),
                             'status': str(
                                 random.sample(job_candidate_statuses, 1)[0]),
-                            'cv_source': str(random.sample(suppliers, 1)[0]),
+                            'cv_source': random.sample(suppliers, 1)[0],
                             'cv_date_shared': str(
                                 job_candidate.registration_date),
                             'remarks': '',

@@ -2,11 +2,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
-from django.views.generic.base import TemplateView, View
+from django.views.generic.base import TemplateView
 
-from .forms import (ClientCreateModelForm, ContactCreateModelForm,
+from .forms import (ClientCreateModelForm,
                     CandidateUpdateModelForm, ClientUpdateModelForm,
-                    SupplierModelForm)
+                    SupplierModelForm, CandidateCreateModelForm)
 from .models import Candidate, Client, Supplier, Employee, CVTemplate
 from .utils import FilterNameMixin, DownloadCVBaseView
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
@@ -24,10 +24,15 @@ class CandidateCreateView(
         ActionMessageViewMixin,
         CreateView):
     model = Candidate
-    form_class = ContactCreateModelForm
+    form_class = CandidateCreateModelForm
     template_name = 'contacts/candidate_create_form.html'
     permission_required = ('contacts.add_candidate')
     success_msg = 'Candidate created.'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

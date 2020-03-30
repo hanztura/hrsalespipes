@@ -17,6 +17,25 @@ class ContactCreateModelForm(FormCleanContactNumber, ModelForm):
         ]
 
 
+class CandidateCreateModelForm(ContactCreateModelForm):
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+
+        super().__init__(*args, **kwargs)
+
+    def is_valid(self):
+        """Set default candidate owner"""
+        is_valid = super().is_valid()
+
+        if is_valid:
+            employee = getattr(self.user, 'as_employee', None)
+            print(employee)
+            self.instance.candidate_owner = employee
+
+        return is_valid
+
+
 class CandidateUpdateModelForm(ContactCreateModelForm):
 
     class Meta:

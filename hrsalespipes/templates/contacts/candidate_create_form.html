@@ -15,7 +15,6 @@ Candidates - New
       <v-col cols="12" class="text-center">
         <form method="post">
           {% csrf_token %}
-          <input type="hidden" id="dataCandidateOwnerChoices" value="{{ employees }}">
           <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
           <v-text-field
             label="Name"
@@ -39,16 +38,6 @@ Candidates - New
             type="email"
             value="{{ form.email_address.value|default_if_none:'' }}">
           </v-text-field>
-
-          <v-autocomplete
-            name='candidate_owner'
-            :items="employees"
-            dense
-            label="Candidate Owner"
-            outlined
-            required
-            v-model.lazy="candidateOwner">
-          </v-autocomplete>
 
           <v-autocomplete
             :items="locations"
@@ -94,8 +83,6 @@ Candidates - New
       ],
       locations: [],
       location: '',
-      employees: [],
-      candidateOwner: '{{ form.candidate_owner.value|default_if_none:default_candidate_owner }}',
     }),
 
     methods: {
@@ -106,7 +93,6 @@ Candidates - New
     },
 
     beforeMount(){
-      this.setDataChoices('dataCandidateOwnerChoices', 'employees');
       this.setDataChoices('dataLocationChoices', 'locations');
       this.updateBreadcrumbs();
     },
