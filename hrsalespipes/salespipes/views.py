@@ -3,7 +3,6 @@ import json
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 

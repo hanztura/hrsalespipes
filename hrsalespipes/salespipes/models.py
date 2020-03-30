@@ -12,6 +12,8 @@ from jobs.models import Job, JobCandidate, Status as JobStatus
 
 
 class Status(models.Model):
+    class Meta:
+        verbose_name_plural = 'Status'
     name = models.CharField(max_length=100)
     probability = models.DecimalField(max_digits=3, decimal_places=2)
     job_status = models.OneToOneField(

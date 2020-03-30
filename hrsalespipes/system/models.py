@@ -56,7 +56,7 @@ class VisaStatus(models.Model):
     class Meta:
         verbose_name_plural = 'Visa Status'
 
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
 
     def __str__(self):
         return self.name
@@ -72,19 +72,23 @@ class Location(models.Model):
 class Nationality(models.Model):
     name = models.CharField(max_length=128, unique=True)
 
+    class Meta:
+        verbose_name_plural = 'Nationalities'
+        ordering = 'name',
+
     def __str__(self):
         return self.name
 
 
 class InterviewMode(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class Industry(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     class Meta:
         verbose_name_plural = 'Industries'

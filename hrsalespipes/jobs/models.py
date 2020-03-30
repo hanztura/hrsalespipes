@@ -14,6 +14,7 @@ class Status(models.Model):
     """Status to be used by the candidate"""
     class Meta:
         verbose_name = 'Job Candidate Status'
+        verbose_name_plural = 'Job Candidate Status'
         ordering = 'probability', 'name'
 
     name = models.CharField(max_length=100)
@@ -30,6 +31,7 @@ class Status(models.Model):
 class JobStatus(models.Model):
     """Status to be used by Job"""
     class Meta:
+        verbose_name_plural = 'Job Status'
         ordering = 'order',
 
     name = models.CharField(max_length=100)
