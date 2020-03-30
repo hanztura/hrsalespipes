@@ -47,6 +47,7 @@ class ClientResource(resources.ModelResource):
 
 class ClientAdmin(ImportExportModelAdmin):
     resource_class = ClientResource
+    list_display = ('id', 'name', 'industry')
 
 
 class SupplierResource(resources.ModelResource):
@@ -64,6 +65,7 @@ class SupplierResource(resources.ModelResource):
 
 class SupplierAdmin(ImportExportModelAdmin):
     resource_class = SupplierResource
+    list_display = ('id', 'name')
 
 
 class CandidateResource(resources.ModelResource):
