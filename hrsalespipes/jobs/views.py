@@ -1,11 +1,9 @@
 import json
 
-from django.contrib import messages
 from django.conf import settings
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 
@@ -17,7 +15,6 @@ from .models import Job, JobCandidate, Status, Interview
 from .rules import is_allowed_to_view_or_edit
 from .utils import JobIsClosedMixin, JobIsClosedContextMixin
 from contacts.models import Client, Candidate, Employee, Supplier as Board
-from reports.utils import EmployeeFilterMixin
 from salespipes.utils import IsAllowedToViewOrEditMixin
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.models import InterviewMode, Location
@@ -287,15 +284,13 @@ class InterviewCreateView(
             'job', 'candidate').get(pk=job_candidate)
         self.job_candidate = job_candidate
 
-    def form_valid(self, form):
-        # set up done_by field
-        employee = None
-        if hasattr(self.request.user, 'as_employee'):
-            employee = self.request.user.as_employee
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
 
-        form.instance.done_by = employee
-        form.instance.job_candidate = self.job_candidate
-        return super().form_valid(form)
+        # set up done_by field
+        kwargs['employee'] = getattr(self.request.user, 'as_employee', None)
+        kwargs['job_candidate'] = self.job_candidate
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.forms import ModelForm, ValidationError
+from django.utils import timezone
 
 from .models import Rate, Commission
 
@@ -52,3 +53,11 @@ class CommissionCreateModelForm(ModelForm):
             raise ValidationError(msg)
 
         return rate_role_type
+
+    def is_valid(self):
+        is_valid = super().is_valid()
+        if is_valid:
+            self.instance.pipeline = self.pipeline
+            self.instance.date = timezone.localdate()
+
+        return is_valid

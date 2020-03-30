@@ -152,6 +152,16 @@ class PipelineCreateModelForm(ModelForm):
                     )
         return job_candidate
 
+    def is_valid(self):
+        """Set default date, base amount, terms, rate
+        """
+        is_valid = super().is_valid()
+
+        if is_valid:
+            self.instance.date = timezone.localdate()
+
+        return is_valid
+
 
 class PipelineUpdateStatusModelForm(CreateCommissionFormMixin, ModelForm):
 

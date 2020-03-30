@@ -1,5 +1,3 @@
-import datetime
-
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -38,13 +36,6 @@ class CommissionCreateView(
         kwargs['request'] = self.request
 
         return kwargs
-
-    def form_valid(self, form):
-
-        form.instance.pipeline = self.pipeline
-        form.instance.date = datetime.date.today()
-
-        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -154,8 +145,8 @@ class CommissionListView(
 
 
 class CommissionDeleteView(
-    PermissionRequiredWithCustomMessageMixin,
-    DeleteView):
+        PermissionRequiredWithCustomMessageMixin,
+        DeleteView):
     model = Commission
     permission_required = 'commissions.delete_commission'
     success_url = reverse_lazy('commissions:list')

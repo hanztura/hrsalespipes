@@ -45,11 +45,6 @@ class PipelineCreateView(
 
         return None
 
-    def form_valid(self, form):
-        form.instance.date = timezone.localdate()
-
-        return super().form_valid(form)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 

@@ -212,9 +212,21 @@ class InterviewCreateModelForm(ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
+        self.employee = kwargs.pop('employee')
+        self.job_candidate = kwargs.pop('job_candidate')
+
         super().__init__(*args, **kwargs)
 
         self.fields['date'].initial = timezone.localdate()
+
+    def is_valid(self):
+        is_valid = super().is_valid()
+
+        if is_valid:
+            self.instance.done_by = self.employee
+            self.instance.job_candidate = self.job_candidate
+
+        return is_valid
 
 
 class InterviewUpdateModelForm(InterviewCreateModelForm):
