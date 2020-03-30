@@ -111,7 +111,7 @@ class ClientUpdateModelForm(FormCleanContactNumber, ModelForm):
             'location',
             'initial_approach',
             'meeting_arranged',
-            'agreement_terms',
+            'agreement_term',
             'agreement_fee',
             'refund_scheme',
             'validity',

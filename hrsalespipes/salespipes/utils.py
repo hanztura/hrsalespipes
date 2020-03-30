@@ -1,8 +1,8 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 
-from commissions.helpers import create_commission
 from .rules import is_allowed_to_view_or_edit_pipeline
+from commissions.helpers import create_commission
 
 
 class CreateCommissionFormMixin:

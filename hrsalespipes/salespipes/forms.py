@@ -153,12 +153,27 @@ class PipelineCreateModelForm(ModelForm):
         return job_candidate
 
     def is_valid(self):
-        """Set default date, base amount, terms, rate
+        """Set default date, base amount, terms, rate, status,
+        and potential income
         """
         is_valid = super().is_valid()
 
         if is_valid:
             self.instance.date = timezone.localdate()
+
+            job_candidate = self.instance.job_candidate
+            self.instance.base_amount = job_candidate.salary_offered
+
+            job_candidate_status = job_candidate.status
+            self.instance.status = getattr(
+                job_candidate_status, 'related_pipeline_status', None)
+
+            client = job_candidate.job.client
+            self.instance.recruitment_term = client.agreement_term
+            self.instance.recruitment_rate = client.agreement_fee
+
+            computed_potential_income = self.instance.computed_potential_income
+            self.instance.potential_income = computed_potential_income
 
         return is_valid
 

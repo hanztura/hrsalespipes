@@ -122,5 +122,12 @@ class Pipeline(TimeStampedModel):
     def view_href(self):
         return reverse('salespipes:detail', args=[str(self.pk), ])
 
+    @property
+    def computed_potential_income(self):
+        term = self.recruitment_term
+        rate = self.recruitment_rate
+        base_amount = self.base_amount
+        return term * rate * base_amount
+
     def get_absolute_url(self):
         return self.edit_href

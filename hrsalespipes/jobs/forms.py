@@ -5,7 +5,8 @@ from django.utils import timezone
 
 from .models import Job, JobCandidate, Interview, JobStatus
 from salespipes.forms import (
-    Pipeline, PipelineModelForm, PipelineUpdateStatusModelForm)
+    Pipeline, PipelineModelForm, PipelineUpdateStatusModelForm,
+    PipelineCreateModelForm)
 
 
 class JobCreateModelForm(ModelForm):
@@ -160,14 +161,11 @@ class JobCandidateUpdateModelForm(ModelForm):
                 job_candidate_id=instance.pk)
 
             if not pipeline_record.exists():  # if no pipeline record, create
-                related_pipeline_status_pk = related_pipeline_status.pk if related_pipeline_status else None
+                # related_pipeline_status_pk = related_pipeline_status.pk if related_pipeline_status else None
                 data = {
                     'job_candidate': instance.pk,
-                    'status': related_pipeline_status_pk,
-                    'base_amount': instance.salary_offered,
-                    'date': timezone.localdate(),
                 }
-                new_pipeline_form = PipelineModelForm(data)
+                new_pipeline_form = PipelineCreateModelForm(data, request=None)
 
                 if new_pipeline_form.is_valid():
                     new_pipeline_form.save()

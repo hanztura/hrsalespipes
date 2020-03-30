@@ -11,9 +11,10 @@ class Client(ContactModel):
     location = models.CharField(max_length=64, blank=False)
     initial_approach = models.TextField(blank=True)
     meeting_arranged = models.TextField(blank=True)
-    agreement_terms = models.CharField(max_length=200, blank=True)
+    agreement_term = models.DecimalField(
+        max_digits=15, decimal_places=5, default=1.0, blank=True)
     agreement_fee = models.DecimalField(
-        max_digits=10, decimal_places=5, blank=True, null=True)
+        max_digits=11, decimal_places=10, default=0.0, blank=True)
     refund_scheme = models.TextField(blank=True)
     validity = models.DateField(null=True, blank=True)
 
