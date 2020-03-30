@@ -4,7 +4,6 @@ from uuid import uuid4
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.template.defaultfilters import date as date_filter
-from django.forms.models import model_to_dict
 from django.http import HttpResponse
 from django.views.generic.base import View
 from django.views.generic.detail import SingleObjectMixin

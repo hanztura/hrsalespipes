@@ -37,6 +37,8 @@ class JobCreateModelForm(ModelForm):
 class JobUpdateModelForm(ModelForm):
     has_confirmed = BooleanField(initial=False, required=False)
 
+    request = None
+
     class Meta:
         model = Job
         fields = [
@@ -62,12 +64,15 @@ class JobUpdateModelForm(ModelForm):
         has_confirmed = cleaned_data['has_confirmed']
 
         if status.job_is_closed and not has_confirmed:
-            msg = 'Please confirm to close this Job.'
-            messages.info(self.request, msg)
+            if self.request:
+                msg = 'Please confirm to close this Job.'
+                messages.info(self.request, msg)
+
             self.add_error('has_confirmed', msg)
 
 
 class JobCandidateCreateModelForm(ModelForm):
+    request = None
 
     class Meta:
         model = JobCandidate
@@ -90,9 +95,11 @@ class JobCandidateCreateModelForm(ModelForm):
         if self.employee:
             self.instance.associate = self.employee
         else:
-            messages.warning(
-                self.request,
-                'Contact admin for employee profile.')
+            if self.request:
+                messages.warning(
+                    self.request,
+                    'Contact admin for employee profile.')
+
             self.add_error(None, 'Your Employee profile is required')
 
         self.instance.registration_date = timezone.localdate()
@@ -125,6 +132,7 @@ class JobCandidateUpdateModelForm(ModelForm):
 
         self.fields['consultant'].required = True
         self.fields['cv_source'].required = True
+        self.fields['status'].required = True
 
         # check if pipeline exists, then disable status ff yes
         job_candidate = self.instance
@@ -164,10 +172,11 @@ class JobCandidateUpdateModelForm(ModelForm):
                 if new_pipeline_form.is_valid():
                     new_pipeline_form.save()
                 else:
-                    msg = 'Pipeline not created due to {}. Please manually \
-                        create a pipeline record.'
-                    msg = msg.format(str(new_pipeline_form.errors))
-                    messages.info(self.request, msg)
+                    if self.request:
+                        msg = 'Pipeline not created due to {}. Please manually \
+                            create a pipeline record.'
+                        msg = msg.format(str(new_pipeline_form.errors))
+                        messages.info(self.request, msg)
 
 
             # only update status if not created and if probability is upgrade

@@ -21,6 +21,7 @@ class IsDeletedAbstractModel(models.Model):
     is_deleted = models.BooleanField(default=False, blank=True)
 
     objects = IsDeletedModelManager()
+    base_objects = models.Manager()
 
     def delete(self, *args, **kwargs):
         """update is_delete into True"""
