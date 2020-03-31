@@ -26,7 +26,7 @@ def is_allowed_to_view_or_edit_pipeline(user, pipeline):
     """Return True if user has permission to view all Pipelines
     OR is an associate or consultant of the Pipeline.
     """
-    if user.has_perm('view_all_pipelines'):
+    if user.has_perm('salespipes.view_all_pipelines'):
         return True
 
     return is_associate_or_consultant_to_pipeline(user, pipeline)

@@ -7,7 +7,7 @@ def is_allowed_to_edit_close_job(user, job):
         return True
 
     # check if user is allowed to bypass
-    if user.has_perm('can_edit_closed_job'):
+    if user.has_perm('jobs.can_edit_closed_job'):
         return True
 
     return False
@@ -41,7 +41,7 @@ def is_allowed_to_view_or_edit(user, job_candidate):
     """Return True if user has permission to view all Pipelines
     OR is an associate or consultant of the Pipeline.
     """
-    if user.has_perm('view_all_job_candidates'):
+    if user.has_perm('jobs.view_all_job_candidates'):
         return True
 
     return is_associate_or_consultant(user, job_candidate)

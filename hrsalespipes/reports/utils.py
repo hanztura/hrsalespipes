@@ -14,7 +14,7 @@ def filter_queryset_by_employee(
         filter_expression=None,
         empty_if_no_filter=False):
 
-    if not user.has_perm('view_all_pipelines'):
+    if not user.has_perm('salespipes.view_all_pipelines'):
         employee = getattr(user, 'as_employee', None)
         if employee:
             if not filter_expression:
