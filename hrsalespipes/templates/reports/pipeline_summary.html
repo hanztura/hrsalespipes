@@ -68,7 +68,7 @@ Pipeline Summary - Reports
                   </td>
 
                   <td class="text-left">
-                    <p>Reference Number: <a href="{% url 'jobs:detail' object.job_id %}" title="view job detail">{{ object.job_candidate.job.reference_number }}</a></p>
+                    <p>Reference Number: <a href="{% url 'jobs:detail' object.job_candidate.job_id %}" title="view job detail">{{ object.job_candidate.job.reference_number }}</a></p>
                     <p>Date: {{ object.job_candidate.job.date|date:display_date_format }}</p>
                     <p>Position: {{ object.job_candidate.job.position }}</p>
                     <p>Associate: {{ object.job_candidate.associate.name }}</p>
