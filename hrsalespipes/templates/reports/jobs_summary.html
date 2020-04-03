@@ -65,16 +65,18 @@ Jobs Summary - Reports
         // transform status into array
         let status = this.status ? this.status.split(',') : ["",];
         this.status = status;
+
+        // add all value in choices
+        this.statusChoices.unshift({ text: 'All', value:''});
       }
     },
 
     beforeMount() {
+      this.setDataChoices('dataStatusChoices', 'statusChoices');
       this.setStatus();
     },
 
     mounted() {
-      this.setDataChoices('dataStatusChoices', 'statusChoices');
-      this.statusChoices.unshift({ text: 'All', value:''})
       this.updateBreadcrumbs();
     }
 

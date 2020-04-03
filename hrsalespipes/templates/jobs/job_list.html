@@ -90,12 +90,24 @@ Jobs - List
         let data = document.getElementById(sourceId).value;
         this.$set(this, setDataVariable, JSON.parse(data));
       },
+      setStatus: function() {
+        // transform status into array
+        let status = this.status ? this.status.split(',') : ["",];
+        this.status = status;
+
+        // add all value in choices
+        this.statusChoices.unshift({ text: 'All', value:''});
+      },
 
       {% include "_includes/js/pageGoTo.js" %},
     },
 
+    beforeMount() {
+      this.setDataChoices('dataStatusChoices', 'statusChoices');
+      this.setStatus();
+    },
+
     mounted() {
-      this.setDataChoices('dataStatusChoices', 'statusChoices')
       this.updateBreadcrumbs();
     }
 
