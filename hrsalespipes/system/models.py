@@ -31,6 +31,7 @@ class Setting(SingletonModel):
         default='d M Y'
     )
     project_label = models.CharField(max_length=50, blank=True)
+    cv_label = models.CharField(max_length=50, default='CV')
 
     def __str__(self):
         return 'System Wide Settings'

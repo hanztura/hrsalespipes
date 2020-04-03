@@ -92,7 +92,7 @@ TEMPLATES = [
                 'django_admin_env_notice.context_processors.from_settings',
 
                 'system.context_processors.get_icons',
-                'system.context_processors.get_app_label',
+                'system.context_processors.get_system_settings',
             ],
         },
     },

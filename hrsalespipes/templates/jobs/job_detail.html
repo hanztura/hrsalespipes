@@ -95,7 +95,7 @@ Job Detail - {{ object.reference_number }}
                           <v-btn
                             text
                             title="download cv"
-                            href="{% url 'contacts:download_cv' candidate.candidate_id %}?position={{ candidate.job.position|urlencode }}">cv</v-btn>
+                            href="{% url 'contacts:download_cv' candidate.candidate_id %}?position={{ candidate.job.position|urlencode }}">{{ SYSTEM_SETTINGS.cv_label }}</v-btn>
                           {% include "_includes/list_action_buttons.html" with edit_href=candidate.edit_href view_href=candidate.view_href %}
                         </td>
                       </tr>
