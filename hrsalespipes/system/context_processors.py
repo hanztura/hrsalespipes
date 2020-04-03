@@ -24,8 +24,7 @@ def get_icons(request):
     return icons
 
 
-def get_app_label(request):
-    setting = Setting.load()
+def get_system_settings(request):
     return {
-        'PROJECT_LABEL': setting.get_project_label()
+        'SYSTEM_SETTINGS': Setting.load()
     }

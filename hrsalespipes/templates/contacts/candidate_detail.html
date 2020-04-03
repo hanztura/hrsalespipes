@@ -239,7 +239,7 @@ Candidate Detail - {{ object.name }}
           color="primary"
           text
           outlined
-          href="{% url 'contacts:download_cv' object.pk %}">Download CV</v-btn>
+          href="{% url 'contacts:download_cv' object.pk %}">Download {{ SYSTEM_SETTINGS.cv_label }}</v-btn>
         <v-btn
           block
           color="primary"

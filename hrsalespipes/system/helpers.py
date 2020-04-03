@@ -4,13 +4,17 @@ from django.conf import settings
 from django.contrib import admin, messages
 
 
-def get_objects_as_choices(model):
-    objects = model.objects.all()
+def get_queryset_as_choices(objects):
     objects = [{'value': str(data.pk), 'text': data.name}
                for data in objects]
     objects = json.dumps(objects)
 
     return objects
+
+
+def get_objects_as_choices(model):
+    objects = model.objects.all()
+    return get_queryset_as_choices(objects)
 
 
 def register_optional_admin_items(items):
