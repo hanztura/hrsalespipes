@@ -61,19 +61,19 @@ Jobs Summary - Reports
         this.status = '';
         console.log('hellow');
       },
-      setStatus: function() {
+      transformDataStringToArray: function(dataVariable, unshiftVariable) {
         // transform status into array
-        let status = this.status ? this.status.split(',') : ["",];
-        this.status = status;
+        let variable = this[dataVariable] ? this[dataVariable].split(',') : ["",];
+        this[dataVariable] = variable;
 
         // add all value in choices
-        this.statusChoices.unshift({ text: 'All', value:''});
+        this[unshiftVariable].unshift({ text: 'All', value:''});
       }
     },
 
     beforeMount() {
       this.setDataChoices('dataStatusChoices', 'statusChoices');
-      this.setStatus();
+      this.transformDataStringToArray('status', 'statusChoices');
     },
 
     mounted() {

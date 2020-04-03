@@ -6,6 +6,8 @@
     name='{{ name }}'
     prepend-inner-icon="{{ prepend_inner_icon }}"
     item-value="{{ item_value|default_if_none:'value' }}"
+    item-text="{{ item_text|default_if_none:'text' }}"
+    {{ multiple }}
     dense
     outlined
     clearable>

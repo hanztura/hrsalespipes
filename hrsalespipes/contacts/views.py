@@ -1,4 +1,7 @@
+import json
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
@@ -9,7 +12,9 @@ from .forms import (ClientCreateModelForm,
                     SupplierModelForm, CandidateCreateModelForm)
 from .models import Candidate, Client, Supplier, Employee, CVTemplate
 from .utils import FilterNameMixin, DownloadCVBaseView
-from system.helpers import get_objects_as_choices, ActionMessageViewMixin
+from contacts.models import Employee
+from system.helpers import (
+    get_objects_as_choices, ActionMessageViewMixin, get_queryset_as_choices)
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin)
 from system.models import VisaStatus, Location, Nationality, Industry
@@ -95,7 +100,40 @@ class CandidateListView(FilterNameMixin, PermissionRequiredMixin, ListView):
     def get_queryset(self, **kwargs):
         q = super().get_queryset(**kwargs)
         q = q.select_related('candidate_owner')
+
+        # nationalities = self.request.GET.get('nationalities', '')
+        # self.nationalities = nationalities
+        # nationalities = nationalities.split(',') if nationalities else []
+        # if nationalities:
+        #     q = q.filter(nationality__in=nationalities)
+
+        owners = self.request.GET.get('owners', '')  # owner id
+        self.owners = owners
+        owners = owners.split(',') if owners else []
+        if owners:
+            q = q.filter(candidate_owner_id__in=owners)
         return q
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        candidates = context['object_list']
+
+        # # get nationalities
+        # nationalities = candidates.values(
+        #     'nationality').annotate(count=Count('id'))
+        # nationalities = [n for n in nationalities]
+        # context['nationalities'] = json.dumps(nationalities)
+        # context['nationalities_query'] = self.nationalities
+
+        # get owners
+        # owners_id = candidates.values('candidate_owner_id').annotate(
+        #     count=Count('id'))
+        # owners_id = [o['candidate_owner_id'] for o in owners_id]
+        # owners = Employee.objects.filter(id__in=owners_id)
+        # owners = get_queryset_as_choices(owners)
+        context['owners'] = get_objects_as_choices(Employee)
+        context['owners_query'] = self.owners
+        return context
 
 
 class ClientCreateView(
