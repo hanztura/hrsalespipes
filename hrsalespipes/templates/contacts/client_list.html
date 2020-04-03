@@ -27,6 +27,7 @@ Clients - List
               <th class="text-center">Industry</th>
               <th class="text-center">Email Address</th>
               <th class="text-center">Contact No.</th>
+              <th class="text-center">Validity</th>
               <th class="text-center">Actions</th>
             </thead>
             <tbody>
@@ -40,6 +41,7 @@ Clients - List
                   {% endif %}
                 </td>
                 <td class="text-center">{{ client.contact_number}}</td>
+                <td class="text-center">{{ client.validity|date:SYSTEM_SETTINGS.display_date_format }}</td>
                 <td class="text-center">
                   {% include "_includes/list_action_buttons.html" with edit_href=client.edit_href view_href=client.view_href %}
                 </td>
