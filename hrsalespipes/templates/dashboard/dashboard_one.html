@@ -39,6 +39,7 @@ Dashboard
         :key="item.title"
         :text="item.title"
         :value="item.value"
+        :url="item.url"
         :icon="item.icon"></dash-card>
     </v-row>
 
@@ -100,7 +101,7 @@ Dashboard
   }
   const DashboardValueCard2 = {
     name: 'DashCard',
-    props: ['value', 'text', 'icon'],
+    props: ['value', 'text', 'icon', 'url'],
     template: `
       <v-col cols="12" md=4>
         <v-card
@@ -119,7 +120,7 @@ Dashboard
                 :duration="2000"
                 :round="0"/>
               </v-list-item-title>
-              <v-list-item-subtitle>[[ text ]]</v-list-item-subtitle>
+              <v-list-item-subtitle><a :href="url">[[ text ]]</a></v-list-item-subtitle>
             </v-list-item-content>
 
           </v-list-item>

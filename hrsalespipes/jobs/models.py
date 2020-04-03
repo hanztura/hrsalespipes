@@ -48,6 +48,12 @@ class JobStatus(models.Model):
     def job_is_closed(self):
         return not self.is_job_open
 
+    @classmethod
+    def get_active_status_as_list(cls):
+        status = cls.objects.filter(is_job_open=True).values_list('id')
+        status = [str(s[0]) for s in status]
+        return status
+
 
 class Job(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)

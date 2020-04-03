@@ -11,7 +11,7 @@ from dateutil.relativedelta import relativedelta
 from .utils import (
     custom_permissions, template_names, get_data_dashboard_items_number)
 from .models import Dashboard
-from jobs.models import Interview, JobCandidate, Job
+from jobs.models import Interview, JobCandidate, Job, JobStatus
 from salespipes.models import Pipeline
 from system.utils import ContextFromToMixin
 
@@ -56,7 +56,8 @@ class DashboardView(
         all_interviews = Interview.objects.all().select_related(
             'job_candidate__associate', 'job_candidate__consultant')
         all_job_candidates = JobCandidate.objects.all()
-        all_jobs = Job.objects.all().select_related('status')
+        all_jobs = Job.objects.all().select_related('status').order_by(
+            '-date')
 
         # prepare data for dashboard items
         dashboard_items_number = []
@@ -108,42 +109,59 @@ class DashboardView(
                     cv_sent_to_clients = JobCandidate.objects.none()
 
             # prepare to be included in context
+            active_jobs_id = JobStatus.get_active_status_as_list()
+            active_jobs_id = ','.join(active_jobs_id)
+            active_jobs_url = reverse('reports:jobs_summary')
+            active_jobs_url = '{}?from={}&to={}&status={}'.format(
+                active_jobs_url,
+                all_jobs.last().date,
+                all_jobs.first().date,
+                active_jobs_id)
+
+            del(active_jobs_id)
+
             data = [
                 {
                     'type': 'number',  # number, graph
                     'title': 'Active jobs',
                     'value': active_jobs.count(),
-                    'icon': 'mdi-briefcase-account'
+                    'icon': 'mdi-briefcase-account',
+                    'url': active_jobs_url,
                 },
                 {
                     'type': 'number',
                     'title': 'Succesful job placements this month',
                     'value': successful_jobs.count(),
-                    'icon': 'mdi-briefcase-account'
+                    'icon': 'mdi-briefcase-account',
+                    'url': '#',
                 },
                 {
                     'type': 'number',
                     'title': 'Interviews Arranged',
                     'value': round(float(all_interviews.count())),
-                    'icon': 'mdi-briefcase-check'
+                    'icon': 'mdi-briefcase-check',
+                    'url': '#',
                 },
                 {
                     'type': 'number',
                     'title': 'CVs sent to clients',
                     'value': round(float(cv_sent_to_clients.count())),
-                    'icon': 'mdi-send-check'
+                    'icon': 'mdi-send-check',
+                    'url': '#',
                 },
                 {
                     'type': 'number',
                     'title': 'NFI generated this month',
                     'value': round(float(tpi)),
-                    'icon': 'mdi-calendar-month'
+                    'icon': 'mdi-calendar-month',
+                    'url': '#',
                 },
                 {
                     'type': 'number',
                     'title': 'NFI generated last month',
                     'value': round(float(tpi_last_month)),
-                    'icon': 'mdi-calendar-import'
+                    'icon': 'mdi-calendar-import',
+                    'url': '#',
                 },
             ]
 
