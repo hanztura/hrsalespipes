@@ -10,6 +10,7 @@ from dateutil.relativedelta import relativedelta
 
 from .utils import (
     custom_permissions, template_names, get_data_dashboard_items_number)
+from .models import Dashboard
 from jobs.models import Interview, JobCandidate, Job
 from salespipes.models import Pipeline
 from system.utils import ContextFromToMixin
@@ -179,41 +180,46 @@ class DashboardView(
                 successful_jobs_url,
                 from_to_url_params_ytd)
 
+            dashboard_settings = Dashboard.load()
             dashboard_items_graph = [
                 {
                     'code': 'sjatpi',
                     'type': 'graph',
-                    'title': 'Successful job placements per industry',
+                    'title': dashboard_settings.sjatpi_label,
                     'value': sjatpi,
                     'url': sjatpi_url
                 },
                 {
                     'code': 'sjpc',
                     'type': 'graph',
-                    'title': 'Successful job placements per consultant \
-                              this month',
+                    'title': dashboard_settings.sjpc_this_month_label,
                     'value': sjpc,
                     'url': sjpc_url
                 },
                 {
                     'code': 'tnfipc',
                     'type': 'graph',
-                    'title': 'Total NFI generated per consultant this month',
+                    'title': getattr(
+                        dashboard_settings,
+                        'consultant_leaderboard_dashboard_this_month_label',
+                        ''),
                     'value': tnfipc,
                     'url': tnfipc_url
                 },
                 {
                     'code': 'tnfipcp12m',
                     'type': 'graph',
-                    'title': 'Total NFI generated per consultant last 12 \
-                              months',
+                    'title': getattr(
+                        dashboard_settings,
+                        'consultant_leaderboard_dashboard_last_12_months_label',
+                        ''),
                     'value': tnfipcp12m,
                     'url': tnfipcp12m_url
                 },
                 {
                     'code': 'ytdcp',
                     'type': 'graph',
-                    'title': 'YTD Client Performance',
+                    'title': dashboard_settings.ytd_client_performance_label,
                     'value': ytdcp,
                     'url': ytdcp_url
                 }
