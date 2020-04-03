@@ -1,24 +1,8 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import Model
 
-
-class SingletonModel(Model):
-
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        self.pk = 1
-        super(SingletonModel, self).save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        pass
-
-    @classmethod
-    def load(cls):
-        obj, created = cls.objects.get_or_create(pk=1)
-        return obj
+from .db import SingletonModel
 
 
 class User(AbstractUser):
@@ -46,9 +30,14 @@ class Setting(SingletonModel):
         ),
         default='d M Y'
     )
+    project_label = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
         return 'System Wide Settings'
+
+    def get_project_label(self):
+        default = settings.PROJECT_NAME
+        return self.project_label if self.project_label else default
 
 
 class VisaStatus(models.Model):

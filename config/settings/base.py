@@ -91,7 +91,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django_admin_env_notice.context_processors.from_settings',
 
-                'system.context_processors.get_icons'
+                'system.context_processors.get_icons',
+                'system.context_processors.get_app_label',
             ],
         },
     },
@@ -225,3 +226,6 @@ ICON_ACCOUNT = 'mdi-account-circle'
 ICON_CANDIDATES = 'mdi-account-tie'
 ICON_CLIENTS = 'mdi-currency-usd'
 ICON_SUPPLIERS = 'mdi-truck'
+
+PROJECT_NAME = 'HRSalesPipes'
+PROJECT_VERSION = '1.0'

@@ -1,5 +1,7 @@
 from django.conf import settings
 
+from .models import Setting
+
 
 def get_icons(request):
     items = (
@@ -20,3 +22,10 @@ def get_icons(request):
         icons[key] = getattr(settings, key, default_value)
 
     return icons
+
+
+def get_app_label(request):
+    setting = Setting.load()
+    return {
+        'PROJECT_LABEL': setting.get_project_label()
+    }

@@ -60,12 +60,23 @@ Jobs Summary - Reports
       clearStatus: function () {
         this.status = '';
         console.log('hellow');
+      },
+      setStatus: function() {
+        // transform status into array
+        let status = this.status ? this.status.split(',') : ["",];
+        this.status = status;
+
+        // add all value in choices
+        this.statusChoices.unshift({ text: 'All', value:''});
       }
     },
 
-    mounted() {
+    beforeMount() {
       this.setDataChoices('dataStatusChoices', 'statusChoices');
-      this.statusChoices.unshift({ text: 'All', value:''})
+      this.setStatus();
+    },
+
+    mounted() {
       this.updateBreadcrumbs();
     }
 
