@@ -87,9 +87,11 @@ class DateAndStatusFilterMixin(FromToViewFilterMixin):
         q = super().get_queryset()
 
         # filter status
+        # accepts one or more status
         status = self.request.GET.get('status', '')
+        status = status.split(',') if status else []
         if status:
-            q = q.filter(status_id=status)
+            q = q.filter(status_id__in=status)
 
         return q
 

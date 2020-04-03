@@ -60,7 +60,16 @@ Jobs Summary - Reports
       clearStatus: function () {
         this.status = '';
         console.log('hellow');
+      },
+      setStatus: function() {
+        // transform status into array
+        let status = this.status ? this.status.split(',') : ["",];
+        this.status = status;
       }
+    },
+
+    beforeMount() {
+      this.setStatus();
     },
 
     mounted() {
