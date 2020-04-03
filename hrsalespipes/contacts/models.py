@@ -17,6 +17,7 @@ class Client(ContactModel):
         max_digits=11, decimal_places=10, default=0.0, blank=True)
     refund_scheme = models.TextField(blank=True)
     validity = models.DateField(null=True, blank=True)
+    point_of_contacts = models.TextField(blank=True)
 
     @property
     def edit_href(self):

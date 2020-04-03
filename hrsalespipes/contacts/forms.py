@@ -1,4 +1,5 @@
 from django.forms import ModelForm
+from django.contrib.postgres.forms import JSONField
 
 from .models import Candidate, Client, Supplier
 from .utils import FormCleanContactNumber
@@ -95,6 +96,7 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
 
 
 class ClientUpdateModelForm(FormCleanContactNumber, ModelForm):
+    point_of_contacts = JSONField()
 
     class Meta:
         model = Client
@@ -115,6 +117,7 @@ class ClientUpdateModelForm(FormCleanContactNumber, ModelForm):
             'agreement_fee',
             'refund_scheme',
             'validity',
+            'point_of_contacts'
         ]
 
     def __init__(self, *args, **kwargs):
