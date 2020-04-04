@@ -21,7 +21,7 @@ Client Detail - {{ object.name }}
           {% include "_includes/v_tab.html" %}
 
           <v-tabs-items v-model="tab">
-            <v-tab-item id="Contact Details">
+            <v-tab-item id="Contact Details" eager>
               <v-simple-table
                 dense>
                 <table>
@@ -63,9 +63,8 @@ Client Detail - {{ object.name }}
               </v-simple-table>
             </v-tab-item>
 
-            <v-tab-item id="Others">
-              <v-simple-table
-                dense>
+            <v-tab-item id="Others" eager>
+              <v-simple-table>
                 <table>
                   <tbody>
                     <tr>
@@ -92,9 +91,38 @@ Client Detail - {{ object.name }}
                       <th>Validity:</th>
                       <td>{{ object.validity }}</td>
                     </tr>
+                    <tr>
+                      <th>Point of Contacts:</th>
+                      <td v-if="pointOfContacts.length">
+                        <v-simple-table dense>
+                          <table>
+                            <thead>
+                              <tr>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Number</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Notes</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr
+                                v-for="(contact, index) in pointOfContacts"
+                                :key="index">
+                                <td>[[ contact.name ]]</td>
+                                <td>[[ contact.number ]]</td>
+                                <td>[[ contact.email ]]</td>
+                                <td>[[ contact.notes ]]</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </v-simple-table>
+                      </td>
+                      <td v-else>None</td>
+                    </tr>
                   </tbody>
                 </table>
               </v-simple-table>
+              <input type="hidden" ref="pointOfContacts" value='{{ object.point_of_contacts }}'>
             </v-tab-item>
           </v-tabs-items>
         </v-tabs>
@@ -155,7 +183,20 @@ Client Detail - {{ object.name }}
           icon: 'fas fa-info',  
         },
       ],
-    })
+      pointOfContacts: [],
+    }),
+
+    methods: {
+      setPointOfContacts: function() {
+        let poc = this.$refs.pointOfContacts.value;
+        poc = poc ? JSON.parse(poc) : [];
+        this.pointOfContacts = poc;
+      },
+    },
+
+    mounted(){
+      this.setPointOfContacts();
+    }
 
   });
 </script>  
