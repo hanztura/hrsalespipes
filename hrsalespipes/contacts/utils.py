@@ -34,6 +34,7 @@ class ContactModel(TimeStampedModel):
     skype_id = models.CharField(max_length=50, blank=True)
     ms_teams_id = models.CharField(max_length=200, blank=True)
     location = models.CharField(max_length=64, blank=True)
+    notes = models.TextField(blank=True)
 
     def __str_(self):
         return self.name
