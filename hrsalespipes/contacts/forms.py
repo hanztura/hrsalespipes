@@ -96,8 +96,6 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
 
 
 class ClientUpdateModelForm(FormCleanContactNumber, ModelForm):
-    point_of_contacts = JSONField()
-
     class Meta:
         model = Client
         fields = [
@@ -158,4 +156,6 @@ class SupplierModelForm(FormCleanContactNumber, ModelForm):
             'skype_id',
             'ms_teams_id',
             'location',
+            'point_of_contacts',
+            'notes',
         ]

@@ -1,4 +1,5 @@
 {% extends "contacts/base.html" %}
+{% load static %}
 
 {% block title %}
 {{ object.name }} - Update Supplier
@@ -69,6 +70,15 @@
                   name="ms_teams_id"
                   value="{{ form.ms_teams_id.value }}">
                 </v-text-field>
+
+                <v-textarea
+                  name="notes"
+                  label="Notes"
+                  outlined
+                  value="{{ form.instance.notes }}"
+                ></v-textarea>
+
+                {% include "contacts/includes/point_of_contacts_table_edit.html" %}
               </v-tab-item> <!-- Basic -->
             </v-tabs-items>
 
@@ -82,6 +92,13 @@
 {% endblock subcontent %}
 
 {% block script %}
+
+{% if debug %}
+  <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+{% else %}
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+{% endif %}
+
 <script>
   new Vue({
     el: '#inspire',
@@ -122,10 +139,48 @@
           icon: 'fas fa-address-book',  
         },
       ],
+      pointOfContacts: [],
     }),
+
+    computed: {
+      stringPointOfContacts: function () {
+        // clean first
+        let defaultPoc = {
+          name: '',
+          number: '',
+          email: '',
+          notes: '',
+        }
+        let pointOfContacts = this.pointOfContacts;
+        let poc = _.filter(pointOfContacts, (poc) => {
+          return poc.name.length;
+        });
+        return JSON.stringify(poc);
+      }
+    },
+
+    methods: {
+      setPointOfContacts: function() {
+        let poc = this.$refs.pointOfContacts.value;
+        poc = poc ? JSON.parse(poc) : [];
+        this.pointOfContacts = poc;
+      },
+      newPointOfContact: function () {
+        this.pointOfContacts.push({
+          name: '',
+          number: '',
+          email: '',
+          notes: '',
+        });
+      },
+      removePoc: function (index) {
+        this.pointOfContacts.splice(index, 1);
+      }
+    },
 
     mounted(){
       this.updateBreadcrumbs();
+      this.setPointOfContacts();
     }
 
   });

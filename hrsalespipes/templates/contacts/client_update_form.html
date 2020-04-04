@@ -1,4 +1,5 @@
 {% extends "contacts/base.html" %}
+{% load static %}
 
 {% block title %}
 {{ object.name }} - Update Client
@@ -144,13 +145,13 @@
                   value="{{ form.validity.value|default_if_none:''|date:'Y-m-d' }}">
                 </v-text-field>
 
-                
+                {% include "contacts/includes/point_of_contacts_table_edit.html" %}
                 
               </v-tab-item> <!-- Others -->
             </v-tabs-items>
 
             <v-input>
-              <v-btn block color="success" type="submit">Save</v-btn>
+              <v-btn class="my-2" block color="success" type="submit">Save</v-btn>
             </v-input>
         </form>
       </v-col>
@@ -159,6 +160,12 @@
 {% endblock subcontent %}
 
 {% block script %}
+{% if debug %}
+  <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+{% else %}
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+{% endif %}
+
 <script>
   new Vue({
     el: '#inspire',
@@ -208,12 +215,46 @@
       industry: '{{ form.industry.value }}',
       agreementTerm: {{ form.instance.agreement_term }},
       agreementFee: {{ form.instance.agreement_fee }},
+      pointOfContacts: [],
     }),
+
+    computed: {
+      stringPointOfContacts: function () {
+        // clean first
+        let defaultPoc = {
+          name: '',
+          number: '',
+          email: '',
+          notes: '',
+        }
+        let pointOfContacts = this.pointOfContacts;
+        let poc = _.filter(pointOfContacts, (poc) => {
+          return poc.name.length;
+        });
+        return JSON.stringify(poc);
+      }
+    },
 
     methods: {
       setDataChoices: function(sourceId, setDataVariable) {
         let data = document.getElementById(sourceId).value;
         this.$set(this, setDataVariable, JSON.parse(data));
+      },
+      setPointOfContacts: function() {
+        let poc = this.$refs.pointOfContacts.value;
+        poc = poc ? JSON.parse(poc) : [];
+        this.pointOfContacts = poc;
+      },
+      newPointOfContact: function () {
+        this.pointOfContacts.push({
+          name: '',
+          number: '',
+          email: '',
+          notes: '',
+        });
+      },
+      removePoc: function (index) {
+        this.pointOfContacts.splice(index, 1);
       }
     },
 
@@ -222,6 +263,9 @@
       this.setDataChoices('dataIndustryChoices', 'industries');
       this.updateBreadcrumbs();
     },
+    mounted(){
+      this.setPointOfContacts();
+    }
 
   });
 </script>  
