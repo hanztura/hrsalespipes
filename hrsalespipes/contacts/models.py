@@ -32,6 +32,7 @@ class Client(ContactModel):
 
 
 class Supplier(ContactModel):
+    point_of_contacts = models.TextField(blank=True)
 
     class Meta:
         abstract = False

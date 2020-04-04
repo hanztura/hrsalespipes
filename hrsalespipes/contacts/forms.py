@@ -156,4 +156,5 @@ class SupplierModelForm(FormCleanContactNumber, ModelForm):
             'skype_id',
             'ms_teams_id',
             'location',
+            'point_of_contacts'
         ]

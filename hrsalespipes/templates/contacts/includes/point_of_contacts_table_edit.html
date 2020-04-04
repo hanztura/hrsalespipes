@@ -1,0 +1,70 @@
+<v-simple-table>
+  <table>
+    <thead>
+      <tr>
+        <th colspan="4">Point of Contacts</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr
+          v-for="(contact, k) in pointOfContacts"
+          :key="k">
+          <td colspan="4">
+            <v-row
+              align="center"
+              justify="center">
+                <v-col cols=12 md=3>
+                  <v-text-field
+                    label="Name"
+                    outlined
+                    name="pocName"
+                    v-model.lazy="contact.name">
+                  </v-text-field>
+                </v-col>
+
+                <v-col cols=12 md=3>
+                  <v-text-field
+                    label="Contact Number"
+                    outlined
+                    name="pocNumber"
+                    v-model.lazy="contact.number">
+                  </v-text-field>
+                </v-col>
+
+                <v-col cols=12 md=2>
+                  <v-text-field
+                    label="Email Address"
+                    type="email"
+                    outlined
+                    name="pocEmail"
+                    v-model.lazy="contact.email">
+                  </v-text-field>
+                </v-col>
+
+                <v-col cols=12 md=3>
+                  <v-text-field
+                    label="Notes"
+                    outlined
+                    name="pocNotes"
+                    v-model.lazy="contact.notes">
+                  </v-text-field>
+                </v-col>
+                <v-col cols=12 md=1>
+                  <v-btn block icon @click="removePoc(k)"><v-icon>mdi-close-circle</v-icon></v-btn>
+                </v-col>
+              </v-row>
+          </td>
+        </tr>
+    </tbody>
+    <tfoot>
+      <tr v-if="!pointOfContacts.length">
+        <td colspan="4">No data.</td>
+      </tr>
+      <tr>
+        <td colspan="4" @click="newPointOfContact"><v-icon class="px-2">mdi-plus</v-icon>Point of Contact</td>
+      </tr>
+    </tfoot>
+  </table>
+</v-simple-table>
+<input ref="pointOfContacts" type="hidden" value="{{ form.instance.point_of_contacts|default_if_none:'[]' }}">
+<input type="hidden" name="point_of_contacts" :value="stringPointOfContacts">

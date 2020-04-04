@@ -91,38 +91,10 @@ Client Detail - {{ object.name }}
                       <th>Validity:</th>
                       <td>{{ object.validity }}</td>
                     </tr>
-                    <tr>
-                      <th>Point of Contacts:</th>
-                      <td v-if="pointOfContacts.length">
-                        <v-simple-table dense>
-                          <table>
-                            <thead>
-                              <tr>
-                                <th class="text-center">Name</th>
-                                <th class="text-center">Number</th>
-                                <th class="text-center">Email</th>
-                                <th class="text-center">Notes</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr
-                                v-for="(contact, index) in pointOfContacts"
-                                :key="index">
-                                <td>[[ contact.name ]]</td>
-                                <td>[[ contact.number ]]</td>
-                                <td>[[ contact.email ]]</td>
-                                <td>[[ contact.notes ]]</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </v-simple-table>
-                      </td>
-                      <td v-else>None</td>
-                    </tr>
+                    {% include "contacts/includes/point_of_contacts_table_row.html" %}
                   </tbody>
                 </table>
               </v-simple-table>
-              <input type="hidden" ref="pointOfContacts" value='{{ object.point_of_contacts }}'>
             </v-tab-item>
           </v-tabs-items>
         </v-tabs>
