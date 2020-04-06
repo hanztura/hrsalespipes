@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
+from simple_history.admin import SimpleHistoryAdmin
 
 from .models import Employee, CVTemplate, Client, Supplier, Candidate
 from system.helpers import register_optional_admin_items
@@ -21,7 +22,8 @@ class EmployeeResource(resources.ModelResource):
         )
 
 
-class EmployeeAdmin(ImportExportModelAdmin):
+class EmployeeAdmin(
+        ImportExportModelAdmin):
     resource_class = EmployeeResource
 
 
@@ -38,16 +40,20 @@ class ClientResource(resources.ModelResource):
             'industry',
             'initial_approach',
             'meeting_arranged',
-            'agreement_terms',
+            'agreement_term',
             'agreement_fee',
             'refund_scheme',
             'validity',
         )
 
 
-class ClientAdmin(ImportExportModelAdmin):
+class ClientAdmin(
+        ImportExportModelAdmin,
+        SimpleHistoryAdmin):
     resource_class = ClientResource
     list_display = ('id', 'name', 'industry')
+    fields = ClientResource.Meta.fields
+    readonly_fields = ClientResource.Meta.fields
 
 
 class SupplierResource(resources.ModelResource):
@@ -105,8 +111,12 @@ class CandidateResource(resources.ModelResource):
         )
 
 
-class CandidateAdmin(ImportExportModelAdmin):
+class CandidateAdmin(
+        ImportExportModelAdmin,
+        SimpleHistoryAdmin):
     resource_class = CandidateResource
+    fields = CandidateResource.Meta.fields
+    readonly_fields = CandidateResource.Meta.fields
 
 
 class CVTemplateAdmin(admin.ModelAdmin):
@@ -120,11 +130,12 @@ class CVTemplateAdmin(admin.ModelAdmin):
 
 admin.site.register(CVTemplate, CVTemplateAdmin)
 admin.site.register(Employee, EmployeeAdmin)
+admin.site.register(Candidate, CandidateAdmin)
+admin.site.register(Client, ClientAdmin)
 
 # only enable import export if allowed
 situational_admin_items = (
-    (Client, ClientAdmin),
+    # (Client, ClientAdmin),
     (Supplier, SupplierAdmin),
-    (Candidate, CandidateAdmin),
 )
 register_optional_admin_items(situational_admin_items)

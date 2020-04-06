@@ -1,8 +1,9 @@
 from django.db import models
 from django.urls import reverse
 
-from .utils import ContactModel
+from simple_history.models import HistoricalRecords
 
+from .utils import ContactModel
 from system.models import User, VisaStatus
 
 
@@ -20,6 +21,8 @@ class Client(ContactModel):
     point_of_contacts = models.TextField(blank=True)
     business_development_person = models.ForeignKey(
         'Employee', on_delete=models.SET_NULL, null=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         permissions = (
@@ -205,6 +208,8 @@ class Candidate(ContactModel):
         on_delete=models.PROTECT,
         null=True)
     notes = models.TextField(blank=True)
+
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.name

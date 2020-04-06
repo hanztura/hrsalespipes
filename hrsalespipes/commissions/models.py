@@ -5,6 +5,8 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
+from simple_history.models import HistoricalRecords
+
 from contacts.models import Employee
 from salespipes.models import Pipeline
 from system.db import IsDeletedAbstractModel
@@ -94,6 +96,8 @@ class Commission(IsDeletedAbstractModel):
     rate_used = models.DecimalField(max_digits=10, decimal_places=2)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     is_paid = models.BooleanField(default=False)
+
+    history = HistoricalRecords()
 
     class Meta:
         ordering = (

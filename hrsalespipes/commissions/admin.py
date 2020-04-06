@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from simple_history.admin import SimpleHistoryAdmin
+
 from .forms import RateModelForm
 from .models import Rate, RateDetail, Commission
 
@@ -19,4 +21,23 @@ class RateAdmin(admin.ModelAdmin):
     inlines = [RateDetailInline]
 
 
+commission_fields = (
+    'id',
+    'date',
+    'pipeline',
+    'employee',
+    'rate_role_type',
+    'rate_used',
+    'amount',
+    'is_paid',
+    'is_deleted',
+)
+
+
+class CommissionAdmin(SimpleHistoryAdmin):
+    fields = commission_fields
+    readonly_fields = commission_fields
+
+
 admin.site.register(Rate, RateAdmin)
+admin.site.register(Commission, CommissionAdmin)
