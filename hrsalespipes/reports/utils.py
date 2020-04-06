@@ -12,9 +12,10 @@ def filter_queryset_by_employee(
         user,
         model,
         filter_expression=None,
-        empty_if_no_filter=False):
+        empty_if_no_filter=False,
+        all_permission='salespipes.view_all_pipelines'):
 
-    if not user.has_perm('salespipes.view_all_pipelines'):
+    if not user.has_perm(all_permission):
         employee = getattr(user, 'as_employee', None)
         if employee:
             if not filter_expression:
@@ -159,6 +160,7 @@ class EmployeeFilterMixin:
     """
     filter_expression = None
     empty_if_no_filter = False
+    all_permission = 'salespipes.view_all_pipelines'
 
     def get_filter_expression(self):
         return self.filter_expression
@@ -170,6 +172,7 @@ class EmployeeFilterMixin:
             self.request.user,
             self.model,
             self.get_filter_expression(),
-            self.empty_if_no_filter)
+            self.empty_if_no_filter,
+            self.all_permission)
 
         return queryset
