@@ -22,13 +22,14 @@
           {% endfor %}
 
           <v-text-field
-            label="{{ form.date.label }}"
+            label="{{ form.date_time.label }}"
             outlined
-            name="date"
+            name="date_time"
             required
-            type="date"
-            value="{{ form.date.value|date:'Y-m-d' }}">
+            type="datetime-local"
+            value="{{ form.date_time.value|date:'Y-m-d\TH:i' }}">
           </v-text-field>
+          <p>{{ form.date_time.errors }}</p>
 
           <v-autocomplete
             :items="modes"

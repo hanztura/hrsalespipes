@@ -2,6 +2,7 @@ import calendar
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import redirect_to_login
+from django.db.models import Q
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
@@ -67,14 +68,23 @@ class ContextFromToMixin:
 class FromToViewFilterMixin(ContextFromToMixin):
     paginate_by = 25
 
+    def get_from_to_filter_expression(self, date_from, date_to):
+        expression = Q(date__gte=date_from, date__lte=date_to)
+        return expression
+
     def get_queryset(self):
         q = super().get_queryset()
 
-        date_from = self.request.GET.get('from', self.month_first_day)
-        date_to = self.request.GET.get('to', self.month_last_day)
+        date_from = self.request.GET.get('from', '')
+        date_from = date_from if date_from else self.month_first_day
+
+        date_to = self.request.GET.get('to', '')
+        date_to = date_to if date_to else self.month_last_day
+
         if date_from and date_to:
             try:
-                q = q.filter(date__gte=date_from, date__lte=date_to)
+                q = q.filter(
+                    self.get_from_to_filter_expression(date_from, date_to))
             except Exception as e:
                 pass
 

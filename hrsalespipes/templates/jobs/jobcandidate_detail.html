@@ -30,16 +30,18 @@
                   <thead>
                     <tr>
                       <th class="text-center">Date</th>
+                      <th class="text-center">Time</th>
                       <th class="text-center">Mode</th>
                       <th class="text-center">Status</th>
-                      <th class="text-center">Done by</th>
+                      <th class="text-center">Conducted by</th>
                       <th class="text-center">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {% for interview in interviews %}
                     <tr>
-                      <td>{{ interview.date|date:display_date_format }}</td>
+                      <td>{{ interview.date_time|date:'Y-m-d' }}</td>
+                      <td>{{ interview.date_time|date:'H:i' }}</td>
                       <td>{{ interview.mode }}</td>
                       <td>{{ interview.status }}</td>
                       <td>{{ interview.done_by.name }}</td>

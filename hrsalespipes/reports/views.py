@@ -18,7 +18,7 @@ from .utils import (
 from contacts.models import Employee
 from commissions.models import Commission
 from commissions.views import CommissionListView
-from jobs.models import Job, JobCandidate, JobStatus
+from jobs.models import Job, JobCandidate, JobStatus, Interview
 from system.helpers import get_objects_as_choices
 from salespipes.models import Pipeline
 from salespipes.views import PipelineListView
@@ -712,6 +712,11 @@ class JobToPipelineAnalysisListView(
                 Q(associate_id=employee.pk))
         return filter_expression
 
+    # FromToViewFilterMixin
+    def get_from_to_filter_expression(self, date_from, date_to):
+        expression = Q(job__date__gte=date_from, job__date__lte=date_to)
+        return expression
+
     def get_context_urls(self):
         # pdf/excel buttons url builder
         context_urls = (
@@ -742,9 +747,13 @@ class JobToPipelineAnalysisListView(
             num_of_days_data.append(num_of_days)
 
         total_days = sum(num_of_days_data)
-        self.average_num_of_days = total_days / len(num_of_days_data)
-        self.max_num_of_days = max(num_of_days_data)
-        self.min_num_of_days = min(num_of_days_data)
+        self.average_num_of_days = 0
+        self.max_num_of_days = 0
+        self.min_num_of_days = 0
+        if total_days != 0:
+            self.average_num_of_days = total_days / len(num_of_days_data)
+            self.max_num_of_days = max(num_of_days_data)
+            self.min_num_of_days = min(num_of_days_data)
         return q
 
     def get_context_data(self, **kwargs):
@@ -912,6 +921,127 @@ class JobToPipelineAnalysisExcelView(
                 footer_label_index + 1,
                 math.ceil(value),
                 font_style)
+
+        wb.save(response)
+        return response
+
+
+class InterviewsReportListView(
+        EmployeeFilterMixin,
+        DisplayDateFormatMixin,
+        FromToViewFilterMixin,
+        ContextUrlBuildersMixin,
+        PermissionRequiredWithCustomMessageMixin,
+        ListView):
+    model = Interview
+    template_name = 'reports/interviews.html'
+    permission_required = 'jobs.view_report_interviews'
+    paginate_by = 0
+
+    # EmployeeFilterMixin
+    empty_if_no_filter = True
+    all_permission = 'jobs.view_all_interviews'
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_interviews')),
+            ('excel_url', reverse('reports:excel_interviews')),
+        )
+        return context_urls
+
+    def get_filter_expression(self):
+        filter_expression = None
+
+        employee = getattr(self.request.user, 'as_employee', None)
+        if employee:
+            filter_expression = Q(done_by_id=employee.pk)
+        return filter_expression
+
+    def get_from_to_filter_expression(self, date_from, date_to):
+        expression = Q(date_time__gte=date_from, date_time__lte=date_to)
+        return expression
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.select_related('job_candidate__candidate', 'mode', 'done_by')
+        return q
+
+
+class InterviewsReportPDFView(
+        WeasyTemplateResponseMixin,
+        InterviewsReportListView):
+    template_name = 'reports/pdf/interviews.html'
+    pdf_attachment = True
+    pdf_filename = 'Interviews Report.pdf'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['COMPANY'] = Setting.objects.first().company_name
+        return context
+
+
+class InterviewsExcelView(
+        PermissionRequiredWithCustomMessageMixin,
+        View):
+    permission_required = 'jobs.view_report_interviews'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        today = timezone.localdate()
+        last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
+        self.month_first_day = str(today.replace(day=1))
+        self.month_last_day = str(today.replace(day=last_day_of_the_month))
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="Interviews Report.xls"'
+
+        date_from = self.request.GET.get('from', '')
+        date_from = date_from if date_from else self.month_first_day
+
+        date_to = self.request.GET.get('to', '')
+        date_to = date_to if date_to else self.month_last_day
+
+        columns = [
+            'Candidate',
+            'Current Location',
+            'Nationality',
+            'Email Address',
+            'Contact Number',
+            'Date/Time',
+            'Mode',
+            'Conducted by',
+        ]
+        values_list = [
+            'job_candidate__candidate__name',
+            'job_candidate__candidate__location',
+            'job_candidate__candidate__nationality',
+            'job_candidate__candidate__email_address',
+            'job_candidate__candidate__contact_number',
+            'date_time',
+            'mode__name',
+            'done_by__name',
+        ]
+
+        user = self.request.user
+        employee = getattr(self.request.user, 'as_employee', None)
+        filter_expression = None if not employee else Q(done_by_id=employee.pk)
+        wb = generate_excel(
+            'Interviews Report',
+            date_from,
+            date_to,
+            columns,
+            Interview,
+            ('job_candidate__candidate', 'mode', 'done_by'),
+            values_list,
+            user=user,
+            filter_expression=filter_expression,
+            empty_if_no_filter=True,
+            is_datetime=True
+        )
 
         wb.save(response)
         return response

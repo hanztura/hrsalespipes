@@ -1,0 +1,65 @@
+{% extends "reports/base.html" %}
+
+{% block title %}
+Interviews - Reports
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>Interviews Report</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12">
+        {% include "_includes/filter_form.html" %}
+      </v-col>
+
+      <v-col cols='12' class="text-right my-0 py-0">
+        {% include "reports/includes/buttons_download.html" %}
+      </v-col>
+
+      <v-col cols="12" class="text-center">
+        <v-simple-table
+          fixed-header>
+          {% include "reports/includes/interviews_table.html" %}
+        </v-simple-table>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Reports',
+          href: '{% url "reports:index" %}'
+        },
+        {
+          text: 'Interviews',
+        },
+      ],
+    }),
+
+    methods:{
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      },
+    },
+
+    mounted() {
+      this.updateBreadcrumbs();
+    }
+
+  });
+</script>  
+{% endblock script %}
