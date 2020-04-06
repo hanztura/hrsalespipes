@@ -36,7 +36,7 @@ def get_successful_jobs_queryset(
     elif date_from:
         # from a certain point of time
         try:
-            q = q.filter(invoice__gte=date_from)
+            q = q.filter(invoice_date__gte=date_from)
         except Exception as e:
             pass
 

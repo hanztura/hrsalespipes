@@ -45,6 +45,8 @@ class PermissionRequiredWithCustomMessageMixin(PermissionRequiredMixin):
 
 class ContextFromToMixin:
     is_default_date_from_year_beginning = False
+    date_from = ''
+    date_to = ''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -55,18 +57,24 @@ class ContextFromToMixin:
         self.year_first_day = str(today.replace(day=1, month=1))
         self.month_last_day = str(today.replace(day=last_day_of_the_month))
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
 
-        date_from = self.request.GET.get('from', self.month_first_day)
-        if self.is_default_date_from_year_beginning:
-            date_from = self.year_first_day
+        self.date_from = self.request.GET.get('from', '')
+        if self.date_from == '':
+            if self.is_default_date_from_year_beginning:
+                self.date_from = self.year_first_day
+            else:
+                self.date_from = self.month_first_day
 
-        date_to = self.request.GET.get(
+        self.date_to = self.request.GET.get(
             'to',
             self.month_last_day)
-        context['from'] = date_from
-        context['to'] = date_to
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['from'] = self.date_from
+        context['to'] = self.date_to
         return context
 
 
@@ -80,19 +88,11 @@ class FromToViewFilterMixin(ContextFromToMixin):
     def get_queryset(self):
         q = super().get_queryset()
 
-        date_from = self.request.GET.get('from', '')
-        if self.is_default_date_from_year_beginning:
-            date_from = date_from if date_from else self.year_first_day
-        else:
-            date_from = date_from if date_from else self.month_first_day
-
-        date_to = self.request.GET.get('to', '')
-        date_to = date_to if date_to else self.month_last_day
-
-        if date_from and date_to:
+        if self.date_from and self.date_to:
             try:
                 q = q.filter(
-                    self.get_from_to_filter_expression(date_from, date_to))
+                    self.get_from_to_filter_expression(
+                        self.date_from, self.date_to))
             except Exception as e:
                 pass
 

@@ -6,15 +6,15 @@
 
 {% block form_fields %}
   <input type="hidden" id="dataIndustryChoices" value="{{ industries }}">
-  <v-col cols="12" md="3" class="py-0">
+  <v-col cols="12" md="2" class="py-0">
     {% include "_includes/_text_field_calendar.html" with label="From (Invoice Date)" name="from" type="date" value=from %}
   </v-col>
 
-  <v-col cols="12" md="3" class="py-0">
+  <v-col cols="12" md="2" class="py-0">
     {% include "_includes/_text_field_calendar.html" with label="To (Invoice Date)" name="to" type="date" value=to %}
   </v-col>
 
-  <v-col cols="12" md="3" class="py-0">
+  <v-col cols="12" md="2" class="py-0">
     {% include "_includes/_auto_complete.html" with label="Consultant" name="consultant" items="consultants" model="consultant" prepend_inner_icon="mdi-account-cog" %}
   </v-col>
 

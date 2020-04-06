@@ -556,9 +556,6 @@ class SuccessfulJobsListView(
             'job_candidate__job__client',
             'job_candidate__consultant')
 
-        date_from = self.request.GET.get('from', self.month_first_day)
-        date_to = self.request.GET.get('to', self.month_last_day)
-
         # filter consultant (optional)
         consultant_pk = self.request.GET.get('consultant', '')  # employee id
         industry = self.request.GET.get('industry', '')  # string
@@ -570,7 +567,7 @@ class SuccessfulJobsListView(
                 self.consultant = consultant.first()
 
         return get_successful_jobs_queryset(
-            q, date_from, date_to, consultant_pk, industry)
+            q, self.date_from, self.date_to, consultant_pk, industry)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -167,7 +167,7 @@ class DashboardView(
 
             dashboard_items_number += data
 
-            from_to_url_params_this_month = '?from{}&to={}'.format(
+            from_to_url_params_this_month = '?from={}&to={}'.format(
                 self.month_first_day,
                 self.month_last_day)
             successful_jobs_url = reverse('reports:successful_jobs')
