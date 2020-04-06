@@ -3,6 +3,7 @@ from uuid import uuid4
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 from django_extensions.db.models import TimeStampedModel
 
@@ -194,7 +195,7 @@ class Interview(models.Model):
     job_candidate = models.ForeignKey(
         JobCandidate, on_delete=models.PROTECT, related_name='interviews')
     mode = models.ForeignKey(InterviewMode, on_delete=models.PROTECT)
-    date = models.DateField()
+    date_time = models.DateTimeField(default=timezone.localtime)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
     done_by = models.ForeignKey(
         Employee,
@@ -204,4 +205,4 @@ class Interview(models.Model):
         blank=True)
 
     class Meta:
-        ordering = ['-date', 'job_candidate']
+        ordering = ['-date_time', 'job_candidate']

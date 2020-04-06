@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from .models import Job, JobCandidate, Interview, JobStatus
 from salespipes.forms import (
-    Pipeline, PipelineModelForm, PipelineUpdateStatusModelForm,
+    Pipeline, PipelineUpdateStatusModelForm,
     PipelineCreateModelForm)
 
 
@@ -205,7 +205,7 @@ class InterviewCreateModelForm(ModelForm):
         model = Interview
         fields = [
             'mode',
-            'date',
+            'date_time',
             'status',
         ]
 
@@ -214,8 +214,6 @@ class InterviewCreateModelForm(ModelForm):
         self.job_candidate = kwargs.pop('job_candidate')
 
         super().__init__(*args, **kwargs)
-
-        self.fields['date'].initial = timezone.localdate()
 
     def is_valid(self):
         is_valid = super().is_valid()
@@ -233,7 +231,7 @@ class InterviewUpdateModelForm(InterviewCreateModelForm):
         model = Interview
         fields = [
             'mode',
-            'date',
+            'date_time',
             'status',
             'done_by'
         ]
