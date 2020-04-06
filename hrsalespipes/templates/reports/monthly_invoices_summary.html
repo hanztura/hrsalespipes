@@ -16,12 +16,12 @@
         <form id="searchForm" ref="searchForm">
           <v-container fluid>
             <v-row>
-              <v-col cols="12" md="3" class="py-0">
+              <v-col cols="12" md="2" class="py-0">
                 <v-text-field
                   outlined
                   required
                   dense
-                  prepend-inner-icon="fas fa-calendar-alt"
+                  prepend-inner-icon="mdi-calendar-month"
                   label="Month"
                   name="month"
                   type="month"
@@ -29,13 +29,13 @@
                 </v-text-field>
               </v-col>
 
-              <v-col cols="12" md="3" class="py-0">
+              <v-col cols="12" md="2" class="py-0">
                 <v-autocomplete
                   :items="consultants"
                   label="Consultant"
                   v-model.lazy="consultant"
                   name='consultant'
-                  prepend-inner-icon="fas fa-user"
+                  prepend-inner-icon="mdi-account-cog"
                   dense
                   outlined
                   clearable>
