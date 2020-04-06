@@ -91,6 +91,10 @@ Client Detail - {{ object.name }}
                       <th>Validity:</th>
                       <td>{{ object.validity }}</td>
                     </tr>
+                    <tr>
+                      <th>Business Development Person:</th>
+                      <td>{{ object.business_development_person.name }}</td>
+                    </tr>
                     {% include "contacts/includes/point_of_contacts_table_row.html" %}
                   </tbody>
                 </table>

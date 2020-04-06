@@ -175,6 +175,7 @@ class ClientUpdateView(
 
         context['locations'] = get_objects_as_choices(Location)
         context['industries'] = get_objects_as_choices(Industry)
+        context['employees'] = get_objects_as_choices(Employee)
         return context
 
     def get_success_url(self):
@@ -184,6 +185,11 @@ class ClientUpdateView(
 class ClientDetailView(PermissionRequiredMixin, DetailView):
     model = Client
     permission_required = ('contacts.view_client')
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.select_related('business_development_person')
+        return q
 
 
 class SupplierCreateView(

@@ -115,7 +115,8 @@ class ClientUpdateModelForm(FormCleanContactNumber, ModelForm):
             'agreement_fee',
             'refund_scheme',
             'validity',
-            'point_of_contacts'
+            'point_of_contacts',
+            'business_development_person',
         ]
 
     def __init__(self, *args, **kwargs):

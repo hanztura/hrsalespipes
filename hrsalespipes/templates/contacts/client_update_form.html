@@ -16,6 +16,7 @@
       <v-col cols="12" class="text-center">
         <form method="post">
           {% csrf_token %}
+          <input type="hidden" id="dataCandidateOwnerChoices" value="{{ employees }}">
           <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
           <input type="hidden" id="dataIndustryChoices" value="{{ industries }}">
           {% for error in form.errors %}
@@ -145,6 +146,16 @@
                   value="{{ form.validity.value|default_if_none:''|date:'Y-m-d' }}">
                 </v-text-field>
 
+                <v-autocomplete
+                  dense
+                  outlined
+                  clearable
+                  name='business_development_person'
+                  :items="employees"
+                  label="Business Development Person"
+                  v-model.lazy="businessDevelopmentPerson">
+                </v-autocomplete>
+
                 {% include "contacts/includes/point_of_contacts_table_edit.html" %}
                 
               </v-tab-item> <!-- Others -->
@@ -216,6 +227,8 @@
       agreementTerm: {{ form.instance.agreement_term }},
       agreementFee: {{ form.instance.agreement_fee }},
       pointOfContacts: [],
+      employees: [],
+      businessDevelopmentPerson: '{{ form.business_development_person.value|default_if_none:'' }}',
     }),
 
     computed: {
@@ -261,6 +274,7 @@
     beforeMount(){
       this.setDataChoices('dataLocationChoices', 'locations');
       this.setDataChoices('dataIndustryChoices', 'industries');
+      this.setDataChoices('dataCandidateOwnerChoices', 'employees');
       this.updateBreadcrumbs();
     },
     mounted(){

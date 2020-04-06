@@ -18,6 +18,8 @@ class Client(ContactModel):
     refund_scheme = models.TextField(blank=True)
     validity = models.DateField(null=True, blank=True)
     point_of_contacts = models.TextField(blank=True)
+    business_development_person = models.ForeignKey(
+        'Employee', on_delete=models.SET_NULL, null=True)
 
     @property
     def edit_href(self):
