@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from django_extensions.db.models import TimeStampedModel
+from simple_history.models import HistoricalRecords
 
 from .helpers import SuccessfulJobsManager
 from jobs.models import Job, JobCandidate, Status as JobStatus
@@ -101,6 +102,8 @@ class Pipeline(TimeStampedModel):
         decimal_places=2,
         default=0,
         blank=True)
+
+    history = HistoricalRecords()
 
     objects = models.Manager()
     successful_jobs = SuccessfulJobsManager()
