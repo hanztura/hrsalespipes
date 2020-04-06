@@ -122,6 +122,9 @@ class PipelineListView(
     paginate_by = 25
     assoc_consult = ''
 
+    # DateAndStatusFilterMixin
+    is_default_date_from_year_beginning = True
+
     def get_queryset(self):
         q = super().get_queryset()
         q = q.select_related(

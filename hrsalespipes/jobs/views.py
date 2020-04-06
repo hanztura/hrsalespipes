@@ -82,6 +82,9 @@ class JobListView(
     model = Job
     permission_required = 'jobs.view_job'
 
+    # DateAndStatusFilterMixin
+    is_default_date_from_year_beginning = True
+
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.select_related('client', 'status')

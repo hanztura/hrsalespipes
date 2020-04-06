@@ -44,6 +44,7 @@ class PermissionRequiredWithCustomMessageMixin(PermissionRequiredMixin):
 
 
 class ContextFromToMixin:
+    is_default_date_from_year_beginning = False
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -51,12 +52,16 @@ class ContextFromToMixin:
         today = timezone.localdate()
         last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
         self.month_first_day = str(today.replace(day=1))
+        self.year_first_day = str(today.replace(day=1, month=1))
         self.month_last_day = str(today.replace(day=last_day_of_the_month))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         date_from = self.request.GET.get('from', self.month_first_day)
+        if self.is_default_date_from_year_beginning:
+            date_from = self.year_first_day
+
         date_to = self.request.GET.get(
             'to',
             self.month_last_day)
@@ -76,7 +81,10 @@ class FromToViewFilterMixin(ContextFromToMixin):
         q = super().get_queryset()
 
         date_from = self.request.GET.get('from', '')
-        date_from = date_from if date_from else self.month_first_day
+        if self.is_default_date_from_year_beginning:
+            date_from = date_from if date_from else self.year_first_day
+        else:
+            date_from = date_from if date_from else self.month_first_day
 
         date_to = self.request.GET.get('to', '')
         date_to = date_to if date_to else self.month_last_day
