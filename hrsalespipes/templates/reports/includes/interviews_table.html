@@ -1,0 +1,30 @@
+<table>
+  <thead>
+    <tr>
+      <th class="text-center">Candidate</th>
+      <th class="text-center">Current Location</th>
+      <th class="text-center">Nationality</th>
+      <th class="text-center">Email Address</th>
+      <th class="text-center">Contact Number</th>
+      <th class="text-center">Date</th>
+      <th class="text-center">Time</th>
+      <th class="text-center">Mode</th>
+      <th class="text-center">Conducted by</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for object in object_list %}
+      <tr>
+        <td>{{ object.job_candidate.candidate.name }}</td>
+        <td>{{ object.job_candidate.candidate.location }}</td>
+        <td>{{ object.job_candidate.candidate.nationality }}</td>
+        <td>{{ object.job_candidate.candidate.email_address }}</td>
+        <td>{{ object.job_candidate.candidate.contact_nuber }}</td>
+        <td>{{ object.date_time|date:'Y-m-d' }}</td>
+        <td>{{ object.date_time|date:'H:i' }}</td>
+        <td>{{ object.mode.name }}</td>
+        <td>{{ object.done_by.name }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

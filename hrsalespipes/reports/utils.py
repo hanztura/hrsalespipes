@@ -1,3 +1,4 @@
+import datetime
 import uuid
 import xlwt
 
@@ -34,12 +35,24 @@ def filter_queryset_by_employee(
     return queryset
 
 
-def generate_excel(heading_title, date_from, date_to, columns, model,
-                   select_related, values_list, aggregate_fields,
-                   total_label_position, employee_id=None,
-                   is_month_filter=False, consultant_id=None,
-                   job_status_pk='', user=None, filter_expression=None,
-                   empty_if_no_filter=False):
+def generate_excel(
+        heading_title,
+        date_from,
+        date_to,
+        columns,
+        model,
+        select_related,
+        values_list,
+        aggregate_fields=None,
+        total_label_position=None,
+        employee_id=None,
+        is_month_filter=False,
+        consultant_id=None,
+        job_status_pk='',
+        user=None,
+        filter_expression=None,
+        empty_if_no_filter=False,
+        is_datetime=False):
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet(heading_title)
 
@@ -72,6 +85,7 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
         else:
             heading.insert(2, '')
 
+    # write header
     for head in heading:
         ws.write(row_num, 0, head, font_style)
         row_num += 1
@@ -96,12 +110,18 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
                 rows = rows.filter(
                     status_id=job_status_pk)
 
+            data = rows
+
             # filter date
             if is_month_filter:
                 year, month = date_from.split('-')
                 data = rows.filter(date__month=month, date__year=year)
             else:  # two dates
-                data = rows.filter(date__gte=date_from, date__lte=date_to)
+                if is_datetime:
+                    data = rows.filter(
+                        date_time__gte=date_from, date_time__lte=date_to)
+                else:
+                    data = rows.filter(date__gte=date_from, date__lte=date_to)
 
             # filter contact
             if contact_id:
@@ -123,32 +143,36 @@ def generate_excel(heading_title, date_from, date_to, columns, model,
             if type(val) == uuid.UUID:
                 val = str(val)
 
+            if type(val) == datetime.datetime:
+                val = val.replace(tzinfo=None)
+
             ws.write(row_num, col_num, val, font_style)
 
     # total row
-    row_num += 1
-    if data:
-        sum_aggregate_fields = []
-        text_aggregate_fields = []
-        for i, field in aggregate_fields:
-            sum_aggregate_fields.append(Sum(field))
+    if aggregate_fields:
+        row_num += 1
+        if data:
+            sum_aggregate_fields = []
+            text_aggregate_fields = []
+            for i, field in aggregate_fields:
+                sum_aggregate_fields.append(Sum(field))
 
-            text = '{}__sum'.format(field)
-            text_aggregate_fields.append((i, text))
+                text = '{}__sum'.format(field)
+                text_aggregate_fields.append((i, text))
 
-        sums = data.aggregate(*sum_aggregate_fields)
-        ws.write(
-            row_num,
-            total_label_position,
-            'TOTAL',
-            font_style)
-
-        for i, field in text_aggregate_fields:
+            sums = data.aggregate(*sum_aggregate_fields)
             ws.write(
                 row_num,
-                i,
-                sums[field],
+                total_label_position,
+                'TOTAL',
                 font_style)
+
+            for i, field in text_aggregate_fields:
+                ws.write(
+                    row_num,
+                    i,
+                    sums[field],
+                    font_style)
 
     return wb
 

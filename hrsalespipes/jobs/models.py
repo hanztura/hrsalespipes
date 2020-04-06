@@ -89,6 +89,10 @@ class Job(TimeStampedModel):
                 'Can view report Job to Pipeline Analysis'
             ),
             (
+                'view_report_interviews',
+                'Can view report Interviews'
+            ),
+            (
                 'can_edit_closed_job',
                 'Can edit closed Job'
             ),
