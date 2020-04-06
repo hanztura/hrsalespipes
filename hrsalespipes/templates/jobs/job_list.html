@@ -14,7 +14,8 @@ Jobs - List
     >
       <v-col cols="12">
         <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
-        {% include "_includes/filter_form_with_q.html" with q_label="Reference number or client" %}
+        <input type="hidden" id="dataEmployees" value="{{ employees }}">
+        {% include "_includes/filter_form_with_q_and_employee.html" with q_label="Reference number or client"  %}
       </v-col>
   
       <v-col cols="12">
@@ -83,6 +84,8 @@ Jobs - List
       pageLength: {{ paginator.num_pages|default_if_none:0 }},
       statusChoices: [],
       status: '{{ status|default_if_none:'' }}',
+      employees: [],
+      employee: '{{ employee }}',
     }),
 
     methods:{
@@ -104,6 +107,7 @@ Jobs - List
 
     beforeMount() {
       this.setDataChoices('dataStatusChoices', 'statusChoices');
+      this.setDataChoices('dataEmployees', 'employees');
       this.setStatus();
     },
 

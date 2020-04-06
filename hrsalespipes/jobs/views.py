@@ -81,6 +81,7 @@ class JobListView(
         PermissionRequiredMixin, ListView):
     model = Job
     permission_required = 'jobs.view_job'
+    assoc_consult = ''
 
     # DateAndStatusFilterMixin
     is_default_date_from_year_beginning = True
@@ -98,6 +99,13 @@ class JobListView(
                 Q(reference_number__icontains=search) |
                 Q(client__name__icontains=search))
 
+        # filter by consultant or associate of a job candidate
+        self.employee = self.request.GET.get('employee', '')
+        if self.employee:
+            queryset = queryset.filter(
+                Q(candidates__associate_id=self.employee) |
+                Q(candidates__consultant_id=self.employee))
+
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -105,6 +113,8 @@ class JobListView(
 
         # filter by reference number
         context['q'] = self.request.GET.get('q', '')
+        context['employee'] = self.employee
+        context['employees'] = get_objects_as_choices(Employee)
         context['status_objects'] = get_objects_as_choices(JobStatus)
         return context
 
