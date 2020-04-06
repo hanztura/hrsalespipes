@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from django_extensions.db.models import TimeStampedModel
+from simple_history.models import HistoricalRecords
 
 from contacts.models import Candidate, Client, Employee
 from system.models import InterviewMode
@@ -76,6 +77,8 @@ class Job(TimeStampedModel):
         on_delete=models.PROTECT,
         null=True,
         blank=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         ordering = ['-date', '-reference_number']
@@ -163,6 +166,8 @@ class JobCandidate(TimeStampedModel):
         related_name='as_consultant',
         null=True,
         blank=True)
+
+    history = HistoricalRecords()
 
     def get_absolute_url(self):
         return reverse('jobs:detail',
