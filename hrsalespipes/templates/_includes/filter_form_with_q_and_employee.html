@@ -2,6 +2,10 @@
 
 {% block other_fields %}
   <v-col cols="12" md="2" class="py-0">
+    {% include "_includes/_auto_complete.html" with items="employees" label="Employee" model="employee" name="employee" item_value="value" item_text="text" prepend_inner_icon="mdi-account-cog" %}
+  </v-col>
+  
+  <v-col cols="12" md="2" class="py-0">
     <v-text-field
       outlined
       dense
@@ -10,8 +14,5 @@
       label="{{ q_label }}"
       value="{{ q|default_if_none:'' }}">
     </v-text-field>
-  </v-col>
-  <v-col cols="12" md="2" class="py-0">
-    {% include "_includes/_auto_complete.html" with items="employees" label="Employee" model="employee" name="employee" item_value="value" item_text="text" %}
   </v-col>
 {% endblock other_fields %}
