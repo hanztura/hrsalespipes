@@ -39,19 +39,9 @@ Reports
       ],
       reports: [
         {
-          icon: '{{ ICON_PIPELINE }}',
-          href: "{% url 'reports:pipeline_summary' %}",
-          title: 'Pipeline Summary'
-        },
-        {
-          icon: 'mdi-briefcase-check',
-          href: "{% url 'reports:successful_jobs' %}",
-          title: 'Successful Jobs'
-        },
-        {
-          icon: '{{ ICON_JOBS }}',
-          href: "{% url 'reports:jobs_summary' %}",
-          title: 'Jobs Summary',
+          icon: '{{ ICON_COMMISSIONS}}',
+          href: "{% url 'reports:commissions_earned_summary' %}",
+          title: 'Commissions Earned Summary',
         },
         {
           icon: 'mdi-headphones',
@@ -64,14 +54,24 @@ Reports
           title: 'Job to Pipeline Analysis',
         },
         {
-          icon: '{{ ICON_COMMISSIONS}}',
-          href: "{% url 'reports:commissions_earned_summary' %}",
-          title: 'Commissions Earned Summary',
+          icon: '{{ ICON_JOBS }}',
+          href: "{% url 'reports:jobs_summary' %}",
+          title: 'Jobs Summary',
         },
         {
           icon: 'mdi-file-percent',
           href: "{% url 'reports:monthly_invoices_summary' %}",
           title: 'Monthly Invoices Summary',
+        },
+        {
+          icon: '{{ ICON_PIPELINE }}',
+          href: "{% url 'reports:pipeline_summary' %}",
+          title: 'Pipeline Summary'
+        },
+        {
+          icon: 'mdi-briefcase-check',
+          href: "{% url 'reports:successful_jobs' %}",
+          title: 'Successful Jobs'
         },
       ]
     }),
