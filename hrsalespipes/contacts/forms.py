@@ -119,10 +119,26 @@ class ClientUpdateModelForm(FormCleanContactNumber, ModelForm):
             'business_development_person',
         ]
 
+    agreement_fields = (
+        'agreement_term',
+        'agreement_fee',
+        'refund_scheme',
+        'validity',
+    )
+
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+
         super().__init__(*args, **kwargs)
 
         self.fields['industry'].required = True
+
+        # disable agreement fields if not allowed
+        is_allowed_to_edit_aggrement_fields = user.has_perm(
+            'contacts.edit_client_agreement_fields')
+        if not is_allowed_to_edit_aggrement_fields:
+            for field in self.agreement_fields:
+                self.fields[field].disabled = True
 
 
 class ClientCreateModelForm(FormCleanContactNumber, ModelForm):

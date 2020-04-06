@@ -170,6 +170,11 @@ class ClientUpdateView(
     permission_required = ('contacts.change_client')
     success_msg = 'Client updated.'
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 

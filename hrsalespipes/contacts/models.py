@@ -21,6 +21,14 @@ class Client(ContactModel):
     business_development_person = models.ForeignKey(
         'Employee', on_delete=models.SET_NULL, null=True)
 
+    class Meta:
+        permissions = (
+            (
+                'edit_client_agreement_fields',
+                'Can edit client agreement fields'
+            ),
+        )
+
     @property
     def edit_href(self):
         return reverse('contacts:clients_edit', args=[str(self.pk), ])
