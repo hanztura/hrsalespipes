@@ -18,7 +18,7 @@ from .utils import (
 from contacts.models import Employee
 from commissions.models import Commission
 from commissions.views import CommissionListView
-from jobs.models import Job, JobCandidate, JobStatus
+from jobs.models import Job, JobCandidate, JobStatus, Interview
 from system.helpers import get_objects_as_choices
 from salespipes.models import Pipeline
 from salespipes.views import PipelineListView
@@ -915,3 +915,32 @@ class JobToPipelineAnalysisExcelView(
 
         wb.save(response)
         return response
+
+
+class InterviewsReportListView(
+        EmployeeFilterMixin,
+        DisplayDateFormatMixin,
+        FromToViewFilterMixin,
+        PermissionRequiredWithCustomMessageMixin,
+        ListView):
+    model = Interview
+    template_name = 'reports/interviews.html'
+    permission_required = 'jobs.view_interview'
+    paginate_by = 0
+
+    # EmployeeFilterMixin
+    empty_if_no_filter = True
+    all_permission = 'jobs.view_all_interviews'
+
+    def get_filter_expression(self):
+        filter_expression = None
+
+        employee = getattr(self.request.user, 'as_employee', None)
+        if employee:
+            filter_expression = Q(done_by_id=employee.pk)
+        return filter_expression
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.select_related('job_candidate__candidate', 'mode', 'done_by')
+        return q

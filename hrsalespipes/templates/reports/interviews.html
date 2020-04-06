@@ -1,0 +1,90 @@
+{% extends "reports/base.html" %}
+
+{% block title %}
+Interviews - Reports
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>Interviews Report</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12">
+        {% include "_includes/filter_form.html" %}
+      </v-col>
+
+      <v-col cols="12" class="text-center">
+        <v-simple-table
+          fixed-header>
+          <table>
+            <thead>
+              <tr>
+                <th class="text-center">Candidate</th>
+                <th class="text-center">Current Location</th>
+                <th class="text-center">Nationality</th>
+                <th class="text-center">Email Address</th>
+                <th class="text-center">Contact Number</th>
+                <th class="text-center">Date</th>
+                <th class="text-center">Time</th>
+                <th class="text-center">Mode</th>
+                <th class="text-center">Conducted by</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for object in object_list %}
+                <tr>
+                  <td>{{ object.job_candidate.candidate.name }}</td>
+                  <td>{{ object.job_candidate.candidate.location }}</td>
+                  <td>{{ object.job_candidate.candidate.nationality }}</td>
+                  <td>{{ object.job_candidate.candidate.email_address }}</td>
+                  <td>{{ object.job_candidate.candidate.contact_nuber }}</td>
+                  <td>{{ object.date_time|date:'Y-m-d' }}</td>
+                  <td>{{ object.date_time|date:'H:i' }}</td>
+                  <td>{{ object.mode.name }}</td>
+                  <td>{{ object.done_by.name }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </v-simple-table>
+      </v-col>
+    </v-row>
+  </v-container>  
+{% endblock subcontent %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'Reports',
+          href: '{% url "reports:index" %}'
+        },
+        {
+          text: 'Interviews',
+        },
+      ],
+    }),
+
+    methods:{
+      setDataChoices: function(sourceId, setDataVariable) {
+        let data = document.getElementById(sourceId).value;
+        this.$set(this, setDataVariable, JSON.parse(data));
+      },
+    },
+
+    mounted() {
+      this.updateBreadcrumbs();
+    }
+
+  });
+</script>  
+{% endblock script %}

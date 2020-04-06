@@ -206,3 +206,9 @@ class Interview(models.Model):
 
     class Meta:
         ordering = ['-date_time', 'job_candidate']
+        permissions = [
+            (
+                'view_all_interviews',
+                'Can view all Interviews'
+            ),
+        ]
