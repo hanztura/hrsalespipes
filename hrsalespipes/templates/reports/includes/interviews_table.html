@@ -26,5 +26,11 @@
         <td>{{ object.done_by.name }}</td>
       </tr>
     {% endfor %}
+
+    {% if not object_list %}
+      <tr>
+        <td class="text-center" colspan="9">No data.</td>
+      </tr>  
+    {% endif %}
   </tbody>
 </table>
