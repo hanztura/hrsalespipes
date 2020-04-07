@@ -1,5 +1,5 @@
 {% extends "jobs/base.html" %}
-{% load static %}
+{% load static sekizai_tags %}
 
 {% block title %}
 {{ object.reference_number }} - Update Job
@@ -104,95 +104,31 @@
       </v-col>
     </v-row>
   </v-container>  
-{% endblock subcontent %}
 
-{% block script %}
-
-{% if debug %}
-  <script src="{% static "vendor/lodash/lodash.js" %}"></script>
-{% else %}
-  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
-{% endif %}
-
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Jobs',
-          disabled: false,
-          href: '{% url "jobs:list" %}',
-        },
-        {
-          text: '{{ object.reference_number }}',
-          disabled: false,
-          href: '{% url "jobs:detail" object.pk %}',
-        },
-        {
-          text: 'Edit',
-          disabled: true,
-        }
-      ],
-      clients: [],
-      client: '{{ form.client.value|default_if_none:"" }}',
-      locations: [],
-      location: '{{ form.location.value|default_if_none:"" }}',
-      statusChoices: [],
-      initialStatus: '{{ form.initial.status|default_if_none:'' }}',
-      status: {{ form.status.value|default_if_none:"''" }},
-      hasConfirmed: {{ form.has_confirmed.value|yesno:'true,false' }},
-      date: '{{ form.instance.date|date:"Y-m-d" }}',
-    }),
-
-    computed: {
-      statusIsOpen: function() {
-        let status = this.status;
-        if (!status) { return true; }
-
-        status = _.find(this.statusChoices, (s) => { return s.id == status; });
-        return status.is_job_open;
-      },
-      statusIsClose: function () {
-        return !this.statusIsOpen;
-      },
-      initialStatusIsOpen: function(){
-        let initialStatus = this.initialStatus;
-        if (!initialStatus) { return true; }
-
-        initialStatus = _.find(this.statusChoices, (s) => { return s.id == initialStatus; });
-        return initialStatus.is_job_open;
-      },
-      needToConfirm: function () {
-        let close = this.statusIsClose;
-        let hasNotConfirmed = !this.hasConfirmed;
-        let initialStatusIsOpen = this.initialStatusIsOpen;
-
-        return close && hasNotConfirmed && initialStatusIsOpen;
+  {% addtoblock "js" %}
+    <script>
+      let objectUrl = '{% url "jobs:detail" object.pk %}';
+      let objectText = '{{ object.reference_number }}';
+      let data = {
+        client: '{{ form.client.value|default_if_none:"" }}',
+        location: '{{ form.location.value|default_if_none:"" }}',
+        initialStatus: '{{ form.initial.status|default_if_none:'' }}',
+        status: {{ form.status.value|default_if_none:"''" }},
+        hasConfirmed: {{ form.has_confirmed.value|yesno:'true,false' }},
+        date: '{{ form.instance.date|date:"Y-m-d" }}',
       }
-    },
+    </script>
+  {% endaddtoblock %}
 
-    methods: {
-      setClientsChoices: function() {
-        let data = document.getElementById('dataClientChoices').value;
-        this.clients = JSON.parse(data);
-      },
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      },
-    },
+  {% addtoblock "js" %}
+    {% if debug %}
+      <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+    {% else %}
+      <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+    {% endif %}
+  {% endaddtoblock %}
 
-    beforeMount(){
-      this.setDataChoices('dataClientChoices', 'clients');
-      this.setDataChoices('dataLocationChoices', 'locations');
-      this.setDataChoices('dataStatusChoices', 'statusChoices');
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}
+  {% addtoblock "js" %}
+    <script src="{% static 'jobs/jobUpdate.js' %}"></script>
+  {% endaddtoblock %}
+{% endblock subcontent %}

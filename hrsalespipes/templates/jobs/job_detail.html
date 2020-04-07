@@ -1,5 +1,5 @@
 {% extends "jobs/base.html" %}
-{% load humanize %}
+{% load static sekizai_tags humanize %}
 
 {% block title %}
 Job Detail - {{ object.reference_number }}
@@ -128,52 +128,14 @@ Job Detail - {{ object.reference_number }}
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let objectText = '{{ object.reference_number }}';
+    </script>
+  {% endaddtoblock %}   
+
+  {% addtoblock "js" %}
+    <script src="{% static 'jobs/jobDetail.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-    delimiters: ['[[', ']]'],
-
-    props: {
-      source: String,
-    },
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Jobs',
-          disabled: false,
-          href: '{% url "jobs:list" %}',
-        },
-        {
-          text: '{{ object.reference_number }}',
-        },
-      ],
-      tab: null,
-      tabs: [
-        {
-          tab: 'Details',
-          icon: 'fas fa-info',  
-        },
-        {
-          tab: 'Candidates',
-          icon: 'fas fa-users-cog',  
-        },
-        {
-          tab: 'Pipelines',
-          icon: 'fas fa-filter',  
-        },
-      ],
-    }),
-
-    mounted() {
-      this.updateBreadcrumbs();
-    }
-
-  });
-</script>  
-{% endblock script %}

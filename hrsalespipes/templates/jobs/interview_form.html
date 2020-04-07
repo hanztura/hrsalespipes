@@ -1,4 +1,5 @@
 {% extends "jobs/base.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 {{ form_mode }} Interview - {{ job_candidate.candidate.name }} Job Candidate
@@ -71,73 +72,23 @@
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let candidateName = '{{ job_candidate.candidate.name }}';
+      let jobCandidateUrl = '{% url "jobs:candidates_detail" job_candidate.job_id job_candidate.pk %}';
+      let jobReferenceNumber = '{{ job_candidate.job.reference_number }}';
+      let jobUrl = '{% url "jobs:detail" job_candidate.job_id %}';
+      let formMode = '{{ form_mode }}';
+      let data = {
+        mode: '{{ form.mode.value }}',
+        status: '{{ form.status.value }}',
+        doneBy: '{{ form.done_by.value|default_if_none:"" }}',
+      };
+    </script>
+  {% endaddtoblock %} 
+
+  {% addtoblock "js" %}
+    <script src="{% static 'jobs/interviewForm.js' %}"></script>
+  {% endaddtoblock %} 
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Jobs',
-          disabled: false,
-          href: '{% url "jobs:list" %}',
-        },
-        {
-          text: '{{ job_candidate.job.reference_number }}',
-          disabled: false,
-          href: '{% url "jobs:detail" job_candidate.job.pk %}',
-        },
-        {
-          text: 'Candidates',
-          disabled: false,
-          href: '#'
-        },
-        {
-          text: '{{ job_candidate.candidate.name }}',
-          disabled: false,
-          href: '{% url "jobs:candidates_detail" job_candidate.job_id job_candidate.pk %}',
-        },
-        {
-          text: 'Interviews',
-          disabled: false,
-          href: '#'
-        },
-        {
-          text: '{{ form_mode }}',
-          disabled: true,
-        }
-      ],
-      modes: [],
-      mode: '{{ form.mode.value }}',
-      statusChoices: [],
-      formMode: '{{ form_mode }}',
-      status: '{{ form.status.value }}',
-      employees: [],
-      doneBy: '{{ form.done_by.value|default_if_none:"" }}',
-    }),
-
-    methods: {
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      },
-    },
-
-    beforeMount(){
-      this.setDataChoices('dataModesChoices', 'modes');
-      this.setDataChoices('dataStatusChoices', 'statusChoices');
-      this.updateBreadcrumbs();
-
-      if (this.formMode == 'Edit'){
-        this.setDataChoices('dataEmployeeChoices', 'employees');
-      }
-    },
-
-  });
-</script>  
-{% endblock script %}
