@@ -1,4 +1,5 @@
 {% extends "contacts/base.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 {{ object.name }} - Update Candidate
@@ -338,117 +339,26 @@
         </form>
       </v-col>
     </v-row>
-  </v-container>  
-{% endblock subcontent %}
+  </v-container>
 
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-    delimiters: ['[[', ']]'],
-
-    props: {
-      source: String,
-    },
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Contacts',
-          disabled: false,
-          href: '{% url "contacts:index" %}',
-        },
-        {
-          text: 'Candidates',
-          disabled: false,
-          href: '{% url "contacts:candidates_list" %}',
-        },
-        {
-          text: '{{ object.name }}',
-          disabled: false,
-          href: '{% url "contacts:candidates_detail" object.pk %}',
-        },
-        {
-          text: 'Edit',
-          disabled: true,
-        }
-      ],
-      tab: null,
-      tabs: [
-        {
-          tab: 'Contact Details',
-          icon: 'fas fa-address-book',  
-        },
-        {
-          tab: 'Personal',
-          icon: 'fas fa-user',  
-        },
-        {
-          tab: 'Current/Previous Work',
-          icon: 'fas fa-undo',  
-        },
-        {
-          tab: 'Others',
-          icon: 'fas fa-info',  
-        },
-        {
-          tab: 'Medical',
-          icon: 'fas fa-notes-medical',  
-        },
-      ],
-      locations: [],
-      location: '{{ form.location.value }}',
-      nationalities: [],
-      nationality: '{{ form.nationality.value }}',
-      civilStatusChoices: [
-        {value: 'Single', text: 'Single'},
-        {value: 'Married', text: 'Married'},
-        {value: 'Widowed', text: 'Widowed'},
-        {value: 'Divorced', text: 'Divorced'},
-        {value: 'Separated', text: 'Separated'},
-      ],
-      genders: [
-        {value: 'Female', text: 'Female'},
-        {value: 'Male', text: 'Male'},
-      ],
-      visaStatusChoices: [],
-      visaStatus: '{{ form.visa_status.value|default_if_none:"0" }}',
-      employees: [],
-      candidateOwner: '{{ form.candidate_owner.value|default_if_none:'' }}',
-      isMedical: {{ form.is_medical.value|yesno:"true,false" }},
-      medicalExperience: {{ form.medical_experience_in_years.value }},
-      haadDhaLicenseTypes: [
-        {
-          text: 'HAAD',
-          value: 'HAAD'
-        },
-        {
-          text: 'DHA',
-          value: 'DHA'
-        },
-      ],
-      cvTemplates: [],
-      cvTemplate: '{{ form.cv_template.value|default_if_none:'' }}',
-    }),
-
-    methods: {
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
+  {% addtoblock "js" %}
+    <script>
+      let urlCandidate = '{% url "contacts:candidates_detail" object.pk %}';
+      let contactName = '{{ object.name }}';
+      let data = {
+        location: '{{ form.location.value }}',
+        industry: '{{ form.industry.value }}',
+        nationality: '{{ form.nationality.value }}',
+        visaStatus: '{{ form.visa_status.value|default_if_none:"0" }}',
+        candidateOwner: '{{ form.candidate_owner.value|default_if_none:'' }}',
+        isMedical: {{ form.is_medical.value|yesno:"true,false" }},
+        medicalExperience: {{ form.medical_experience_in_years.value }},
+        cvTemplate: '{{ form.cv_template.value|default_if_none:'' }}',
       }
-    },
+    </script>
+  {% endaddtoblock %}  
 
-    beforeMount(){
-      this.setDataChoices('dataVisaStatusChoices', 'visaStatusChoices');
-      this.setDataChoices('dataCVTemplatesChoices', 'cvTemplates');
-      this.setDataChoices('dataCandidateOwnerChoices', 'employees');
-      this.setDataChoices('dataLocationChoices', 'locations');
-      this.setDataChoices('dataNationalityChoices', 'nationalities');
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}
+  {% addtoblock "js" %}
+    <script src="{% static 'contacts/candidateUpdate.js' %}"></script>
+  {% endaddtoblock %}
+{% endblock subcontent %}
