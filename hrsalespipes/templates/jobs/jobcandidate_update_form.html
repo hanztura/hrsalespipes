@@ -1,4 +1,5 @@
 {% extends "jobs/base.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 {{ object.candidate.name }} - {{ object.job.reference_number }} Job Candidate Update
@@ -133,68 +134,24 @@
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let candidateName = '{{ object.candidate.name }}';
+      let jobCandidateUrl = '{% url "jobs:candidates_detail" job.pk object.pk %}';
+      let jobReferenceNumber = '{{ object.job.reference_number }}';
+      let jobUrl = '{% url "jobs:detail" object.job_id %}';
+      let data = {
+        candidate: '{{ form.candidate.value }}',
+        status: '{{ form.status.value }}',
+        associate: '{{ form.associate.value }}',
+        consultant: '{{ form.consultant.value }}',
+        cvSource: '{{ form.cv_source.value|default_if_none:"" }}',
+      };
+    </script>
+  {% endaddtoblock %} 
+
+  {% addtoblock "js" %}
+    <script src="{% static 'jobs/jobCandidateUpdate.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Jobs',
-          disabled: false,
-          href: '{% url "jobs:list" %}',
-        },
-        {
-          text: '{{ job.reference_number }}',
-          disabled: false,
-          href: '{% url "jobs:detail" job.pk %}',
-        },
-        {
-          text: 'Candidates',
-          disabled: false,
-          href: '#'
-        },
-        {
-          text: '{{ object.candidate.name }}',
-          disabled: false,
-          href: '{% url "jobs:candidates_detail" job.pk object.pk %}',
-        },
-        {
-          text: 'Edit',
-          disabled: true,
-        }
-      ],
-      candidates: [],
-      candidate: '{{ form.candidate.value }}',
-      statusChoices: [],
-      status: '{{ form.status.value }}',
-      employees: [],
-      associate: '{{ form.associate.value }}',
-      consultant: '{{ form.consultant.value }}',
-      cvSources: [],
-      cvSource: '{{ form.cv_source.value|default_if_none:"" }}',
-    }),
-
-    methods: {
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      }
-    },
-
-    beforeMount(){
-      this.setDataChoices('dataCandidateChoices', 'candidates');
-      this.setDataChoices('dataStatusChoices', 'statusChoices');
-      this.setDataChoices('dataEmployeesChoices', 'employees');
-      this.setDataChoices('dataCVSourceChoices', 'cvSources');
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}
