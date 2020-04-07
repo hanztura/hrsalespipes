@@ -1,4 +1,4 @@
-{% load static %}
+{% load static sekizai_tags %}
 
 <!DOCTYPE html>
 <html>
@@ -7,6 +7,7 @@
 
     {% addtoblock "css" %}
       <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" href="{% static "vendor/vuetify/vuetify.min.css" %}">
 
       {% if debug %}
         <link href="{% static "vendor/materialdesignicons.min.css" %}" rel="stylesheet">
@@ -15,7 +16,6 @@
       {% endif %}
     {% endaddtoblock %}
 
-  <link rel="stylesheet" type="text/css" href="{% static "vendor/vuetify/vuetify.min.css" %}">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
   <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
@@ -227,133 +227,37 @@
   {% endif %}
 
   <script>
-    const NAVIGATION_DRAWER_ITEMS = [
-        {
-          action: '{{ ICON_DASHBOARD }}',
-          title: 'Dashboard',
-          href: '{% url "dashboard:index" %}',
-          iconColor: 'primary--text',
-        },
-        {
-          action: '{{ ICON_CONTACTS }}',
-          title: 'Contacts',
-          items: [
-            { title: 'Candidates',
-              href: '{% url "contacts:candidates_list" %}',
-              iconColor: 'primary--text',
-              action: '{{ ICON_CANDIDATES }}',
-            },
-            { title: 'Clients',
-              href: '{% url "contacts:clients_list" %}',
-              iconColor: 'primary--text',
-              action: '{{ ICON_CLIENTS }}',
-            },
-            { title: 'Suppliers',
-              href: '{% url "contacts:suppliers_list" %}',
-              iconColor: 'primary--text',
-              action: '{{ ICON_SUPPLIERS }}',
-            },
-          ],
-        },
-        {
-          action: '{{ ICON_JOBS }}',
-          title: 'Jobs',
-          href: '{% url "jobs:list" %}',
-          iconColor: 'primary--text',
-        },
-        {
-          action: '{{ ICON_PIPELINE }}',
-          title: 'Pipeline',
-          href: '{% url "salespipes:list" %}',
-          iconColor: 'primary--text',
-        },
-        {
-          action: '{{ ICON_REPORTS }}',
-          title: 'Reports',
-          href: '{% url "reports:index" %}',
-          iconColor: 'primary--text',
-        },
-      ];
-
-    const DASHBOARD_URL = '{% url "dashboard:index" %}';
-  
-      Vue.mixin({
-        delimiters: ['[[', ']]'],
-        data: () => ({
-          navigationDrawerItems: NAVIGATION_DRAWER_ITEMS,
-          navigationDrawerItemsNonAuthenticatedUsers: [
-            {
-              action: 'mdi-information',
-              title: 'About',
-              href: '{% url "system:about" %}',
-              iconColor: 'primary--text',
-            },
-            {
-              action: 'mdi-head-question',
-              title: 'How to use?',
-              href: 'https://www.youtube.com/watch?v=tIAe5LANfM0&list=PLcr7blJ6ArQFeLv5YcLl0EYc2jwNkynZ_',
-              iconColor: 'primary--text',
-            },
-          ],
-          breadcrumbs: [
-            {
-              text: 'Dashboard',
-              disabled: false,
-              href: DASHBOARD_URL,
-            },
-          ],
-          subBreadcrumbs: [],
-          isCommissionAllowed: {{ perms.commissions.view_commission|yesno:'true,false' }},
-          isBackupAllowed: {{ perms.backups.view_backup|yesno:'true,false' }},
-        }),
-        methods: {
-          updateNavigationDrawerItems() {
-
-          },
-          updateBreadcrumbs() {
-            this.breadcrumbs = this.breadcrumbs.concat(this.subBreadcrumbs);
-
-            // add commission to navigation drawer
-            if (this.isCommissionAllowed) {
-              this.navigationDrawerItems.push({
-                action: '{{ ICON_COMMISSIONS }}',
-                title: 'Commissions',
-                href: '{% url "commissions:list" %}',
-              });
-            }
-
-            // add backups to navigation drawer
-            if (this.isBackupAllowed) {
-              this.navigationDrawerItems.push({
-                action: '{{ ICON_BACKUPS }}',
-                title: 'Backups',
-                href: '{% url "backups:list" %}',
-              });
-            }
-          }
-        }
-      });
+    const ICONS = {
+      ICON_DASHBOARD: '{{ ICON_DASHBOARD }}',
+      ICON_CONTACTS: '{{ ICON_CONTACTS }}',
+      ICON_CANDIDATES: '{{ ICON_CANDIDATES }}',
+      ICON_CLIENTS: '{{ ICON_CLIENTS }}',
+      ICON_SUPPLIERS: '{{ ICON_SUPPLIERS }}',
+      ICON_JOBS: '{{ ICON_JOBS }}',
+      ICON_PIPELINE: '{{ ICON_PIPELINE }}',
+      ICON_REPORTS: '{{ ICON_REPORTS }}',
+      ICON_COMMISSIONS: '{{ ICON_COMMISSIONS }}',
+      ICON_BACKUPS: '{{ ICON_BACKUPS }}',
+    };
+    const URLS = {
+      DASHBOARD: '{% url "dashboard:index" %}',
+      CONTACTS: '{% url "contacts:index" %}',
+      CANDIDATES: '{% url "contacts:candidates_list" %}',
+      CLIENTS: '{% url "contacts:clients_list" %}',
+      SUPPLIERS: '{% url "contacts:suppliers_list" %}',
+      JOBS: '{% url "jobs:list" %}',
+      PIPELINE: '{% url "salespipes:list" %}',
+      REPORTS: '{% url "reports:index" %}',
+      ABOUT: '{% url "system:about" %}',
+      COMMISISONS: '{% url "commissions:list" %}',
+      BACKUPS: '{% url "backups:list" %}',
+    };
+    const PERMISSIONS = {
+      isCommissionAllowed: {{ perms.commissions.view_commission|yesno:'true,false' }},
+      isBackupAllowed: {{ perms.backups.view_backup|yesno:'true,false' }},
+    };
   </script>
-  
-  {% block script %}
-    <script>
-      new Vue({
-        el: '#inspire',
-        vuetify: new Vuetify(),
-
-        props: {
-          source: String,
-        },
-        data: () => ({
-          drawer: null,
-        }),
-
-        mounted(){
-          this.updateBreadcrumbs();
-        }
-      });
-    </script>
-  {% endblock script %}
+  <script src="{% static 'js/vueMixins.js' %}"></script>
 
   {% render_block "js" %}
 </body>

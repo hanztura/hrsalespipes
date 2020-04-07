@@ -1,4 +1,5 @@
-{% extends "base.html" %}
+{% extends "base-sekizai.html" %}
+{% load sekizai_tags %}
 
 {% block content %}
   <div>
@@ -9,5 +10,11 @@
     {% include "_includes/messages.html" %}
   {% endif %}
   
+  {% addtoblock "js" %}
+    <script>
+      let urlContacts = URLS.CONTACTS;
+      let iconContacts = ICONS.ICON_CONTACTS;
+    </script>
+  {% endaddtoblock %}  
   {% block subcontent %}{% endblock subcontent %}  
 {% endblock content %}
