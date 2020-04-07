@@ -1,4 +1,5 @@
 {% extends "jobs/base.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Jobs - New
@@ -52,48 +53,17 @@ Jobs - New
         </form>
       </v-col>
     </v-row>
-  </v-container>  
+  </v-container> 
+
+  {% addtoblock "js" %}
+    <script>
+      let data = {
+        client: '{{ form.client.value }}',
+      };
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'jobs/jobCreate.js' %}"></script>
+  {% endaddtoblock %} 
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Jobs',
-          disabled: false,
-          href: '{% url "jobs:list" %}',
-        },
-        {
-          text: 'New',
-          disabled: true,
-        }
-      ],
-      clients: [],
-      client: '{{ form.client.value }}',
-    }),
-
-    methods: {
-      setClientsChoices: function() {
-        let data = document.getElementById('dataClientChoices').value;
-        this.clients = JSON.parse(data);
-      },
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      },
-    },
-
-    beforeMount(){
-      this.setDataChoices('dataClientChoices', 'clients');
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}
