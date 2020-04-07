@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django_filters',
     'import_export',
     'simple_history',
+    'sekizai',
 
     'system',
     'commissions',
@@ -96,6 +97,8 @@ TEMPLATES = [
 
                 'system.context_processors.get_icons',
                 'system.context_processors.get_system_settings',
+
+                'sekizai.context_processors.sekizai',
             ],
         },
     },
