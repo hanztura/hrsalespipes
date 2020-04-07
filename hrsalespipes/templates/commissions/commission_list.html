@@ -1,5 +1,5 @@
 {% extends "commissions/base.html" %}
-{% load humanize %}
+{% load static sekizai_tags humanize %}
 
 {% block title %}
 Commissions - List
@@ -47,7 +47,6 @@ Commissions - List
           <table>
             <thead>
               <th class="text-center">Pipeline</th>
-              <th class="text-center">Candidate</th>
               <th class="text-center">Date</th>
               <th class="text-center">Employee</th>
               <th class="text-center">Rate Role Type</th>
@@ -64,13 +63,6 @@ Commissions - List
                       href="{% url 'salespipes:detail' object.pipeline_id %}"
                       title="view pipeline detail">
                       {{ object.pipeline.job_candidate.job.reference_number }}
-                    </a>
-                  </td>
-                  <td>
-                    <a
-                      href="{% url 'jobs:candidates_detail' object.pipeline.job_candidate.job_id object.pipeline.job_candidate_id %}"
-                      title="view job candidate detail">
-                        {{ object.pipeline.job_candidate.candidate.name }}
                     </a>
                   </td>
                   <td>
@@ -106,33 +98,15 @@ Commissions - List
       </v-col> <!-- Pagination -->
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let currentPage = {{ page_obj.number|default_if_none:0 }};
+      let currentPageLength = {{ paginator.num_pages|default_if_none:0 }};
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'commissions/commissionList.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Commissions',
-        },
-      ],
-      page: {{ page_obj.number|default_if_none:0 }},
-      pageLength: {{ paginator.num_pages|default_if_none:0 }},
-    }),
-
-    methods:{
-      {% include "_includes/js/pageGoTo.js" %}
-    },
-
-    mounted() {
-      this.updateBreadcrumbs();
-    }
-
-  });
-</script>  
-{% endblock script %}

@@ -1,4 +1,5 @@
 {% extends "commissions/base.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Commission Detail ({{ object.pipeline.job_candidate.job.reference_number }}) - {{ object.employee.name }}
@@ -56,32 +57,14 @@ Commission Detail ({{ object.pipeline.job_candidate.job.reference_number }}) - {
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let objectText = '({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.employee.name }}';
+    </script>
+  {% endaddtoblock %}   
+
+  {% addtoblock "js" %}
+    <script src="{% static 'commissions/commissionDetail.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Commissions',
-          disabled: false,
-          href: '{% url "commissions:list" %}',
-        },
-        {
-          text: '({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.employee.name }}',
-        },
-      ],
-    }),
-
-    mounted(){
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}

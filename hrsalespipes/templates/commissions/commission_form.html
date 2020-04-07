@@ -1,4 +1,5 @@
 {% extends "commissions/base.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Commissions - New
@@ -66,46 +67,19 @@ Commissions - New
         </form>
       </v-col>
     </v-row>
-  </v-container>  
+  </v-container>
+
+  {% addtoblock "js" %}
+    <script>
+      let data = {
+        employee: '{{ form.employee.value }}',
+        rateRoleTypes: ['one', 'two', 'three', 'others'],
+        rateRoleType: '{{ form.rate_role_type.value }}',
+      };
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'commissions/commissionCreate.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Commissions',
-          disabled: false,
-          href: '{% url "commissions:list" %}',
-        },
-        {
-          text: 'New',
-          disabled: true,
-        }
-      ],
-      employees: [],
-      employee: '{{ form.employee.value }}',
-      rateRoleTypes: ['one', 'two', 'three', 'others'],
-      rateRoleType: '{{ form.rate_role_type.value }}',
-    }),
-
-    methods: {
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      }
-    },
-
-    beforeMount(){
-      this.setDataChoices('dataEmployeesChoices', 'employees');
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}

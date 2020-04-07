@@ -1,53 +1,47 @@
-{% extends "commissions/commission_update_form.html" %}
+{% extends "commissions/base.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Commission ({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.employee.name }} - Confirm Deletion
 {% endblock title %}
+  
+{% block subcontent %}
+  <v-container
+    fluid>
+    {% block h1 %}<h1>CONFIRM deletion of Commission (<a href="{% url 'commissions:detail' object.pk %}" title="view commisison detail">{{ object.pipeline.job_candidate.job.reference_number }}</a>) {{ object.employee.name }}!</h1>{% endblock h1 %}
+    
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12" class="text-center">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden">  
 
-{% block h1 %}<h1>CONFIRM deletion of Commission (<a href="{% url 'commissions:detail' object.pk %}" title="view commisison detail">{{ object.pipeline.job_candidate.job.reference_number }}</a>) {{ object.employee.name }}!</h1>{% endblock h1 %}
+          {% block form_buttons %}
+            {% include "_includes/_input_button.html" with block="block" text="Delete" color="warning" outlined="outlined" %}
+          {% endblock form_buttons %}
+        </form>
+      </v-col>
+    </v-row>
+  </v-container>  
 
-{% block form_buttons %}
-  {% include "_includes/_input_button.html" with block="block" text="Delete" color="warning" outlined="outlined" %}
-{% endblock form_buttons %}
+  {% addtoblock "js" %}
+    <script>
+      let objectUrl = '{% url "commissions:detail" object.pk %}';
+      let objectText = '({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.employee.name }}';
+      let data = {
+        employee: '{{ form.employee.value }}',
+        rateRoleTypes: ['one', 'two', 'three', 'others'],
+        rateRoleType: '{{ form.rate_role_type.value }}',
+      };
+    </script>
+  {% endaddtoblock %}
 
-{% block form_fields %}<input type="hidden">{% endblock form_fields %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Commissions',
-          disabled: false,
-          href: '{% url "commissions:list" %}',
-        },
-        {
-          text: '({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.employee.name }}',
-          disabled: false,
-          href: '{% url "commissions:detail" object.pk %}',
-        },
-        {
-          text: 'Delete',
-        }
-      ],
-    }),
-
-    methods: {
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      }
-    },
-
-    beforeMount(){
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}
+  {% block js_addtoblock %}
+    {% addtoblock "js" %}
+      <script src="{% static 'commissions/commissionConfirmDelete.js' %}"></script>
+    {% endaddtoblock %}
+  {% endblock js_addtoblock %}
+{% endblock subcontent %}

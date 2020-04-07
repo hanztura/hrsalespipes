@@ -1,4 +1,5 @@
 {% extends "commissions/base.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Commission ({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.employee.name }} - Edit
@@ -86,50 +87,21 @@ Commission ({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.
       </v-col>
     </v-row>
   </v-container>  
-{% endblock subcontent %}
 
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Commissions',
-          disabled: false,
-          href: '{% url "commissions:list" %}',
-        },
-        {
-          text: '({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.employee.name }}',
-          disabled: false,
-          href: '{% url "commissions:detail" object.pk %}',
-        },
-        {
-          text: 'Edit',
-        }
-      ],
-      employees: [],
-      employee: '{{ form.employee.value }}',
-      rateRoleTypes: ['one', 'two', 'three', 'others'],
-      rateRoleType: '{{ form.rate_role_type.value }}',
-      isPaid: {{ is_paid }},
-    }),
-
-    methods: {
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
+  {% addtoblock "js" %}
+    <script>
+      let objectUrl = '{% url "commissions:detail" object.pk %}';
+      let objectText = '({{ object.pipeline.job_candidate.job.reference_number }}) {{ object.employee.name }}';
+      let data = {
+        employee: '{{ form.employee.value }}',
+        rateRoleTypes: ['one', 'two', 'three', 'others'],
+        rateRoleType: '{{ form.rate_role_type.value }}',
+        isPaid: {{ is_paid }},
       }
-    },
+    </script>
+  {% endaddtoblock %}
 
-    beforeMount(){
-      this.setDataChoices('dataEmployeesChoices', 'employees');
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}
+  {% addtoblock "js" %}
+    <script src="{% static 'commissions/commissionUpdate.js' %}"></script>
+  {% endaddtoblock %}
+{% endblock subcontent %}

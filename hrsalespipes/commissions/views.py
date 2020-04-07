@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -126,7 +127,6 @@ class CommissionListView(
         q = super().get_queryset(**kwargs)
         q = q.select_related(
             'pipeline__job_candidate__job',
-            'pipeline__job_candidate__candidate',
             'employee')
 
         search_q = self.request.GET.get('q', '')
@@ -150,3 +150,11 @@ class CommissionDeleteView(
     model = Commission
     permission_required = 'commissions.delete_commission'
     success_url = reverse_lazy('commissions:list')
+    success_msg = 'Commission deleted'
+
+    def delete(self, request, *args, **kwargs):
+        response = super().delete(request, *args, **kwargs)
+
+        messages.info(self.request, self.success_msg)
+
+        return response
