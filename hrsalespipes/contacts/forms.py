@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django.contrib.postgres.forms import JSONField
 
-from .models import Candidate, Client, Supplier
+from .models import Candidate, Client, Supplier, CVTemplate
 from .utils import FormCleanContactNumber
 
 
@@ -31,7 +31,6 @@ class CandidateCreateModelForm(ContactCreateModelForm):
 
         if is_valid:
             employee = getattr(self.user, 'as_employee', None)
-            print(employee)
             self.instance.candidate_owner = employee
 
         return is_valid
@@ -93,6 +92,11 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields['candidate_owner'].required = True
+
+    def clean_cv_template(self):
+        default = CVTemplate.objects.filter(is_default=True).first()
+        cv_template = getattr(self.cleaned_data, 'cv_template', default)
+        return cv_template
 
 
 class ClientUpdateModelForm(FormCleanContactNumber, ModelForm):

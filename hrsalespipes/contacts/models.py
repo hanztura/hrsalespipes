@@ -206,7 +206,8 @@ class Candidate(ContactModel):
     cv_template = models.ForeignKey(
         CVTemplate,
         on_delete=models.PROTECT,
-        null=True)
+        null=True,
+        blank=True)
     notes = models.TextField(blank=True)
 
     history = HistoricalRecords()

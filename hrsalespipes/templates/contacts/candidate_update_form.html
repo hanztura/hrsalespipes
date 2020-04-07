@@ -27,7 +27,8 @@
 
             <v-tabs
               v-model="tab"
-              fixed-tabs>
+              fixed-tabs
+              class="my-2">
               {% include "_includes/v_tab.html" %}
             </v-tabs>
 
@@ -239,6 +240,7 @@
 
                 <v-select
                   outlined
+                  required
                   :items="cvTemplates"
                   label="CV Template"
                   name="cv_template"
@@ -246,12 +248,12 @@
                   v-model="cvTemplate"></v-select>
 
                 <v-autocomplete
-                  name='candidate_owner'
-                  :items="employees"
                   dense
-                  label="Candidate Owner"
                   outlined
                   required
+                  name='candidate_owner'
+                  :items="employees"
+                  label="Candidate Owner"
                   v-model.lazy="candidateOwner">
                 </v-autocomplete>
 
@@ -349,7 +351,7 @@
         location: '{{ form.location.value }}',
         industry: '{{ form.industry.value }}',
         nationality: '{{ form.nationality.value }}',
-        visaStatus: '{{ form.visa_status.value|default_if_none:"0" }}',
+        visaStatus: '{{ form.visa_status.value|default_if_none:"" }}',
         candidateOwner: '{{ form.candidate_owner.value|default_if_none:'' }}',
         isMedical: {{ form.is_medical.value|yesno:"true,false" }},
         medicalExperience: {{ form.medical_experience_in_years.value }},

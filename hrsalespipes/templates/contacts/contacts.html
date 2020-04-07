@@ -1,4 +1,5 @@
 {% extends "contacts/base.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Contacts
@@ -40,26 +41,8 @@ Contacts
         </v-list-item>
       </v-list>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script src="{% static 'contacts/contacts.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Reports',
-        },
-      ],
-    }),
-
-    mounted(){
-      this.updateBreadcrumbs();
-    }
-  });
-</script>  
-{% endblock script %}
