@@ -1,4 +1,6 @@
 {% extends "reports/base.html" %}
+{% load static sekizai_tags %}
+
 {% block title %}
 {{ TITLE }} - Reports
 {% endblock title %}
@@ -61,41 +63,17 @@
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let TITLE = '{{ TITLE }}';
+      let data = {
+        consultant: '{{ consultant_pk|default_if_none:"" }}',
+      };
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'reports/monthlyInvoicesSummary.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Reports',
-          href: '{% url "reports:index" %}'
-        },
-        {
-          text: '{{ TITLE }}',
-        },
-      ],
-      consultants: [],
-      consultant: '{{ consultant_pk|default_if_none:"" }}',
-    }),
-
-    methods: {
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      },
-    },
-
-    mounted(){
-      this.setDataChoices('dataConsultantChoices', 'consultants');
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}

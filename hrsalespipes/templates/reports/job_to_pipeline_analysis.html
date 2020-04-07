@@ -1,5 +1,5 @@
 {% extends "reports/base.html" %}
-{% load humanize %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Job to Pipeline Analysis - Reports
@@ -29,31 +29,14 @@ Job to Pipeline Analysis - Reports
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let reportText = 'Job to Pipeline Analysis';
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'reports/_generic.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Reports',
-          href: '{% url "reports:index" %}'
-        },
-        {
-          text: 'Job to Pipeline Analysis',
-        },
-      ],
-    }),
-
-    mounted(){
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}

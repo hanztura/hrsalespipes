@@ -1,5 +1,5 @@
 {% extends "reports/base.html" %}
-{% load humanize %}
+{% load static sekizai_tags humanize %}
 
 {% block title %}
 Commissions Earned Summary - Reports
@@ -71,42 +71,16 @@ Commissions Earned Summary - Reports
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let data = {
+        employee: '{{ employee_pk|default_if_none:"" }}',
+      };
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'reports/commissionsEarnedSummary.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Reports',
-          href: '{% url "reports:index" %}'
-        },
-        {
-          text: 'Commissions Earned Summary', 
-        },
-      ],
-      employees: [],
-      employee: '{{ employee_pk|default_if_none:"" }}',
-    }),
-
-    methods: {
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      },
-    },
-
-    mounted(){
-      this.setDataChoices('dataEmployeesChoices', 'employees');
-      this.employees.unshift({ text: 'All', value:''});
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}

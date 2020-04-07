@@ -1,64 +1,146 @@
-{% extends "reports/pipeline_summary.html" %}
+{% extends "reports/base.html" %}
+{% load static sekizai_tags humanize %}
 
-{% block title %}Successful Jobs - Reports{% endblock title %}
+{% block title %}
+Successful Jobs - Reports
+{% endblock title %}
 
-{% block h1 %}<h1>Successful Jobs - Report</h1>{% endblock h1 %}
+{% block subcontent %}
+  <v-container
+    fluid>
+    {% block h1 %}<h1>Successful Jobs - Report</h1>{% endblock h1 %}
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12"> <!-- Filter form -->
+        <input type="hidden" id="dataConsultantChoices" value="{{ consultants }}">
 
-{% block form_fields %}
-  <input type="hidden" id="dataIndustryChoices" value="{{ industries }}">
-  <v-col cols="12" md="2" class="py-0">
-    {% include "_includes/_text_field_calendar.html" with label="From (Invoice Date)" name="from" type="date" value=from %}
-  </v-col>
+        <form id="searchForm" ref="searchForm">
+          <v-container fluid>
+            <v-row>
+              <input type="hidden" id="dataIndustryChoices" value="{{ industries }}">
+              <v-col cols="12" md="2" class="py-0">
+                {% include "_includes/_text_field_calendar.html" with label="From (Invoice Date)" name="from" type="date" value=from %}
+              </v-col>
 
-  <v-col cols="12" md="2" class="py-0">
-    {% include "_includes/_text_field_calendar.html" with label="To (Invoice Date)" name="to" type="date" value=to %}
-  </v-col>
+              <v-col cols="12" md="2" class="py-0">
+                {% include "_includes/_text_field_calendar.html" with label="To (Invoice Date)" name="to" type="date" value=to %}
+              </v-col>
 
-  <v-col cols="12" md="2" class="py-0">
-    {% include "_includes/_auto_complete.html" with label="Consultant" name="consultant" items="consultants" model="consultant" prepend_inner_icon="mdi-account-cog" %}
-  </v-col>
+              <v-col cols="12" md="2" class="py-0">
+                {% include "_includes/_auto_complete.html" with label="Consultant" name="consultant" items="consultants" model="consultant" prepend_inner_icon="mdi-account-cog" %}
+              </v-col>
 
-  <v-col cols="12" md="2" class="py-0">
-    {% include "_includes/_auto_complete.html" with label="Industry" item_value="text"  name="industry" items="industries" model="industry" prepend_inner_icon=ICON_SUPPLIERS %}
-  </v-col>
-{% endblock form_fields %}
+              <v-col cols="12" md="2" class="py-0">
+                {% include "_includes/_auto_complete.html" with label="Industry" item_value="text"  name="industry" items="industries" model="industry" prepend_inner_icon=ICON_SUPPLIERS %}
+              </v-col>
 
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
+              <v-col cols="12" md="1" class="pa-0">
+                  {% include "_includes/_button_search.html" %}
+              </v-col>
+            </v-row>
+          </v-container>
+        </form>
+      </v-col>  <!-- Filter form end -->
 
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Reports',
-          href: '{% url "reports:index" %}'
-        },
-        {
-          text: 'Successful Jobs',
-        },
-      ],
-      consultants: [],
-      consultant: '{{ consultant_pk|default_if_none:"" }}',
-      industry: '{{ industry|default_if_none:"" }}',
-      industries: [],
-    }),
+      <v-col cols='12' class="text-right my-0 py-0">
+        {% include "reports/includes/buttons_download.html" %}
+        </v-btn>
+      </v-col>
 
-    methods: {
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      },
-    },
+      <v-col cols="12" class="text-center">
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-center">Pipeline</th>
+                <th class="text-center">Job</th>
+                <th class="text-center">Candidate</th>
+                <th class="text-center">Client</th>
+                <th class="text-center">Amounts</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if object_list %}
+                {% for object in object_list %}
+                <tr>
+                  <td class="text-left">
+                    <p>Status: <strong>{{ object.status }}</strong></p>
+                    <p>Date: <a href="{% url 'salespipes:detail' object.id %}" title="view pipeline detail">{{ object.date|date:display_date_format }}</a></p>
+                  </td>
 
-    mounted(){
-      this.setDataChoices('dataConsultantChoices', 'consultants');
-      this.setDataChoices('dataIndustryChoices', 'industries');
-      this.updateBreadcrumbs();
-    },
+                  <td class="text-left">
+                    <p>Reference Number: <a href="{% url 'jobs:detail' object.job_candidate.job_id %}" title="view job detail">{{ object.job_candidate.job.reference_number }}</a></p>
+                    <p>Date: {{ object.job_candidate.job.date|date:display_date_format }}</p>
+                    <p>Position: {{ object.job_candidate.job.position }}</p>
+                    <p>Associate: {{ object.job_candidate.associate.name }}</p>
+                    <p>Consultant: {{ object.job_candidate.consultant.name }}</p>
+                  </td>
 
-  });
-</script>  
-{% endblock script %}
+                  <td class="text-left">
+                    {% if object.job_candidate %}
+                      <p><a href="{% url 'contacts:candidates_detail' object.job_candidate.candidate_id %}" title="view candidate detail">{{ object.job_candidate.candidate.name }}</a></p>
+                      <p>Code: {{ object.job_candidate.candidate.code }}</p>
+                    {% else %}
+                      <p>None</p>
+                    {% endif %}
+                  </td>
+
+                  <td class="text-left">
+                    <p><a href="{% url 'contacts:clients_detail' object.job_candidate.job.client_id %}" title="view client detail">{{ object.job_candidate.job.client.name }}</a></p>
+                    <p>Industry: {{ object.job_candidate.job.client.industry }}</p>
+                  </td>
+                  
+                  <td class="text-left">
+                    <p>Potential Income: <strong>{{ object.potential_income|intcomma }}</strong></p>
+                    <p>Invoice Amount: <strong>{{ object.invoice_amount|intcomma }}</strong></p>
+                    <p>VAT: <strong>{{ object.vat|intcomma }}</strong></p>
+                    <p class="caption">Invoice Date: {{ object.invoice_date|date:display_date_format }}</p>
+                    <p class="caption">Invoice Number: {{ object.invoice_number }}</p>
+                  </td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5">No data available.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+
+            {% if object_list %}
+            <tfoot>
+              <tr>
+                <td class="text-right" colspan="4">Total Potential Income</td>
+                <td class="text-left"><strong>{{ potential_income__sum|floatformat:2|intcomma }}</strong></td>
+              </tr>
+              <tr>
+                <td class="text-right" colspan="4">Total Invoice Amount</td>
+                <td class="text-left"><strong>{{ invoice_amount__sum|floatformat:2|intcomma }}</strong></td>
+              </tr>
+              <tr>
+                <td class="text-right" colspan="4">Total VAT Amount</td>
+                <td class="text-left"><strong>{{ vat__sum|floatformat:2|intcomma }}</strong></td>
+              </tr>
+            </tfoot>
+            {% endif %}
+          </template>
+        </v-simple-table>
+      </v-col>
+    </v-row>
+  </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let TITLE = '{{ TITLE }}';
+      let data = {
+        consultant: '{{ consultant_pk|default_if_none:"" }}',
+        industry: '{{ industry|default_if_none:"" }}',
+      };
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'reports/successfulJobs.js' %}"></script>
+  {% endaddtoblock %}
+{% endblock subcontent %}

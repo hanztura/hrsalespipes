@@ -1,4 +1,5 @@
 {% extends "reports/base.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Reports
@@ -22,66 +23,20 @@ Reports
       </v-list-item>
     </v-list>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let urlCommissionEarned = "{% url 'reports:commissions_earned_summary' %}";
+      let urlInterviews = "{% url 'reports:interviews' %}";
+      let urlJobToPipeline = "{% url 'reports:job_to_pipeline_analysis' %}";
+      let urlJobsSummary = "{% url 'reports:jobs_summary' %}";
+      let urlMonthlyInvoices = "{% url 'reports:monthly_invoices_summary' %}";
+      let urlPipelineSummary = "{% url 'reports:pipeline_summary' %}";
+      let urlSuccessfulJob = "{% url 'reports:successful_jobs' %}";
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'reports/index.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Reports',
-        },
-      ],
-      reports: [
-        {
-          icon: '{{ ICON_COMMISSIONS}}',
-          href: "{% url 'reports:commissions_earned_summary' %}",
-          title: 'Commissions Earned Summary',
-        },
-        {
-          icon: 'mdi-headphones',
-          href: "{% url 'reports:interviews' %}",
-          title: 'Interviews Report',
-        },
-        {
-          icon: 'mdi-clipboard-arrow-right',
-          href: "{% url 'reports:job_to_pipeline_analysis' %}",
-          title: 'Job to Pipeline Analysis',
-        },
-        {
-          icon: '{{ ICON_JOBS }}',
-          href: "{% url 'reports:jobs_summary' %}",
-          title: 'Jobs Summary',
-        },
-        {
-          icon: 'mdi-file-percent',
-          href: "{% url 'reports:monthly_invoices_summary' %}",
-          title: 'Monthly Invoices Summary',
-        },
-        {
-          icon: '{{ ICON_PIPELINE }}',
-          href: "{% url 'reports:pipeline_summary' %}",
-          title: 'Pipeline Summary'
-        },
-        {
-          icon: 'mdi-briefcase-check',
-          href: "{% url 'reports:successful_jobs' %}",
-          title: 'Successful Jobs'
-        },
-      ]
-    }),
-
-    methods: {
-    },
-
-    mounted(){
-      this.updateBreadcrumbs();
-    }
-  });
-</script>  
-{% endblock script %}
