@@ -73,6 +73,25 @@
               </v-list-item-content>
             </v-list-item>
           </template>
+
+          {% if not user.is_authenticated %}
+            <template
+              v-for="item in navigationDrawerItemsNonAuthenticatedUsers">
+
+              <v-list-item
+                :key="item.title"
+                v-model="item.active"
+                :href="item.href">
+                <v-list-item-icon>
+                  <v-icon>[[ item.action ]]</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                  <v-list-item-title v-text="item.title"></v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          {% endif %}
         </v-list>
       </v-navigation-drawer>
 
@@ -146,26 +165,36 @@
             </v-btn>
           </template>
 
-          {% if user.is_authenticated %}
           <v-list>
-            <v-list-item>
-              <v-list-item-title>Hi {{ user.username }}!</v-list-item-title>
-            </v-list-item>
+            {% if user.is_authenticated %}
+              <v-list-item>
+                <v-list-item-title>Hi {{ user.username }}!</v-list-item-title>
+              </v-list-item>
 
-            <v-list-item
-              href="{% url 'system:logout' %}">
-              <v-list-item-title>Logout</v-list-item-title>
-            </v-list-item>
+              {% if user.is_staff %}
+              <v-list-item
+                href="{% url 'admin:index' %}">
+                <v-list-item-title>Admin</v-list-item-title>
+              </v-list-item>
+              {% endif %}
 
-            {% if user.is_staff %}
-            <v-list-item
-              href="{% url 'admin:index' %}">
-              <v-list-item-title>Admin</v-list-item-title>
-            </v-list-item>
+              <v-list-item
+                href="{% url 'system:logout' %}">
+                <v-list-item-title>Logout</v-list-item-title>
+              </v-list-item>
             {% endif %}
 
+              <v-list-item
+                href="{% url 'system:about' %}">
+                <v-list-item-title>About</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                href="https://www.youtube.com/watch?v=tIAe5LANfM0&list=PLcr7blJ6ArQFeLv5YcLl0EYc2jwNkynZ_"
+                target="_blank">
+                <v-list-item-title>How to use HRSalesPipes?</v-list-item-title>
+              </v-list-item>
           </v-list>
-          {% endif %}
           </v-menu>
       </v-app-bar>
 
@@ -177,7 +206,7 @@
         app
         dark
         absolute>
-        <span>HRSalesPipes &copy; 2020 X of Y Business and IT Services. All rights reserved.</span>
+        <span>HRSalesPipes &copy; {% now "Y" %} | <a href="https://xofytech.com" class="white--text">X of Y</a>. All rights reserved.</span>
       </v-footer>
     </v-app>
   </div>
@@ -245,6 +274,20 @@
         delimiters: ['[[', ']]'],
         data: () => ({
           navigationDrawerItems: NAVIGATION_DRAWER_ITEMS,
+          navigationDrawerItemsNonAuthenticatedUsers: [
+            {
+              action: 'mdi-information',
+              title: 'About',
+              href: '{% url "system:about" %}',
+              iconColor: 'primary--text',
+            },
+            {
+              action: 'mdi-head-question',
+              title: 'How to use?',
+              href: 'https://www.youtube.com/watch?v=tIAe5LANfM0&list=PLcr7blJ6ArQFeLv5YcLl0EYc2jwNkynZ_',
+              iconColor: 'primary--text',
+            },
+          ],
           breadcrumbs: [
             {
               text: 'Dashboard',

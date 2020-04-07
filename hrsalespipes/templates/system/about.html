@@ -1,0 +1,341 @@
+{% extends "base.html" %}
+
+{% block title %}
+About  
+{% endblock title %}
+
+
+
+
+{% block content %}
+  <div>
+    <v-breadcrumbs :items="breadcrumbs" divider=">"></v-breadcrumbs>
+  </div>
+
+  <v-container
+    fluid>
+    <h1 id="hrsalespipes">HRSalesPipes</h1>
+    <h2 id="overview">Overview</h2>
+    <blockquote>
+    <p>HRSalesPipes is <span>an open-source <em>applicant tracking system</em> in the cloud</span> that can be used to manage core operations of an <strong>HR Recruitment Agency</strong> (or whatever the name is of bussinesses that deliver similar services).</p>
+    <p>Get free from using multiple separate spreadsheet(excel) files. Yes, HRSalesPipes <em>solves all the problem relating to managing our data</em> specially if our business is still using multiple spreadsheets.</p>
+    <p>Produce real-time reports to make <em>well informed, better, smart, and on-time decisions</em>.</p>
+    <p>With its Dashboard, we can <em>directly and conveniently know how our business is performing</em>. Even our employees will get to know how they are doing that might help them get motivated to perform better and achieve better results.</p>
+    <p><em>Improve the security</em> of our data by on-demand backups and secured transfer protocol(HTTPS).</p>
+    <p>Related to improving the security are the different user permissions and that we can give to all sorts of user roles. This enable us to control which user can do this or that action(s).</p>
+    <p>And we don't even have to worry about getting computer hardwares, location to place all this equipments, hiring another IT personnel to set-up and maintain a server because HRSalesPipes is built for the cloud.</p>
+    <p><strong>Access our system anytime and anywhere</strong>.</p>
+    <p>For $0.00, yes Z-E-R-O f----ing dollar, we can already have this system live in production in less than 30 mins (not overstating here guys).</p>
+    <dl>
+    <dt>Here are the core operations of our business that HRSalesPipes can manage:</dt>
+    <dd><ol style="list-style-type: decimal">
+    <li>Sales Pipeline</li>
+    <li>Job Board Management</li>
+    <li>Candidates, Clients, and Supplier Management</li>
+    <li>Commissions</li>
+    <li>Reports</li>
+    </ol>
+    </dd>
+    </dl>
+    <p>Oh by the way, since HRSalesPipes is OPEN-SOURCE, ahemmm.... yeah we can entirely have this awesome tool for <strong>FREE</strong>.</p>
+    <p>Not just that it is free, we can even sell this software and not even spending a penny or spend a single second of coding.</p>
+    <p>Now if we think HRSalesPipes can do something for we and our business, then let us start talking about what is HRSalesPipes and how to use it.</p>
+    </blockquote>
+    <h2 id="modules">Modules</h2>
+    <blockquote>
+    <ol style="list-style-type: decimal">
+    <li>Contacts</li>
+    <li>Jobs</li>
+    <li>Pipeline</li>
+    <li>Commissions</li>
+    <li>Reports</li>
+    <li>Dashboard</li>
+    <li>System Administration</li>
+    </ol>
+    </blockquote>
+    <h1 id="contacts">Contacts</h1>
+    <blockquote>
+    <p>Manage our contacts here.</p>
+    <p>Contacts includes Candidates, Clients, Suppliers, and Employees.</p>
+    <dl>
+    <dt>All types of contacts can store basic information such as:</dt>
+    <dd><ol style="list-style-type: lower-alpha">
+    <li>Name</li>
+    <li>Email Address</li>
+    <li>Contact Numbers</li>
+    <li>Location</li>
+    </ol>
+    </dd>
+    <dt>Candidates sub-module can store these extra information:</dt>
+    <dd><ol style="list-style-type: lower-alpha">
+    <li>Language spoken</li>
+    <li>Civil Status</li>
+    <li>Gender</li>
+    <li>Dependents</li>
+    <li>Educational Attainment</li>
+    <li>Date of Birth</li>
+    <li>Current/Previous Position</li>
+    <li>Current/Previous Company</li>
+    <li>Current/Previous Salary and Benefits</li>
+    <li>Motivation for leaving</li>
+    <li>Expected Salary and Benefits</li>
+    <li>Visa Status</li>
+    <li>Availability for Interview</li>
+    <li>Notice Period</li>
+    <li>Candidate Owner</li>
+    <li>CV Template</li>
+    <li>Notes/Remarks</li>
+    <li>Medical Fields (if medical related candidate).</li>
+    </ol>
+    </dd>
+    </dl>
+    <p>You can download a CV out of this canidate information using a template built with a docx document. And that is awesome.</p>
+    <dl>
+    <dt>Clients have the following extra information:</dt>
+    <dd><ol style="list-style-type: lower-alpha">
+    <li>Initial Approach</li>
+    <li>Meeting Arranged</li>
+    <li>Agreement Terms</li>
+    <li>Agreement Fee</li>
+    <li>Refund Scheme</li>
+    <li>Validity</li>
+    </ol>
+    </dd>
+    </dl>
+    <p>Suppliers and Employee are pretty much basic. But a user can be connected with a particular user account.</p>
+    </blockquote>
+    <h1 id="jobs">Jobs</h1>
+    <blockquote>
+    <p>We can manage all of the Jobs our client needs here.</p>
+    <dl>
+    <dt>These are the information that we can store in this module:</dt>
+    <dd><ol style="list-style-type: lower-alpha">
+    <li>Job Reference Number</li>
+    <li>Date</li>
+    <li>Status</li>
+    <li>Client</li>
+    <li>Positoin</li>
+    <li>Location</li>
+    <li>Potential Income</li>
+    <li>Job Candidates (sub-module)</li>
+    <li>Interviews (sub-module)</li>
+    </ol>
+    </dd>
+    </dl>
+    <p>Job Candidates is a sub-module of the Job module. In this sub-module we can manage all the prospect candidates for the specific Job record.</p>
+    <dl>
+    <dt>A Job canidate may have the following information:</dt>
+    <dd><ol style="list-style-type: lower-alpha">
+    <li>Registration Date</li>
+    <li>Status</li>
+    <li>CV Source</li>
+    <li>Date the cv was shared to the client</li>
+    <li>Remarks</li>
+    <li>Salary Offered</li>
+    <li>Tentative date of joining</li>
+    <li>Associate</li>
+    <li>Consultant</li>
+    </ol>
+    </dd>
+    </dl>
+    <p>Interviews sub-module is where we can record all the interviews made with our job candidates.</p>
+    </blockquote>
+    <h1 id="pipeline">Pipeline</h1>
+    <blockquote>
+    <p>Pipelne module is where we manage our sales pipeline.</p>
+    <p>As soon as a job candidate progresses to a status where it is set-up to automatically create a Pipeline record, then the system will automatically generate a pipeline record and compute the related amounts for us.</p>
+    <dl>
+    <dt>A pipeline record can have the following information:</dt>
+    <dd><ol style="list-style-type: lower-alpha">
+    <li>Date</li>
+    <li>Successful Date</li>
+    <li>Job Candidate</li>
+    <li>Recruitment Terms</li>
+    <li>Recruitment Rate</li>
+    <li>Base Amount</li>
+    <li>Potential Income</li>
+    <li>Status</li>
+    <li>Invoice Date</li>
+    <li>Invoice Number</li>
+    <li>Invoice Amount</li>
+    <li>VAT</li>
+    </ol>
+    </dd>
+    </dl>
+    <p>Once a Pipeline progresses into a 100%, then the system will automatically compute and generate commission records for us. These commission records can be edited at a later time.</p>
+    </blockquote>
+    <h1 id="commissions">Commissions</h1>
+    <blockquote>
+    <p>Here commissions are being managed.</p>
+    <dl>
+    <dt>A Commission record may have the following information:</dt>
+    <dd><ol style="list-style-type: lower-alpha">
+    <li>Pipeline record</li>
+    <li>Employee</li>
+    <li>Rate used</li>
+    <li>Amount of the commission</li>
+    <li>If this record is paid</li>
+    </ol>
+    </dd>
+    </dl>
+    <p>What is amazing, is that we can set-up the commission rates. So the system adjusts itself according to our commssion schemes.</p>
+    </blockquote>
+    <h1 id="reports">Reports</h1>
+    <blockquote>
+    <p>Here we can generate and export in PDF or Excel format business reports that we need.</p>
+    <dl>
+    <dt>Here are the reports that are available:</dt>
+    <dd><ol style="list-style-type: lower-alpha">
+    <li>Pipeline Summary</li>
+    <li>Jobs Summary</li>
+    <li>Job to Pipeline Analysis</li>
+    <li>Commissions Earned Summary</li>
+    <li>Monthly Invoices Summary</li>
+    </ol>
+    </dd>
+    </dl>
+    <p>If a report is a missing, we can let the developer of HRSalesPipes know by sending him an email to <script type="text/javascript">
+    <!--
+    h='&#120;&#x6f;&#102;&#x79;&#116;&#x65;&#x63;&#104;&#46;&#x63;&#x6f;&#x6d;';a='&#64;';n='&#104;&#x61;&#110;&#122;';e=n+a+h;
+    document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
+    // -->
+    </script><noscript>&#104;&#x61;&#110;&#122;&#32;&#x61;&#116;&#32;&#120;&#x6f;&#102;&#x79;&#116;&#x65;&#x63;&#104;&#32;&#100;&#x6f;&#116;&#32;&#x63;&#x6f;&#x6d;</noscript>. Or create a feature request on the project's official repository <a href="https://github.com/hanztura/hrsalespipes">https://github.com/hanztura/hrsalespipes</a>.</p>
+    </blockquote>
+    <h1 id="dashboard">Dashboard</h1>
+    <blockquote>
+    <p>As soon as a user log's in to the system, they are redirected into the Dashboard.</p>
+    <p>In Dashboard we can see directly the different statistics of our business through dashboard cards and graphs.</p>
+    <dl>
+    <dt>These are some of Dashboard items:</dt>
+    <dd><ol style="list-style-type: lower-alpha">
+    <li>Active Jobs</li>
+    <li>Succesful job placements this month</li>
+    <li>Interviews Arranged</li>
+    <li>CVs sent to clients
+    </li>
+    <li>Income generated this month</li>
+    <li>Income generated last month</li>
+    <li>Successful job placements per industry</li>
+    <li>Successful job placements per consultant this month</li>
+    <li>Total Income generated per consultant this month</li>
+    <li>Total Income generated per consultant last 12 months</li>
+    <li>YTD Client Performance</li>
+    </ol>
+    </dd>
+    </dl>
+    </blockquote>
+    <h1 id="system-administration">System Administration</h1>
+    <blockquote>
+    <p>In this module, we are able to manage all the system related data.</p>
+    <p>It is very important to note to not share the admin page url to anyone that is not meant to know this information.</p>
+    <dl>
+    <dt>Included here are:</dt>
+    <dd><ol style="list-style-type: lower-alpha">
+    <li>Admin Page Honeypot login attempts</li>
+    <li>Authentication and Authorization</li>
+    <li>Commission Rates</li>
+    <li>CV Templates</li>
+    <li>Employees</li>
+    <li>Job Status</li>
+    <li>Job Candidate Status</li>
+    <li>Pipeline Status</li>
+    <li>Interview Modes</li>
+    <li>Locations</li>
+    <li>Settings</li>
+    <li>Users</li>
+    <li>Visa Status</li>
+    </ol>
+    </dd>
+    </dl>
+    <p>This is where we control the permissions each users or group of users may have.</p>
+    <p>Be extremely careful in giving a user an access to this module.</p>
+    </blockquote>
+    <h2 id="technical-specifications">Technical Specifications</h2>
+    <blockquote>
+    <p>This part of this documents are meant for developers or anyone who is interested on how HRSalesPipes was built and developed.</p>
+    <dl>
+    <dt>These are the main software technologies used in this project:</dt>
+    <dd><ol style="list-style-type: lower-alpha">
+    <li><a href="http://www.python.org/">Python</a> - Python is a programming language that lets you work more quickly and integrate your systems more effectively.</li>
+    <li><a href="https://www.djangoproject.com/">Django</a>- The Web framework for perfectionists with deadlines.</li>
+    <li><a href="https://vuejs.org/">VueJS</a> - The Progressive JavaScript Framework.</li>
+    <li><a href="vuetifyjs.com//">Vuetify</a> - Vue Material Design Component Framework.</li>
+    </ol>
+    </dd>
+    </dl>
+    <p>For the detailed list of the packages used by the project, see the requirements file on the config&gt;&gt;requirements directory of this project.</p>
+    <p>Also, the author of HRSalesPipes recommend to deploy the app in Ubuntu - The leading operating system for PCs, IoT devices, servers and the cloud.</p>
+    </blockquote>
+    <h2 id="about-the-author">About the Author</h2>
+    <blockquote>
+    <p>Lets talk a little about the author.</p>
+    <p>Meet him, Hanz Tura.</p>
+    <p>A self-taught programmer who is currently registered in the Philippines with the business name <a href="https://xofytech.com">&quot;X of Y Business and Services&quot;</a> and works us a full stack web developer mainly with Django and VueJS.</p>
+    <p>Hanz is a passionate learner.</p>
+    <p>He found a great love for programming, specially with Python.</p>
+    <p>Send him a message at <a href="mailto:hanz@xofytech.com">hanz@xofytech.com</a></p></blockquote></script></p></blockquote></v
+    
+  </v-container>  
+{% endblock content %}
+
+{% block script %}
+<script>
+  new Vue({
+    el: '#inspire',
+    vuetify: new Vuetify(),
+
+    data: () => ({
+      drawer: null,
+      subBreadcrumbs: [
+        {
+          text: 'About HRSalesPipes',
+        },
+      ],
+      reports: [
+        {
+          icon: '{{ ICON_COMMISSIONS}}',
+          href: "{% url 'reports:commissions_earned_summary' %}",
+          title: 'Commissions Earned Summary',
+        },
+        {
+          icon: 'mdi-headphones',
+          href: "{% url 'reports:interviews' %}",
+          title: 'Interviews Report',
+        },
+        {
+          icon: 'mdi-clipboard-arrow-right',
+          href: "{% url 'reports:job_to_pipeline_analysis' %}",
+          title: 'Job to Pipeline Analysis',
+        },
+        {
+          icon: '{{ ICON_JOBS }}',
+          href: "{% url 'reports:jobs_summary' %}",
+          title: 'Jobs Summary',
+        },
+        {
+          icon: 'mdi-file-percent',
+          href: "{% url 'reports:monthly_invoices_summary' %}",
+          title: 'Monthly Invoices Summary',
+        },
+        {
+          icon: '{{ ICON_PIPELINE }}',
+          href: "{% url 'reports:pipeline_summary' %}",
+          title: 'Pipeline Summary'
+        },
+        {
+          icon: 'mdi-briefcase-check',
+          href: "{% url 'reports:successful_jobs' %}",
+          title: 'Successful Jobs'
+        },
+      ]
+    }),
+
+    methods: {
+    },
+
+    mounted(){
+      this.updateBreadcrumbs();
+    }
+  });
+</script>  
+{% endblock script %}
