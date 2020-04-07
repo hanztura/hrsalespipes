@@ -148,10 +148,8 @@ class ClientCreateView(
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        locations = get_objects_as_choices(Location)
-
-        context['locations'] = locations
+        context['locations'] = get_objects_as_choices(Location)
+        context['industries'] = get_objects_as_choices(Industry)
         return context
 
 

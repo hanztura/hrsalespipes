@@ -1,5 +1,5 @@
 {% extends "contacts/base.html" %}
-{% load static %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Candidates - List
@@ -83,70 +83,32 @@ Candidates - List
       </v-col> <!-- Pagination -->
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    {% if debug %}
+      <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+    {% else %}
+      <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+    {% endif %}
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script>
+      let currentPage = {{ page_obj.number|default_if_none:0 }};
+      let currentPageLength = {{ paginator.num_pages|default_if_none:0 }};
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script>
+      let data = {
+        owner: '{{ owners_query|default_if_none:"" }}',
+      };
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'contacts/candidateList.js' %}"></script>
+  {% endaddtoblock %}
+
 {% endblock subcontent %}
-
-{% block script %}
-
-{% if debug %}
-  <script src="{% static "vendor/lodash/lodash.js" %}"></script>
-{% else %}
-  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
-{% endif %}
-
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Contacts',
-          disabled: false,
-          href: '{% url "contacts:index" %}',
-        },
-        {
-          text: 'Candidates',
-          disabled: true,
-          href: '{% url "contacts:candidates_list" %}',
-        },
-      ],
-      page: {{ page_obj.number|default_if_none:0 }},
-      pageLength: {{ paginator.num_pages|default_if_none:0 }},
-      owners: [],
-      owner: '{{ owners_query|default_if_none:"" }}',
-    }),
-
-    computed: {
-      orderedNationalities: function () {
-        return _.sortBy(this.nationalities, ['nationality']);
-      }
-    },
-
-    methods:{
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      },
-      transformDataStringToArray: function(dataVariable) {
-        // transform status into array
-        let variable = this[dataVariable] ? this[dataVariable].split(',') : [];
-        this[dataVariable] = variable;
-      },
-
-      {% include "_includes/js/pageGoTo.js" %}
-    },
-
-    beforeMount() {
-      this.setDataChoices('ownersChoices', 'owners');
-      this.transformDataStringToArray('owner');
-    },
-
-    mounted(){
-      this.updateBreadcrumbs();
-    }
-
-  });
-</script>  
-{% endblock script %}

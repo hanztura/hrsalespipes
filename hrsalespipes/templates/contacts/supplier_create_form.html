@@ -1,4 +1,5 @@
 {% extends "contacts/base.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Supplier - New
@@ -47,38 +48,8 @@ Supplier - New
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script src="{% static 'contacts/supplierCreate.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Contacts',
-          disabled: false,
-          href: '{% url "contacts:index" %}',
-        },
-        {
-          text: 'Suppliers',
-          disabled: false,
-          href: '{% url "contacts:suppliers_list" %}',
-        },
-        {
-          text: 'New',
-          disabled: true,
-        }
-      ],
-    }),
-
-    mounted(){
-      this.updateBreadcrumbs();
-    }
-
-  });
-</script>  
-{% endblock script %}

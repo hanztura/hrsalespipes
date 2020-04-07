@@ -1,10 +1,11 @@
-{% extends "contacts/base.html" %}
+{% extends "contacts/base_clients.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Client Detail - {{ object.name }}
 {% endblock title %}
 
-{% block subcontent %}
+{% block client %}
   <v-container
     fluid>
     <h1>{{ object.name }} - Client Detail</h1>
@@ -112,68 +113,15 @@ Client Detail - {{ object.name }}
       </v-col>
     </v-row>
   </v-container>  
-{% endblock subcontent %}
 
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-    delimiters: ['[[', ']]'],
+  {% addtoblock "js" %}
+    <script>
+      let contactName = '{{ object.name }}';
+    </script>
+  {% endaddtoblock %}
 
-    props: {
-      source: String,
-    },
+  {% addtoblock "js" %}
+    <script src="{% static 'contacts/clientDetail.js' %}"></script>
+  {% endaddtoblock %}
 
-    data: () => ({
-      drawer: null,
-      breadcrumbs: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          href: '/',
-        },
-        {
-          text: 'Contacts',
-          disabled: false,
-          href: '{% url "contacts:index" %}',
-        },
-        {
-          text: 'Clients',
-          disabled: false,
-          href: '{% url "contacts:clients_list" %}',
-        },
-        {
-          text: '{{ object.name }}',
-          disabled: true,
-        },
-      ],
-      tab: null,
-      tabs: [
-        {
-          tab: 'Contact Details',
-          icon: 'fas fa-address-book',  
-        },
-        {
-          tab: 'Others',
-          icon: 'fas fa-info',  
-        },
-      ],
-      pointOfContacts: [],
-    }),
-
-    methods: {
-      setPointOfContacts: function() {
-        let poc = this.$refs.pointOfContacts.value;
-        poc = poc ? JSON.parse(poc) : [];
-        this.pointOfContacts = poc;
-      },
-    },
-
-    mounted(){
-      this.setPointOfContacts();
-    }
-
-  });
-</script>  
-{% endblock script %}
+{% endblock client %}

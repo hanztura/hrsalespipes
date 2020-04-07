@@ -1,5 +1,5 @@
 {% extends "contacts/base.html" %}
-{% load static %}
+{% load static sekizai_tags %}
 
 {% block title %}
 {{ object.name }} - Update Supplier
@@ -89,100 +89,23 @@
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    {% if debug %}
+      <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+    {% else %}
+      <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+    {% endif %}
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script>
+      let contactUrl = '{% url "contacts:suppliers_detail" object.pk %}';
+      let contactName = '{{ object.name }}';
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'contacts/supplierUpdate.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-
-{% if debug %}
-  <script src="{% static "vendor/lodash/lodash.js" %}"></script>
-{% else %}
-  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
-{% endif %}
-
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-    delimiters: ['[[', ']]'],
-
-    props: {
-      source: String,
-    },
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Contacts',
-          disabled: false,
-          href: '{% url "contacts:index" %}',
-        },
-        {
-          text: 'Suppliers',
-          disabled: false,
-          href: '{% url "contacts:suppliers_list" %}',
-        },
-        {
-          text: '{{ object.name }}',
-          disabled: false,
-          href: '{% url "contacts:suppliers_detail" object.pk %}',
-        },
-        {
-          text: 'Edit',
-          disabled: true,
-        }
-      ],
-      tab: null,
-      tabs: [
-        {
-          tab: 'Contact Details',
-          icon: 'fas fa-address-book',  
-        },
-      ],
-      pointOfContacts: [],
-    }),
-
-    computed: {
-      stringPointOfContacts: function () {
-        // clean first
-        let defaultPoc = {
-          name: '',
-          number: '',
-          email: '',
-          notes: '',
-        }
-        let pointOfContacts = this.pointOfContacts;
-        let poc = _.filter(pointOfContacts, (poc) => {
-          return poc.name.length;
-        });
-        return JSON.stringify(poc);
-      }
-    },
-
-    methods: {
-      setPointOfContacts: function() {
-        let poc = this.$refs.pointOfContacts.value;
-        poc = poc ? JSON.parse(poc) : [];
-        this.pointOfContacts = poc;
-      },
-      newPointOfContact: function () {
-        this.pointOfContacts.push({
-          name: '',
-          number: '',
-          email: '',
-          notes: '',
-        });
-      },
-      removePoc: function (index) {
-        this.pointOfContacts.splice(index, 1);
-      }
-    },
-
-    mounted(){
-      this.updateBreadcrumbs();
-      this.setPointOfContacts();
-    }
-
-  });
-</script>  
-{% endblock script %}

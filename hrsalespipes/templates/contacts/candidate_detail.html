@@ -1,5 +1,5 @@
 {% extends "contacts/base.html" %}
-{% load humanize %}
+{% load humanize static sekizai_tags %}
 
 {% block title %}
 Candidate Detail - {{ object.name }}
@@ -247,88 +247,17 @@ Candidate Detail - {{ object.name }}
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let contactName = '{{ object.name }}';
+      let data = {
+        isMedical:  {{object.is_medical|yesno:'true,false'}},
+      };
+    </script>
+  {% endaddtoblock %}   
+
+  {% addtoblock "js" %}
+    <script src="{% static 'contacts/candidateDetail.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-    delimiters: ['[[', ']]'],
-
-    props: {
-      source: String,
-    },
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Contacts',
-          disabled: false,
-          href: '{% url "contacts:index" %}',
-        },
-        {
-          text: 'Candidates',
-          disabled: false,
-          href: '{% url "contacts:candidates_list" %}',
-        },
-        {
-          text: '{{ object.name }}',
-          disabled: true,
-        },
-      ],
-      tab: null,
-      tabs: [
-        {
-          tab: 'Contact Details',
-          icon: 'fas fa-address-book',  
-        },
-        {
-          tab: 'Personal',
-          icon: 'fas fa-user',  
-        },
-        {
-          tab: 'Current/Previous Work',
-          icon: 'fas fa-undo',  
-        },
-        {
-          tab: 'Others',
-          icon: 'fas fa-info',  
-        },
-        {
-          tab: 'Medical',
-          icon: 'fas fa-notes-medical',  
-        },
-      ],
-      locations: [
-        'Philippines',
-        'UAE',
-      ],
-      location: '{{ object.location }}',
-      nationalities: [
-        'Filipino',
-        'etc',
-      ],
-      nationality: '{{ object.nationality }}',
-      civilStatusChoices: [
-        {value: 'S', text: 'Single'},
-        {value: 'M', text: 'Married'},
-        {value: 'W', text: 'Widowed'},
-        {value: 'D', text: 'Divorced'},
-        {value: 'Se', text: 'Separated'},
-      ],
-      genders: [
-        {value: 'F', text: 'Female'},
-        {value: 'M', text: 'Male'},
-      ],
-      isMedical: {{object.is_medical|yesno:'true,false'}},
-    }),
-
-    mounted(){
-      this.updateBreadcrumbs();
-    }
-
-  });
-</script>  
-{% endblock script %}

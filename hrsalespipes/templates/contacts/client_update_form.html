@@ -1,11 +1,11 @@
-{% extends "contacts/base.html" %}
-{% load static %}
+{% extends "contacts/base_clients.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 {{ object.name }} - Update Client
 {% endblock title %}
 
-{% block subcontent %}
+{% block client %}
   <v-container
     fluid>
     <h1>{{ object.name }} - Update Client</h1>
@@ -172,119 +172,30 @@
       </v-col>
     </v-row>
   </v-container>  
-{% endblock subcontent %}
 
-{% block script %}
-{% if debug %}
-  <script src="{% static "vendor/lodash/lodash.js" %}"></script>
-{% else %}
-  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
-{% endif %}
+  {% addtoblock "js" %}
+    {% if debug %}
+      <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+    {% else %}
+      <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+    {% endif %}
+  {% endaddtoblock %}
 
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    props: {
-      source: String,
-    },
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Contacts',
-          disabled: false,
-          href: '{% url "contacts:index" %}',
-        },
-        {
-          text: 'Clients',
-          disabled: false,
-          href: '{% url "contacts:clients_list" %}',
-        },
-        {
-          text: '{{ object.name }}',
-          disabled: false,
-          href: '{% url "contacts:clients_detail" object.pk %}',
-        },
-        {
-          text: 'Edit',
-          disabled: true,
-        }
-      ],
-      tab: null,
-      tabs: [
-        {
-          tab: 'Contact Details',
-          icon: 'fas fa-address-book',  
-        },
-        {
-          tab: 'Others',
-          icon: 'fas fa-info',  
-        },
-      ],
-      locations: [],
-      location: '{{ form.location.value }}',
-      industries: [],
-      industry: '{{ form.industry.value }}',
-      agreementTerm: {{ form.instance.agreement_term }},
-      agreementFee: {{ form.instance.agreement_fee }},
-      pointOfContacts: [],
-      employees: [],
-      businessDevelopmentPerson: '{{ form.business_development_person.value|default_if_none:'' }}',
-    }),
-
-    computed: {
-      stringPointOfContacts: function () {
-        // clean first
-        let defaultPoc = {
-          name: '',
-          number: '',
-          email: '',
-          notes: '',
-        }
-        let pointOfContacts = this.pointOfContacts;
-        let poc = _.filter(pointOfContacts, (poc) => {
-          return poc.name.length;
-        });
-        return JSON.stringify(poc);
+  {% addtoblock "js" %}
+    <script>
+      let urlClient = '{% url "contacts:clients_detail" object.pk %}';
+      let contactName = '{{ object.name }}';
+      let data = {
+        location: '{{ form.location.value }}',
+        industry: '{{ form.industry.value }}',
+        agreementTerm: {{ form.instance.agreement_term }},
+        agreementFee: {{ form.instance.agreement_fee }},
+        businessDevelopmentPerson: '{{ form.business_development_person.value|default_if_none:'' }}',
       }
-    },
+    </script>
+  {% endaddtoblock %}
 
-    methods: {
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      },
-      setPointOfContacts: function() {
-        let poc = this.$refs.pointOfContacts.value;
-        poc = poc ? JSON.parse(poc) : [];
-        this.pointOfContacts = poc;
-      },
-      newPointOfContact: function () {
-        this.pointOfContacts.push({
-          name: '',
-          number: '',
-          email: '',
-          notes: '',
-        });
-      },
-      removePoc: function (index) {
-        this.pointOfContacts.splice(index, 1);
-      }
-    },
-
-    beforeMount(){
-      this.setDataChoices('dataLocationChoices', 'locations');
-      this.setDataChoices('dataIndustryChoices', 'industries');
-      this.setDataChoices('dataCandidateOwnerChoices', 'employees');
-      this.updateBreadcrumbs();
-    },
-    mounted(){
-      this.setPointOfContacts();
-    }
-
-  });
-</script>  
-{% endblock script %}
+  {% addtoblock "js" %}
+    <script src="{% static 'contacts/clientUpdate.js' %}"></script>
+  {% endaddtoblock %}
+{% endblock client %}

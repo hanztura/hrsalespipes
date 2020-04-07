@@ -1,10 +1,11 @@
-{% extends "contacts/base.html" %}
+{% extends "contacts/base_clients.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Clients - New
 {% endblock title %}
 
-{% block subcontent %}
+{% block client %}
   <v-container
     fluid>
     <h1>New Client</h1>
@@ -16,6 +17,7 @@ Clients - New
         <form method="post">
           {% csrf_token %}
           <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
+          <input type="hidden" id="dataIndustryChoices" value="{{ industries }}">
           {% for error in form.errors %}
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
@@ -68,94 +70,26 @@ Clients - New
       </v-col>
     </v-row>
   </v-container>  
-{% endblock subcontent %}
 
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
+  {% addtoblock "js" %}
+    {% if debug %}
+      <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+    {% else %}
+      <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+    {% endif %}
+  {% endaddtoblock %}
 
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Contacts',
-          disabled: false,
-          href: '{% url "contacts:index" %}',
-        },
-        {
-          text: 'Clients',
-          disabled: false,
-          href: '{% url "contacts:clients_list" %}',
-        },
-        {
-          text: 'New',
-          disabled: true,
-        }
-      ],
-      locations: [],
-      location: '{{ form.location.value }}',
-      industries: [
-        {
-          'text': 'Retail',
-          'value': 'Retail',
-        },
-        {
-          'text': 'Government',
-          'value': 'Government',
-        },
-        {
-          'text': 'Interior Design',
-          'value': 'Interior Design',
-        },
-        {
-          'text': 'Legal',
-          'value': 'Legal',
-        },
-        {
-          'text': 'Investment',
-          'value': 'Investment',
-        },
-        {
-          'text': 'Consultancy',
-          'value': 'Consultancy',
-        },
-        {
-          'text': 'Healthcare',
-          'value': 'Healthcare',
-        },
-        {
-          'text': 'FMCG',
-          'value': 'FMCG',
-        },
-        {
-          'text': 'Trading ',
-          'value': 'Trading ',
-        },
-        {
-          'text': 'Defence',
-          'value': 'Defence',
-        },
-        {
-          'text': 'Oil & Gas',
-          'value': 'Oil & Gas',
-        },
-      ],
-      industry: '{{ form.industry.value }}',
-    }),
+  {% addtoblock "js" %}
+    <script>
+      let data = {
+        location: '{{ form.location.value }}',
+        industry: '{{ form.industry.value }}',
+        industries: [],
+      };
+    </script>
+  {% endaddtoblock %}
 
-    methods: {
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      }
-    },
-
-    beforeMount(){
-      this.setDataChoices('dataLocationChoices', 'locations');
-      this.updateBreadcrumbs();
-    },
-  });
-</script>  
-{% endblock script %}
+  {% addtoblock "js" %}
+    <script src="{% static 'contacts/clientCreate.js' %}"></script>
+  {% endaddtoblock %}
+{% endblock client %}

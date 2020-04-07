@@ -1,0 +1,12 @@
+{% extends "contacts/base.html" %}
+{% load sekizai_tags %}
+
+{% block subcontent %}
+  {% addtoblock "js" %}
+    <script>
+      let urlClients = URLS.CLIENTS;
+    </script>
+  {% endaddtoblock %}  
+
+  {% block client %}{% endblock client %}
+{% endblock subcontent %}

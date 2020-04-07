@@ -1,4 +1,5 @@
 {% extends "contacts/base.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Suppliers - List
@@ -55,39 +56,15 @@ Suppliers - List
       </v-col> <!-- Pagination -->
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let currentPage = {{ page_obj.number|default_if_none:0 }};
+      let currentPageLength = {{ paginator.num_pages|default_if_none:0 }};
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'contacts/supplierList.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Contacts',
-          disabled: false,
-          href: '{% url "contacts:index" %}',
-        },
-        {
-          text: 'Suppliers',
-          disabled: true,
-        },
-      ],
-      page: {{ page_obj.number|default_if_none:0 }},
-      pageLength: {{ paginator.num_pages|default_if_none:0 }},
-    }),
-
-    methods:{
-      {% include "_includes/js/pageGoTo.js" %}
-    },
-
-    mounted(){
-      this.updateBreadcrumbs();
-    }
-
-  });
-</script>  
-{% endblock script %}

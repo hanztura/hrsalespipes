@@ -1,0 +1,264 @@
+{% load static sekizai_tags %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock title %} | HRSalesPipes</title>
+
+    {% addtoblock "css" %}
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" href="{% static "vendor/vuetify/vuetify.min.css" %}">
+
+      {% if debug %}
+        <link href="{% static "vendor/materialdesignicons.min.css" %}" rel="stylesheet">
+      {% else %}
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+      {% endif %}
+    {% endaddtoblock %}
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+  <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
+  <link rel="manifest" href="{% static 'site.webmanifest' %}">
+  {% render_block "css" %}
+
+  {% block headblock %}{% endblock headblock %}
+</head>
+
+<body>
+  <div id="app">
+    <v-app id="inspire">
+      <v-navigation-drawer
+        v-model="drawer"
+        app>
+        <v-list>
+          <template
+            v-for="item in navigationDrawerItems">
+
+            <v-list-group
+              v-if="item.items"
+              :key="item.title"
+              v-model="item.active"
+              :prepend-icon="item.action"
+              no-action
+            >
+              <template v-slot:activator>
+                <v-list-item-content>
+                  <v-list-item-title v-text="item.title"></v-list-item-title>
+                </v-list-item-content>
+              </template>
+
+              <v-list-item
+                v-for="subItem in item.items"
+                :key="subItem.title"
+                :href="subItem.href"
+                class="mx-0"
+              >
+                <v-list-item-icon>
+                  <v-icon small>[[ subItem.action ]]</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title v-text="subItem.title"></v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-group>
+            
+            <v-list-item
+              v-else
+              :key="item.title"
+              v-model="item.active"
+              :href="item.href">
+              <v-list-item-icon>
+                <v-icon>[[ item.action ]]</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title v-text="item.title"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+
+          {% if not user.is_authenticated %}
+            <template
+              v-for="item in navigationDrawerItemsNonAuthenticatedUsers">
+
+              <v-list-item
+                :key="item.title"
+                v-model="item.active"
+                :href="item.href">
+                <v-list-item-icon>
+                  <v-icon>[[ item.action ]]</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                  <v-list-item-title v-text="item.title"></v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          {% endif %}
+        </v-list>
+      </v-navigation-drawer>
+
+      <v-app-bar
+        app
+        color="primary"
+        dark>
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+
+        <v-toolbar-title>
+          <a class="white--text" title="Home" href="/" style="text-decoration: none !important;">{{ SYSTEM_SETTINGS.project_label }}</a>
+        </v-toolbar-title>
+
+        <v-spacer></v-spacer>
+
+        <v-menu
+          left
+          bottom
+          class="hidden-sm-and-down">
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" title="Contacts" class="hidden-sm-and-down">
+              <v-icon>{{ ICON_CONTACTS }}</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list class="hidden-sm-and-down">
+            <v-list-item href="{% url 'contacts:candidates_list' %}">
+              <v-list-item-icon>
+                <v-icon small>{{ ICON_CANDIDATES }}</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>Candidates</v-list-item-content>
+            </v-list-item>
+
+            <v-list-item href="{% url 'contacts:clients_list' %}">
+              <v-list-item-icon>
+                <v-icon small>{{ ICON_CLIENTS }}</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>Clients</v-list-item-content>
+            </v-list-item>
+
+            <v-list-item href="{% url 'contacts:suppliers_list' %}">
+              <v-list-item-icon>
+                <v-icon small>{{ ICON_SUPPLIERS }}</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>Suppliers</v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
+        <v-btn icon href="{% url 'jobs:list' %}" title='Jobs' class="hidden-sm-and-down">
+          <v-icon>{{ ICON_JOBS }}</v-icon>
+        </v-btn>
+
+        <v-btn icon href="{% url 'salespipes:list' %}" title='Pipeline'class="hidden-sm-and-down">
+          <v-icon>{{ ICON_PIPELINE }}</v-icon>
+        </v-btn>
+
+        <v-btn icon href="{% url 'reports:index' %}" title='Reports'class="hidden-sm-and-down">
+          <v-icon>{{ ICON_REPORTS }}</v-icon>
+        </v-btn>
+
+        <v-menu
+          left
+          bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" title="Account">
+              <v-icon>{{ ICON_ACCOUNT }}</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list>
+            {% if user.is_authenticated %}
+              <v-list-item>
+                <v-list-item-title>Hi {{ user.username }}!</v-list-item-title>
+              </v-list-item>
+
+              {% if user.is_staff %}
+              <v-list-item
+                href="{% url 'admin:index' %}">
+                <v-list-item-title>Admin</v-list-item-title>
+              </v-list-item>
+              {% endif %}
+
+              <v-list-item
+                href="{% url 'system:logout' %}">
+                <v-list-item-title>Logout</v-list-item-title>
+              </v-list-item>
+            {% endif %}
+
+              <v-list-item
+                href="{% url 'system:about' %}">
+                <v-list-item-title>About</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                href="https://www.youtube.com/watch?v=tIAe5LANfM0&list=PLcr7blJ6ArQFeLv5YcLl0EYc2jwNkynZ_"
+                target="_blank">
+                <v-list-item-title>How to use HRSalesPipes?</v-list-item-title>
+              </v-list-item>
+          </v-list>
+          </v-menu>
+      </v-app-bar>
+
+      <v-content>
+        {% block content %}{% endblock content %}
+      </v-content>
+      <v-footer
+        color="primary"
+        app
+        dark
+        absolute>
+        <span>HRSalesPipes &copy; {% now "Y" %} | <a href="https://xofytech.com" class="white--text">X of Y</a>. All rights reserved.</span>
+      </v-footer>
+    </v-app>
+  </div>
+
+  {% if debug %}
+    <script src="{% static "vendor/vue/vue.js" %}"></script>
+    <script src="{% static "vendor/vuetify/vuetify.js" %}"></script>
+  {% else %}
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  {% endif %}
+
+  <script>
+    const ICONS = {
+      ICON_DASHBOARD: '{{ ICON_DASHBOARD }}',
+      ICON_CONTACTS: '{{ ICON_CONTACTS }}',
+      ICON_CANDIDATES: '{{ ICON_CANDIDATES }}',
+      ICON_CLIENTS: '{{ ICON_CLIENTS }}',
+      ICON_SUPPLIERS: '{{ ICON_SUPPLIERS }}',
+      ICON_JOBS: '{{ ICON_JOBS }}',
+      ICON_PIPELINE: '{{ ICON_PIPELINE }}',
+      ICON_REPORTS: '{{ ICON_REPORTS }}',
+      ICON_COMMISSIONS: '{{ ICON_COMMISSIONS }}',
+      ICON_BACKUPS: '{{ ICON_BACKUPS }}',
+    };
+    const URLS = {
+      DASHBOARD: '{% url "dashboard:index" %}',
+      CONTACTS: '{% url "contacts:index" %}',
+      CANDIDATES: '{% url "contacts:candidates_list" %}',
+      CLIENTS: '{% url "contacts:clients_list" %}',
+      SUPPLIERS: '{% url "contacts:suppliers_list" %}',
+      JOBS: '{% url "jobs:list" %}',
+      PIPELINE: '{% url "salespipes:list" %}',
+      REPORTS: '{% url "reports:index" %}',
+      ABOUT: '{% url "system:about" %}',
+      COMMISISONS: '{% url "commissions:list" %}',
+      BACKUPS: '{% url "backups:list" %}',
+    };
+    const PERMISSIONS = {
+      isCommissionAllowed: {{ perms.commissions.view_commission|yesno:'true,false' }},
+      isBackupAllowed: {{ perms.backups.view_backup|yesno:'true,false' }},
+    };
+  </script>
+  <script src="{% static 'js/vueMixins.js' %}"></script>
+
+  {% render_block "js" %}
+</body>
+</html>
