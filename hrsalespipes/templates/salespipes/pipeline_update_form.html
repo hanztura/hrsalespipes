@@ -1,5 +1,5 @@
 {% extends "salespipes/base.html" %}
-{% load static %}
+{% load static sekizai_tags %}
 
 {% block title %}
 {{ object.job_candidate.candidate.name }} ({{ object.job_candidate.job.reference_number }}) - Pipeline Edit
@@ -139,124 +139,43 @@
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let objectUrl = '{% url "salespipes:detail" object.pk %}';
+      let objectText = '{{ object.job_candidate.candidate.name }} ({{ object.job_candidate.job.reference_number }})';
+      let data = {
+        job: '{{ job_id }}',
+        jobCandidate: Number('{{ form.job_candidate.value }}'),
+        status: '{{ form.status.value }}',
+        recruitmentTerm: {{ form.recruitment_term.value }},
+        recruitmentFee: {{ form.recruitment_rate.value }},
+        baseAmount: {{ form.base_amount.value }},
+        potentialIncome: {{ form.potential_income.value }},
+        vatRate: {{ vat_rate }},
+        vat: {{ form.vat.value }},
+        invoiceAmount: {{ form.invoice_amount.value }},
+      }
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    {% if debug %}
+      <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+    {% else %}
+      <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+    {% endif %}
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    {% if debug %}
+      <script src="{% static "vendor/axios.min.js" %}"></script>
+    {% else %}
+      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    {% endif %}
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'salespipes/pipelineUpdate.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-
-{% if debug %}
-  <script src="{% static "vendor/lodash/lodash.js" %}"></script>
-  <script src="{% static "vendor/axios.min.js" %}"></script>
-{% else %}
-  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-{% endif %}
-
-<script>
-
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Pipeline',
-          disabled: false,
-          href: '{% url "salespipes:list" %}',
-        },
-        {
-          text: '{{ object.job_candidate.candidate.name }} ({{ object.job_candidate.job.reference_number }})',
-          disabled: false,
-          href: '{% url "salespipes:detail" object.pk %}',
-        },
-        {
-          text: 'Edit',
-        }
-      ],
-      jobs: [],
-      job: '{{ job_id }}',
-      jobCandidates: [],
-      jobCandidate: Number('{{ form.job_candidate.value }}'),
-      statusChoices: [],
-      status: '{{ form.status.value }}',
-      recruitmentTerm: {{ form.recruitment_term.value }},
-      recruitmentFee: {{ form.recruitment_rate.value }},
-      baseAmount: {{ form.base_amount.value }},
-      potentialIncome: {{ form.potential_income.value }},
-      vatRate: {{ vat_rate }},
-      vat: {{ form.vat.value }},
-      invoiceAmount: {{ form.invoice_amount.value }},
-    }),
-
-    watch: {
-      recruitmentTerm: function (val, oldVal){
-        this.potentialIncome = this.computedPotentialIncome;
-      },
-      recruitmentFee: function (val, oldVal){
-        this.potentialIncome = this.computedPotentialIncome;
-      },
-      baseAmount: function (val, oldVal){
-        this.potentialIncome = this.computedPotentialIncome;
-      },
-      potentialIncome: function () {
-        this.vat = this.computedVat;
-        this.invoiceAmount = this.computedInvoiceAmount;
-      },
-      job: function (){
-        this.fetchJobCandidates();
-      }
-    },
-
-    computed: {
-      computedPotentialIncome: function () {
-        amount = this.baseAmount * this.recruitmentTerm * this.recruitmentFee;
-        return _.round(amount, 2);
-      },
-      computedInvoiceAmount: function() {
-        amount = Number(this.potentialIncome) + Number(this.vat);
-        return _.round(amount, 2);
-      },
-      computedVat: function() {
-        amount = Number(this.potentialIncome) * Number(this.vatRate);
-        return _.round(amount, 2);
-      }
-    },
-
-    methods: {
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      },
-      fetchJobCandidates: function(){
-        if (this.job){
-          let url = `/api/job-candidates/?job=${this.job}`;
-          let _this = this;
-          axios.get(url)
-            .then(function(response){
-              data = response.data;
-              // map data
-              _this.jobCandidates = _.map(data, (value) => {
-                return {
-                  'text': value.candidate.name,
-                  'value': value.id
-                }
-              })
-            })
-            .catch(function(error){
-              console.log(error);
-            });
-        }
-      }
-    },
-
-    beforeMount(){
-      this.setDataChoices('dataJobsChoices', 'jobs');
-      this.setDataChoices('dataStatusChoices', 'statusChoices');
-      this.updateBreadcrumbs();
-      this.fetchJobCandidates();
-    },
-
-  });
-</script>  
-{% endblock script %}

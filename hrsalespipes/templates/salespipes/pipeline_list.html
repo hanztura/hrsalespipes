@@ -1,5 +1,5 @@
 {% extends "salespipes/base.html" %}
-{% load humanize %}
+{% load static sekizai_tags humanize %}
 
 {% block title %}
 Pipeline
@@ -34,44 +34,23 @@ Pipeline
       </v-col> <!-- Pagination -->
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let currentPage = {{ page_obj.number|default_if_none:0 }};
+      let currentPageLength = {{ paginator.num_pages|default_if_none:0 }};
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script>
+      let data = {
+        employee: '{{ employee }}',
+      };
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'salespipes/pipelineList.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Pipeline',
-        },
-      ],
-      page: {{ page_obj.number|default_if_none:0 }},
-      pageLength: {{ paginator.num_pages|default_if_none:0 }},
-      employees: [],
-      employee: '{{ employee }}',
-    }),
-
-    methods:{
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      },
-
-      {% include "_includes/js/pageGoTo.js" %}
-    },
-
-    beforeMount(){
-      this.setDataChoices('dataEmployeeChoices', 'employees');
-    },
-
-    mounted(){
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}

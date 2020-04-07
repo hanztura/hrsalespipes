@@ -1,5 +1,5 @@
 {% extends "salespipes/base.html" %}
-{% load humanize %}
+{% load static sekizai_tags humanize %}
 
 {% block title %}
 {{ object.job_candidate.candidate.name }} ({{ object.job_candidate.job.reference_number }}) - Pipeline Detail
@@ -104,43 +104,14 @@
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let objectText = '{{ object.job_candidate.candidate.name }} ({{ object.job_candidate.job.reference_number }})';
+    </script>
+  {% endaddtoblock %}   
+
+  {% addtoblock "js" %}
+    <script src="{% static 'salespipes/pipelineDetail.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Pipeline',
-          disabled: false,
-          href: '{% url "salespipes:list" %}',
-        },
-        {
-          text: '{{ object.job_candidate.candidate.name }} ({{ object.job_candidate.job.reference_number }})',
-        },
-      ],
-      tab: null,
-      tabs: [
-        {
-          tab: 'Pipeline Detail',
-          icon: 'fas fa-filter',  
-        },
-        {
-          tab: 'Job Candidate',
-          icon: 'fas fa-user',  
-        },
-      ],
-    }),
-
-    mounted(){
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}

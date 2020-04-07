@@ -1,5 +1,5 @@
 {% extends "salespipes/base.html" %}
-{% load static %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Pipeline - New
@@ -48,83 +48,33 @@ Pipeline - New
       </v-col>
     </v-row>
   </v-container>  
-{% endblock subcontent %}
 
-{% block script %}
+  {% addtoblock "js" %}
+    <script>
+      let data = {
+        job: '{{ job_id }}',
+        jobCandidate: Number('{{ form.job_candidate.value }}'),
+      };
+    </script>
+  {% endaddtoblock %}
 
-{% if debug %}
-  <script src="{% static "vendor/lodash/lodash.js" %}"></script>
-  <script src="{% static "vendor/axios.min.js" %}"></script>
-{% else %}
-  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-{% endif %}
+  {% addtoblock "js" %}
+    {% if debug %}
+      <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+    {% else %}
+      <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+    {% endif %}
+  {% endaddtoblock %}
 
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
+  {% addtoblock "js" %}
+    {% if debug %}
+      <script src="{% static "vendor/axios.min.js" %}"></script>
+    {% else %}
+      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    {% endif %}
+  {% endaddtoblock %}
 
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Pipeline',
-          disabled: false,
-          href: '{% url "salespipes:list" %}',
-        },
-        {
-          text: 'New',
-        }
-      ],
-      jobs: [],
-      job: '{{ form.job.value }}',
-      jobCandidates: [],
-      jobCandidate: Number('{{ form.job_candidate.value }}'),
-    }),
-
-    watch: {
-      job: function (){
-        this.fetchJobCandidates();
-      }
-    },
-
-    methods: {
-      setJobChoices: function() {
-        let data = document.getElementById('dataJobsChoices').value;
-        this.jobs = JSON.parse(data);
-      },
-      fetchJobCandidates: function(){
-        if (this.job){
-          let url = `/api/job-candidates/?job=${this.job}`;
-          let _this = this;
-          axios.get(url)
-            .then(function(response){
-              data = response.data;
-              // map data
-              _this.jobCandidates = _.map(data, (value) => {
-                return {
-                  'text': value.candidate.name,
-                  'value': value.id
-                }
-              })
-            })
-            .catch(function(error){
-              console.log(error);
-            });
-        }
-      },
-    },
-
-    beforeMount(){
-      this.setJobChoices();
-      this.updateBreadcrumbs();
-    },
-
-    mounted(){
-      this.fetchJobCandidates();
-    }
-
-  });
-</script>  
-{% endblock script %}
+  {% addtoblock "js" %}
+    <script src="{% static 'salespipes/pipelineCreate.js' %}"></script>
+  {% endaddtoblock %}
+{% endblock subcontent %} 
