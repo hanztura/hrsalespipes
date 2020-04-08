@@ -233,7 +233,7 @@ Candidate Detail - {{ object.name }}
             <v-tab-item id="Active Jobs">
               <v-simple-table
                 dense>
-                {% include "jobs/includes/jobcandidate_list_table.html" with candidates=active_jobs %}
+                {% include "jobs/includes/jobcandidate_list_table.html" with candidates=active_jobs show_reference_number=True %}
               </v-simple-table>
             </v-tab-item>
           </v-tabs-items>

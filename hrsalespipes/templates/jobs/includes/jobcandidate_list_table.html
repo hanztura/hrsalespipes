@@ -3,6 +3,9 @@
   <thead>
     <tr>
       <th class="text-center">Candidate</th>
+      {% if show_reference_number %}
+        <th>Reference Number</th>
+      {% endif %}
       <th class="text-center">Registration Date</th>
       <th class="text-center">Status</th>
       <th class="text-center">Interviews</th>
@@ -18,23 +21,29 @@
         <td>
           <a href="{% url 'contacts:candidates_detail' candidate.candidate_id %}" title="view contact detail">{{ candidate.candidate.name }}</a>
         </td>
+        {% if show_reference_number %}
+          <td>{{ candidate.job.reference_number }}</td>
+        {% endif %}
         <td>{{ candidate.registration_date|date:SYSTEM_SETTINGS.display_date_format }}</td>
         <td>{{ candidate.status }}</td>
         <td>{{ candidate.interviews.all.count }}</td>
         <td>{{ candidate.associate.name }}</td>
         <td>{{ candidate.consultant.name }}</td>
         <td>
-          <v-btn
-            text
-            title="download cv"
-            href="{% url 'contacts:download_cv' candidate.candidate_id %}?position={{ candidate.job.position|urlencode }}">{{ SYSTEM_SETTINGS.cv_label }}</v-btn>
+          {% if not show_reference_number %}
+            <v-btn
+              text
+              title="download cv"
+              href="{% url 'contacts:download_cv' candidate.candidate_id %}?position={{ candidate.job.position|urlencode }}">{{ SYSTEM_SETTINGS.cv_label }}</v-btn>
+          {% endif %}
+          
           {% include "_includes/list_action_buttons.html" with edit_href=candidate.edit_href view_href=candidate.view_href %}
         </td>
       </tr>
       {% endfor %}
     {% else %}
       <tr>
-        <td colspan="11">{{ no_data_label|default_if_none:'No active jobs.'}}</td>
+        <td colspan="{% if show_reference_number %}12{% else %}11{% endif %}">{{ no_data_label|default_if_none:'No active jobs.'}}</td>
       </tr>
     {% endif %}
   </tbody>

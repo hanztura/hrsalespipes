@@ -94,7 +94,8 @@ class CandidateDetailView(PermissionRequiredMixin, DetailView):
         queryset = queryset.prefetch_related(Prefetch(
             'jobs',
             queryset=JobCandidate.objects.filter(
-                job__status__is_job_open=True)
+                job__status__is_job_open=True).select_related(
+                    'candidate', 'status', 'associate', 'consultant', 'job')
         ))
         return queryset
 
