@@ -15,7 +15,7 @@ Pipeline
     >
       <input type="hidden" id="dataEmployeeChoices" value="{{ employees }}">
       <v-col cols="12">
-        {% include "_includes/filter_form_with_employee.html" with label="Employee" %}
+        {% include "_includes/filter_form_with_employee_and_q.html" with label="Employee" q_label="Reference number or candidate" %}
       </v-col>
       
       <v-col cols="12">

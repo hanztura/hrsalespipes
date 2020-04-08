@@ -92,12 +92,11 @@ class JobListView(
         queryset = queryset.prefetch_related('candidates')
 
         # filter by reference number
-        search = self.request.GET.get('q', '')
-        if search:
-
+        self.search = self.request.GET.get('q', '')
+        if self.search:
             queryset = queryset.filter(
-                Q(reference_number__icontains=search) |
-                Q(client__name__icontains=search))
+                Q(reference_number__icontains=self.search) |
+                Q(client__name__icontains=self.search))
 
         # filter by consultant or associate of a job candidate
         self.employee = self.request.GET.get('employee', '')
@@ -112,7 +111,7 @@ class JobListView(
         context = super().get_context_data(**kwargs)
 
         # filter by reference number
-        context['q'] = self.request.GET.get('q', '')
+        context['q'] = self.search
         context['employee'] = self.employee
         context['employees'] = get_objects_as_choices(Employee)
         context['status_objects'] = get_objects_as_choices(JobStatus)

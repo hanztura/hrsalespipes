@@ -1,0 +1,29 @@
+{% extends "_includes/filter_form.html" %}
+
+{% block fields %}
+  {{ block.super }}  
+
+  <v-col cols="12" md="2" class="py-0">
+    <v-autocomplete
+      :items="employees"
+      label="{{ label|default_if_none:'Employee' }}"
+      v-model.lazy="employee"
+      name='employee'
+      prepend-inner-icon="mdi-account-cog"
+      clearable
+      dense
+      outlined>
+    </v-autocomplete>
+  </v-col>
+
+  <v-col cols="12" md="3" class="py-0">
+    <v-text-field
+      outlined
+      dense
+      name="q"
+      clearable
+      label="{{ q_label }}"
+      value="{{ q|default_if_none:'' }}">
+    </v-text-field>
+  </v-col>
+{% endblock fields %}

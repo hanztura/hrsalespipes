@@ -135,6 +135,13 @@ class PipelineListView(
             'job_candidate__consultant',
             'job_candidate__associate')
 
+        # filter by reference number / candidate
+        self.search = self.request.GET.get('q', '')
+        if self.search:
+            q = q.filter(
+                Q(job_candidate__job__reference_number__icontains=self.search) |
+                Q(job_candidate__candidate__name__icontains=self.search))
+
         # filter associate or consultant
         self.assoc_consult = self.request.GET.get('employee', '')
         if self.assoc_consult:
@@ -146,6 +153,7 @@ class PipelineListView(
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['q'] = self.search
         context['employees'] = get_objects_as_choices(Employee)
         context['employee'] = self.assoc_consult
         return context
