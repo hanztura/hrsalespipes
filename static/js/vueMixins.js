@@ -89,7 +89,7 @@ Vue.mixin({
         this.navigationDrawerItems.push({
           action: ICONS.ICON_COMMISSIONS,
           title: 'Commissions',
-          href: URLS.COMMISISONS,
+          href: URLS.COMMISSIONS,
         });
       }
 

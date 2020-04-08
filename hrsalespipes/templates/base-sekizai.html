@@ -5,17 +5,6 @@
 <head>
   <title>{% block title %}{% endblock title %} | HRSalesPipes</title>
 
-    {% addtoblock "css" %}
-      <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
-      <link rel="stylesheet" type="text/css" href="{% static "vendor/vuetify/vuetify.min.css" %}">
-
-      {% if debug %}
-        <link href="{% static "vendor/materialdesignicons.min.css" %}" rel="stylesheet">
-      {% else %}
-        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-      {% endif %}
-    {% endaddtoblock %}
-
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
   <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
@@ -23,6 +12,17 @@
   <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
   <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
   <link rel="manifest" href="{% static 'site.webmanifest' %}">
+
+  <style>
+    [v-cloak] > * { display:none; }
+  </style>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{% static "vendor/vuetify/vuetify.min.css" %}">
+  {% if debug %}
+    <link href="{% static "vendor/materialdesignicons.min.css" %}" rel="stylesheet">
+  {% else %}
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  {% endif %}
   {% render_block "css" %}
 
   {% block headblock %}{% endblock headblock %}
@@ -30,7 +30,7 @@
 
 <body>
   <div id="app">
-    <v-app id="inspire">
+    <v-app id="inspire" v-cloak>
       <v-navigation-drawer
         v-model="drawer"
         app>
