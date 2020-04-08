@@ -14,7 +14,11 @@
       justify="center"
     >
       <v-col cols="12" class="text-center">
-        <form method="post">
+        <v-form
+          ref="form"
+          v-model="valid"
+          method="post"
+          @submit="submit">
           {% csrf_token %}
           <input type="hidden" id="dataClientChoices" value="{{ clients }}">
           <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
@@ -23,84 +27,62 @@
             <v-list-item>{{ error }}</v-list-item>
           {% endfor %}
 
-          <v-text-field
-            label="{{ form.reference_number.label }}"
-            outlined
-            name="reference_number"
-            required
-            value="{{ form.reference_number.value|default_if_none:'' }}">
-          </v-text-field>
+          <div
+            v-for="(field, index) in fields"
+            :key="index">
+              <v-text-field
+                v-if="field.fieldType.value == 'textfield'"
+                :label="field.label"
+                :outlined="field.outlined"
+                :name="field.name"
+                :value="field.value"
+                :type="field.fieldType.type"
+                :rules="field.rules">
+              </v-text-field>
 
-          <v-text-field
-            label="{{ form.date.label }}"
-            v-model="date"
-            outlined
-            name="date"
-            required
-            type="date">
-          </v-text-field>
+              <v-text-field
+                v-else-if="field.fieldType.value == 'datetextfield'"
+                :label="field.label"
+                :outlined="field.outlined"
+                :rules="field.rules"
+                :name="field.name"
+                v-model.lazy="$data[field.model]"
+                type='date'>
+              </v-text-field>
 
-          <v-autocomplete
-            :items="statusChoices"
-            item-text="name"
-            item-value="id"
-            label="Status"
-            v-model.lazy="status"
-            name='status'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
+              <v-autocomplete
+                v-else-if="field.fieldType.value == 'autocomplete'"
+                :items="$data[field.items]"
+                :item-text="field.itemText"
+                :item-value="field.itemValue"
+                :label="field.label"
+                v-model.lazy="$data[field.model]"
+                :name='field.name'
+                :dense="field.dense"
+                :outlined="field.outlined"
+                :rules="field.rules">
+              </v-autocomplete>
 
-          <v-checkbox
-            v-show="needToConfirm"
-            v-model="hasConfirmed"
-            :error="needToConfirm"
-            label="Please confirm to close this Job."></v-checkbox>
-          <input type="hidden" name="has_confirmed" :required="needToConfirm" :value="hasConfirmed">
+              <template
+                v-else-if="field.fieldType.value == 'confirmCheckbox'">
+                <v-checkbox
+                  v-show="$data[field.needToConfirmModel]"
+                  v-model="$data[field.model]"
+                  :error="$data[field.needToConfirmModel]"
+                  :label="field.label"
+                  :required="$data[field.needToConfirmModel]"></v-checkbox>
+                <input
+                  name="field.name"
+                  :required="$data[field.needToConfirmModel]"
+                  :value="$data[field.model]"
+                  type="hidden">
+              </template>
+            </div>
 
-          <v-autocomplete
-            :items="clients"
-            label="Client"
-            v-model.lazy="client"
-            name='client'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
-
-          <v-text-field
-            label="Position"
-            outlined
-            name="position"
-            required
-            value="{{ form.position.value|default_if_none:'' }}">
-          </v-text-field>
-
-          <v-autocomplete
-            :items="locations"
-            item-value="text"
-            label="Location"
-            v-model.lazy="location"
-            name='location'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
-
-          <v-text-field
-            label="{{ form.potential_income.label }}"
-            outlined
-            name="potential_income"
-            required
-            type="number"
-            value="{{ form.potential_income.value|default_if_none:0 }}">
-          </v-text-field>
-
-          <v-input>
-            <v-btn block color="success" type="submit">Save</v-btn>
-          </v-input>
-        </form>
+            <v-input>
+              <v-btn block color="success" type="submit">Save</v-btn>
+            </v-input>
+        </v-form>
       </v-col>
     </v-row>
   </v-container>  
@@ -116,6 +98,12 @@
         status: {{ form.status.value|default_if_none:"''" }},
         hasConfirmed: {{ form.has_confirmed.value|yesno:'true,false' }},
         date: '{{ form.instance.date|date:"Y-m-d" }}',
+        referenceNumberLabel: "{{ form.reference_number.label }}",
+        referenceNumber: "{{ form.reference_number.value|default_if_none:'' }}",
+        dateLabel: "{{ form.date.label }}",
+        position: "{{ form.position.value|default_if_none:'' }}",
+        potentialIncomeLabel: "{{ form.potential_income.label }}",
+        potentialIncome: "{{ form.potential_income.value|default_if_none:0 }}",
       }
     </script>
   {% endaddtoblock %}
