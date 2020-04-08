@@ -1,7 +1,8 @@
-{% extends "commissions/base.html" %}
+{% extends "backups/base.html" %}
+{% load static sekizai_tags %}
 
 {% block title %}
-Commissions - New
+Backups - New
 {% endblock title %}
 
 {% block subcontent %}
@@ -33,40 +34,8 @@ Commissions - New
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script src="{% static 'backups/backupForm.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [
-        {
-          text: 'Backups',
-          disabled: false,
-          href: '{% url "backups:list" %}',
-        },
-        {
-          text: 'New',
-          disabled: true,
-        }
-      ],
-    }),
-
-    methods: {
-      setDataChoices: function(sourceId, setDataVariable) {
-        let data = document.getElementById(sourceId).value;
-        this.$set(this, setDataVariable, JSON.parse(data));
-      }
-    },
-
-    beforeMount(){
-      this.updateBreadcrumbs();
-    },
-
-  });
-</script>  
-{% endblock script %}
