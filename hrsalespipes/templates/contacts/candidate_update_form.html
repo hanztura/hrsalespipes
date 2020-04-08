@@ -175,17 +175,16 @@
                 </v-text-field>
 
                 <v-text-field
-                  name="current_previous_salary"
-                  label="Current/Previous Salary (Amount)"
-                  type="number"
                   outlined
+                  name="current_previous_salary"
+                  label="Current/Previous Salary"
                   value="{{ form.current_previous_salary.value }}">
                   </v-text-field>
 
                 <v-text-field
+                  outlined
                   name="current_previous_benefits"
                   label="Current/Previous Benefits"
-                  outlined
                   value="{{ form.current_previous_benefits.value|default_if_none:'' }}">
                   </v-text-field>
 
@@ -197,17 +196,16 @@
                 ></v-textarea>
 
                 <v-text-field
-                  name="expected_salary"
-                  label="Expected Salary (Amount)"
-                  type="number"
                   outlined
+                  name="expected_salary"
+                  label="Expected Salary"
                   value="{{ form.expected_salary.value|default_if_none:'' }}">
                   </v-text-field>
 
                 <v-text-field
+                  outlineds
                   name="expected_benefits"
                   label="Expected Benefits"
-                  outlined
                   value="{{ form.expected_benefits.value }}">
                   </v-text-field>
               </v-tab-item>  <!-- Work history -->

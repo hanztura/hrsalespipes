@@ -156,10 +156,11 @@ class Candidate(ContactModel):
         max_length=200, blank=True, verbose_name='company')
     current_previous_benefits = models.TextField(
         blank=True, verbose_name='salary and benefits')
-    current_previous_salary = models.IntegerField(null=True, blank=True)
+    current_previous_salary = models.CharField(
+        max_length=250, null=True, blank=True)
     motivation_for_leaving = models.TextField(blank=True)
     expected_benefits = models.TextField(blank=True)
-    expected_salary = models.IntegerField(null=True, blank=True)
+    expected_salary = models.CharField(max_length=250, null=True, blank=True)
 
     # personal details
     nationality = models.CharField(max_length=64, blank=True)
