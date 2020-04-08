@@ -1,7 +1,7 @@
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Count
+from django.db.models import Count, Prefetch
 from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
@@ -13,6 +13,7 @@ from .forms import (ClientCreateModelForm,
 from .models import Candidate, Client, Supplier, Employee, CVTemplate
 from .utils import FilterNameMixin, DownloadCVBaseView
 from contacts.models import Employee
+from jobs.models import JobCandidate
 from system.helpers import (
     get_objects_as_choices, ActionMessageViewMixin, get_queryset_as_choices)
 from system.utils import (
@@ -90,7 +91,18 @@ class CandidateDetailView(PermissionRequiredMixin, DetailView):
         queryset = super().get_queryset(**kwargs)
         queryset = queryset.select_related(
             'visa_status', 'candidate_owner', 'cv_template')
+        queryset = queryset.prefetch_related(Prefetch(
+            'jobs',
+            queryset=JobCandidate.objects.filter(
+                job__status__is_job_open=True)
+        ))
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        candidate = context['object']
+        context['active_jobs'] = candidate.jobs.all()
+        return context
 
 
 class CandidateListView(FilterNameMixin, PermissionRequiredMixin, ListView):
@@ -100,12 +112,6 @@ class CandidateListView(FilterNameMixin, PermissionRequiredMixin, ListView):
     def get_queryset(self, **kwargs):
         q = super().get_queryset(**kwargs)
         q = q.select_related('candidate_owner')
-
-        # nationalities = self.request.GET.get('nationalities', '')
-        # self.nationalities = nationalities
-        # nationalities = nationalities.split(',') if nationalities else []
-        # if nationalities:
-        #     q = q.filter(nationality__in=nationalities)
 
         owners = self.request.GET.get('owners', '')  # owner id
         self.owners = owners
@@ -117,20 +123,6 @@ class CandidateListView(FilterNameMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self):
         context = super().get_context_data()
         candidates = context['object_list']
-
-        # # get nationalities
-        # nationalities = candidates.values(
-        #     'nationality').annotate(count=Count('id'))
-        # nationalities = [n for n in nationalities]
-        # context['nationalities'] = json.dumps(nationalities)
-        # context['nationalities_query'] = self.nationalities
-
-        # get owners
-        # owners_id = candidates.values('candidate_owner_id').annotate(
-        #     count=Count('id'))
-        # owners_id = [o['candidate_owner_id'] for o in owners_id]
-        # owners = Employee.objects.filter(id__in=owners_id)
-        # owners = get_queryset_as_choices(owners)
         context['owners'] = get_objects_as_choices(Employee)
         context['owners_query'] = self.owners
         return context

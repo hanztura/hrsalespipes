@@ -47,6 +47,10 @@ new Vue({
         tab: 'Medical',
         icon: 'mdi-medical-bag',  
       },
+      {
+        tab: 'Active Jobs',
+        icon: 'mdi-briefcase-account',  
+      },
     ],
     isMedical: data.isMedical,
   }),

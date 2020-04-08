@@ -229,6 +229,13 @@ Candidate Detail - {{ object.name }}
                 </table>
               </v-simple-table>
             </v-tab-item>
+
+            <v-tab-item id="Active Jobs">
+              <v-simple-table
+                dense>
+                {% include "jobs/includes/jobcandidate_list_table.html" with candidates=active_jobs %}
+              </v-simple-table>
+            </v-tab-item>
           </v-tabs-items>
         </v-tabs>
       </v-col>
