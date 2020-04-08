@@ -1,5 +1,5 @@
 {% extends "dashboard/base.html" %}
-{% load static %}
+{% load static sekizai_tags %}
 
 {% block title %}
 Dashboard
@@ -21,30 +21,16 @@ Dashboard
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    {% if debug %}
+      <script src="{% static "vendor/vue-google-charts/vue-google-charts.browser.js" %}"></script>
+    {% else %}
+      <script src="https://cdn.jsdelivr.net/npm/vue-google-charts@0.3.2/dist/vue-google-charts.browser.js"></script>
+    {% endif %}
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'dashboard/index.js' %}"></script>
+  {% endaddtoblock %}
 {% endblock subcontent %}
-
-{% block script %}
-
-
-{% if debug %}
-  <script src="{% static "vendor/vue-google-charts/vue-google-charts.browser.js" %}"></script>
-{% else %}
-  <script src="https://cdn.jsdelivr.net/npm/vue-google-charts@0.3.2/dist/vue-google-charts.browser.js"></script>
-{% endif %}
-<script>
-  new Vue({
-    el: '#inspire',
-    vuetify: new Vuetify(),
-
-    data: () => ({
-      drawer: null,
-      subBreadcrumbs: [],
-    }),
-
-    mounted() {
-      this.updateBreadcrumbs();
-    }
-
-  });
-</script>  
-{% endblock script %}

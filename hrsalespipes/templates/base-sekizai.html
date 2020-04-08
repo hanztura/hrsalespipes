@@ -260,5 +260,6 @@
   <script src="{% static 'js/vueMixins.js' %}"></script>
 
   {% render_block "js" %}
+  {% block script %}{% endblock script %} <!-- fallback -->
 </body>
 </html>
