@@ -34,7 +34,7 @@
       {% endfor %}
     {% else %}
       <tr>
-        <td colspan="11">No active jobs.</td>
+        <td colspan="11">{{ no_data_label|default_if_none:'No active jobs.'}}</td>
       </tr>
     {% endif %}
   </tbody>
