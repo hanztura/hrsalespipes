@@ -1,5 +1,4 @@
 from django.forms import ModelForm
-from django.contrib.postgres.forms import JSONField
 
 from .models import Candidate, Client, Supplier, CVTemplate
 from .utils import FormCleanContactNumber
