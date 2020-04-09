@@ -56,7 +56,9 @@ class MonthlyInvoicesSummaryListView(
         return context_urls
 
     def get_queryset(self):
-        q = super().get_queryset().filter(invoice_amount__gt=0)
+        q = super().get_queryset().filter(
+            invoice_amount__gt=0,
+            invoice_number__isnull=False).exclude(invoice_number__exact='')
         q = q.select_related(
             'job_candidate__job__client',
             'job_candidate__consultant')
@@ -130,6 +132,9 @@ class MonthlyInvoicesSummaryExcelView(
 
         month = request.GET.get('month', self.month)  # 'YYYY-MM'
         consultant_pk = self.request.GET.get('consultant', '')
+        queryset = Pipeline.objects.filter(
+            invoice_amount__gt=0,
+            invoice_number__isnull=False).exclude(invoice_number__exact='')
 
         columns = [
             'Date',
@@ -171,7 +176,8 @@ class MonthlyInvoicesSummaryExcelView(
             invoice_amount_index - 1,  # totals label
             is_month_filter=True,
             consultant_id=consultant_pk,
-            user=self.request.user
+            user=self.request.user,
+            queryset=queryset
         )
 
         wb.save(response)

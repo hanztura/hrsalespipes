@@ -52,7 +52,8 @@ def generate_excel(
         user=None,
         filter_expression=None,
         empty_if_no_filter=False,
-        is_datetime=False):
+        is_datetime=False,
+        queryset=None):
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet(heading_title)
 
@@ -97,7 +98,10 @@ def generate_excel(
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
 
-    rows = model.objects.all().select_related(*select_related)
+    if queryset:
+        rows = queryset.select_related(*select_related)
+    else:
+        rows = model.objects.all().select_related(*select_related)
     # filter rows by user employee
     if user:
         rows = filter_queryset_by_employee(
