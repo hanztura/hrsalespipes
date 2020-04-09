@@ -1,8 +1,9 @@
 <v-text-field
   :label="field.label"
   :name="field.name"
-  :value="field.value"
+  v-model="$data[field.model]"
   :type="field.fieldType.type"
+  :step="field.fieldType.step"
   :outlined=field.outlined
   :disabled=field.disabled
   :rules="field.rules">

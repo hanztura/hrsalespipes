@@ -14,14 +14,20 @@
       justify="center"
     >
       <v-col cols="12" class="text-center">
-        <form method="post">
+        <v-form
+          ref="form"
+          v-model="valid"
+          @submit="submit"
+          method="post">
           {% csrf_token %}
           <input type="hidden" id="dataCandidateOwnerChoices" value="{{ employees }}">
           <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
           <input type="hidden" id="dataIndustryChoices" value="{{ industries }}">
-          {% for error in form.errors %}
-            <v-list-item>{{ error }}</v-list-item>
-          {% endfor %}
+          
+          {% if form.errors %}
+            {% include "_includes/errors.html" %}
+          {% endif %}
+
             <v-tabs
               v-model="tab"
               fixed-tabs>
@@ -30,145 +36,61 @@
 
             <v-tabs-items v-model="tab">
               <v-tab-item id="Contact Details" eager>
-                <v-text-field
-                  label="Name"
-                  outlined
-                  name="name"
-                  required
-                  value="{{ form.name.value }}">
-                </v-text-field>
+                <div
+                  v-for="(field, index) in fields.contactDetails"
+                  :key="index">
+                    <template
+                      v-if="field.fieldType.value == 'textfield'">
+                        {% include "_includes/model_fields/textfield.html" %}
+                      </template>
 
-                <v-autocomplete
-                  :items="industries"
-                  label="Industry"
-                  v-model.lazy="industry"
-                  name="industry"
-                  item-value="text"
-                  dense
-                  outlined
-                  required>
-                </v-autocomplete>
-
-                <v-autocomplete
-                  :items="locations"
-                  item-value="text"
-                  dense
-                  label="Location"
-                  outlined
-                  v-model.lazy="location"
-                  name="location">
-                </v-autocomplete>
-
-                <v-text-field
-                  label="Contact Number"
-                  outlined
-                  name="contact_number"
-                  value="{{ form.contact_number.value }}">
-                </v-text-field>
-
-                <v-text-field
-                  label="Alternate Contact Number"
-                  outlined
-                  name="alternate_contact_number"
-                  value="{{ form.alternate_contact_number.value }}">
-                </v-text-field>
-
-                <v-text-field
-                  label="Email Address"
-                  outlined
-                  name="email_address"
-                  type="email"
-                  value="{{ form.email_address.value }}">
-                </v-text-field>
-
-                <v-text-field
-                  label="Skype ID"
-                  outlined
-                  name="skype_id"
-                  value="{{ form.skype_id.value }}">
-                </v-text-field>
-
-                <v-text-field
-                  label="MS Teams ID"
-                  outlined
-                  name="ms_teams_id"
-                  value="{{ form.ms_teams_id.value }}">
-                </v-text-field>
+                    <template
+                      v-else-if="field.fieldType.value == 'autocomplete'">
+                        {% include "_includes/model_fields/autocomplete.html" %}
+                      </template>
+                </div>
               </v-tab-item> <!-- Basic -->
 
               <v-tab-item id="Others" eager>
+                <div
+                  v-for="(field, index) in fields.others"
+                  :key="index">
+                    <template
+                      v-if="field.fieldType.value == 'textfield'">
+                        {% include "_includes/model_fields/textfield.html" %}
+                      </template>
+                    <template
+                      v-if="field.fieldType.value == 'textfieldModeled'">
+                        {% include "_includes/model_fields/textfield_modeled.html" %}
+                      </template>
 
-                <v-textarea
-                  name="initial_approach"
-                  label="Initial Approach"
-                  outlined
-                  value="{{ form.initial_approach.value }}"
-                ></v-textarea>
+                    <template
+                      v-else-if="field.fieldType.value == 'datetextfield'">
+                        {% include "_includes/model_fields/textfield_date.html" %}
+                      </template>
 
-                <v-textarea
-                  name="meeting_arranged"
-                  label="Meeting Arranged"
-                  outlined
-                  value="{{ form.meeting_arranged.value }}"
-                ></v-textarea>
+                    <template
+                      v-else-if="field.fieldType.value == 'textarea'">
+                        {% include "_includes/model_fields/textarea.html" %}
+                      </template>
 
-                <v-text-field
-                  label="Agreement Term (Months)"
-                  type="number"
-                  step="0.00001"
-                  name="agreement_term"
-                  v-model.lazy="agreementTerm"
-                  {% if form.agreement_term.field.disabled %}disabled{% endif %}
-                  outlined>
-                </v-text-field>
+                    <template
+                      v-else-if="field.fieldType.value == 'autocomplete'">
+                        {% include "_includes/model_fields/autocomplete.html" %}
+                      </template>
 
-                <v-text-field
-                  label="Agreement Fee"
-                  outlined
-                  type='number'
-                  name="agreement_fee"
-                  type="number"
-                  step="0.0000000001"
-                  {% if form.agreement_fee.field.disabled %}disabled{% endif %}
-                  v-model.lazy="agreementFee">
-                </v-text-field>
-
-                <v-textarea
-                  name="refund_scheme"
-                  label="Refund Scheme"
-                  {% if form.refund_scheme.field.disabled %}disabled{% endif %}
-                  outlined
-                  value="{{ form.refund_scheme.value }}"
-                ></v-textarea>
-
-                <v-text-field
-                  label="Validity"
-                  outlined
-                  type='date'
-                  name="validity"
-                  {% if form.validity.field.disabled %}disabled{% endif %}
-                  value="{{ form.validity.value|default_if_none:''|date:'Y-m-d' }}">
-                </v-text-field>
-
-                <v-autocomplete
-                  dense
-                  outlined
-                  clearable
-                  name='business_development_person'
-                  :items="employees"
-                  label="Business Development Person"
-                  v-model.lazy="businessDevelopmentPerson">
-                </v-autocomplete>
-
-                {% include "contacts/includes/point_of_contacts_table_edit.html" %}
-                
+                    <template
+                      v-else-if="field.fieldType.value == 'pointOfContacts'">
+                      {% include "contacts/includes/point_of_contacts_table_edit.html" %}
+                    </template>
+                </div>
               </v-tab-item> <!-- Others -->
             </v-tabs-items>
 
             <v-input>
               <v-btn class="my-2" block color="success" type="submit">Save</v-btn>
             </v-input>
-        </form>
+        </v-form>
       </v-col>
     </v-row>
   </v-container>  
@@ -186,13 +108,31 @@
       let urlClient = '{% url "contacts:clients_detail" object.pk %}';
       let contactName = '{{ object.name }}';
       let data = {
-        location: '{{ form.location.value }}',
-        industry: '{{ form.industry.value }}',
+        name: "{{ form.name.value|default_if_none:'' }}",
+        location: '{{ form.location.value|default_if_none:'' }}',
+        industry: '{{ form.industry.value|default_if_none:'' }}',
+        contactNumber: "{{ form.contact_number.value|default_if_none:'' }}",
+        alternateContactNumber: "{{ form.alternate_contact_number.value }}",
+        emailAddress: "{{ form.email_address.value|default_if_none:'' }}",
+        skypeId: "{{ form.skype_id.value|default_if_none:'' }}",
+        msTeamsId: "{{ form.ms_teams_id.value|default_if_none:'' }}",
+        initialApproach: "{{ form.initial_approach.value }}",
+        meetingArranged: "{{ form.meeting_arranged.value }}",
         agreementTerm: {{ form.instance.agreement_term }},
+        agreementTermDisabled: {{ form.agreement_term.field.disabled|yesno:'true,false' }},
         agreementFee: {{ form.instance.agreement_fee }},
+        agreementFeeDisabled: {{ form.agreement_fee.field.disabled|yesno:'true,false' }},
+        refundSchemeDisabled: {{ form.refund_scheme.field.disabled|yesno:'true,false' }},
+        validityDisabled: {{ form.validity.field.disabled|yesno:'true,false' }},
         businessDevelopmentPerson: '{{ form.business_development_person.value|default_if_none:'' }}',
+        validity: "{{ form.validity.value|default_if_none:''|date:'Y-m-d' }}",
+        notes: "{{ form.notes.value|default_if_none:'' }}",
       }
     </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForForms.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}

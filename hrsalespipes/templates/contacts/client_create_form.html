@@ -14,59 +14,37 @@ Clients - New
       justify="center"
     >
       <v-col cols="12" class="text-center">
-        <form method="post">
+        <v-form 
+          ref="form"
+          v-model="valid"
+          @submit="submit"
+          method="post">
           {% csrf_token %}
           <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
           <input type="hidden" id="dataIndustryChoices" value="{{ industries }}">
-          {% for error in form.errors %}
-            <v-list-item>{{ error }}</v-list-item>
-          {% endfor %}
-          <v-text-field
-            label="Name"
-            outlined
-            name="name"
-            required
-            value="{{ form.name.value|default_if_none:'' }}">
-          </v-text-field>
+          
+          {% if form.errors %}
+            {% include "_includes/errors.html" %}
+          {% endif %}
 
-          <v-autocomplete
-            :items="industries"
-            label="Industry"
-            v-model.lazy="industry"
-            name="industry"
-            dense
-            outlined
-            required>
-          </v-autocomplete>
+          <div
+            v-for="(field, index) in fields.contactDetails"
+            :key="index">
+              <template
+                v-if="field.fieldType.value == 'textfield'">
+                  {% include "_includes/model_fields/textfield.html" %}
+                </template>
 
-          <v-text-field
-            label="Contact Number"
-            outlined
-            name="contact_number"
-            value="{{ form.contact_number.value|default_if_none:'' }}">
-          </v-text-field>
+              <template
+                v-else-if="field.fieldType.value == 'autocomplete'">
+                  {% include "_includes/model_fields/autocomplete.html" %}
+                </template>
+          </div>
 
-          <v-text-field
-            label="Email Address"
-            outlined
-            name="email_address"
-            type="email"
-            value="{{ form.email_address.value|default_if_none:'' }}">
-          </v-text-field>
-
-          <v-autocomplete
-            :items="locations"
-            item-value="text"
-            dense
-            label="Location"
-            outlined
-            v-model.lazy="location"
-            name='location'>
-          </v-autocomplete>
           <v-input>
           <v-btn block color="success" type="submit">Save</v-btn>
           </v-input>
-        </form>
+        </v-form>
       </v-col>
     </v-row>
   </v-container>  
@@ -82,11 +60,17 @@ Clients - New
   {% addtoblock "js" %}
     <script>
       let data = {
-        location: '{{ form.location.value }}',
-        industry: '{{ form.industry.value }}',
-        industries: [],
+        location: '{{ form.location.value|default_if_none:'' }}',
+        industry: '{{ form.industry.value|default_if_none:'' }}',
+        name: "{{ form.name.value|default_if_none:'' }}",
+        contactNumber: "{{ form.contact_number.value|default_if_none:'' }}",
+        emailAddress: "{{ form.email_address.value|default_if_none:'' }}",
       };
     </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForForms.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}

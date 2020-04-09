@@ -118,6 +118,7 @@ class ClientUpdateModelForm(FormCleanContactNumber, ModelForm):
             'agreement_fee',
             'refund_scheme',
             'validity',
+            'notes',
             'point_of_contacts',
             'business_development_person',
         ]

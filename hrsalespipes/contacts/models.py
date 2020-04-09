@@ -20,7 +20,7 @@ class Client(ContactModel):
     validity = models.DateField(null=True, blank=True)
     point_of_contacts = models.TextField(blank=True)
     business_development_person = models.ForeignKey(
-        'Employee', on_delete=models.SET_NULL, null=True)
+        'Employee', on_delete=models.SET_NULL, null=True, blank=True)
 
     history = HistoricalRecords()
 
