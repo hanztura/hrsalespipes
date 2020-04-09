@@ -20,9 +20,11 @@
           @submit="submit"
           method="post">
           {% csrf_token %}
+          
           {% if form.errors %}
             {% include "_includes/errors.html" %}
           {% endif %}
+
             <v-tabs
               v-model="tab"
               fixed-tabs>
