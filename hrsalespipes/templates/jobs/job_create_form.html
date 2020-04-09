@@ -14,38 +14,44 @@ Jobs - New
       justify="center"
     >
       <v-col cols="12" class="text-center">
-        <form method="post">
+        <v-form
+          ref="form"
+          v-model="valid"
+          @submit="submit"
+          method="post">
           {% csrf_token %}
           <input type="hidden" id="dataClientChoices" value="{{ clients }}">
-          {% for error in form.errors %}
-            <v-list-item>{{ error }}</v-list-item>
-          {% endfor %}
 
-          <v-text-field
-            label="{{ form.reference_number.label }}"
-            outlined
-            name="reference_number"
-            required
-            value="{{ form.reference_number.value|default_if_none:'' }}">
-          </v-text-field>
+          {% if form.errors %}
+            {% include "_includes/errors.html" %}
+          {% endif %}
 
-          <v-autocomplete
-            :items="clients"
-            label="Client"
-            v-model.lazy="client"
-            name='client'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
+          <div
+            v-for="(field, index) in fields"
+            :key="index">
+              <v-text-field
+                v-if="field.fieldType.value == 'textfield'"
+                :label="field.label"
+                :outlined="field.outlined"
+                :name="field.name"
+                :value="field.value"
+                :type="field.fieldType.type"
+                :rules="field.rules">
+              </v-text-field>
 
-          <v-text-field
-            label="Position"
-            outlined
-            name="position"
-            required
-            value="{{ form.position.value|default_if_none:'' }}">
-          </v-text-field>
+              <v-autocomplete
+                v-else-if="field.fieldType.value == 'autocomplete'"
+                :items="$data[field.items]"
+                :item-text="field.itemText"
+                :item-value="field.itemValue"
+                :label="field.label"
+                v-model.lazy="$data[field.model]"
+                :name='field.name'
+                :dense="field.dense"
+                :outlined="field.outlined"
+                :rules="field.rules">
+              </v-autocomplete>
+            </div>
 
           <v-input>
             <v-btn block color="success" type="submit">Save</v-btn>
@@ -58,9 +64,16 @@ Jobs - New
   {% addtoblock "js" %}
     <script>
       let data = {
-        client: '{{ form.client.value }}',
+        client: '{{ form.client.value|default_if_none:'' }}',
+        referenceNumberLabel: "{{ form.reference_number.label }}",
+        referenceNumber: "{{ form.reference_number.value|default_if_none:'' }}",
+        position: "{{ form.position.value|default_if_none:'' }}",
       };
     </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForForms.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}
