@@ -53,7 +53,7 @@ Candidates - List
               <th class="text-center">Email Address</th>
               <th class="text-center">Contact No.</th>
               <th class="text-center">Nationality</th>
-              <th class="text-center">Language</th>
+              <th class="text-center">Languages</th>
               <th class="text-center">Owner</th>
               <th class="text-center">Actions</th>
             </thead>
@@ -64,7 +64,7 @@ Candidates - List
                 <td class="text-center">{{ candidate.email_address }}</td>
                 <td class="text-center">{{ candidate.contact_number }}</td>
                 <td class="text-center">{{ candidate.nationality }}</td>
-                <td class="text-center">{{ candidate.language }}</td>
+                <td class="text-center">{{ candidate.languages }}</td>
                 <td class="text-center">{{ candidate.candidate_owner }}</td>
                 <td class="text-center">
                   {% include "_includes/list_action_buttons.html" with edit_href=candidate.edit_href view_href=candidate.view_href %}
