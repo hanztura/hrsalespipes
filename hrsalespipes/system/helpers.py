@@ -32,7 +32,7 @@ class ActionMessageViewMixin:
 
     def form_valid(self, form):
         if form.is_valid():
-            messages.info(self.request, self.success_msg)
+            messages.success(self.request, self.success_msg)
             return super().form_valid(form)
         else:
             return self.form_invalid(form)
