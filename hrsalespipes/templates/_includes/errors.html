@@ -1,0 +1,12 @@
+<div>
+  {% for field, error in form.errors.items %}
+    <v-alert
+      border="left"
+      colored-border
+      color="error"
+      elevation="2"
+      class="text-left">
+      {{ field }} - {{ error.as_text }}
+    </v-alert>
+  {% endfor %}
+</div>

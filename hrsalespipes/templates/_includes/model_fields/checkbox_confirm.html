@@ -1,0 +1,11 @@
+<v-checkbox
+  v-show="$data[field.needToConfirmModel]"
+  v-model="$data[field.model]"
+  :error="$data[field.needToConfirmModel]"
+  :label="field.label"
+  :required="$data[field.needToConfirmModel]"></v-checkbox>
+<input
+  name="field.name"
+  :required="$data[field.needToConfirmModel]"
+  :value="$data[field.model]"
+  type="hidden">
