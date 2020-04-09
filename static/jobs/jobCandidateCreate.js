@@ -1,3 +1,24 @@
+let fields = [
+    {
+      name: 'candidate',
+      label: 'Candidate',
+      items: 'candidates',
+      itemText: 'text',
+      itemValue: 'value',
+      disabled: false,
+      model: 'candidate',
+      fieldType: {
+        value: 'autocomplete',
+      },
+      dense: true,
+      outlined: true,
+      rules: [
+        v => !!v || 'Candidate is required',
+      ]
+    },
+
+];
+
 new Vue({
   el: '#inspire',
   vuetify: new Vuetify(),
@@ -25,6 +46,7 @@ new Vue({
         disabled: true,
       }
     ],
+    fields: fields,
     candidates: [],
     candidate: data.candidate,
   }),

@@ -8,128 +8,54 @@
 {% block subcontent %}
   <v-container
     fluid>
-    <h1>{{ object.candidate.name }} - {{ object.job.reference_number }} Job Candidate Update</h1>
+    <h1>{{ object.candidate.name }} - {{ object.job.reference_number }} | Job Candidate Update</h1>
     <v-row
       align="center"
       justify="center"
     >
       <v-col cols="12" class="text-center">
-        <form method="post">
-          {% csrf_token %}
-          <input type="hidden" id="dataCandidateChoices" value="{{ candidates }}">
-          <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
-          <input type="hidden" id="dataEmployeesChoices" value="{{ employees }}">
-          <input type="hidden" id="dataCVSourceChoices" value="{{ cv_sources }}">
-          {% for error in form.errors %}
-            <v-list-item>{{ error }}</v-list-item>
-          {% endfor %}
+        <v-form
+          ref="form"
+          v-model="valid"
+          @submit="submit"
+          method="post">
+            {% csrf_token %}
+            <input type="hidden" id="dataCandidateChoices" value="{{ candidates }}">
+            <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
+            <input type="hidden" id="dataEmployeesChoices" value="{{ employees }}">
+            <input type="hidden" id="dataCVSourceChoices" value="{{ cv_sources }}">
+          
+            {% if form.errors %}
+              {% include "_includes/errors.html" %}
+            {% endif %}
 
-          <v-autocomplete
-            :items="candidates"
-            label="Candidate"
-            v-model.lazy="candidate"
-            name='candidate'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
+            <div
+              v-for="(field, index) in fields"
+              :key="index">
+                <template
+                  v-if="field.fieldType.value == 'textfield'">
+                    {% include "_includes/model_fields/textfield.html" %}
+                  </template>
 
-          <v-text-field
-            label="{{ form.registration_date.label }}"
-            outlined
-            name="registration_date"
-            required
-            type="date"
-            value="{{ form.registration_date.value|date:'Y-m-d' }}">
-          </v-text-field>
+                <template
+                  v-else-if="field.fieldType.value == 'datetextfield'">
+                    {% include "_includes/model_fields/textfield_date.html" %}
+                  </template>
 
-          <v-autocomplete
-            :items="statusChoices"
-            label="Status"
-            v-model.lazy="status"
-            name='status'
-            dense
-            outlined
-            required
-            {% if form.status.field.disabled %}
-            disabled
-            hint="Pipeline record exists. Status editing disabled."
-            persistent-hint
-            {% endif %}>
-          </v-autocomplete>
+                <template
+                  v-else-if="field.fieldType.value == 'textarea'">
+                    {% include "_includes/model_fields/textarea.html" %}
+                  </template>
 
-          <v-autocomplete
-            :items="cvSources"
-            item-value="text"
-            label="CV Source"
-            v-model.lazy="cvSource"
-            name='cv_source'
-            required
-            dense
-            outlined>
-          </v-autocomplete>
+                <template
+                  v-else-if="field.fieldType.value == 'autocomplete'">
+                    {% include "_includes/model_fields/autocomplete.html" %}
+                  </template>
+            </div>
 
-          <v-text-field
-            label="CV Date Shared"
-            outlined
-            name="cv_date_shared"
-            type="date"
-            value="{{ form.cv_date_shared.value|date:'Y-m-d' }}">
-          </v-text-field>
-
-          <v-textarea
-            name="remarks"
-            label="Remarks"
-            outlined
-            value="{{ form.remarks.value }}"
-          ></v-textarea>
-
-          <v-text-field
-            label="Salary Offered Currency"
-            outlined
-            name="salary_offered_currency"
-            value="{{ form.salary_offered_currency.value }}">
-          </v-text-field>
-
-          <v-text-field
-            label="Salary Offered"
-            outlined
-            name="salary_offered"
-            type="number"
-            value="{{ form.salary_offered.value|default_if_none:0 }}">
-          </v-text-field>
-
-          <v-text-field
-            label="Tentative Date of Joining"
-            outlined
-            name="tentative_date_of_joining"
-            type="date"
-            value="{{ form.tentative_date_of_joining.value|date:'Y-m-d' }}">
-          </v-text-field>
-
-          <v-autocomplete
-            :items="employees"
-            label="Associate"
-            v-model.lazy="associate"
-            name='associate'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
-
-          <v-autocomplete
-            :items="employees"
-            label="Consultant"
-            v-model.lazy="consultant"
-            name='consultant'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
-
-          <v-input>
-            <v-btn block color="success" type="submit">Save</v-btn>
-          </v-input>
+            <v-input>
+              <v-btn block color="success" type="submit">Save</v-btn>
+            </v-input>
         </form>
       </v-col>
     </v-row>
@@ -142,14 +68,26 @@
       let jobReferenceNumber = '{{ object.job.reference_number }}';
       let jobUrl = '{% url "jobs:detail" object.job_id %}';
       let data = {
-        candidate: '{{ form.candidate.value }}',
-        status: '{{ form.status.value }}',
-        associate: '{{ form.associate.value }}',
-        consultant: '{{ form.consultant.value }}',
-        cvSource: '{{ form.cv_source.value|default_if_none:"" }}',
+            registrationDate: "{{ form.registration_date.value|date:'Y-m-d' }}",
+            registrationDateLabel: "{{ form.registration_date.label }}",
+            cvDateShared: "{{ form.cv_date_shared.value|date:'Y-m-d' }}",
+            remarks: "{{ form.remarks.value }}",
+            salaryOfferedCurrency: "{{ form.salary_offered_currency.value }}",
+            salaryOffered: "{{ form.salary_offered.value|default_if_none:0 }}",
+            tentativeDateOfJoining: "{{ form.tentative_date_of_joining.value|date:'Y-m-d' }}",
+            candidate: '{{ form.candidate.value }}',
+            status: '{{ form.status.value }}',
+            statusDisabled: {{ form.status.field.disabled|yesno:'true,false' }},
+            associate: '{{ form.associate.value }}',
+            consultant: '{{ form.consultant.value }}',
+            cvSource: '{{ form.cv_source.value|default_if_none:"" }}',
       };
     </script>
   {% endaddtoblock %} 
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForForms.js' %}"></script>
+  {% endaddtoblock %}
 
   {% addtoblock "js" %}
     <script src="{% static 'jobs/jobCandidateUpdate.js' %}"></script>
