@@ -1,0 +1,9 @@
+<v-text-field
+  :label="field.label"
+  :outlined=field.outlined
+  :rules="field.rules"
+  :name="field.name"
+  :disabled=field.disabled
+  v-model.lazy="$data[field.model]"
+  type='datetime-local'>
+</v-text-field>

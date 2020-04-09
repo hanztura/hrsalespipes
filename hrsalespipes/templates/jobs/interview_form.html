@@ -14,61 +14,52 @@
       justify="center"
     >
       <v-col cols="12" class="text-center">
-        <form method="post">
-          {% csrf_token %}
-          <input type="hidden" id="dataModesChoices" value="{{ modes }}">
-          <input type="hidden" id="dataStatusChoices" value="{{ status_choices }}">
-          {% for error in form.errors %}
-            <v-list-item>{{ error }}</v-list-item>
-          {% endfor %}
+        <v-form
+          ref="form"
+          v-model="valid"
+          @submit="submit"
+          method="post">
 
-          <v-text-field
-            label="{{ form.date_time.label }}"
-            outlined
-            name="date_time"
-            required
-            type="datetime-local"
-            value="{{ form.date_time.value|date:'Y-m-d\TH:i' }}">
-          </v-text-field>
-          <p>{{ form.date_time.errors }}</p>
+            {% csrf_token %}
+            <input type="hidden" id="dataModesChoices" value="{{ modes }}">
+            <input type="hidden" id="dataStatusChoices" value="{{ status_choices }}">
+          
+            {% if form.errors %}
+              {% include "_includes/errors.html" %}
+            {% endif %}
 
-          <v-autocomplete
-            :items="modes"
-            label="Mode"
-            v-model.lazy="mode"
-            name='mode'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
+            <div
+              v-for="(field, index) in fields.common"
+              :key="index">
 
-          <v-autocomplete
-            :items="statusChoices"
-            label="Status"
-            v-model.lazy="status"
-            name='status'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
+                <template
+                  v-if="field.fieldType.value == 'datetimetextfield'">
+                    {% include "_includes/model_fields/textfield_datetime.html" %}
+                  </template>
+
+                <template
+                  v-else-if="field.fieldType.value == 'autocomplete'">
+                    {% include "_includes/model_fields/autocomplete.html" %}
+                  </template>
+            </div>
 
           {% if form_mode == 'Edit' %}
             <input type="hidden" id="dataEmployeeChoices" value="{{ employees }}">
-            <v-autocomplete
-              :items="employees"
-              label="Done by"
-              v-model.lazy="doneBy"
-              name='done_by'
-              dense
-              outlined
-              required>
-            </v-autocomplete>
+
+            <div
+              v-for="(field, index) in fields.edit"
+              :key="index">
+                <template
+                  v-if="field.fieldType.value == 'autocomplete'">
+                    {% include "_includes/model_fields/autocomplete.html" %}
+                  </template>
+            </div>
           {% endif %}
 
           <v-input>
             <v-btn block color="success" type="submit">Save</v-btn>
           </v-input>
-        </form>
+        </v-form>
       </v-col>
     </v-row>
   </v-container>  
@@ -81,12 +72,18 @@
       let jobUrl = '{% url "jobs:detail" job_candidate.job_id %}';
       let formMode = '{{ form_mode }}';
       let data = {
-        mode: '{{ form.mode.value }}',
-        status: '{{ form.status.value }}',
-        doneBy: '{{ form.done_by.value|default_if_none:"" }}',
+            dateTimeLabel: '{{ form.date_time.label }}',
+            dateTime: '{{ form.date_time.value|date:'Y-m-d\TH:i' }}',
+            mode: '{{ form.mode.value|default_if_none:'' }}',
+            status: '{{ form.status.value|default_if_none:'' }}',
+            doneBy: '{{ form.done_by.value|default_if_none:"" }}',
       };
     </script>
   {% endaddtoblock %} 
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForForms.js' %}"></script>
+  {% endaddtoblock %}
 
   {% addtoblock "js" %}
     <script src="{% static 'jobs/interviewForm.js' %}"></script>

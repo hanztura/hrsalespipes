@@ -227,7 +227,7 @@ class InterviewCreateModelForm(ModelForm):
         return is_valid
 
 
-class InterviewUpdateModelForm(InterviewCreateModelForm):
+class InterviewUpdateModelForm(ModelForm):
 
     class Meta:
         model = Interview
@@ -241,4 +241,4 @@ class InterviewUpdateModelForm(InterviewCreateModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['done_by'].required = True
+        self.fields['done_by'].disabled = True
