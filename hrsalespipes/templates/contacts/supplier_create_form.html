@@ -14,40 +14,47 @@ Supplier - New
       justify="center"
     >
       <v-col cols="12" class="text-center">
-        <form method="post">
+        <v-form
+          ref="form"
+          v-model="valid"
+          @submit="submit"
+          method="post">
           {% csrf_token %}
-          {% for error in form.errors %}
-            <v-list-item>{{ error }}</v-list-item>
-          {% endfor %}
-          <v-text-field
-            label="Name"
-            outlined
-            name="name"
-            required
-            value="{{ form.name.value|default_if_none:'' }}">
-          </v-text-field>
+          
+          {% if form.errors %}
+            {% include "_includes/errors.html" %}
+          {% endif %}
 
-          <v-text-field
-            label="Contact Number"
-            outlined
-            name="contact_number"
-            value="{{ form.contact_number.value|default_if_none:'' }}">
-          </v-text-field>
+          <div
+            v-for="(field, index) in fields"
+            :key="index">
+              <template
+                v-if="field.fieldType.value == 'textfield'">
+                  {% include "_includes/model_fields/textfield.html" %}
+                </template>
+          </div>
 
-          <v-text-field
-            label="Email Address"
-            outlined
-            name="email_address"
-            type="email"
-            value="{{ form.email_address.value|default_if_none:'' }}">
-          </v-text-field>
           <v-input>
           <v-btn block color="success" type="submit">Save</v-btn>
           </v-input>
-        </form>
+        </v-form>
       </v-col>
     </v-row>
   </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let data = {
+        name: "{{ form.name.value|default_if_none:'' }}",
+        contactNumber: "{{ form.contact_number.value|default_if_none:'' }}",
+        emailAddress: "{{ form.email_address.value|default_if_none:'' }}",
+      };
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForForms.js' %}"></script>
+  {% endaddtoblock %}
 
   {% addtoblock "js" %}
     <script src="{% static 'contacts/supplierCreate.js' %}"></script>
