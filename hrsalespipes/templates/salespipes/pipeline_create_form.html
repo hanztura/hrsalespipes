@@ -14,37 +14,32 @@ Pipeline - New
       justify="center"
     >
       <v-col cols="12" class="text-center">
-        <form method="post">
-          {% csrf_token %}
-          <input type="hidden" id="dataJobsChoices" value="{{ jobs }}">
-          {% for error in form.errors %}
-            <v-list-item>{{ error }}</v-list-item>
-          {% endfor %}
+        <v-form
+          ref="form"
+          v-model="valid"
+          @submit="submit"
+          method="post">
+            {% csrf_token %}
+            <input type="hidden" id="dataJobsChoices" value="{{ jobs }}">
+          
+            {% if form.errors %}
+              {% include "_includes/errors.html" %}
+            {% endif %}
 
-          <v-autocomplete
-            :items="jobs"
-            label="Job"
-            v-model.lazy="job"
-            name='job'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
+            <div
+              v-for="(field, index) in fields"
+              :key="index">
 
-          <v-autocomplete
-            :items="jobCandidates"
-            label="Job Candidate"
-            v-model.lazy="jobCandidate"
-            name='job_candidate'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
+                <template
+                  v-if="field.fieldType.value == 'autocomplete'">
+                    {% include "_includes/model_fields/autocomplete.html" %}
+                  </template>
+            </div>
 
           <v-input>
             <v-btn block color="success" type="submit">Save</v-btn>
           </v-input>
-        </form>
+        </v-form>
       </v-col>
     </v-row>
   </v-container>  
@@ -72,6 +67,10 @@ Pipeline - New
     {% else %}
       <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     {% endif %}
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForForms.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}

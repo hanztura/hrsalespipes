@@ -14,128 +14,50 @@
       justify="center"
     >
       <v-col cols="12" class="text-center">
-        <form method="post">
-          {% csrf_token %}
-          <input type="hidden" id="dataJobsChoices" value="{{ jobs }}">
-          <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
-          {% if form.errors %}
-            <p>{{form.errors}}</p>
-          {% endif %}
+        <v-form
+          ref="form"
+          v-model="valid"
+          @submit="submit"
+          method="post">
+            {% csrf_token %}
+            <input type="hidden" id="dataJobsChoices" value="{{ jobs }}">
+            <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
+          
+            {% if form.errors %}
+              {% include "_includes/errors.html" %}
+            {% endif %}
 
-          <v-text-field
-            label="{{ form.date.label }}"
-            outlined
-            name="date"
-            required
-            type="date"
-            value="{{ form.instance.date|date:'Y-m-d' }}">
-          </v-text-field>
+            <div
+              v-for="(field, index) in fields"
+              :key="index">
+                <template
+                  v-if="field.fieldType.value == 'textfield'">
+                    {% include "_includes/model_fields/textfield.html" %}
+                  </template>
 
-          <v-autocomplete
-            :items="jobs"
-            label="Job"
-            v-model.lazy="job"
-            disabled
-            dense
-            outlined>
-          </v-autocomplete>
+                <template
+                  v-else-if="field.fieldType.value == 'datetextfield'">
+                    {% include "_includes/model_fields/textfield_date.html" %}
+                  </template>
 
-          <v-autocomplete
-            :items="statusChoices"
-            label="Status"
-            v-model.lazy="status"
-            name='status'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
+                <template
+                  v-else-if="field.fieldType.value == 'textfieldModeled'">
+                    {% include "_includes/model_fields/textfield_modeled.html" %}
+                  </template>
 
-          <v-autocomplete
-            :items="jobCandidates"
-            label="Job Candidate"
-            v-model.lazy="jobCandidate"
-            name='job_candidate'
-            dense
-            outlined
-            required>
-          </v-autocomplete>
+                <template
+                  v-else-if="field.fieldType.value == 'autocomplete'">
+                    {% include "_includes/model_fields/autocomplete.html" %}
+                  </template>
+            </div>
 
-          <v-text-field
-            outlined
-            label="Recruitment Term"
-            name="recruitment_term"
-            type="number"
-            step="0.00001"
-            v-model.lazy="recruitmentTerm">
-          </v-text-field>
-
-          <v-text-field
-            label="Recruitment Rate"
-            outlined
-            name="recruitment_rate"
-            type="number"
-            step="0.0000000001"
-            v-model.lazy="recruitmentFee">
-          </v-text-field>
-
-          <v-text-field
-            label="Base Amount"
-            outlined
-            name="base_amount"
-            type="number"
-            step="0.01"
-            v-model.lazy="baseAmount">
-          </v-text-field>
-
-          <v-text-field
-            label="Potential Income"
-            outlined
-            name="potential_income"
-            type="number"
-            step="0.01"
-            v-model.lazy="potentialIncome">
-          </v-text-field>
-
-          <v-text-field
-            label="Invoice Date"
-            outlined
-            name="invoice_date"
-            type="date"
-            value="{{ form.invoice_date.value|date:'Y-m-d' }}">
-          </v-text-field>
-
-          <v-text-field
-            outlined
-            label="Invoice Number"
-            name="invoice_number"
-            value="{{ form.invoice_number.value }}">
-          </v-text-field>
-
-          <v-text-field
-            label="Invoice Amount"
-            outlined
-            disabled
-            type="number"
-            step="0.01"
-            v-model.lazy="invoiceAmount">
-          </v-text-field>
-
-          <v-text-field
-            label="VAT"
-            outlined
-            disabled
-            type="number"
-            step="0.01"
-            v-model.lazy="vat">
-          </v-text-field>
-
-          <input type="hidden" name="invoice_amount" :value="invoiceAmount">
-          <input type="hidden" name="vat" :value="vat">
+            <input type="hidden" name="invoice_amount" :value="invoiceAmount">
+            <input type="hidden" name="vat" :value="vat">
 
           <v-input>
             <v-btn block color="success" type="submit">Save</v-btn>
           </v-input>
-        </form>
+        </v-form>
       </v-col>
     </v-row>
   </v-container>  
@@ -145,9 +67,12 @@
       let objectUrl = '{% url "salespipes:detail" object.pk %}';
       let objectText = '{{ object.job_candidate.candidate.name }} ({{ object.job_candidate.job.reference_number }})';
       let data = {
+        dateLabel: "{{ form.date.label }}",
+        date: "{{ form.instance.date|date:'Y-m-d' }}",
+        invoiceDate: "{{ form.invoice_date.value|date:'Y-m-d' }}",
         job: '{{ job_id }}',
         jobCandidate: Number('{{ form.job_candidate.value }}'),
-        status: '{{ form.status.value }}',
+        status: '{{ form.status.value|default_if_none:'' }}',
         recruitmentTerm: {{ form.recruitment_term.value }},
         recruitmentFee: {{ form.recruitment_rate.value }},
         baseAmount: {{ form.base_amount.value }},
@@ -173,6 +98,10 @@
     {% else %}
       <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     {% endif %}
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForForms.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}

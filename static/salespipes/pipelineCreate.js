@@ -1,3 +1,41 @@
+let fields = [
+
+    {
+      name: 'job',
+      label: 'Job',
+      items: 'jobs',
+      itemText: 'text',
+      itemValue: 'value',
+      model: 'job',
+      disabled: false,
+      fieldType: {
+        value: 'autocomplete',
+      },
+      dense: true,
+      outlined: true,
+      rules: [
+        v => !!v || 'Job is required',
+      ]
+    },
+
+    {
+      name: 'job_candidate',
+      label: 'Job Candidate',
+      items: 'jobCandidates',
+      itemText: 'text',
+      itemValue: 'value',
+      model: 'jobCandidate',
+      disabled: false,
+      fieldType: {
+        value: 'autocomplete',
+      },
+      dense: true,
+      outlined: true,
+      rules: [
+        v => !!v || 'Job Candidate is required',
+      ]
+    },
+];
 
 new Vue({
   el: '#inspire',
@@ -15,6 +53,7 @@ new Vue({
         text: 'New',
       }
     ],
+    fields: fields,
     jobs: [],
     job: data.job,
     jobCandidates: [],

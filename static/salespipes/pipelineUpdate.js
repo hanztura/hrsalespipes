@@ -1,3 +1,176 @@
+let fields = [
+
+    {
+      name: 'date',
+      label: data.dateLabel,
+      model: 'date',
+      fieldType: {
+        value: 'datetextfield',
+        type: 'date'
+      },
+      outlined: true,
+      rules: [
+        v => !!v || `${data.dateLabel} is required`,
+      ]
+    },
+
+    {
+      name: '',
+      label: 'Job',
+      items: 'jobs',
+      itemText: 'text',
+      itemValue: 'value',
+      model: 'job',
+      disabled: true,
+      fieldType: {
+        value: 'autocomplete',
+      },
+      dense: true,
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'status',
+      label: 'Status',
+      items: 'statusChoices',
+      itemText: 'text',
+      itemValue: 'value',
+      model: 'status',
+      disabled: false,
+      fieldType: {
+        value: 'autocomplete',
+      },
+      dense: true,
+      outlined: true,
+      rules: [
+        v => !!v || 'Status is required',
+      ]
+    },
+
+    {
+      name: 'job_candidate',
+      label: 'Job Candidate',
+      items: 'jobCandidates',
+      itemText: 'text',
+      itemValue: 'value',
+      model: 'jobCandidate',
+      disabled: false,
+      fieldType: {
+        value: 'autocomplete',
+      },
+      dense: true,
+      outlined: true,
+      rules: [
+        v => !!v || 'Job Candidate is required',
+      ]
+    },
+
+    {
+      name: 'recruitment_term',
+      label: 'Recruitment Term',
+      model: 'recruitmentTerm',
+      fieldType: {
+        value: 'textfieldModeled',
+        type: 'number',
+        step: '0.00001'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'recruitment_rate',
+      label: 'Recruitment Rate',
+      model: 'recruitmentFee',
+      fieldType: {
+        value: 'textfieldModeled',
+        type: 'number',
+        step: '0.0000000001'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'base_amount',
+      label: 'Base Amount',
+      model: 'baseAmount',
+      fieldType: {
+        value: 'textfieldModeled',
+        type: 'number',
+        step: '0.01'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'potential_income',
+      label: 'Potential Income',
+      model: 'potentialIncome',
+      fieldType: {
+        value: 'textfieldModeled',
+        type: 'number',
+        step: '0.01'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'invoice_date',
+      label: 'Invoice Date',
+      model: 'invoiceDate',
+      fieldType: {
+        value: 'datetextfield',
+        type: 'date'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'invoice_number',
+      label: 'Invoice Number',
+      value: data.invoiceNumber,
+      fieldType: {
+        value: 'textfield',
+        type: 'text',
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: '',
+      label: 'Invoice Amount',
+      model: 'invoiceAmount',
+      disabled: true,
+      fieldType: {
+        value: 'textfieldModeled',
+        type: 'number',
+        step: '0.01'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: '',
+      label: 'VAT',
+      model: 'vat',
+      disabled: true,
+      fieldType: {
+        value: 'textfieldModeled',
+        type: 'number',
+        step: '0.01'
+      },
+      outlined: true,
+      rules: []
+    },
+];
+
 new Vue({
   el: '#inspire',
   vuetify: new Vuetify(),
@@ -19,6 +192,7 @@ new Vue({
         text: 'Edit',
       }
     ],
+    fields: fields,
     jobs: [],
     job: data.job,
     jobCandidates: [],
@@ -32,6 +206,8 @@ new Vue({
     vatRate: data.vatRate,
     vat: data.vat,
     invoiceAmount: data.invoiceAmount,
+    date: data.date,
+    invoiceDate: data.invoiceDate,
   }),
 
   watch: {
