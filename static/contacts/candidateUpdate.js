@@ -1,3 +1,492 @@
+let fields = {
+  contactDetails: [
+    {
+      name: 'code',
+      label: 'Code',
+      value: data.code,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'contact_number',
+      label: 'Contact Number',
+      value: data.contactNumber,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'alternate_contact_number',
+      label: 'Alternate Contact Number',
+      value: data.alternateContactNumber,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'email_address',
+      label: 'Email Address',
+      value: data.emailAddress,
+      fieldType: {
+        value: 'textfield',
+        type: 'email'
+      },
+      outlined: true,
+      rules: [
+        v => v == '' || /.+@.+\..+/.test(v) || 'E-mail must be in a valid format',
+      ]
+    },
+
+    {
+      name: 'skype_id',
+      label: 'Skype ID',
+      value: data.skypeId,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'ms_teams_id',
+      label: 'MS Teams ID',
+      value: data.msTeamsId,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'location',
+      label: 'Location',
+      items: 'locations',
+      itemText: 'text',
+      itemValue: 'text',
+      model: 'location',
+      fieldType: {
+        value: 'autocomplete',
+      },
+      dense: true,
+      outlined: true,
+      rules: []
+    },
+  ],
+
+  personal: [
+    {
+      name: 'name',
+      label: 'Name',
+      value: data.name,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: [
+        v => !!v || 'Name is required',
+      ]
+    },
+
+    {
+      name: 'nationality',
+      label: 'Nationality',
+      items: 'nationalities',
+      itemText: 'text',
+      itemValue: 'text',
+      model: 'nationality',
+      fieldType: {
+        value: 'autocomplete',
+      },
+      dense: true,
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'languages',
+      label: 'Languages',
+      value: data.languages,
+      fieldType: {
+        value: 'textarea',
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'preferred_location',
+      label: 'Preferred Location',
+      value: data.preferredLocation,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'civil_status',
+      label: 'Civil Status',
+      items: 'civilStatusChoices',
+      model: 'civilStatus',
+      fieldType: {
+        value: 'select',
+      },
+      dense: true,
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'gender',
+      label: 'Gender',
+      items: 'genders',
+      model: 'gender',
+      fieldType: {
+        value: 'select',
+      },
+      dense: true,
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'dependents',
+      label: 'Dependents',
+      value: data.dependents,
+      fieldType: {
+        value: 'textarea',
+      },
+      outlined: true,
+      rules: []
+    },
+    
+    {
+      name: 'highest_educational_qualification',
+      label: 'Highest Educational Qualificaiton',
+      value: data.highestEducationalQualification,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'date_of_birth',
+      label: 'Date of Birth',
+      model: 'dateOfBirth',
+      fieldType: {
+        value: 'datetextfield',
+        type: 'date'
+      },
+      outlined: true,
+      rules: []
+    },
+  ],
+
+  currentPreviousWork: [
+    {
+      name: 'current_previous_position',
+      label: 'Positiion',
+      value: data.currentPreviousPosition,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'current_previous_company',
+      label: 'Company',
+      value: data.currentPreviousCompany,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'current_previous_salary',
+      label: 'Current/Previous Salary',
+      value: data.currentPreviousSalary,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'current_previous_benefits',
+      label: 'Current/Previous Benefits',
+      value: data.currentPreviousBenefits,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'motivation_for_leaving',
+      label: 'Motivation for leaving',
+      value: data.motivationForLeaving,
+      fieldType: {
+        value: 'textarea',
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'expected_salary',
+      label: 'Expected Salary',
+      value: data.expectedSalary,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'expected_benefits',
+      label: 'Expected Benefits',
+      value: data.expectedBenefits,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+  ],
+
+  others: [
+
+    {
+      name: 'visa_status',
+      label: 'Visa Status',
+      items: 'visaStatusChoices',
+      model: 'visaStatus',
+      fieldType: {
+        value: 'select',
+      },
+      dense: true,
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'availability_for_interview',
+      label: 'Availability for interview',
+      value: data.availabilityForInterview,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'notice_period',
+      label: 'Notice Period',
+      value: data.noticePeriod,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'cv_template',
+      label: 'CV Template',
+      items: 'cvTemplates',
+      model: 'cvTemplate',
+      fieldType: {
+        value: 'select',
+      },
+      dense: true,
+      outlined: true,
+      rules: [
+        v => !!v || 'CV Template is required',
+      ]
+    },
+
+    {
+      name: 'candidate_owner',
+      label: 'Candidate Owner',
+      items: 'employees',
+      itemText: 'text',
+      itemValue: 'value',
+      model: 'candidateOwner',
+      fieldType: {
+        value: 'autocomplete',
+      },
+      clearable: true,
+      dense: true,
+      outlined: true,
+      rules: [
+        v => !!v || 'Candidate Owner is required',
+      ]
+    },
+
+    {
+      name: 'notes',
+      label: 'Notes',
+      value: data.notes,
+      fieldType: {
+        value: 'textarea',
+      },
+      outlined: true,
+      rules: []
+    },
+  ],
+
+  medical: [
+    {
+      name: 'medical_experience_in_years',
+      label: 'Medical Exp (Years)',
+      model: 'medicalExperience',
+      fieldType: {
+        value: 'slider',
+        min: '0',
+        max: '80',
+        thumbLabel: 'always',
+      },
+      outlined: false,
+      rules: []
+    },
+
+    {
+      name: 'specialization',
+      label: 'Specialization',
+      value: data.specialization,
+      fieldType: {
+        value: 'textarea',
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'other_certifications',
+      label: 'Other Certification(s)',
+      value: data.otherCertifications,
+      fieldType: {
+        value: 'textarea',
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'job_title_on_dha_haad',
+      label: 'Job Title on DHA/HAAD',
+      value: data.jobTitleOnDhaHaad,
+      fieldType: {
+        value: 'textfield',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'bls_validity',
+      label: 'BLS Validity',
+      model: 'blsValidity',
+      fieldType: {
+        value: 'datetextfield',
+        type: 'date'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'acls_validity',
+      label: 'ACLS Validity',
+      model: 'aclsValidity',
+      fieldType: {
+        value: 'datetextfield',
+        type: 'date'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'haad_dha_license_type',
+      label: 'HAAD/DHA Licence Type',
+      items: 'haadDhaLicenseTypes',
+      model: 'haadDhaLicenseType',
+      fieldType: {
+        value: 'select',
+      },
+      dense: true,
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'haad_dha_license_validity',
+      label: 'HAAD/DHA Licence Validity',
+      model: 'haadDhaLicenseValidity',
+      fieldType: {
+        value: 'datetextfield',
+        type: 'date'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
+      name: 'dataflow_last_update',
+      label: 'Last Update of Dataflow',
+      model: 'dataflowLastUpdate',
+      fieldType: {
+        value: 'datetextfield',
+        type: 'date'
+      },
+      outlined: true,
+      rules: []
+    },
+  ]
+}
+
 new Vue({
   el: '#inspire',
   vuetify: new Vuetify(),
@@ -53,10 +542,12 @@ new Vue({
         icon: 'mdi-medical-bag',  
       },
     ],
+    fields: fields,
     locations: [],
     location: data.location,
     nationalities: [],
     nationality: data.nationality,
+    civilStatus: data.civilStatus,
     civilStatusChoices: [
       {value: 'Single', text: 'Single'},
       {value: 'Married', text: 'Married'},
@@ -64,6 +555,7 @@ new Vue({
       {value: 'Divorced', text: 'Divorced'},
       {value: 'Separated', text: 'Separated'},
     ],
+    gender: data.gender,
     genders: [
       {value: 'Female', text: 'Female'},
       {value: 'Male', text: 'Male'},
@@ -74,6 +566,7 @@ new Vue({
     candidateOwner: data.candidateOwner,
     isMedical: data.isMedical,
     medicalExperience: data.medicalExperience,
+    haadDhaLicenseType: data.haadDhaLicenseType,
     haadDhaLicenseTypes: [
       {
         text: 'HAAD',
@@ -86,6 +579,11 @@ new Vue({
     ],
     cvTemplates: [],
     cvTemplate: data.cvTemplate,
+    dateOfBirth: data.dateOfBirth,
+    blsValidity: data.blsValidity,
+    aclsValidity: data.aclsValidity,
+    haadDhaLicenseValidity: data.haadDhaLicenseValidity,
+    dataflowLastUpdate: data.dataflowLastUpdate,
   }),
 
   beforeMount(){
