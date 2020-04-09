@@ -118,6 +118,10 @@
   {% endaddtoblock %}
 
   {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForForms.js' %}"></script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
     <script src="{% static 'jobs/jobUpdate.js' %}"></script>
   {% endaddtoblock %}
 {% endblock subcontent %}

@@ -145,7 +145,6 @@ new Vue({
         disabled: true,
       }
     ],
-    valid: false,
     fields: fields,
     clients: [],
     client: data.client,
@@ -182,15 +181,6 @@ new Vue({
       let initialStatusIsOpen = this.initialStatusIsOpen;
 
       return close && hasNotConfirmed && initialStatusIsOpen;
-    }
-  },
-
-  methods: {
-    submit: function(e) {
-      this.$refs.form.validate();
-      if (!this.valid){
-        e.preventDefault();
-      }
     }
   },
   beforeMount(){

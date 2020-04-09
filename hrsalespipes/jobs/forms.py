@@ -64,12 +64,14 @@ class JobUpdateModelForm(ModelForm):
         status = cleaned_data['status']
         has_confirmed = cleaned_data['has_confirmed']
 
-        if status.job_is_closed and not has_confirmed:
-            if self.request:
-                msg = 'Please confirm to close this Job.'
-                messages.info(self.request, msg)
+        if not JobStatus.objects.get(
+                pk=self.initial['status']).job_is_closed:
+            if status.job_is_closed and not has_confirmed:
+                if self.request:
+                    msg = 'Please confirm to close this Job.'
+                    messages.info(self.request, msg)
 
-            self.add_error('has_confirmed', msg)
+                self.add_error('has_confirmed', msg)
 
 
 class JobCandidateCreateModelForm(ModelForm):
