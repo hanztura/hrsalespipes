@@ -8,6 +8,8 @@ from system.models import User, VisaStatus
 
 
 class Client(ContactModel):
+    name = models.CharField(
+        max_length=100, unique=True, db_index=True)
     industry = models.CharField(max_length=64)
     location = models.CharField(max_length=64, blank=False)
     initial_approach = models.TextField(blank=True)
@@ -148,6 +150,8 @@ class Candidate(ContactModel):
         'cv_template',
         'notes',
     )
+    name = models.CharField(
+        max_length=100, unique=True, db_index=True)
 
     # work history
     current_previous_position = models.TextField(

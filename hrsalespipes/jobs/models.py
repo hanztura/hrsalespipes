@@ -61,7 +61,8 @@ class Job(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     reference_number = models.CharField(
         max_length=100,
-        verbose_name=settings.JOB_REFERENCE_NUMBER_ALIAS)
+        verbose_name=settings.JOB_REFERENCE_NUMBER_ALIAS,
+        db_index=True)
     date = models.DateField(verbose_name=settings.JOB_DATE_ALIAS)
     client = models.ForeignKey(Client, on_delete=models.PROTECT)
     position = models.CharField(max_length=100)
