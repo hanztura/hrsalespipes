@@ -78,9 +78,7 @@ class CandidateUpdateView(
         return context
 
     def get_success_url(self):
-        return reverse(
-            'contacts:candidates_detail',
-            args=[str(self.object.id), ])
+        return self.object.edit_href
 
 
 class CandidateDetailView(PermissionRequiredMixin, DetailView):
