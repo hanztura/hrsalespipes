@@ -1,0 +1,8 @@
+<v-checkbox
+  v-model="$data[field.model]"
+  :label="field.label"
+></v-checkbox>
+<input
+  :name="field.name"
+  :value="$data[field.model]"
+  type="hidden">
