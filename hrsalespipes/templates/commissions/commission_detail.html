@@ -47,7 +47,7 @@ Commission Detail ({{ object.pipeline.job_candidate.job.reference_number }}) - {
               </tr>
               <tr>
                 <th>Paid:</th>
-                <td>{{ object.is_paid }}</td>
+                <td>{% include "_includes/icon_true_or_false.html" with condition=object.is_paid %}</td>
               </tr>
             </tbody>
           </table>
