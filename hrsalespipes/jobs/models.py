@@ -194,7 +194,7 @@ class JobCandidate(TimeStampedModel):
                   str(self.pk)])
 
 
-class Interview(models.Model):
+class Interview(TimeStampedModel):
     STATUS_CHOICES = (
         ('1', '1st'),
         ('2', '2nd'),
@@ -212,6 +212,8 @@ class Interview(models.Model):
         related_name='interviews',
         null=True,
         blank=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         ordering = ['-date_time', 'job_candidate']

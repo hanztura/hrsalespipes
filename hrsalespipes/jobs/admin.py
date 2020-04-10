@@ -4,7 +4,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import Status, JobStatus, Job, JobCandidate
+from .models import Status, JobStatus, Job, JobCandidate, Interview
 
 
 class JobResource(resources.ModelResource):
@@ -93,10 +93,38 @@ class JobStatusAdmin(admin.ModelAdmin):
         'is_default')
 
 
+class InterviewResource(resources.ModelResource):
+    class Meta:
+        model = Interview
+        fields = (
+            'id',
+            'created',
+            'modified',
+            'job_candidate',
+            'mode',
+            'date_time',
+            'status',
+            'done_by',
+        )
+
+
+class InterviewAdmin(
+        ImportExportModelAdmin,
+        SimpleHistoryAdmin):
+    resource_class = InterviewResource
+    readonly_fields = InterviewResource.Meta.fields
+    list_display = (
+        'id',
+        'created',
+        'modified',
+    )
+
+
 admin.site.register(Status, StatusAdmin)
 admin.site.register(JobStatus, JobStatusAdmin)
 admin.site.register(Job, JobAdmin)
 admin.site.register(JobCandidate, JobCandidateAdmin)
+admin.site.register(Interview, InterviewAdmin)
 
 # only enable import export if allowed
 # register_optional_admin_items(((Job, JobAdmin), ))
