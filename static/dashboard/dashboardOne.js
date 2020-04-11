@@ -216,11 +216,11 @@ new Vue({
   computed: {
     graphItems: function() {
       return [
-        this.sjatpi,
-        this.sjpc,
+        this.ytdcpData,
         this.tnfipc,
         this.tnfipcp12m,
-        this.ytdcpData,
+        this.sjatpi,
+        this.sjpc,
       ]
     },
     ytdcpDataBySources: function(){

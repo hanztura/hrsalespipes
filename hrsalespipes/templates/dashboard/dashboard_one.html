@@ -25,14 +25,13 @@ Dashboard
   <input type="hidden" id="dataTNFIPerConsultant" value="{{ tnfipc }}">
   <input type="hidden" id="dataTNFIPerConsultantLast12Months" value="{{ tnfipcp12m }}">
   <input type="hidden" id="dataYTDClientPerformance" value="{{ ytdcp }}">
-  <v-container
-    fluid>
+  <v-container>
     <h1>Dashboard</h1>
     {% if data_note %}<span class="caption">{{ data_note }}</span>{% endif %}
 
     <v-row
       align="center"
-      justify="center"
+      justify="start"
     >
       <dash-card
         v-for="item in dashboardItemsNumber"
@@ -49,7 +48,6 @@ Dashboard
     >
       <v-col
         cols=12
-        md=6
         v-for="graph in graphItems"
         :key="graph.title"
         height="100%">

@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.urls import reverse
@@ -11,6 +12,7 @@ from dateutil.relativedelta import relativedelta
 from .utils import (
     custom_permissions, template_names, get_data_dashboard_items_number)
 from .models import Dashboard
+from contacts.models import Client
 from jobs.models import Interview, JobCandidate, Job, JobStatus
 from salespipes.models import Pipeline
 from system.utils import ContextFromToMixin
@@ -57,6 +59,7 @@ class DashboardView(
             'job_candidate__associate', 'job_candidate__consultant')
         all_jobs = Job.objects.all().select_related('status').order_by(
             '-date')
+        newly_signed_clients = Client.newly_signed.all()
 
         # prepare data for dashboard items
         dashboard_items_number = []
@@ -150,6 +153,8 @@ class DashboardView(
             cv_sent_url = '{}?from=ALL&to=ALL'.format(
                 cv_sent_url)
 
+            newly_signed_clients_url = reverse('reports:newly_signed_clients')
+
             data = [
                 {
                     'type': 'number',  # number, graph
@@ -193,6 +198,13 @@ class DashboardView(
                     'icon': 'mdi-calendar-import',
                     'url': tnfipc_last_month_url,
                 },
+                {
+                    'type': 'number',  # number, graph
+                    'title': 'Newly Signed Clients',
+                    'value': newly_signed_clients.count(),
+                    'icon': 'mdi-new-box',
+                    'url': newly_signed_clients_url,
+                },
             ]
 
             del(interviews_report_url)
@@ -220,6 +232,13 @@ class DashboardView(
 
             dashboard_settings = Dashboard.load()
             dashboard_items_graph = [
+                {
+                    'code': 'ytdcp',
+                    'type': 'graph',
+                    'title': dashboard_settings.ytd_client_performance_label,
+                    'value': ytdcp,
+                    'url': ytdcp_url
+                },
                 {
                     'code': 'sjatpi',
                     'type': 'graph',
@@ -254,13 +273,6 @@ class DashboardView(
                     'value': tnfipcp12m,
                     'url': tnfipcp12m_url
                 },
-                {
-                    'code': 'ytdcp',
-                    'type': 'graph',
-                    'title': dashboard_settings.ytd_client_performance_label,
-                    'value': ytdcp,
-                    'url': ytdcp_url
-                }
             ]
 
             for graph_item in dashboard_items_graph:
