@@ -29,11 +29,11 @@ Successful Jobs - Reports
               </v-col>
 
               <v-col cols="12" md="2" class="py-0">
-                {% include "_includes/_auto_complete.html" with label="Consultant" name="consultant" items="consultants" model="consultant" prepend_inner_icon="mdi-account-cog" %}
+                {% include "_includes/_auto_complete.html" with label="Consultant" item_value="value" item_text="text" name="consultant" items="consultants" model="consultant" prepend_inner_icon="mdi-account-cog" %}
               </v-col>
 
               <v-col cols="12" md="2" class="py-0">
-                {% include "_includes/_auto_complete.html" with label="Industry" item_value="text"  name="industry" items="industries" model="industry" prepend_inner_icon=ICON_SUPPLIERS %}
+                {% include "_includes/_auto_complete.html" with label="Industry" item_value="text" item_text="text"  name="industry" items="industries" model="industry" prepend_inner_icon=ICON_SUPPLIERS %}
               </v-col>
 
               <v-col cols="12" md="1" class="pa-0">
