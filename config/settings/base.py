@@ -247,6 +247,7 @@ ICON_ACCOUNT = 'mdi-account-circle'
 ICON_CANDIDATES = 'mdi-account-tie'
 ICON_CLIENTS = 'mdi-currency-usd'
 ICON_SUPPLIERS = 'mdi-truck'
+ICON_INTERVIEWS = 'mdi-headphones'
 
 PROJECT_NAME = 'HRSalesPipes'
 PROJECT_VERSION = '1.0'

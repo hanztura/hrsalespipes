@@ -174,7 +174,7 @@ class DashboardView(
                     'type': 'number',
                     'title': 'Interviews Arranged',
                     'value': round(float(all_interviews.count())),
-                    'icon': 'mdi-briefcase-check',
+                    'icon': settings.ICON_INTERVIEWS,
                     'url': interviews_report_url,
                 },
                 {
