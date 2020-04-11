@@ -3,6 +3,7 @@ from django.urls import reverse
 
 from simple_history.models import HistoricalRecords
 
+from .db import NewlySignedManager
 from .utils import ContactModel
 from system.models import User, VisaStatus
 
@@ -27,6 +28,9 @@ class Client(ContactModel):
 
     history = HistoricalRecords()
 
+    objects = models.Manager()
+    newly_signed = NewlySignedManager()
+
     class Meta:
         permissions = (
             (
@@ -34,6 +38,7 @@ class Client(ContactModel):
                 'Can edit client agreement fields'
             ),
         )
+        ordering = 'name',
 
     @property
     def edit_href(self):

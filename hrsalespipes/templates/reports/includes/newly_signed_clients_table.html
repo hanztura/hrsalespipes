@@ -1,0 +1,47 @@
+<table>
+  <thead>
+    <tr>
+      <th class="text-center">Name</th>
+      <th class="text-center">Agreement Terms</th>
+      <th class="text-center">Agreement Fee</th>
+      <th class="text-center">Refund Scheme</th>
+      <th class="text-center">Business Development Person</th>
+      <th class="text-center">Validity</th>
+      <th class="text-center">Signed on</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if object_list %}
+      {% for object in object_list %}
+      <tr>
+        <td class="text-center"><a href="{% url 'contacts:clients_detail' object.pk %}" title="View client detail">{{ object.name }}</a></td>
+        <td class="text-center">{{ object.agreement_term }}</td>
+        <td class="text-center">{{ object.agreement_fee }}</td>
+        <td class="text-center">{{ object.refund_scheme }}</td>
+        <td class="text-center">{{ object.business_development_person.name }}</td>
+        <td class="text-center">{{ object.validity|date:SYSTEM_SETTINGS.display_date_format }}</td>
+        <td class="text-center">{{ object.signed_on|date:SYSTEM_SETTINGS.display_date_format }}</td>
+      </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td colspan="7">No data available.</td>
+      </tr>
+    {% endif %}
+  </tbody>
+
+  {% if object_list %}
+  <tfoot>
+    {% with colspan=6  %}
+    <tr>
+      <td class="text-right" colspan="{{ colspan }}">Total CV Sent</td>
+      {% if paginator %}
+        <td class="text-center"><strong>{{ paginator.count }}</strong></td>
+      {% else %}
+        <td class="text-center"><strong>{{ COUNT }}</strong></td>
+      {% endif %}
+    </tr>
+    {% endwith %}
+  </tfoot>
+  {% endif %}
+</table>

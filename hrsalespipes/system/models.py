@@ -32,6 +32,8 @@ class Setting(SingletonModel):
     )
     project_label = models.CharField(max_length=50, blank=True)
     cv_label = models.CharField(max_length=50, default='CV')
+    newly_signed_clients_number_of_days = models.PositiveSmallIntegerField(
+        default=7)
 
     def __str__(self):
         return 'System Wide Settings'

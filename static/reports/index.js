@@ -41,6 +41,11 @@ new Vue({
         title: 'Monthly Invoices Summary',
       },
       {
+        icon: ICONS.ICON_CONTACTS,
+        href: urlNewlySignedClients,
+        title: 'Newly Signed Clients',
+      },
+      {
         icon: ICONS.ICON_PIPELINE,
         href: urlPipelineSummary,
         title: 'Pipeline Summary'

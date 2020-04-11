@@ -15,7 +15,7 @@ from django_weasyprint import WeasyTemplateResponseMixin
 from .helpers import get_successful_jobs_queryset
 from .utils import (
     generate_excel, EmployeeFilterMixin, filter_queryset_by_employee)
-from contacts.models import Employee
+from contacts.models import Employee, Client
 from commissions.models import Commission
 from commissions.views import CommissionListView
 from jobs.models import Job, JobCandidate, JobStatus, Interview
@@ -1194,6 +1194,122 @@ class CVSentExcelView(
             date_filter_expression=Q(
                 cv_date_shared__gte=date_from,
                 cv_date_shared__lte=date_to),
+        )
+
+        wb.save(response)
+        return response
+
+
+class NewlySignedClientsReportListView(
+        DisplayDateFormatMixin,
+        FromToViewFilterMixin,
+        ContextUrlBuildersMixin,
+        PermissionRequiredWithCustomMessageMixin,
+        ListView):
+    model = Client
+    template_name = 'reports/newly_signed_clients.html'
+    permission_required = 'contacts.view_client'
+    paginate_by = 200
+    queryset = Client.newly_signed.all()
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_newly_signed_clients')),
+            ('excel_url', reverse('reports:excel_newly_signed_clients')),
+        )
+        return context_urls
+
+    def get_from_to_filter_expression(self, date_from, date_to):
+        expression = Q(
+            signed_on__gte=date_from, signed_on__lte=date_to)
+        return expression
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.select_related('business_development_person')
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        q = context['object_list']
+        aggregates = q.aggregate(Count('id'))
+
+        context['COUNT'] = aggregates['id__count']
+        return context
+
+
+class NewlySignedClientsPDFView(
+        WeasyTemplateResponseMixin,
+        NewlySignedClientsReportListView):
+    template_name = 'reports/pdf/newly_signed_clients.html'
+    pdf_attachment = True
+    pdf_filename = 'Newly Signed clients.pdf'
+    paginate_by = 0
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['COMPANY'] = Setting.objects.first().company_name
+        return context
+
+
+class NewlySignedClientsExcelView(
+        PermissionRequiredWithCustomMessageMixin,
+        View):
+    permission_required = 'jobs.view_client'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        today = timezone.localdate()
+        last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
+        self.month_first_day = str(today.replace(day=1))
+        self.month_last_day = str(today.replace(day=last_day_of_the_month))
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; \
+            filename="Newly Signed Clients Report.xls"'
+
+        date_from = self.request.GET.get('from', '')
+        date_from = date_from if date_from else self.month_first_day
+
+        date_to = self.request.GET.get('to', '')
+        date_to = date_to if date_to else self.month_last_day
+
+        columns = [
+            'Name',
+            'Agreement Term',
+            'Agreement Fee',
+            'Refund Scheme',
+            'Business Development Person',
+            'Validity',
+            'Signed on',
+        ]
+        values_list = [
+            'name',
+            'agreement_term',
+            'agreement_fee',
+            'refund_scheme',
+            'business_development_person__name',
+            'validity',
+            'signed_on',
+        ]
+
+        wb = generate_excel(
+            'Newly Signed Clients Report',
+            date_from,
+            date_to,
+            columns,
+            Client,
+            ('business_development_person',),
+            values_list,
+            date_filter_expression=Q(
+                signed_on__gte=date_from,
+                signed_on__lte=date_to),
+            queryset=Client.newly_signed.all()
         )
 
         wb.save(response)
