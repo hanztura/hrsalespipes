@@ -20,8 +20,10 @@ urlpatterns = [
 
     path('<str:job_pk>/candidates/<str:candidate_pk>/interviews/new/',
          InterviewCreateView.as_view(), name='interviews_new'),
-    path('<str:job_pk>/candidates/<str:candidate_pk>/interviews/edit/<str:pk>/',
-         InterviewUpdateView.as_view(), name='interviews_edit'),
+    path(
+        '<str:job_pk>/candidates/<str:candidate_pk>/interviews/edit/<str:pk>/',
+        InterviewUpdateView.as_view(),
+        name='interviews_edit'),
 
     path('<str:pk>/', JobDetailView.as_view(), name='detail'),
 
