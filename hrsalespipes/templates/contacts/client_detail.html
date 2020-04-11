@@ -90,7 +90,11 @@ Client Detail - {{ object.name }}
                     </tr>
                     <tr>
                       <th>Validity:</th>
-                      <td>{{ object.validity }}</td>
+                      <td>{{ object.validity|date:SYSTEM_SETTINGS.display_date_format }}</td>
+                    </tr>
+                    <tr>
+                      <th>Signed on:</th>
+                      <td>{{ object.signed_on|date:SYSTEM_SETTINGS.display_date_format }}</td>
                     </tr>
                     <tr>
                       <th>Business Development Person:</th>

@@ -122,10 +122,13 @@
         agreementTermDisabled: {{ form.agreement_term.field.disabled|yesno:'true,false' }},
         agreementFee: {{ form.instance.agreement_fee }},
         agreementFeeDisabled: {{ form.agreement_fee.field.disabled|yesno:'true,false' }},
+        refundScheme: '{{ form.refund_scheme.value|default_if_none:'' }}',
         refundSchemeDisabled: {{ form.refund_scheme.field.disabled|yesno:'true,false' }},
-        validityDisabled: {{ form.validity.field.disabled|yesno:'true,false' }},
         businessDevelopmentPerson: '{{ form.business_development_person.value|default_if_none:'' }}',
-        validity: "{{ form.validity.value|default_if_none:''|date:'Y-m-d' }}",
+        validity: "{{ form.instance.validity|default_if_none:''|date:'Y-m-d' }}",
+        validityDisabled: {{ form.validity.field.disabled|yesno:'true,false' }},
+        signedOn: "{{ form.instance.signed_on|default_if_none:''|date:'Y-m-d' }}",
+        signedOnDisabled: {{ form.signed_on.field.disabled|yesno:'true,false' }},
         notes: "{{ form.notes.value|default_if_none:'' }}",
       }
     </script>

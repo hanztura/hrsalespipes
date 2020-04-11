@@ -121,6 +121,7 @@ class ClientUpdateModelForm(FormCleanContactNumber, ModelForm):
             'notes',
             'point_of_contacts',
             'business_development_person',
+            'signed_on',
         ]
 
     agreement_fields = (
@@ -128,6 +129,7 @@ class ClientUpdateModelForm(FormCleanContactNumber, ModelForm):
         'agreement_fee',
         'refund_scheme',
         'validity',
+        'signed_on',
     )
 
     def __init__(self, *args, **kwargs):
@@ -155,7 +157,7 @@ class ClientCreateModelForm(FormCleanContactNumber, ModelForm):
             'whatsapp_link',
             'email_address',
             'location',
-            'industry'
+            'industry',
         ]
 
     def __init__(self, *args, **kwargs):

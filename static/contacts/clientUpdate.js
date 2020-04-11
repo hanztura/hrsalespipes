@@ -43,7 +43,8 @@ let fields = {
       },
       dense: true,
       outlined: true,
-      rules: []
+      rules: [
+        v => !!v || 'Location is required',]
     },
 
     {
@@ -186,6 +187,19 @@ let fields = {
     },
 
     {
+      name: 'signed_on',
+      label: 'Signed on',
+      model: 'signedOn',
+      disabled: data.signedOnDisabled,
+      fieldType: {
+        value: 'datetextfield',
+        type: 'date'
+      },
+      outlined: true,
+      rules: []
+    },
+
+    {
       name: 'notes',
       label: 'Notes',
       value: data.notes,
@@ -273,6 +287,7 @@ new Vue({
     employees: [],
     businessDevelopmentPerson: data.businessDevelopmentPerson,
     validity: data.validity,
+    signedOn: data.signedOn,
   }),
 
   computed: {
