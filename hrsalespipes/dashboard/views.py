@@ -55,7 +55,6 @@ class DashboardView(
             'status', 'job_candidate__job__client')
         all_interviews = Interview.objects.all().select_related(
             'job_candidate__associate', 'job_candidate__consultant')
-        all_job_candidates = JobCandidate.objects.all()
         all_jobs = Job.objects.all().select_related('status').order_by(
             '-date')
 
@@ -64,8 +63,7 @@ class DashboardView(
         if self.dashboard_index in [1, 2, 0]:  # dashboard for One Two Three
 
             # cv shared to client
-            cv_sent_to_clients = all_job_candidates.filter(
-                cv_date_shared__isnull=False)
+            cv_sent_to_clients = JobCandidate.cv_sent.all()
             if self.dashboard_index == 0:  # Three Dashboard
                 context['data_note'] = \
                     'All employees\' data are used in this dashboard.'
@@ -148,6 +146,10 @@ class DashboardView(
                 successful_jobs_url,
                 url_params_last_month)  # income last month
 
+            cv_sent_url = reverse('reports:cv_sent')
+            cv_sent_url = '{}?from=ALL&to=ALL'.format(
+                cv_sent_url)
+
             data = [
                 {
                     'type': 'number',  # number, graph
@@ -175,7 +177,7 @@ class DashboardView(
                     'title': 'CVs sent to clients',
                     'value': round(float(cv_sent_to_clients.count())),
                     'icon': 'mdi-send-check',
-                    'url': '#',
+                    'url': cv_sent_url,
                 },
                 {
                     'type': 'number',

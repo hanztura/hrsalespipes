@@ -16,6 +16,11 @@ new Vue({
         title: 'Commissions Earned Summary',
       },
       {
+        icon: 'mdi-send-check',
+        href: urlCVSent,
+        title: 'CV Sent to Clients',
+      },
+      {
         icon: 'mdi-headphones',
         href: urlInterviews,
         title: 'Interviews Report',

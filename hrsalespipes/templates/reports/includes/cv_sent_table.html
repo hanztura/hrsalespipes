@@ -1,0 +1,48 @@
+
+<table>
+  <thead>
+    <tr>
+      <th class="text-center">Client</th>
+      <th class="text-center">CV Source</th>
+      <th class="text-center">Date Shared</th>
+      <th class="text-center">Candidate</th>
+      <th class="text-center">Status</th>
+      <th class="text-center">Reference Number</th>
+      <th class="text-center">Position</th>
+      <th class="text-center">Associate</th>
+      <th class="text-center">Consultant</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if object_list %}
+      {% for object in object_list %}
+      <tr>
+        <td class="text-center">{{ object.job.client.name }}</td>
+        <td class="text-center">{{ object.cv_source }}</td>
+        <td class="text-center">{{ object.cv_date_shared }}</td>
+        <td class="text-center">{{ object.candidate.name }}</td>
+        <td class="text-center">{{ object.status.name }}</td>
+        <td class="text-center"><a href="{% url 'jobs:candidates_detail' object.job_id object.pk %}" title="view Job Candidate detail">{{ object.job.reference_number }}</a></td>
+        <td class="text-center"><a href="{% url 'jobs:detail' object.job_id %}" title="view Job detail">{{ object.job.position }}</a></td>
+        <td class="text-center">{{ object.associate.name }}</td>
+        <td class="text-center">{{ object.consultant.name }}</td>
+      </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td colspan="6">No data available.</td>
+      </tr>
+    {% endif %}
+  </tbody>
+
+  {% if object_list %}
+  <tfoot>
+    {% with colspan=8  %}
+    <tr>
+      <td class="text-right" colspan="{{ colspan }}">Total CV Sent</td>
+      <td class="text-center"><strong>{{ COUNT }}</strong></td>
+    </tr>
+    {% endwith %}
+  </tfoot>
+  {% endif %}
+</table>
