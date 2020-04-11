@@ -55,7 +55,6 @@ class DashboardView(
             'status', 'job_candidate__job__client')
         all_interviews = Interview.objects.all().select_related(
             'job_candidate__associate', 'job_candidate__consultant')
-        all_job_candidates = JobCandidate.objects.all()
         all_jobs = Job.objects.all().select_related('status').order_by(
             '-date')
 
@@ -64,8 +63,7 @@ class DashboardView(
         if self.dashboard_index in [1, 2, 0]:  # dashboard for One Two Three
 
             # cv shared to client
-            cv_sent_to_clients = all_job_candidates.filter(
-                cv_date_shared__isnull=False)
+            cv_sent_to_clients = JobCandidate.cv_sent.all()
             if self.dashboard_index == 0:  # Three Dashboard
                 context['data_note'] = \
                     'All employees\' data are used in this dashboard.'
@@ -120,6 +118,38 @@ class DashboardView(
 
             del(active_jobs_id)
 
+            from_to_url_params_this_month = '?from={}&to={}'.format(
+                self.month_first_day,
+                self.month_last_day)
+            successful_jobs_url = reverse('reports:successful_jobs')
+            sjpc_url = '{}{}'.format(
+                successful_jobs_url,
+                from_to_url_params_this_month)
+
+            interviews_report_url = reverse('reports:interviews')
+            interviews_report_url = '{}?from=ALL&to=ALL'.format(
+                interviews_report_url)
+
+            tnfipc_url = '{}{}'.format(
+                successful_jobs_url,
+                from_to_url_params_this_month)  # income this month
+
+            today = timezone.localdate()
+            first_day = today.replace(day=1)
+            last_month = first_day - relativedelta(days=1)
+            past_12_month = today - relativedelta(months=12)
+
+            url_params_last_month = '?from={}&to={}'.format(
+                last_month.replace(day=1),
+                last_month)
+            tnfipc_last_month_url = '{}{}'.format(
+                successful_jobs_url,
+                url_params_last_month)  # income last month
+
+            cv_sent_url = reverse('reports:cv_sent')
+            cv_sent_url = '{}?from=ALL&to=ALL'.format(
+                cv_sent_url)
+
             data = [
                 {
                     'type': 'number',  # number, graph
@@ -133,56 +163,46 @@ class DashboardView(
                     'title': 'Succesful job placements this month',
                     'value': successful_jobs.count(),
                     'icon': 'mdi-briefcase-account',
-                    'url': '#',
+                    'url': sjpc_url,
                 },
                 {
                     'type': 'number',
                     'title': 'Interviews Arranged',
                     'value': round(float(all_interviews.count())),
                     'icon': 'mdi-briefcase-check',
-                    'url': '#',
+                    'url': interviews_report_url,
                 },
                 {
                     'type': 'number',
                     'title': 'CVs sent to clients',
                     'value': round(float(cv_sent_to_clients.count())),
                     'icon': 'mdi-send-check',
-                    'url': '#',
+                    'url': cv_sent_url,
                 },
                 {
                     'type': 'number',
                     'title': 'NFI generated this month',
                     'value': round(float(tpi)),
                     'icon': 'mdi-calendar-month',
-                    'url': '#',
+                    'url': tnfipc_url,
                 },
                 {
                     'type': 'number',
                     'title': 'NFI generated last month',
                     'value': round(float(tpi_last_month)),
                     'icon': 'mdi-calendar-import',
-                    'url': '#',
+                    'url': tnfipc_last_month_url,
                 },
             ]
 
+            del(interviews_report_url)
+
             dashboard_items_number += data
 
-            from_to_url_params_this_month = '?from={}&to={}'.format(
-                self.month_first_day,
-                self.month_last_day)
-            successful_jobs_url = reverse('reports:successful_jobs')
             sjatpi_url = '{}?from=ALL&to=ALL'.format(successful_jobs_url)
             sjpc_url = '{}{}'.format(
                 successful_jobs_url,
                 from_to_url_params_this_month)
-            tnfipc_url = '{}{}'.format(
-                successful_jobs_url,
-                from_to_url_params_this_month)
-
-            today = timezone.localdate()
-            first_day = today.replace(day=1)
-            last_month = first_day - relativedelta(days=1)
-            past_12_month = today - relativedelta(months=12)
 
             from_to_url_params_last_12_months = '?from={}&to={}'.format(
                 past_12_month.replace(day=1),

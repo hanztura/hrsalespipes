@@ -9,7 +9,8 @@ from .views import (
     CommissionsEarnedSummaryExcelView, MonthlyInvoicesSummaryListView,
     MonthlyInvoicesSummaryPDFView, MonthlyInvoicesSummaryExcelView,
     SuccessfulJobsListView, SuccessfulJobsPDFView, InterviewsReportListView,
-    InterviewsReportPDFView, InterviewsExcelView)
+    InterviewsReportPDFView, InterviewsExcelView, CVSentReportListView,
+    CVSentReportPDFView, CVSentExcelView)
 
 app_name = 'reports'
 urlpatterns = [
@@ -100,6 +101,20 @@ urlpatterns = [
         'interviews/',
         InterviewsReportListView.as_view(),
         name='interviews'),
+
+    path(
+        'pdf/cv-sent/',
+        CVSentReportPDFView.as_view(),
+        name='pdf_cv_sent'),
+
+    path(
+        'excel/cv-sent/',
+        CVSentExcelView.as_view(),
+        name='excel_cv_sent'),
+    path(
+        'cv-sent/',
+        CVSentReportListView.as_view(),
+        name='cv_sent'),
 
     path('', IndexView.as_view(), name='index'),
 ]

@@ -2,7 +2,7 @@ import calendar
 import math
 import xlwt
 
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, Count
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse
@@ -79,7 +79,10 @@ class MonthlyInvoicesSummaryListView(
         context = super().get_context_data(**kwargs)
 
         q = context['object_list']
-        sums = q.aggregate(Sum('invoice_amount'), Sum('vat'))
+        sums = q.aggregate(
+            Sum('invoice_amount'),
+            Sum('vat'),
+            Sum('potential_income'))
 
         context['consultant'] = self.consultant
         context['consultant_pk'] = None
@@ -89,6 +92,7 @@ class MonthlyInvoicesSummaryListView(
         context['consultants'] = get_objects_as_choices(Employee)
 
         context['TITLE'] = self.TITLE
+        context['TOTAL_POTENTIAL_INCOME'] = sums['potential_income__sum']
         context['TOTAL'] = sums['invoice_amount__sum']
         context['VAT'] = sums['vat__sum']
         return context
@@ -143,6 +147,7 @@ class MonthlyInvoicesSummaryExcelView(
             'Client',
             'Industry',
             'Consultant',
+            'Income',
             'Invoice Amount',
             'VAT',
         ]
@@ -153,6 +158,7 @@ class MonthlyInvoicesSummaryExcelView(
             'job_candidate__job__client__name',
             'job_candidate__job__client__industry',
             'job_candidate__candidate__candidate_owner__name',
+            'potential_income',
             'invoice_amount',
             'vat',
         ]
@@ -170,10 +176,11 @@ class MonthlyInvoicesSummaryExcelView(
             ),
             values_list,
             (
+                (invoice_amount_index - 1, 'potential_income'),
                 (invoice_amount_index, 'invoice_amount'),
-                (invoice_amount_index + 1, 'vat')
+                (invoice_amount_index + 1, 'vat'),
             ),  # aggregate fields
-            invoice_amount_index - 1,  # totals label
+            invoice_amount_index - 2,  # totals label
             is_month_filter=True,
             consultant_id=consultant_pk,
             user=self.request.user,
@@ -1044,6 +1051,149 @@ class InterviewsExcelView(
             filter_expression=filter_expression,
             empty_if_no_filter=True,
             is_datetime=True
+        )
+
+        wb.save(response)
+        return response
+
+
+class CVSentReportListView(
+        EmployeeFilterMixin,
+        DisplayDateFormatMixin,
+        FromToViewFilterMixin,
+        ContextUrlBuildersMixin,
+        PermissionRequiredWithCustomMessageMixin,
+        ListView):
+    model = JobCandidate
+    template_name = 'reports/cv_sent.html'
+    permission_required = 'jobs.view_report_cv_sent'
+    paginate_by = 0
+    queryset = JobCandidate.cv_sent.all()
+
+    # EmployeeFilterMixin
+    empty_if_no_filter = True
+    all_permission = 'jobs.view_all_job_candidates'
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_cv_sent')),
+            ('excel_url', reverse('reports:excel_cv_sent')),
+        )
+        return context_urls
+
+    def get_filter_expression(self):
+        filter_expression = None
+
+        employee = getattr(self.request.user, 'as_employee', None)
+        if employee:
+            filter_expression = Q(associate_id=employee.pk) | Q(
+                consultant_id=employee.pk)
+        return filter_expression
+
+    def get_from_to_filter_expression(self, date_from, date_to):
+        expression = Q(
+            cv_date_shared__gte=date_from, cv_date_shared__lte=date_to)
+        return expression
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.select_related(
+            'candidate', 'job__client', 'status', 'associate', 'consultant')
+        q = q.order_by('job__client__name')
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        q = context['object_list']
+        aggregates = q.aggregate(Count('id'))
+
+        context['COUNT'] = aggregates['id__count']
+        return context
+
+
+class CVSentReportPDFView(
+        WeasyTemplateResponseMixin,
+        CVSentReportListView):
+    template_name = 'reports/pdf/cv_sent.html'
+    pdf_attachment = True
+    pdf_filename = 'CV Sent to Clients Report.pdf'
+    paginate_by = 0
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['COMPANY'] = Setting.objects.first().company_name
+        return context
+
+
+class CVSentExcelView(
+        PermissionRequiredWithCustomMessageMixin,
+        View):
+    permission_required = 'jobs.view_report_cv_sent'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        today = timezone.localdate()
+        last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
+        self.month_first_day = str(today.replace(day=1))
+        self.month_last_day = str(today.replace(day=last_day_of_the_month))
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; \
+            filename="CV Sent to Clients Report.xls"'
+
+        date_from = self.request.GET.get('from', '')
+        date_from = date_from if date_from else self.month_first_day
+
+        date_to = self.request.GET.get('to', '')
+        date_to = date_to if date_to else self.month_last_day
+
+        columns = [
+            'Client',
+            'CV Source',
+            'Date Shared',
+            'Candidate',
+            'Status',
+            'Reference Number',
+            'Position',
+            'Associate',
+            'Consultant',
+        ]
+        values_list = [
+            'job__client__name',
+            'cv_source',
+            'cv_date_shared',
+            'candidate__name',
+            'status__name',
+            'job__reference_number',
+            'job__position',
+            'associate__name',
+            'consultant__name',
+        ]
+
+        user = self.request.user
+        employee = getattr(self.request.user, 'as_employee', None)
+        filter_expression = Q(consultant_id=employee.pk) | Q(
+            associate_id=employee.pk)
+        filter_expression = None if not employee else filter_expression
+        wb = generate_excel(
+            'CV Sent to Clients Report',
+            date_from,
+            date_to,
+            columns,
+            JobCandidate,
+            ('candidate', 'job__client', 'status', 'associate', 'consultant'),
+            values_list,
+            user=user,
+            filter_expression=filter_expression,
+            empty_if_no_filter=True,
+            date_filter_expression=Q(
+                cv_date_shared__gte=date_from,
+                cv_date_shared__lte=date_to),
         )
 
         wb.save(response)

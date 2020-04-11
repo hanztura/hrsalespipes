@@ -1,0 +1,12 @@
+{% extends "reports/pdf/base.html" %}
+
+{% block title %}<title>CV Sent to Clients Download PDF - Reports</title>{% endblock title %}
+
+{% block content %}
+<content>
+  <h1>CV Sent to Clients Report</h1>
+  <p class="my-0 py-0"><strong>{{ COMPANY }}</strong></p>
+  <p class="my-0 py-0">For the period {{ from }} to {{ to }}</p>
+  {% include "reports/includes/cv_sent_table.html" %}
+</content>
+{% endblock content %}

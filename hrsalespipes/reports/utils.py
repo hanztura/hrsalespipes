@@ -53,7 +53,8 @@ def generate_excel(
         filter_expression=None,
         empty_if_no_filter=False,
         is_datetime=False,
-        queryset=None):
+        queryset=None,
+        date_filter_expression=None):
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet(heading_title)
 
@@ -116,16 +117,23 @@ def generate_excel(
 
             data = rows
 
-            # filter date
-            if is_month_filter:
-                year, month = date_from.split('-')
-                data = rows.filter(date__month=month, date__year=year)
-            else:  # two dates
-                if is_datetime:
-                    data = rows.filter(
-                        date_time__gte=date_from, date_time__lte=date_to)
-                else:
-                    data = rows.filter(date__gte=date_from, date__lte=date_to)
+            if date_from == 'ALL' and date_to == 'ALL':
+                pass
+            else:
+                # filter date
+                if is_month_filter:
+                    year, month = date_from.split('-')
+                    data = rows.filter(date__month=month, date__year=year)
+                else:  # two dates
+                    if is_datetime:
+                        data = rows.filter(
+                            date_time__gte=date_from, date_time__lte=date_to)
+                    else:
+                        if not date_filter_expression:
+                            date_filter_expression = Q(
+                                date__gte=date_from,
+                                date__lte=date_to)
+                        data = rows.filter(date_filter_expression)
 
             # filter contact
             if contact_id:

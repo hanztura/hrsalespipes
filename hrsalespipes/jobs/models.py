@@ -8,6 +8,7 @@ from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
+from .helpers import CVSentManager
 from contacts.models import Candidate, Client, Employee
 from system.models import InterviewMode
 
@@ -130,6 +131,10 @@ class JobCandidate(TimeStampedModel):
                 'view_all_job_candidates',
                 'Can view all Job Candidates'
             ),
+            (
+                'view_report_cv_sent',
+                'Can view report CV Sent to clients'
+            ),
         ]
 
     job = models.ForeignKey(
@@ -169,6 +174,9 @@ class JobCandidate(TimeStampedModel):
         blank=True)
 
     history = HistoricalRecords()
+
+    objects = models.Manager()
+    cv_sent = CVSentManager()
 
     def get_absolute_url(self):
         return reverse('jobs:detail',
