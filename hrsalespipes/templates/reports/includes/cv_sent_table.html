@@ -40,7 +40,11 @@
     {% with colspan=8  %}
     <tr>
       <td class="text-right" colspan="{{ colspan }}">Total CV Sent</td>
-      <td class="text-center"><strong>{{ COUNT }}</strong></td>
+      {% if paginator %}
+        <td class="text-center"><strong>{{ paginator.count }}</strong></td>
+      {% else %}
+        <td class="text-center"><strong>{{ COUNT }}</strong></td>
+      {% endif %}
     </tr>
     {% endwith %}
   </tfoot>

@@ -1067,7 +1067,7 @@ class CVSentReportListView(
     model = JobCandidate
     template_name = 'reports/cv_sent.html'
     permission_required = 'jobs.view_report_cv_sent'
-    paginate_by = 0
+    paginate_by = 200
     queryset = JobCandidate.cv_sent.all()
 
     # EmployeeFilterMixin

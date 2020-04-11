@@ -27,13 +27,30 @@ CV Sent to Clients - Reports
           {% include "reports/includes/cv_sent_table.html" %}
         </v-simple-table>
       </v-col>
+
+      <v-col cols="12">
+        <v-container class="max-width">
+          {% include "_includes/pagination.html" %}
+        </v-container>
+      </v-col> <!-- Pagination -->
     </v-row>
   </v-container>  
 
   {% addtoblock "js" %}
     <script>
+      let currentPage = {{ page_obj.number|default_if_none:0 }};
+      let currentPageLength = {{ paginator.num_pages|default_if_none:0 }};
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script>
       let reportText = 'CV Sent to Clients';
     </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForPagination.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}
