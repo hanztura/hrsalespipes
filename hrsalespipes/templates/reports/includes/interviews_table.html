@@ -20,7 +20,11 @@
         <td>{{ object.job_candidate.candidate.nationality }}</td>
         <td>{{ object.job_candidate.candidate.email_address }}</td>
         <td>{{ object.job_candidate.candidate.contact_nuber }}</td>
-        <td>{{ object.date_time|date:'Y-m-d' }}</td>
+        <td>
+          <a href="{% url 'jobs:candidates_detail' object.job_candidate.job_id object.job_candidate_id %}" title="View interview detail">
+            {{ object.date_time|date:'Y-m-d' }}
+          </a>
+        </td>
         <td>{{ object.date_time|date:'H:i' }}</td>
         <td>{{ object.mode.name }}</td>
         <td>{{ object.done_by.name }}</td>
