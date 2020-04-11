@@ -9,6 +9,7 @@
       <th class="text-center">Client</th>
       <th class="text-center">Industry</th>
       <th class="text-center">Consultant</th>
+      <th class="text-center">Income</th>
       <th class="text-center">Invoice Amount</th>
       <th class="text-center">VAT</th>
     </tr>
@@ -23,6 +24,7 @@
         <td class="text-center">{{ object.job_candidate.job.client.name }}</td>
         <td class="text-center">{{ object.job_candidate.job.client.industry }}</td>
         <td class="text-center"><a href="{% url 'jobs:candidates_detail' object.job_candidate.job_id object.job_candidate_id %}" title="view job candidate detail">{{ object.job_candidate.consultant.name }}</a></td>
+        <td class="text-right">{{ object.potential_income|intcomma }}</td>
         <td class="text-right">{{ object.invoice_amount|intcomma }}</td>
         <td class="text-right">{{ object.vat|intcomma }}</td>
       </tr>
@@ -39,6 +41,7 @@
   <tfoot>
     <tr>
       <td class="text-right" colspan="6">TOTALS</td>
+      <td class="text-right"><strong>{{ TOTAL_POTENTIAL_INCOME|floatformat:2|intcomma }}</strong></td>
       <td class="text-right"><strong>{{ TOTAL|floatformat:2|intcomma }}</strong></td>
       <td class="text-right"><strong>{{ VAT|floatformat:2|intcomma }}</strong></td>
     </tr>

@@ -79,7 +79,10 @@ class MonthlyInvoicesSummaryListView(
         context = super().get_context_data(**kwargs)
 
         q = context['object_list']
-        sums = q.aggregate(Sum('invoice_amount'), Sum('vat'))
+        sums = q.aggregate(
+            Sum('invoice_amount'),
+            Sum('vat'),
+            Sum('potential_income'))
 
         context['consultant'] = self.consultant
         context['consultant_pk'] = None
@@ -89,6 +92,7 @@ class MonthlyInvoicesSummaryListView(
         context['consultants'] = get_objects_as_choices(Employee)
 
         context['TITLE'] = self.TITLE
+        context['TOTAL_POTENTIAL_INCOME'] = sums['potential_income__sum']
         context['TOTAL'] = sums['invoice_amount__sum']
         context['VAT'] = sums['vat__sum']
         return context
@@ -143,6 +147,7 @@ class MonthlyInvoicesSummaryExcelView(
             'Client',
             'Industry',
             'Consultant',
+            'Income',
             'Invoice Amount',
             'VAT',
         ]
@@ -153,6 +158,7 @@ class MonthlyInvoicesSummaryExcelView(
             'job_candidate__job__client__name',
             'job_candidate__job__client__industry',
             'job_candidate__candidate__candidate_owner__name',
+            'potential_income',
             'invoice_amount',
             'vat',
         ]
@@ -170,10 +176,11 @@ class MonthlyInvoicesSummaryExcelView(
             ),
             values_list,
             (
+                (invoice_amount_index - 1, 'potential_income'),
                 (invoice_amount_index, 'invoice_amount'),
-                (invoice_amount_index + 1, 'vat')
+                (invoice_amount_index + 1, 'vat'),
             ),  # aggregate fields
-            invoice_amount_index - 1,  # totals label
+            invoice_amount_index - 2,  # totals label
             is_month_filter=True,
             consultant_id=consultant_pk,
             user=self.request.user,
