@@ -23,9 +23,9 @@ class DashboardTemplateView(LoginRequiredMixin, TemplateView):
 
 
 class DashboardView(
-    ContextFromToMixin,
-    LoginRequiredMixin,
-    TemplateView):
+        ContextFromToMixin,
+        LoginRequiredMixin,
+        TemplateView):
     dashboard_index = None  # 1 2 3 4
 
     def setup(self, request, *args, **kwargs):
@@ -72,9 +72,9 @@ class DashboardView(
                     'All employees\' data are used in this dashboard.'
 
                 (active_jobs, successful_jobs,
-                 tpi, tpi_last_month,
-                 sjatpi, sjpc, tnfipc,
-                 tnfipcp12m, ytdcp) = get_data_dashboard_items_number(
+                 tpi, tpi_last_month, tpi_ytd,
+                 sjatpi, sjpc, sjpc_ytd, tnfipc,
+                 tnfipcp12m, tnfipc_ytd, ytdcp) = get_data_dashboard_items_number(
                     all_pipelines, all_jobs=all_jobs)
             else:  # One Two dashboard
                 context['data_note'] = \
@@ -86,9 +86,9 @@ class DashboardView(
 
                 if employee:
                     (active_jobs, successful_jobs,
-                     tpi, tpi_last_month,
-                     sjatpi, sjpc, tnfipc,
-                     tnfipcp12m, ytdcp) = get_data_dashboard_items_number(
+                     tpi, tpi_last_month, tpi_ytd,
+                     sjatpi, sjpc, sjpc_ytd, tnfipc,
+                     tnfipcp12m, tnfipc_ytd, ytdcp) = get_data_dashboard_items_number(
                         all_pipelines, employee=employee, all_jobs=all_jobs)
 
                     # interview data
@@ -101,10 +101,13 @@ class DashboardView(
                     successful_jobs = null_pipeline
                     tpi = 0
                     tpi_last_month = 0
+                    tpi_ytd = 0
                     sjatpi = []
                     sjpc = []
+                    sjpc_ytd = []
                     tnfipc = []
                     tnfipcp12m = []
+                    tnfipc_ytd = []
                     ytdcp = []
                     all_interviews = Interview.objects.none()
                     cv_sent_to_clients = JobCandidate.objects.none()
@@ -139,6 +142,7 @@ class DashboardView(
 
             today = timezone.localdate()
             first_day = today.replace(day=1)
+            first_day_this_year = today.replace(day=1, month=1)
             last_month = first_day - relativedelta(days=1)
             past_12_month = today - relativedelta(months=12)
 
@@ -148,6 +152,13 @@ class DashboardView(
             tnfipc_last_month_url = '{}{}'.format(
                 successful_jobs_url,
                 url_params_last_month)  # income last month
+
+            url_params_ytd = '?from={}&to={}'.format(
+                first_day_this_year,
+                today)
+            tnfipc_ytd_url = '{}{}'.format(
+                successful_jobs_url,
+                url_params_ytd)  # income last month
 
             cv_sent_url = reverse('reports:cv_sent')
             cv_sent_url = '{}?from=ALL&to=ALL'.format(
@@ -179,10 +190,10 @@ class DashboardView(
                 },
                 {
                     'type': 'number',
-                    'title': 'CVs sent to clients',
-                    'value': round(float(cv_sent_to_clients.count())),
-                    'icon': 'mdi-send-check',
-                    'url': cv_sent_url,
+                    'title': 'NFI generated YTD',
+                    'value': round(float(tpi_ytd)),
+                    'icon': 'mdi-calendar-export',
+                    'url': tnfipc_ytd_url,
                 },
                 {
                     'type': 'number',
@@ -199,6 +210,13 @@ class DashboardView(
                     'url': tnfipc_last_month_url,
                 },
                 {
+                    'type': 'number',
+                    'title': 'CVs sent to clients',
+                    'value': round(float(cv_sent_to_clients.count())),
+                    'icon': 'mdi-send-check',
+                    'url': cv_sent_url,
+                },
+                {
                     'type': 'number',  # number, graph
                     'title': 'Newly Signed Clients',
                     'value': newly_signed_clients.count(),
@@ -212,9 +230,6 @@ class DashboardView(
             dashboard_items_number += data
 
             sjatpi_url = '{}?from=ALL&to=ALL'.format(successful_jobs_url)
-            sjpc_url = '{}{}'.format(
-                successful_jobs_url,
-                from_to_url_params_this_month)
 
             from_to_url_params_last_12_months = '?from={}&to={}'.format(
                 past_12_month.replace(day=1),
@@ -235,23 +250,51 @@ class DashboardView(
                 {
                     'code': 'ytdcp',
                     'type': 'graph',
-                    'title': dashboard_settings.ytd_client_performance_label,
+                    'title': getattr(
+                        dashboard_settings,
+                        'ytd_client_performance_label',
+                        ''),
                     'value': ytdcp,
                     'url': ytdcp_url
                 },
                 {
                     'code': 'sjatpi',
                     'type': 'graph',
-                    'title': dashboard_settings.sjatpi_label,
+                    'title': getattr(
+                        dashboard_settings,
+                        'sjatpi_label',
+                        ''),
                     'value': sjatpi,
                     'url': sjatpi_url
                 },
                 {
                     'code': 'sjpc',
                     'type': 'graph',
-                    'title': dashboard_settings.sjpc_this_month_label,
-                    'value': sjpc,
+                    'title': getattr(
+                        dashboard_settings,
+                        'sjpc_this_month_label',
+                        ''),
                     'url': sjpc_url
+                },
+                {
+                    'code': 'sjpc_ytd',
+                    'type': 'graph',
+                    'title': getattr(
+                        dashboard_settings,
+                        'sjpc_ytd_label',
+                        ''),
+                    'value': sjpc_ytd,
+                    'url': ytdcp_url
+                },
+                {
+                    'code': 'tnfipc_ytd',
+                    'type': 'graph',
+                    'title': getattr(
+                        dashboard_settings,
+                        'consultant_leaderboard_dashboard_ytd_label',
+                        ''),
+                    'value': tnfipc_ytd,
+                    'url': ytdcp_url
                 },
                 {
                     'code': 'tnfipc',

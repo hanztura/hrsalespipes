@@ -186,6 +186,8 @@ new Vue({
     dashboardItemsNumber: [],
     sjatpi: data.sjatpi,
     sjpc: data.sjpc,
+    sjpc_ytd: data.sjpc_ytd,
+    tnfipc_ytd: data.tnfipc_ytd,
     tnfipc: data.tnfipc,
     tnfipcp12m: data.tnfipcp12m,
     ytdcp: [],
@@ -198,6 +200,16 @@ new Vue({
       {
         sourceId: 'dataSuccessfulJobsPerConsutant',
         dataField: 'sjpc',
+        titleField: 'job_candidate__consultant__name',
+      },
+      {
+        sourceId: 'dataSuccessfulJobsPerConsutantYTD',
+        dataField: 'sjpc_ytd',
+        titleField: 'job_candidate__consultant__name',
+      },
+      {
+        sourceId: 'dataTNFIPerConsultantYTD',
+        dataField: 'tnfipc_ytd',
         titleField: 'job_candidate__consultant__name',
       },
       {
@@ -216,11 +228,13 @@ new Vue({
   computed: {
     graphItems: function() {
       return [
-        this.ytdcpData,
+        this.tnfipc_ytd,
         this.tnfipc,
         this.tnfipcp12m,
         this.sjatpi,
         this.sjpc,
+        this.sjpc_ytd,
+        this.ytdcpData,
       ]
     },
     ytdcpDataBySources: function(){

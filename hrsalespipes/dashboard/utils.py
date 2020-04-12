@@ -34,14 +34,11 @@ template_names = (
 def get_data_dashboard_items_number(
         all_pipelines, employee=None, all_jobs=None):
     pipelines = all_pipelines
-    pipelines_per_consultant = all_pipelines
     if employee:
         pipelines = pipelines.filter(
             Q(job_candidate__associate_id=employee.pk) |
             Q(job_candidate__consultant_id=employee.pk)
         )
-        pipelines_per_consultant = pipelines.filter(
-            job_candidate__consultant_id=employee.pk)
 
     active_jobs = all_jobs.filter(
         status__is_job_open=True)
@@ -61,14 +58,23 @@ def get_data_dashboard_items_number(
 
     # compute amount of successful jobs last  month
     first_day = today.replace(day=1)
+    first_day_this_year = today.replace(day=1, month=1)
     last_month = first_day - datetime.timedelta(days=1)
-    successful_jobs_last_month = pipelines.filter(
+    successful_jobs_ytd = successful_jobs_all_time.filter(
+        invoice_date__gte=first_day_this_year,
+        invoice_date__lte=today)
+    successful_jobs_last_month = successful_jobs_all_time.filter(
         invoice_date__month=last_month.month,
         invoice_date__year=last_month.year)
 
     tpi_last_month = successful_jobs_last_month.aggregate(
         Sum('potential_income'))['potential_income__sum']
     tpi_last_month = tpi_last_month if tpi_last_month else 0
+
+    # compute amount of successful jobs
+    tpi_ytd = successful_jobs_ytd.aggregate(
+        Sum('potential_income'))['potential_income__sum']
+    tpi_ytd = tpi_ytd if tpi_ytd else 0
 
     # successful jobs per industry, all time
     field_lookup = 'job_candidate__job__client__industry'
@@ -92,6 +98,15 @@ def get_data_dashboard_items_number(
         key_field)
     sjpc = [s for s in sjpc]
 
+    sj_ytd_per_consultant = sj_per_consultant_all_time.filter(
+        invoice_date__gte=first_day_this_year,
+        invoice_date__lte=today)
+    sjpc_ytd = sj_ytd_per_consultant.values(
+        key_field)
+    sjpc_ytd = sjpc_ytd.annotate(value=Count('id')).order_by(
+        key_field)
+    sjpc_ytd = [s for s in sjpc_ytd]
+
     # total NFI per consultant this.month
     tnfipc = sj_per_consultant.values(key_field)
     tnfipc = tnfipc.annotate(value=Sum('potential_income')).order_by(key_field)
@@ -110,6 +125,18 @@ def get_data_dashboard_items_number(
         key_field)  # order by jobconsultant name
     tnfipcp12m = [
         {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipcp12m
+    ]
+
+    # total NFI per consultant YTD
+    tnfipc_ytd = get_successful_jobs_queryset(
+        sj_per_consultant_all_time,
+        date_from=first_day_this_year,
+        date_to=today)
+    tnfipc_ytd = tnfipc_ytd.values(key_field)
+    tnfipc_ytd = tnfipc_ytd.annotate(value=Sum('potential_income')).order_by(
+        key_field)  # order by jobconsultant name
+    tnfipc_ytd = [
+        {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipc_ytd
     ]
 
     # YTD client performance
@@ -136,9 +163,12 @@ def get_data_dashboard_items_number(
         successful_jobs,
         tpi,
         tpi_last_month,
+        tpi_ytd,
         sjatpi,
         sjpc,
+        sjpc_ytd,
         tnfipc,
         tnfipcp12m,
-        ytdcp
+        tnfipc_ytd,
+        ytdcp,
     )

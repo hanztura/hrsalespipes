@@ -15,6 +15,10 @@ class Dashboard(SingletonModel):
         max_length=100,
         blank=True,
         default='Total NFI generated per consultant this month')
+    consultant_leaderboard_dashboard_ytd_label = models.CharField(
+        max_length=100,
+        blank=True,
+        default='Total NFI generated per consultant YTD')
     consultant_leaderboard_dashboard_last_12_months_label = models.CharField(
         max_length=100,
         blank=True,
@@ -27,6 +31,10 @@ class Dashboard(SingletonModel):
         max_length=100,
         blank=True,
         default='Successful job placements per consultant this month')
+    sjpc_ytd_label = models.CharField(
+        max_length=100,
+        blank=True,
+        default='Successful job placements per consultant YTD')
     sjatpi_label = models.CharField(
         max_length=100,
         blank=True,
