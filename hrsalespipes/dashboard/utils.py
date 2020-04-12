@@ -6,7 +6,6 @@ from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 
 from reports.helpers import get_successful_jobs_queryset
-from system.helpers import get_last_day_of_month
 
 
 custom_permissions = [
@@ -99,6 +98,15 @@ def get_data_dashboard_items_number(
         key_field)
     sjpc = [s for s in sjpc]
 
+    sj_ytd_per_consultant = sj_per_consultant_all_time.filter(
+        invoice_date__gte=first_day_this_year,
+        invoice_date__lte=today)
+    sjpc_ytd = sj_ytd_per_consultant.values(
+        key_field)
+    sjpc_ytd = sjpc_ytd.annotate(value=Count('id')).order_by(
+        key_field)
+    sjpc_ytd = [s for s in sjpc_ytd]
+
     # total NFI per consultant this.month
     tnfipc = sj_per_consultant.values(key_field)
     tnfipc = tnfipc.annotate(value=Sum('potential_income')).order_by(key_field)
@@ -117,6 +125,18 @@ def get_data_dashboard_items_number(
         key_field)  # order by jobconsultant name
     tnfipcp12m = [
         {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipcp12m
+    ]
+
+    # total NFI per consultant YTD
+    tnfipc_ytd = get_successful_jobs_queryset(
+        sj_per_consultant_all_time,
+        date_from=first_day_this_year,
+        date_to=today)
+    tnfipc_ytd = tnfipc_ytd.values(key_field)
+    tnfipc_ytd = tnfipc_ytd.annotate(value=Sum('potential_income')).order_by(
+        key_field)  # order by jobconsultant name
+    tnfipc_ytd = [
+        {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipc_ytd
     ]
 
     # YTD client performance
@@ -146,7 +166,9 @@ def get_data_dashboard_items_number(
         tpi_ytd,
         sjatpi,
         sjpc,
+        sjpc_ytd,
         tnfipc,
         tnfipcp12m,
+        tnfipc_ytd,
         ytdcp,
     )

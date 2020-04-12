@@ -53,7 +53,6 @@ class ContextFromToMixin:
         super().__init__(*args, **kwargs)
 
         today = timezone.localdate()
-        # last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
         self.month_first_day = str(today.replace(day=1))
         self.year_first_day = str(today.replace(day=1, month=1))
         self.month_last_day = str(get_last_day_of_month(today))
