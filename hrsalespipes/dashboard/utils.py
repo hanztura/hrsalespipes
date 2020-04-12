@@ -6,6 +6,7 @@ from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 
 from reports.helpers import get_successful_jobs_queryset
+from system.helpers import get_last_day_of_month
 
 
 custom_permissions = [
@@ -34,14 +35,11 @@ template_names = (
 def get_data_dashboard_items_number(
         all_pipelines, employee=None, all_jobs=None):
     pipelines = all_pipelines
-    pipelines_per_consultant = all_pipelines
     if employee:
         pipelines = pipelines.filter(
             Q(job_candidate__associate_id=employee.pk) |
             Q(job_candidate__consultant_id=employee.pk)
         )
-        pipelines_per_consultant = pipelines.filter(
-            job_candidate__consultant_id=employee.pk)
 
     active_jobs = all_jobs.filter(
         status__is_job_open=True)
@@ -61,14 +59,23 @@ def get_data_dashboard_items_number(
 
     # compute amount of successful jobs last  month
     first_day = today.replace(day=1)
+    first_day_this_year = today.replace(day=1, month=1)
     last_month = first_day - datetime.timedelta(days=1)
-    successful_jobs_last_month = pipelines.filter(
+    successful_jobs_ytd = successful_jobs_all_time.filter(
+        invoice_date__gte=first_day_this_year,
+        invoice_date__lte=today)
+    successful_jobs_last_month = successful_jobs_all_time.filter(
         invoice_date__month=last_month.month,
         invoice_date__year=last_month.year)
 
     tpi_last_month = successful_jobs_last_month.aggregate(
         Sum('potential_income'))['potential_income__sum']
     tpi_last_month = tpi_last_month if tpi_last_month else 0
+
+    # compute amount of successful jobs
+    tpi_ytd = successful_jobs_ytd.aggregate(
+        Sum('potential_income'))['potential_income__sum']
+    tpi_ytd = tpi_ytd if tpi_ytd else 0
 
     # successful jobs per industry, all time
     field_lookup = 'job_candidate__job__client__industry'
@@ -136,9 +143,10 @@ def get_data_dashboard_items_number(
         successful_jobs,
         tpi,
         tpi_last_month,
+        tpi_ytd,
         sjatpi,
         sjpc,
         tnfipc,
         tnfipcp12m,
-        ytdcp
+        ytdcp,
     )

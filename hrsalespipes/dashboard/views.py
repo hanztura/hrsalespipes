@@ -72,7 +72,7 @@ class DashboardView(
                     'All employees\' data are used in this dashboard.'
 
                 (active_jobs, successful_jobs,
-                 tpi, tpi_last_month,
+                 tpi, tpi_last_month, tpi_ytd,
                  sjatpi, sjpc, tnfipc,
                  tnfipcp12m, ytdcp) = get_data_dashboard_items_number(
                     all_pipelines, all_jobs=all_jobs)
@@ -86,7 +86,7 @@ class DashboardView(
 
                 if employee:
                     (active_jobs, successful_jobs,
-                     tpi, tpi_last_month,
+                     tpi, tpi_last_month, tpi_ytd,
                      sjatpi, sjpc, tnfipc,
                      tnfipcp12m, ytdcp) = get_data_dashboard_items_number(
                         all_pipelines, employee=employee, all_jobs=all_jobs)
@@ -101,6 +101,7 @@ class DashboardView(
                     successful_jobs = null_pipeline
                     tpi = 0
                     tpi_last_month = 0
+                    tpi_ytd = 0
                     sjatpi = []
                     sjpc = []
                     tnfipc = []
@@ -139,6 +140,7 @@ class DashboardView(
 
             today = timezone.localdate()
             first_day = today.replace(day=1)
+            first_day_this_year = today.replace(day=1, month=1)
             last_month = first_day - relativedelta(days=1)
             past_12_month = today - relativedelta(months=12)
 
@@ -148,6 +150,13 @@ class DashboardView(
             tnfipc_last_month_url = '{}{}'.format(
                 successful_jobs_url,
                 url_params_last_month)  # income last month
+
+            url_params_ytd = '?from={}&to={}'.format(
+                first_day_this_year,
+                today)
+            tnfipc_ytd_url = '{}{}'.format(
+                successful_jobs_url,
+                url_params_ytd)  # income last month
 
             cv_sent_url = reverse('reports:cv_sent')
             cv_sent_url = '{}?from=ALL&to=ALL'.format(
@@ -179,10 +188,10 @@ class DashboardView(
                 },
                 {
                     'type': 'number',
-                    'title': 'CVs sent to clients',
-                    'value': round(float(cv_sent_to_clients.count())),
-                    'icon': 'mdi-send-check',
-                    'url': cv_sent_url,
+                    'title': 'NFI generated YTD',
+                    'value': round(float(tpi_ytd)),
+                    'icon': 'mdi-calendar-export',
+                    'url': tnfipc_ytd_url,
                 },
                 {
                     'type': 'number',
@@ -197,6 +206,13 @@ class DashboardView(
                     'value': round(float(tpi_last_month)),
                     'icon': 'mdi-calendar-import',
                     'url': tnfipc_last_month_url,
+                },
+                {
+                    'type': 'number',
+                    'title': 'CVs sent to clients',
+                    'value': round(float(cv_sent_to_clients.count())),
+                    'icon': 'mdi-send-check',
+                    'url': cv_sent_url,
                 },
                 {
                     'type': 'number',  # number, graph

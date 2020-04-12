@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 
+from .helpers import get_last_day_of_month
 from .models import Setting
 
 
@@ -52,10 +53,10 @@ class ContextFromToMixin:
         super().__init__(*args, **kwargs)
 
         today = timezone.localdate()
-        last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
+        # last_day_of_the_month = calendar.monthrange(today.year, today.month)[1]
         self.month_first_day = str(today.replace(day=1))
         self.year_first_day = str(today.replace(day=1, month=1))
-        self.month_last_day = str(today.replace(day=last_day_of_the_month))
+        self.month_last_day = str(get_last_day_of_month(today))
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)

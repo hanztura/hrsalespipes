@@ -1,3 +1,4 @@
+import calendar
 import json
 
 from django.conf import settings
@@ -23,6 +24,11 @@ def register_optional_admin_items(items):
     if enable_import_export not in ['No', 'no', 'NO', False]:
         for model, admin_type in items:
             admin.site.register(model, admin_type)
+
+
+def get_last_day_of_month(date):
+    last_day_of_the_month = calendar.monthrange(date.year, date.month)[1]
+    return date.replace(day=last_day_of_the_month)
 
 
 class ActionMessageViewMixin:
