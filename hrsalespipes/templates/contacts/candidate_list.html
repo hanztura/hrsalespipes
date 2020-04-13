@@ -18,32 +18,25 @@ Candidates - List
         <form id="nameSearchForm" ref="nameSearchForm">
           <v-container fluid>
             <v-row>
-              <v-col cols="12" md="2" class="py-0">
-                <v-text-field
-                  outlined
-                  dense
-                  label="Search name"
-                  name="name"
-                  clearable
-                  value="{{ search_name|default_if_none:'' }}">
-                </v-text-field>
-              </v-col>
 
-              <v-col cols="12" md="2" class="py-0">
+              <v-col cols="12" md="3" class="py-0">
                 <v-text-field
                   outlined
                   dense
                   label="Languages (comma separated)"
+                  prepend-inner-icon="mdi-translate"
                   name="languages"
                   clearable
                   value="{{ search_languages|default_if_none:'' }}">
                 </v-text-field>
               </v-col>
-              <v-col cols="12" md="2" class="py-0">
+
+              <v-col cols="12" md="3" class="py-0">
                 <v-text-field
                   outlined
                   dense
                   label="Nationalities (comma separated)"
+                  prepend-inner-icon="mdi-earth"
                   name="nationalities"
                   clearable
                   value="{{ search_nationalities|default_if_none:'' }}">
@@ -51,7 +44,19 @@ Candidates - List
               </v-col>
 
               <v-col cols="12" md="2" class="py-0">
-                {% include "_includes/_auto_complete.html" with model='owner' label="Owner" items='owners' item_value='value' item_text='text' multiple='multiple' %}
+                <v-text-field
+                  outlined
+                  dense
+                  label="Name"
+                  prepend-inner-icon="{{ ICON_CANDIDATES }}"
+                  name="name"
+                  clearable
+                  value="{{ search_name|default_if_none:'' }}">
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="2" class="py-0">
+                {% include "_includes/_auto_complete.html" with model='owner' label="Owner" items='owners' item_value='value' item_text='text' multiple='multiple' prepend_inner_icon="mdi-account-cog" %}
                 <input type="hidden" name="owners" :value="owner">
               </v-col>
 
