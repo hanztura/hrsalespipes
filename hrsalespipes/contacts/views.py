@@ -1,7 +1,5 @@
-import json
-
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Count, Prefetch
+from django.db.models import Prefetch, Q
 from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
@@ -12,10 +10,8 @@ from .forms import (ClientCreateModelForm,
                     SupplierModelForm, CandidateCreateModelForm)
 from .models import Candidate, Client, Supplier, Employee, CVTemplate
 from .utils import FilterNameMixin, DownloadCVBaseView
-from contacts.models import Employee
 from jobs.models import JobCandidate
-from system.helpers import (
-    get_objects_as_choices, ActionMessageViewMixin, get_queryset_as_choices)
+from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin)
 from system.models import VisaStatus, Location, Nationality, Industry
@@ -104,7 +100,10 @@ class CandidateDetailView(PermissionRequiredMixin, DetailView):
         return context
 
 
-class CandidateListView(FilterNameMixin, PermissionRequiredMixin, ListView):
+class CandidateListView(
+        FilterNameMixin,
+        PermissionRequiredMixin,
+        ListView):
     model = Candidate
     permission_required = ('contacts.view_candidate')
 
@@ -117,13 +116,40 @@ class CandidateListView(FilterNameMixin, PermissionRequiredMixin, ListView):
         owners = owners.split(',') if owners else []
         if owners:
             q = q.filter(candidate_owner_id__in=owners)
+
+        # filter one or more languages
+        languages = self.request.GET.get('languages', '')
+        self.languages = languages
+        languages = languages.split(',') if languages else []
+        if languages:
+            # multiple or expressions
+            filter_expression = Q()
+            for language in languages:
+                filter_expression |= Q(languages__icontains=language.strip())
+
+            q = q.filter(filter_expression)
+
+        # filter one or more nationalities
+        nationalities = self.request.GET.get('nationalities', '')
+        self.nationalities = nationalities
+        nationalities = nationalities.split(',') if nationalities else []
+        if nationalities:
+            # multiple or expressions
+            filter_expression = Q()
+            for nationality in nationalities:
+                filter_expression |= Q(
+                    nationality__icontains=nationality.strip())
+
+            q = q.filter(filter_expression)
+
         return q
 
     def get_context_data(self):
         context = super().get_context_data()
-        candidates = context['object_list']
         context['owners'] = get_objects_as_choices(Employee)
         context['owners_query'] = self.owners
+        context['search_languages'] = self.languages
+        context['search_nationalities'] = self.nationalities
         return context
 
 
