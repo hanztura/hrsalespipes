@@ -100,6 +100,10 @@ Client Detail - {{ object.name }}
                       <th>Business Development Person:</th>
                       <td>{{ object.business_development_person.name }}</td>
                     </tr>
+                    <tr>
+                      <th>Notes:</th>
+                      <td>{{ object.notes }}</td>
+                    </tr>
                     {% include "contacts/includes/point_of_contacts_table_row.html" %}
                   </tbody>
                 </table>

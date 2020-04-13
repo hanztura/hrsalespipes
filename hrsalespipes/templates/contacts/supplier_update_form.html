@@ -96,7 +96,7 @@
         emailAddress: "{{ form.email_address.value }}",
         skypeId: "{{ form.skype_id.value }}",
         msTeamsId: "{{ form.ms_teams_id.value }}",
-        notes: "{{ form.instance.notes }}",
+        notes: "{{ form.instance.notes|escapejs }}",
       };
     </script>
   {% endaddtoblock %}

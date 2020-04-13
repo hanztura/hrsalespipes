@@ -71,7 +71,7 @@
             registrationDate: "{{ form.registration_date.value|date:'Y-m-d' }}",
             registrationDateLabel: "{{ form.registration_date.label }}",
             cvDateShared: "{{ form.cv_date_shared.value|date:'Y-m-d' }}",
-            remarks: "{{ form.remarks.value }}",
+            remarks: "{{ form.remarks.value|escapejs }}",
             salaryOfferedCurrency: "{{ form.salary_offered_currency.value }}",
             salaryOffered: "{{ form.salary_offered.value|default_if_none:0 }}",
             tentativeDateOfJoining: "{{ form.tentative_date_of_joining.value|date:'Y-m-d' }}",

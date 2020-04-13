@@ -174,7 +174,7 @@ class Candidate(ContactModel):
 
     # personal details
     nationality = models.CharField(max_length=64, blank=True)
-    languages = models.TextField(max_length=200, blank=True)
+    languages = models.TextField(max_length=1000, blank=True)
     preferred_location = models.CharField(max_length=200, blank=True)
     civil_status = models.CharField(
         max_length=16, blank=True, choices=CIVIL_STATUS_CHOICES)
