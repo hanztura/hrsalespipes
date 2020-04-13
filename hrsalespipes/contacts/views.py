@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch, Q
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
@@ -142,6 +143,37 @@ class CandidateListView(
 
             q = q.filter(filter_expression)
 
+        # filter is_male
+        is_male = self.request.GET.get('is_male', '')
+        self.is_male = is_male
+        is_male = is_male.split(',') if is_male else []
+        if is_male:
+            # multiple or expressions
+            filter_expression = Q()
+            possible_values = {
+                'None': None,
+                'true': True,
+                'false': False
+            }
+            for value in is_male:
+                filter_expression |= Q(
+                    is_male=possible_values[value])
+
+            q = q.filter(filter_expression)
+
+        # filter age range
+        age_range = self.request.GET.get('age_range', '')
+        self.age_range = age_range
+        age_range = age_range.split(',') if age_range else []
+        if age_range:
+            today = timezone.localdate()
+            oldest_year = today.year - int(age_range[1])  # oldest
+            youngest_year = today.year - int(age_range[0])  # youngest
+            oldest_dob = today.replace(day=1, month=1, year=oldest_year)
+            youngest_dob = today.replace(day=31, month=12, year=youngest_year)
+            q = q.filter(
+                date_of_birth__range=(oldest_dob, youngest_dob))
+
         return q
 
     def get_context_data(self):
@@ -150,6 +182,8 @@ class CandidateListView(
         context['owners_query'] = self.owners
         context['search_languages'] = self.languages
         context['search_nationalities'] = self.nationalities
+        context['search_is_male'] = self.is_male
+        context['search_age_range'] = self.age_range
         return context
 
 

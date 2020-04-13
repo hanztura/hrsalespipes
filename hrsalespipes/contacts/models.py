@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 from simple_history.models import HistoricalRecords
 
@@ -134,6 +135,7 @@ class Candidate(ContactModel):
         'civil_status',
         'dependents',
         'gender',
+        'is_male',
         'highest_educational_qualification',
         'date_of_birth',
 
@@ -181,6 +183,7 @@ class Candidate(ContactModel):
         max_length=16, blank=True, choices=CIVIL_STATUS_CHOICES)
     dependents = models.TextField(blank=True)
     gender = models.CharField(max_length=8, blank=True, choices=GENDER_CHOICES)
+    is_male = models.BooleanField(null=True, blank=True, default=None)
     highest_educational_qualification = models.TextField(blank=True)
     date_of_birth = models.DateField(blank=True, null=True)
 
@@ -228,6 +231,15 @@ class Candidate(ContactModel):
         return self.name
 
     @property
+    def age(self):
+        date_of_birth = getattr(self, 'date_of_birth', '')
+        age = ''
+        if date_of_birth:
+            today = timezone.localdate()
+            age = today.year - date_of_birth.year
+        return age
+
+    @property
     def current_previous_salary_and_benefits(self):
         value = ''
         if self.current_previous_salary:
@@ -270,6 +282,18 @@ class Candidate(ContactModel):
     @property
     def view_href(self):
         return reverse('contacts:candidates_detail', args=[str(self.pk), ])
+
+    def save(self, *args, **kwargs):
+        gender = getattr(self, 'gender', None)
+        if gender:
+            if gender.lower() == 'male':
+                self.is_male = True
+            else:
+                self.is_male = False
+        else:
+            self.is_male = None
+
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return self.edit_href

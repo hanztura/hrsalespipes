@@ -17,7 +17,8 @@ Candidates - List
         <input type="hidden" id="ownersChoices" value="{{ owners }}">
         <form id="nameSearchForm" ref="nameSearchForm">
           <v-container fluid>
-            <v-row>
+            <v-row
+              align="center">
 
               <v-col cols="12" md="3" class="py-0">
                 <v-text-field
@@ -43,7 +44,7 @@ Candidates - List
                 </v-text-field>
               </v-col>
 
-              <v-col cols="12" md="2" class="py-0">
+              <v-col cols="12" md="3" class="py-0">
                 <v-text-field
                   outlined
                   dense
@@ -55,9 +56,57 @@ Candidates - List
                 </v-text-field>
               </v-col>
 
-              <v-col cols="12" md="2" class="py-0">
+              <v-col cols="12" md="3" class="py-0">
                 {% include "_includes/_auto_complete.html" with model='owner' label="Owner" items='owners' item_value='value' item_text='text' multiple='multiple' prepend_inner_icon="mdi-account-cog" %}
                 <input type="hidden" name="owners" :value="owner">
+              </v-col>
+
+              <v-col cols="12" md="3" class="py-0">
+                <v-select
+                  multiple
+                  outlined
+                  dense
+                  name='is_male'
+                  v-model="isMale"
+                  :items="[{text: 'Male', value: 'true'}, {text: 'Female', value: 'false'}, {text: 'Unspecified', value: 'None'},]"
+                  label="Gender"></v-select>
+              </v-col>
+
+              <v-col cols="12" md="4" class="py-0">
+                <v-card flat color="transparent">
+                    <v-subheader>Age range</v-subheader>
+                    <v-card-text>
+                      <v-range-slider
+                        v-model="ageRange"
+                        :thumb-label="true"
+                        dense
+                        outlined>
+                        <template v-slot:prepend>
+                          <v-text-field
+                            :value="ageRange[0]"
+                            class="mt-0 pt-0"
+                            hide-details
+                            single-line
+                            type="number"
+                            style="width: 60px"
+                            @change="$set(ageRange, 0, $event)"
+                          ></v-text-field>
+                        </template>
+                        <template v-slot:append>
+                          <v-text-field
+                            :value="ageRange[1]"
+                            class="mt-0 pt-0"
+                            hide-details
+                            single-line
+                            type="number"
+                            style="width: 60px"
+                            @change="$set(ageRange, 1, $event)"
+                          ></v-text-field>
+                        </template>
+                      </v-range-slider>
+                    </v-card-text>
+                </v-card>
+                  <input type="hidden" name="age_range" :value="ageRangeString">
               </v-col>
 
               <v-col cols="12" md="1" class="pa-0">
@@ -76,10 +125,10 @@ Candidates - List
           <table>
             <thead>
               <th class="text-center">Name</th>
-              <th class="text-center">Email Address</th>
-              <th class="text-center">Contact No.</th>
               <th class="text-center">Nationality</th>
               <th class="text-center">Languages</th>
+              <th class="text-center">Age</th>
+              <th class="text-center">Gender</th>
               <th class="text-center">Owner</th>
               <th class="text-center">Actions</th>
             </thead>
@@ -87,10 +136,12 @@ Candidates - List
               {% for candidate in object_list %}
               <tr>
                 <td class="text-center">{{ candidate.name }}</td>
-                <td class="text-center">{{ candidate.email_address }}</td>
-                <td class="text-center">{{ candidate.contact_number }}</td>
                 <td class="text-center">{{ candidate.nationality }}</td>
                 <td class="text-center">{{ candidate.languages }}</td>
+                <td class="text-center">{{ candidate.age }}</td>
+                <td class="text-center">
+                  {% include "_includes/icon_male_female.html" with is_male=candidate.is_male %}
+                </td>
                 <td class="text-center">{{ candidate.candidate_owner }}</td>
                 <td class="text-center">
                   {% include "_includes/list_action_buttons.html" with edit_href=candidate.edit_href view_href=candidate.view_href %}
@@ -129,6 +180,8 @@ Candidates - List
     <script>
       let data = {
         owner: '{{ owners_query|default_if_none:"" }}',
+        isMale: "{{ search_is_male|default_if_none:''}}",
+        ageRange: "{{ search_age_range|default_if_none:'' }}",
       };
     </script>
   {% endaddtoblock %}
