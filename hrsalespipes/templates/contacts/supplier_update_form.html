@@ -19,6 +19,7 @@
           v-model="valid"
           @submit="submit"
           method="post">
+          <input ref="pointOfContacts" type="hidden" value="{{ form.instance.point_of_contacts|default_if_none:'[]' }}">
           {% csrf_token %}
           
           {% if form.errors %}

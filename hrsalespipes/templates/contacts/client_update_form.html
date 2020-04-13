@@ -23,6 +23,7 @@
           <input type="hidden" id="dataCandidateOwnerChoices" value="{{ employees }}">
           <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
           <input type="hidden" id="dataIndustryChoices" value="{{ industries }}">
+          <input ref="pointOfContacts" type="hidden" value="{{ form.instance.point_of_contacts|default_if_none:'[]' }}">
           
           {% if form.errors %}
             {% include "_includes/errors.html" %}
