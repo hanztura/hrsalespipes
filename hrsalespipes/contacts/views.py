@@ -165,7 +165,7 @@ class CandidateListView(
         age_range = self.request.GET.get('age_range', '')
         self.age_range = age_range
         age_range = age_range.split(',') if age_range else []
-        if age_range:
+        if age_range and age_range != ['0', '100']:
             today = timezone.localdate()
             oldest_year = today.year - int(age_range[1])  # oldest
             youngest_year = today.year - int(age_range[0])  # youngest
