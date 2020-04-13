@@ -1,13 +1,13 @@
 {% if is_male == True %}
-  <v-icon color="blue">
+  <v-icon color="blue" title="Male">
     mdi-human-male
   </v-icon>
 {% elif is_male == False %}
-  <v-icon  color="pink">
+  <v-icon  color="pink" title="Female">
     mdi-human-female
   </v-icon>
 {% else %}
-  <v-icon >
+  <v-icon title="unspecified">
     mdi-human
   </v-icon>
 {% endif %}
