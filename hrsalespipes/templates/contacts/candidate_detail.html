@@ -122,10 +122,6 @@ Candidate Detail - {{ object.name }}
                       <th>Current/Previous Salary:</th>
                       <td>{{ object.current_previous_salary|default_if_none:0|intcomma }}</td>
                     </tr>
-                    <tr>
-                      <th>Current/Previous Benefits:</th>
-                      <td>{{ object.current_previous_benefits }}</td>
-                    </tr>
 
                     <tr>
                       <th>Motivation for leaving:</th>
@@ -135,10 +131,6 @@ Candidate Detail - {{ object.name }}
                     <tr>
                       <th>Expected Salary:</th>
                       <td>{{ object.expected_salary|default_if_none:0|intcomma }}</td>
-                    </tr>
-                    <tr>
-                      <th>Expected Benefits:</th>
-                      <td>{{ object.expected_benefits }}</td>
                     </tr>
                   </tbody>
                 </table>

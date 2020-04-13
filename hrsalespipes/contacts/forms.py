@@ -53,10 +53,10 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
             'current_previous_position',
             'current_previous_company',
             'current_previous_salary',
-            'current_previous_benefits',
+            # 'current_previous_benefits',
             'motivation_for_leaving',
             'expected_salary',
-            'expected_benefits',
+            # 'expected_benefits',
 
             'nationality',
             'languages',

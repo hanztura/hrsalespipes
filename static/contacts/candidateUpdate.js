@@ -232,22 +232,10 @@ let fields = {
 
     {
       name: 'current_previous_salary',
-      label: 'Current/Previous Salary',
+      label: 'Current/Previous Salary & Benefits',
       value: data.currentPreviousSalary,
       fieldType: {
-        value: 'textfield',
-        type: 'text'
-      },
-      outlined: true,
-      rules: []
-    },
-
-    {
-      name: 'current_previous_benefits',
-      label: 'Current/Previous Benefits',
-      value: data.currentPreviousBenefits,
-      fieldType: {
-        value: 'textfield',
+        value: 'textarea',
         type: 'text'
       },
       outlined: true,
@@ -267,22 +255,10 @@ let fields = {
 
     {
       name: 'expected_salary',
-      label: 'Expected Salary',
+      label: 'Expected Salary & Benefits',
       value: data.expectedSalary,
       fieldType: {
-        value: 'textfield',
-        type: 'text'
-      },
-      outlined: true,
-      rules: []
-    },
-
-    {
-      name: 'expected_benefits',
-      label: 'Expected Benefits',
-      value: data.expectedBenefits,
-      fieldType: {
-        value: 'textfield',
+        value: 'textarea',
         type: 'text'
       },
       outlined: true,
