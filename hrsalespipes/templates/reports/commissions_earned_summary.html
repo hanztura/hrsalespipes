@@ -15,7 +15,7 @@ Commissions Earned Summary - Reports
     >
       <v-col cols="12">
         <input type="hidden" id="dataEmployeesChoices" value="{{ employees }}">
-        {% include "_includes/filter_form_with_employee.html" %}
+        {% include "_includes/filter_form_with_employee_and_boolean_filter.html" with boolean_items="[{text: 'Paid', value: 'true'}, {text: 'Unpaid', value: 'false'}]" boolean_name="is_paid" boolean_model="isPaid" boolean_label="Payment Status" boolean_icon="mdi-currency-usd" %}
       </v-col>
 
       <v-col cols='12' class="text-right my-0 py-0">
@@ -76,8 +76,14 @@ Commissions Earned Summary - Reports
     <script>
       let data = {
         employee: '{{ employee_pk|default_if_none:"" }}',
+        isPaid: '{{ search_is_paid|default_if_none:"" }}',
+        stringsToTransform: ['isPaid',],
       };
     </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinTransformDataStringToArray.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}

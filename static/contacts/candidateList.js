@@ -31,11 +31,6 @@ new Vue({
     }
   },
   methods:{
-    transformDataStringToArray: function(dataVariable) {
-      // transform status into array
-      let variable = this[dataVariable] ? this[dataVariable].split(',') : [];
-      this[dataVariable] = variable;
-    },
     transformAgeRange: function(){
       let range = this.ageRange ? this.ageRange: '0,100' ;
       range = range.split(',');
@@ -45,8 +40,6 @@ new Vue({
 
   beforeMount() {
     this.setDataChoices('ownersChoices', 'owners');
-    this.transformDataStringToArray('owner');
-    this.transformDataStringToArray('isMale');
     this.transformAgeRange();
   },
 
