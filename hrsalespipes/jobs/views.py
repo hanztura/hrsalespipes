@@ -85,6 +85,7 @@ class JobListView(
 
     # DateAndStatusFilterMixin
     is_default_date_from_year_beginning = True
+    status_model = JobStatus
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -114,7 +115,6 @@ class JobListView(
         context['q'] = self.search
         context['employee'] = self.employee
         context['employees'] = get_objects_as_choices(Employee)
-        context['status_objects'] = get_objects_as_choices(JobStatus)
         return context
 
 

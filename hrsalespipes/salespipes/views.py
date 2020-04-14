@@ -17,7 +17,7 @@ from system.models import Setting
 from system.helpers import ActionMessageViewMixin, get_objects_as_choices
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin,
-    FromToViewFilterMixin, DisplayDateFormatMixin)
+    FromToViewFilterMixin, DisplayDateFormatMixin, DateAndStatusFilterMixin)
 
 
 class PipelineCreateView(
@@ -114,7 +114,7 @@ class PipelineUpdateView(
 class PipelineListView(
         EmployeeFilterMixin,
         DisplayDateFormatMixin,
-        FromToViewFilterMixin,
+        DateAndStatusFilterMixin,
         PermissionRequiredMixin,
         ListView):
     model = Pipeline
@@ -123,8 +123,9 @@ class PipelineListView(
     assoc_consult = ''
     search = ''
 
-    # DateAndStatusFilterMixin
+    # ContextFromToMixin
     is_default_date_from_year_beginning = True
+    status_model = Status
 
     def get_queryset(self):
         q = super().get_queryset()

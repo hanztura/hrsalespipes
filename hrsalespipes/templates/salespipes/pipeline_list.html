@@ -14,8 +14,9 @@ Pipeline
       justify="center"
     >
       <input type="hidden" id="dataEmployeeChoices" value="{{ employees }}">
+      <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
       <v-col cols="12">
-        {% include "_includes/filter_form_with_employee_and_q.html" with label="Employee" q_label="Reference number or candidate" %}
+        {% include "_includes/filter_form_with_q_and_employee.html" with q_label="Reference number or candidate"  %}
       </v-col>
       
       <v-col cols="12">
@@ -45,9 +46,14 @@ Pipeline
   {% addtoblock "js" %}
     <script>
       let data = {
+        status: '{{ status|default_if_none:'' }}',
         employee: '{{ employee }}',
       };
     </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForListWithStatus.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}

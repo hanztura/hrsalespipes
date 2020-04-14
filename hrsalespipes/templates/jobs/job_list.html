@@ -82,6 +82,10 @@ Jobs - List
   {% endaddtoblock %}
 
   {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForListWithStatus.js' %}"></script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
     <script src="{% static 'jobs/jobList.js' %}"></script>
   {% endaddtoblock %}
 {% endblock subcontent %}
