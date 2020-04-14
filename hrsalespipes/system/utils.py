@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 
-from .helpers import get_last_day_of_month
+from .helpers import get_last_day_of_month, get_objects_as_choices
 from .models import Setting
 
 
@@ -100,6 +100,7 @@ class FromToViewFilterMixin(ContextFromToMixin):
 
 
 class DateAndStatusFilterMixin(FromToViewFilterMixin):
+    status_model = None
 
     def get_queryset(self):
         q = super().get_queryset()
@@ -116,6 +117,9 @@ class DateAndStatusFilterMixin(FromToViewFilterMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['status'] = self.request.GET.get('status', '')
+        if self.status_model:
+            context['status_objects'] = get_objects_as_choices(
+                self.status_model)
         return context
 
 
