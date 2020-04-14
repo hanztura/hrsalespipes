@@ -274,6 +274,7 @@ class DashboardView(
                         dashboard_settings,
                         'sjpc_this_month_label',
                         ''),
+                    'value': sjpc,
                     'url': sjpc_url
                 },
                 {
