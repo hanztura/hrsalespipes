@@ -188,6 +188,7 @@ new Vue({
     sjpc: data.sjpc,
     sjpc_ytd: data.sjpc_ytd,
     tnfipc_ytd: data.tnfipc_ytd,
+    tnfipi_ytd: data.tnfipi_ytd,
     tnfipc: data.tnfipc,
     tnfipcp12m: data.tnfipcp12m,
     ytdcp: [],
@@ -222,6 +223,11 @@ new Vue({
         dataField: 'tnfipcp12m',
         titleField: 'job_candidate__consultant__name',
       },
+      {
+        sourceId: 'dataYTDIndustryPerformance',
+        dataField: 'tnfipi_ytd',
+        titleField: 'job_candidate__job__client__industry',
+      },
     ],
   }),
 
@@ -235,6 +241,7 @@ new Vue({
         this.sjpc,
         this.sjpc_ytd,
         this.ytdcpData,
+        this.tnfipi_ytd,
       ]
     },
     ytdcpDataBySources: function(){

@@ -74,7 +74,8 @@ class DashboardView(
                 (active_jobs, successful_jobs,
                  tpi, tpi_last_month, tpi_ytd,
                  sjatpi, sjpc, sjpc_ytd, tnfipc,
-                 tnfipcp12m, tnfipc_ytd, ytdcp) = get_data_dashboard_items_number(
+                 tnfipcp12m, tnfipc_ytd, tnfipi_ytd,
+                 ytdcp) = get_data_dashboard_items_number(
                     all_pipelines, all_jobs=all_jobs)
             else:  # One Two dashboard
                 context['data_note'] = \
@@ -88,7 +89,8 @@ class DashboardView(
                     (active_jobs, successful_jobs,
                      tpi, tpi_last_month, tpi_ytd,
                      sjatpi, sjpc, sjpc_ytd, tnfipc,
-                     tnfipcp12m, tnfipc_ytd, ytdcp) = get_data_dashboard_items_number(
+                     tnfipcp12m, tnfipc_ytd, tnfipi_ytd,
+                     ytdcp) = get_data_dashboard_items_number(
                         all_pipelines, employee=employee, all_jobs=all_jobs)
 
                     # interview data
@@ -108,6 +110,7 @@ class DashboardView(
                     tnfipc = []
                     tnfipcp12m = []
                     tnfipc_ytd = []
+                    tnfipi_ytd = []
                     ytdcp = []
                     all_interviews = Interview.objects.none()
                     cv_sent_to_clients = JobCandidate.objects.none()
@@ -255,6 +258,16 @@ class DashboardView(
                         'ytd_client_performance_label',
                         ''),
                     'value': ytdcp,
+                    'url': ytdcp_url
+                },
+                {
+                    'code': 'tnfipi_ytd',
+                    'type': 'graph',
+                    'title': getattr(
+                        dashboard_settings,
+                        'ytd_industry_performance_label',
+                        ''),
+                    'value': tnfipi_ytd,
                     'url': ytdcp_url
                 },
                 {

@@ -139,6 +139,18 @@ def get_data_dashboard_items_number(
         {key_field: s[key_field], 'value': float(s['value'])} for s in tnfipc_ytd
     ]
 
+    key_field_industry = 'job_candidate__job__client__industry'
+    tnfipi_ytd = successful_jobs_ytd.values(
+        key_field_industry)
+    tnfipi_ytd = tnfipi_ytd.annotate(value=Sum('potential_income')).order_by(
+        key_field_industry)  # order by industry
+    tnfipi_ytd = [
+        {
+            key_field_industry: s[key_field_industry],
+            'value': float(s['value'])
+        } for s in tnfipi_ytd
+    ]
+
     # YTD client performance
     year_beginning = today.replace(month=1, day=1)
     ytdcp = get_successful_jobs_queryset(
@@ -170,5 +182,6 @@ def get_data_dashboard_items_number(
         tnfipc,
         tnfipcp12m,
         tnfipc_ytd,
+        tnfipi_ytd,
         ytdcp,
     )
