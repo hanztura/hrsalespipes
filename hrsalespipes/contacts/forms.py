@@ -1,20 +1,89 @@
-from django.forms import ModelForm
+from django.contrib import messages
+from django.forms import ModelForm, BooleanField
 
 from .models import Candidate, Client, Supplier, CVTemplate
 from .utils import FormCleanContactNumber
 
+default_contact_model = Candidate
+default_contact_fields = [
+    'name',
+    'contact_number',
+    'whatsapp_link',
+    'email_address',
+    'location',
+]
+
 
 class ContactCreateModelForm(FormCleanContactNumber, ModelForm):
+    has_confirmed = BooleanField(initial=False, required=False)
+    need_to_confirm = False
 
     class Meta:
-        model = Candidate
-        fields = [
-            'name',
-            'contact_number',
-            'whatsapp_link',
-            'email_address',
-            'location',
-        ]
+        model = default_contact_model
+        fields = default_contact_fields
+
+    def __init__(self, *args, **kwargs):
+        if 'request' in kwargs.keys():
+            self.request = kwargs.pop('request')
+
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        # if name exists make user confirm
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name', '')
+        has_confirmed = cleaned_data['has_confirmed']
+        self.need_to_confirm = False
+
+        contacts = self.Meta.model.objects.filter(name__iexact=name)
+        if contacts.exists():
+            if not has_confirmed:
+                msg = 'A contact with name "{}"\
+                    already exists. Please confirm to continue'
+                msg = msg.format(name)
+                self.add_error('has_confirmed', msg)
+                self.need_to_confirm = True
+                if hasattr(self, 'request'):
+                    messages.warning(self.request, msg)
+
+        return cleaned_data
+
+
+class ContactUpdateModelForm(FormCleanContactNumber, ModelForm):
+    has_confirmed = BooleanField(initial=False, required=False)
+    need_to_confirm = False
+
+    class Meta:
+        model = default_contact_model
+        fields = default_contact_fields
+
+    def __init__(self, *args, **kwargs):
+        if 'request' in kwargs.keys():
+            self.request = kwargs.pop('request')
+
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        # if name exists make user confirm
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name', '')
+        name_initial = self.initial['name']
+        has_confirmed = cleaned_data['has_confirmed']
+        self.need_to_confirm = False
+
+        contacts = self.Meta.model.objects.filter(name__iexact=name)
+        has_changed = name_initial.lower() != name.lower()
+        if contacts.exists() and has_changed:
+            if not has_confirmed:
+                msg = 'A contact with name "{}"\
+                    already exists. Please confirm to continue'
+                msg = msg.format(name)
+                self.add_error('has_confirmed', msg)
+                self.need_to_confirm = True
+                if hasattr(self, 'request'):
+                    messages.warning(self.request, msg)
+
+        return cleaned_data
 
 
 class CandidateCreateModelForm(ContactCreateModelForm):
@@ -35,7 +104,7 @@ class CandidateCreateModelForm(ContactCreateModelForm):
         return is_valid
 
 
-class CandidateUpdateModelForm(ContactCreateModelForm):
+class CandidateUpdateModelForm(ContactUpdateModelForm):
 
     class Meta:
         model = Candidate
@@ -98,7 +167,7 @@ class CandidateUpdateModelForm(ContactCreateModelForm):
         return cv_template
 
 
-class ClientUpdateModelForm(FormCleanContactNumber, ModelForm):
+class ClientUpdateModelForm(ContactUpdateModelForm):
     class Meta:
         model = Client
         fields = [
@@ -147,7 +216,7 @@ class ClientUpdateModelForm(FormCleanContactNumber, ModelForm):
                 self.fields[field].disabled = True
 
 
-class ClientCreateModelForm(FormCleanContactNumber, ModelForm):
+class ClientCreateModelForm(ContactCreateModelForm):
 
     class Meta:
         model = Client
@@ -166,7 +235,7 @@ class ClientCreateModelForm(FormCleanContactNumber, ModelForm):
         self.fields['industry'].required = True
 
 
-class SupplierModelForm(FormCleanContactNumber, ModelForm):
+class SupplierModelForm(ContactCreateModelForm):
 
     class Meta:
         model = Supplier
@@ -182,3 +251,9 @@ class SupplierModelForm(FormCleanContactNumber, ModelForm):
             'point_of_contacts',
             'notes',
         ]
+
+
+class SupplierUpdateModelForm(ContactUpdateModelForm):
+    class Meta:
+        model = SupplierModelForm.Meta.model
+        fields = SupplierModelForm.Meta.fields

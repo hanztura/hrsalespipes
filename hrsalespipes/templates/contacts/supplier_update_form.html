@@ -66,6 +66,21 @@
                       v-else-if="field.fieldType.value == 'pointOfContacts'">
                       {% include "contacts/includes/point_of_contacts_table_edit.html" %}
                     </template>
+
+                    <template
+                      v-else-if="field.fieldType.value == 'confirmCheckbox'">
+                      <v-checkbox
+                        v-show="$root[field.needToConfirmModel]"
+                        v-model="$data[field.model]"
+                        :error="$data[field.needToConfirmModel]"
+                        :label="field.label"
+                        :required="$data[field.needToConfirmModel]"></v-checkbox>
+                      <input
+                        :name="field.name"
+                        :required="$data[field.needToConfirmModel]"
+                        :value="$data[field.model]"
+                        type="hidden">
+                    </template>
                 </div>
               </v-tab-item> <!-- Basic -->
             </v-tabs-items>
@@ -98,12 +113,18 @@
         skypeId: "{{ form.skype_id.value }}",
         msTeamsId: "{{ form.ms_teams_id.value }}",
         notes: "{{ form.instance.notes|escapejs }}",
+        hasConfirmed: {{ form.has_confirmed.value|yesno:'true,false' }},
+        needToConfirm: {{ form.need_to_confirm|yesno:'true,false' }},
       };
     </script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}
     <script src="{% static 'js/mixinForForms.js' %}"></script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinNeedToConfirm.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}

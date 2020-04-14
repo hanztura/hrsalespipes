@@ -32,6 +32,21 @@ Supplier - New
                 v-if="field.fieldType.value == 'textfield'">
                   {% include "_includes/model_fields/textfield.html" %}
                 </template>
+
+              <template
+                v-else-if="field.fieldType.value == 'confirmCheckbox'">
+                <v-checkbox
+                  v-show="$root[field.needToConfirmModel]"
+                  v-model="$data[field.model]"
+                  :error="$data[field.needToConfirmModel]"
+                  :label="field.label"
+                  :required="$data[field.needToConfirmModel]"></v-checkbox>
+                <input
+                  :name="field.name"
+                  :required="$data[field.needToConfirmModel]"
+                  :value="$data[field.model]"
+                  type="hidden">
+              </template>
           </div>
 
           <v-input>
@@ -48,12 +63,18 @@ Supplier - New
         name: "{{ form.name.value|default_if_none:'' }}",
         contactNumber: "{{ form.contact_number.value|default_if_none:'' }}",
         emailAddress: "{{ form.email_address.value|default_if_none:'' }}",
+        hasConfirmed: {{ form.has_confirmed.value|yesno:'true,false' }},
+        needToConfirm: {{ form.need_to_confirm|yesno:'true,false' }},
       };
     </script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}
     <script src="{% static 'js/mixinForForms.js' %}"></script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinNeedToConfirm.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}

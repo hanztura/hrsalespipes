@@ -12,6 +12,21 @@ let fields = [
       v => !!v || 'Name is required',
     ]
   },
+
+  {
+    name: 'has_confirmed',
+    label: 'Please confirm to continue saving.',
+    model: 'hasConfirmed',
+    needToConfirmModel: 'needToConfirm',
+    fieldType: {
+      value: 'confirmCheckbox',
+    },
+    outlined: true,
+    rules: [
+      v => !!v || 'Confirmation is required'
+    ]
+  },
+  
   {
     name: 'contact_number',
     label: 'Contact Number',
