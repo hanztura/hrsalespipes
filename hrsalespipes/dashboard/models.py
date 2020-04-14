@@ -27,6 +27,10 @@ class Dashboard(SingletonModel):
         max_length=100,
         blank=True,
         default='YTD Client Performance')
+    ytd_industry_performance_label = models.CharField(
+        max_length=100,
+        blank=True,
+        default='YTD Industry Performance')
     sjpc_this_month_label = models.CharField(
         max_length=100,
         blank=True,
