@@ -182,8 +182,13 @@ Candidates - List
         owner: '{{ owners_query|default_if_none:"" }}',
         isMale: "{{ search_is_male|default_if_none:''}}",
         ageRange: "{{ search_age_range|default_if_none:'' }}",
+        stringsToTransform: ['owner', 'isMale'],
       };
     </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinTransformDataStringToArray.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}

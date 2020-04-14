@@ -15,6 +15,7 @@ new Vue({
     ],
     employees: [],
     employee: data.employee,
+    isPaid: data.isPaid,
   }),
 
   mounted(){

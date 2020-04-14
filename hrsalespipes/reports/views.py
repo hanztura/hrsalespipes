@@ -199,7 +199,7 @@ class CommissionsEarnedSummaryListView(
     template_name = 'reports/commissions_earned_summary.html'
     permission_required = 'commissions.view_report_commissions_earned_summary'
     paginate_by = 0
-    context_urls_filter_fields = ('from', 'to', 'employee')
+    context_urls_filter_fields = ('from', 'to', 'employee', 'is_paid')
 
     def get_context_urls(self):
         # pdf/excel buttons url builder
@@ -221,6 +221,18 @@ class CommissionsEarnedSummaryListView(
                 self.employee = employee.first()
                 q = q.filter(employee=self.employee)
 
+        # filter is_paid
+        is_paid = self.request.GET.get('is_paid', '')
+        self.is_paid = is_paid
+        possible_values = {
+            'true': True,
+            'false': False
+        }
+        is_paid = is_paid.split(',') if is_paid else []
+        is_paid = [possible_values[p] for p in is_paid]
+        if is_paid:
+            q = q.filter(is_paid__in=is_paid)
+
         return q
 
     def get_context_data(self, **kwargs):
@@ -230,6 +242,7 @@ class CommissionsEarnedSummaryListView(
         sums = q.aggregate(Sum('amount'))
 
         context['employee'] = self.employee
+        context['search_is_paid'] = self.is_paid
         context['employee_pk'] = None
         if self.employee:
             context['employee_pk'] = self.employee.pk
@@ -275,6 +288,20 @@ class CommissionsEarnedSummaryExcelView(
         date_to = request.GET.get('to', self.month_last_day)
         employee_pk = self.request.GET.get('employee', '')  # employee id
 
+        # filter is_paid
+        is_paid = self.request.GET.get('is_paid', '')
+        self.is_paid = is_paid
+        possible_values = {
+            'true': True,
+            'false': False
+        }
+        is_paid = is_paid.split(',') if is_paid else []
+        is_paid = [possible_values[p] for p in is_paid]
+
+        q = Commission.objects.all()
+        if is_paid:
+            q = q.filter(is_paid__in=is_paid)
+
         columns = [
             'Date',
             'Reference Number',
@@ -313,7 +340,8 @@ class CommissionsEarnedSummaryExcelView(
             employee_pk,
             user=self.request.user,
             filter_expression=filter_expression,
-            empty_if_no_filter=empty_if_no_filter
+            empty_if_no_filter=empty_if_no_filter,
+            queryset=q
         )
 
         wb.save(response)
