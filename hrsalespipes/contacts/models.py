@@ -10,8 +10,7 @@ from system.models import User, VisaStatus
 
 
 class Client(ContactModel):
-    name = models.CharField(
-        max_length=100, unique=True, db_index=True)
+    name = models.CharField(max_length=100, db_index=True)
     industry = models.CharField(max_length=64)
     location = models.CharField(max_length=64, blank=False)
     initial_approach = models.TextField(blank=True)
@@ -40,6 +39,7 @@ class Client(ContactModel):
             ),
         )
         ordering = 'name',
+        unique_together = ['name', 'email_address']
 
     @property
     def edit_href(self):
@@ -56,9 +56,6 @@ class Client(ContactModel):
 class Supplier(ContactModel):
     point_of_contacts = models.TextField(blank=True)
 
-    class Meta:
-        abstract = False
-
     @property
     def edit_href(self):
         return reverse('contacts:suppliers_edit', args=[str(self.pk), ])
@@ -72,10 +69,6 @@ class Supplier(ContactModel):
 
 
 class Employee(ContactModel):
-
-    class Meta:
-        abstract = False
-
     user = models.OneToOneField(
         User,
         on_delete=models.PROTECT,
@@ -158,8 +151,7 @@ class Candidate(ContactModel):
         'cv_template',
         'notes',
     )
-    name = models.CharField(
-        max_length=100, unique=True, db_index=True)
+    name = models.CharField(max_length=100, db_index=True)
 
     # work history
     current_previous_position = models.TextField(

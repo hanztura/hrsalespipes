@@ -8,7 +8,8 @@ from django.views.generic.base import TemplateView
 
 from .forms import (ClientCreateModelForm,
                     CandidateUpdateModelForm, ClientUpdateModelForm,
-                    SupplierModelForm, CandidateCreateModelForm)
+                    SupplierModelForm, CandidateCreateModelForm,
+                    SupplierUpdateModelForm)
 from .models import Candidate, Client, Supplier, Employee, CVTemplate
 from .utils import FilterNameMixin, DownloadCVBaseView
 from jobs.models import JobCandidate
@@ -267,7 +268,7 @@ class SupplierUpdateView(
         ActionMessageViewMixin,
         UpdateView):
     model = Supplier
-    form_class = SupplierModelForm
+    form_class = SupplierUpdateModelForm
     template_name = 'contacts/supplier_update_form.html'
     permission_required = ('contacts.change_supplier')
     success_msg = 'Supplier updated.'

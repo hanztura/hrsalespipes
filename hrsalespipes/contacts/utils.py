@@ -19,14 +19,9 @@ jinja_env.filters['date'] = date_filter
 
 
 class ContactModel(TimeStampedModel):
-
-    class Meta:
-        abstract = True
-        ordering = 'name',
-
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     code = models.CharField(max_length=50, blank=True)
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
     contact_number = models.TextField(max_length=32, blank=True)
     alternate_contact_number = models.CharField(max_length=32, blank=True)
     whatsapp_link = models.URLField(blank=True)
@@ -35,6 +30,11 @@ class ContactModel(TimeStampedModel):
     ms_teams_id = models.CharField(max_length=200, blank=True)
     location = models.CharField(max_length=64, blank=True)
     notes = models.TextField(blank=True)
+
+    class Meta:
+        abstract = True
+        ordering = 'name',
+        unique_together = ['name', 'email_address']
 
     def __str_(self):
         return self.name

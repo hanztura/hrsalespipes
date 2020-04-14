@@ -26,9 +26,10 @@
           <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
           <input type="hidden" id="dataNationalityChoices" value="{{ nationalities }}">
           {% csrf_token %}
-          {% for error in form.errors %}
-            <v-list-item>{{ error }}</v-list-item>
-          {% endfor %}
+          
+          {% if form.errors %}
+            {% include "_includes/errors.html" %}
+          {% endif %}
 
             <v-tabs
               v-model="tab"
@@ -80,6 +81,21 @@
                     <template
                       v-else-if="field.fieldType.value == 'autocomplete'">
                         {% include "_includes/model_fields/autocomplete.html" %}
+                    </template>
+
+                    <template
+                      v-else-if="field.fieldType.value == 'confirmCheckbox'">
+                      <v-checkbox
+                        v-show="$root[field.needToConfirmModel]"
+                        v-model="$data[field.model]"
+                        :error="$data[field.needToConfirmModel]"
+                        :label="field.label"
+                        :required="$data[field.needToConfirmModel]"></v-checkbox>
+                      <input
+                        :name="field.name"
+                        :required="$data[field.needToConfirmModel]"
+                        :value="$data[field.model]"
+                        type="hidden">
                     </template>
                 </div>
               </v-tab-item>  <!-- Personal -->
@@ -213,12 +229,18 @@
         isMedical: {{ form.is_medical.value|yesno:"true,false" }},
         medicalExperience: {{ form.medical_experience_in_years.value }},
         cvTemplate: '{{ form.cv_template.value|default_if_none:'' }}',
+        hasConfirmed: {{ form.has_confirmed.value|yesno:'true,false' }},
+        needToConfirm: {{ form.need_to_confirm|yesno:'true,false' }},
       }
     </script>
   {% endaddtoblock %}  
 
   {% addtoblock "js" %}
     <script src="{% static 'js/mixinForForms.js' %}"></script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinNeedToConfirm.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}

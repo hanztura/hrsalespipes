@@ -49,6 +49,21 @@
                       v-else-if="field.fieldType.value == 'autocomplete'">
                         {% include "_includes/model_fields/autocomplete.html" %}
                       </template>
+
+                    <template
+                      v-else-if="field.fieldType.value == 'confirmCheckbox'">
+                      <v-checkbox
+                        v-show="$root[field.needToConfirmModel]"
+                        v-model="$data[field.model]"
+                        :error="$data[field.needToConfirmModel]"
+                        :label="field.label"
+                        :required="$data[field.needToConfirmModel]"></v-checkbox>
+                      <input
+                        :name="field.name"
+                        :required="$data[field.needToConfirmModel]"
+                        :value="$data[field.model]"
+                        type="hidden">
+                    </template>
                 </div>
               </v-tab-item> <!-- Basic -->
 
@@ -131,12 +146,18 @@
         signedOn: "{{ form.instance.signed_on|default_if_none:''|date:'Y-m-d' }}",
         signedOnDisabled: {{ form.signed_on.field.disabled|yesno:'true,false' }},
         notes: "{{ form.notes.value|default_if_none:''|escapejs }}",
+        hasConfirmed: {{ form.has_confirmed.value|yesno:'true,false' }},
+        needToConfirm: {{ form.need_to_confirm|yesno:'true,false' }},
       }
     </script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}
     <script src="{% static 'js/mixinForForms.js' %}"></script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinNeedToConfirm.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}
