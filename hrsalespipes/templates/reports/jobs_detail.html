@@ -1,0 +1,63 @@
+{% extends "reports/base.html" %}
+{% load static sekizai_tags %}
+
+{% block title %}
+Jobs Detail - Reports
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>Jobs Detail</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12">
+        <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
+        {% include "_includes/filter_form_with_status.html" %}
+      </v-col>
+
+      <v-col cols='12' class="text-right my-0 py-0">
+        {% include "reports/includes/buttons_download.html" %}
+      </v-col>
+
+      <v-col cols="12" class="text-center">
+        <v-simple-table
+          fixed-header>
+          {% include "reports/includes/jobs_detail_table.html" %}
+        </v-simple-table>
+      </v-col>
+
+      <v-col cols="12">
+        <v-container class="max-width">
+          {% include "_includes/pagination.html" %}
+        </v-container>
+      </v-col> <!-- Pagination -->
+    </v-row>
+  </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let currentPage = {{ page_obj.number|default_if_none:0 }};
+      let currentPageLength = {{ paginator.num_pages|default_if_none:0 }};
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script>
+      let reportText = 'Jobs Detail';
+      let data = {
+        status: '{{ status|default_if_none:'' }}',
+      };
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForPagination.js' %}"></script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'reports/jobsSummary.js' %}"></script>
+  {% endaddtoblock %}
+{% endblock subcontent %}

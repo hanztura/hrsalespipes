@@ -13,7 +13,7 @@ from .views import (
     CVSentReportPDFView, CVSentExcelView, NewlySignedClientsReportListView,
     NewlySignedClientsPDFView, NewlySignedClientsExcelView,
     StartDatePerWeekMonthListView, StartDatePerWeekMonthPDFView,
-    StartDatePerWeekMonthExcelView)
+    StartDatePerWeekMonthExcelView, JobsDetailListView)
 
 app_name = 'reports'
 urlpatterns = [
@@ -38,6 +38,11 @@ urlpatterns = [
         'pdf/successful-jobs/',
         SuccessfulJobsPDFView.as_view(),
         name='pdf_successful_jobs'),
+
+    path(
+        'jobs-detail/',
+        JobsDetailListView.as_view(),
+        name='jobs_detail'),
 
     path(
         'pdf/jobs-summary/',

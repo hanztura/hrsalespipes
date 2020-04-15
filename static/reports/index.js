@@ -32,6 +32,11 @@ new Vue({
       },
       {
         icon: ICONS.ICON_JOBS,
+        href: urlJobsDetail,
+        title: 'Jobs Detail Report',
+      },
+      {
+        icon: ICONS.ICON_JOBS,
         href: urlJobsSummary,
         title: 'Jobs Summary',
       },

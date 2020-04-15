@@ -1,0 +1,59 @@
+{% load humanize %}
+
+<table>
+  <thead>
+    <tr>
+      <th class="text-center">Job</th>
+      <th class="text-center">Candidates</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if object_list %}
+      {% for object in object_list %}
+      <tr>
+        <td class="text-left">
+          <p>Date: {{ object.date|date:display_date_format }}</p>
+          <p>Status: {{ object.status.name }}</p>
+          <p>Reference Number: <a href="{{ object.view_href }}" title="view job detail">{{ object.reference_number }}</a></p>
+          <p>Client: {{ object.client.name }}</p>
+          <p>Position: {{ object.position }}</p>
+          <p>Location: {{ object.location }}</p>
+          <p>Potential Income: {{ object.potential_income|default_if_none:0|intcomma }}</p>
+        </td>
+        <td>
+          {% if object.candidates.count %}
+            <v-simple-table dense>
+              <table>
+                <thead>
+                  <tr>
+                    <th class="text-center">Candidate</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Associate</th>
+                    <th class="text-center">Consultant</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for job_candidate in object.candidates.all %}
+                    <tr>
+                      <td><a href="{{ job_candidate.view_href }}" title="view job candidate detail">{{ job_candidate.candidate.name }}</a></td>
+                      <td>{{ job_candidate.status.name }}</td>
+                      <td>{{ job_candidate.associate.name }}</td>
+                      <td>{{ job_candidate.consultant.name }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </v-simple-table>
+          {% else %}
+          <p class="text-center">No candidates</p>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td colspan="5">No data available.</td>
+      </tr>
+    {% endif %}
+  </tbody>
+</table>

@@ -783,6 +783,32 @@ class SuccessfulJobsPDFView(
         return context
 
 
+class JobsDetailListView(
+        DisplayDateFormatMixin,
+        ContextUrlBuildersMixin,
+        DateAndStatusFilterMixin,
+        PermissionRequiredWithCustomMessageMixin,
+        ListView):
+    model = Job
+    template_name = 'reports/jobs_detail.html'
+    permission_required = 'jobs.view_report_jobs_detail'
+    paginate_by = 20
+    context_urls_filter_fields = ('from', 'to', 'status')
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.select_related('client', 'status')
+        q = q.prefetch_related(
+            'candidates__candidate', 'candidates__status',
+            'candidates__associate', 'candidates__consultant')
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status_objects'] = get_objects_as_choices(JobStatus)
+        return context
+
+
 class JobsSummaryListView(
         DisplayDateFormatMixin,
         ContextUrlBuildersMixin,

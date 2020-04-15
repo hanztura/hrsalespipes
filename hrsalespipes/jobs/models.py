@@ -90,6 +90,10 @@ class Job(TimeStampedModel):
                 'Can view report Jobs Summary'
             ),
             (
+                'view_report_jobs_detail',
+                'Can view report Jobs Details'
+            ),
+            (
                 'view_report_job_to_pipeline_analysis',
                 'Can view report Job to Pipeline Analysis'
             ),
