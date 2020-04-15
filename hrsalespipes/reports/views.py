@@ -795,6 +795,14 @@ class JobsDetailListView(
     paginate_by = 20
     context_urls_filter_fields = ('from', 'to', 'status')
 
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_jobs_detail')),
+            # ('excel_url', reverse('reports:excel_monthly_invoices_summary')),
+        )
+        return context_urls
+
     def get_queryset(self):
         q = super().get_queryset()
         q = q.select_related('client', 'status')
@@ -806,6 +814,20 @@ class JobsDetailListView(
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['status_objects'] = get_objects_as_choices(JobStatus)
+        return context
+
+
+class JobsDetailPDFView(
+        WeasyTemplateResponseMixin,
+        JobsDetailListView):
+    template_name = 'reports/pdf/jobs_detail.html'
+    pdf_attachment = True
+    pdf_filename = 'Jobs Detail.pdf'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['COMPANY'] = Setting.objects.first().company_name
         return context
 
 

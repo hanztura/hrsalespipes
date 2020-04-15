@@ -2,6 +2,7 @@
   icon
   right
   title="Export as PDF"
+  {% if not pdf_url %}disabled{% endif %}
   href="{{ pdf_url }}">
   <v-icon class="red--text">mdi-file-pdf</v-icon>
 </v-btn>
@@ -9,6 +10,7 @@
   icon
   right
   title="Export as Excel"
+  {% if not excel_url %}disabled{% endif %}
   href="{{ excel_url }}">
   <v-icon class="green--text">mdi-file-excel</v-icon>
 </v-btn>
