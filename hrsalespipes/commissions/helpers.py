@@ -13,21 +13,15 @@ def create_commission(pipeline):
         rate_details = rate.details.all()
 
         # get commission computation base value and employee
+        commission_base_amount = pipeline.potential_income
         if rate.role_type == 'one':
             # lowest level / associate
-            commission_base_amount = pipeline.invoice_amount
             employee = pipeline.job_candidate.associate
 
         elif rate.role_type == 'two':
-            commission_base_amount = pipeline.potential_income
-            employee = pipeline.job_candidate.candidate.candidate_owner
-
-        elif rate.role_type == 'three':
-            commission_base_amount = pipeline.invoice_amount
-            employee = None
+            employee = pipeline.job_candidate.candidate_owner
 
         else:
-            commission_base_amount = pipeline.invoice_amount
             employee = None
 
         # get commission rate data
