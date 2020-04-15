@@ -1,0 +1,12 @@
+{% extends "reports/pdf/base.html" %}
+
+{% block title %}<title>{{ TITLE }} Download PDF - Reports</title>{% endblock title %}
+
+{% block content %}
+<content>
+  <h1>{{ TITLE }} Report</h1>
+  <p class="my-0 py-0"><strong>{{ COMPANY }}</strong></p>
+  <p class="my-0 py-0">For the month {{ month }}</p>
+  {% include "reports/includes/start_date_per_week_month_table.html" %}
+</content>
+{% endblock content %}

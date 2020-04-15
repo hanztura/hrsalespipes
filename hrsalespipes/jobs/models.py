@@ -8,7 +8,7 @@ from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
-from .helpers import CVSentManager
+from .db import CVSentManager, TentativeJoiningManager
 from contacts.models import Candidate, Client, Employee
 from system.models import InterviewMode
 
@@ -135,6 +135,10 @@ class JobCandidate(TimeStampedModel):
                 'view_report_cv_sent',
                 'Can view report CV Sent to clients'
             ),
+            (
+                'view_start_date_per_week_month',
+                'Can view Report on Start date per week/month'
+            ),
         ]
 
     job = models.ForeignKey(
@@ -177,6 +181,7 @@ class JobCandidate(TimeStampedModel):
 
     objects = models.Manager()
     cv_sent = CVSentManager()
+    tentative_joining = TentativeJoiningManager()
 
     def get_absolute_url(self):
         return reverse('jobs:detail',

@@ -11,7 +11,9 @@ from .views import (
     SuccessfulJobsListView, SuccessfulJobsPDFView, InterviewsReportListView,
     InterviewsReportPDFView, InterviewsExcelView, CVSentReportListView,
     CVSentReportPDFView, CVSentExcelView, NewlySignedClientsReportListView,
-    NewlySignedClientsPDFView, NewlySignedClientsExcelView)
+    NewlySignedClientsPDFView, NewlySignedClientsExcelView,
+    StartDatePerWeekMonthListView, StartDatePerWeekMonthPDFView,
+    StartDatePerWeekMonthExcelView)
 
 app_name = 'reports'
 urlpatterns = [
@@ -121,7 +123,6 @@ urlpatterns = [
         'pdf/newly-signed-clients/',
         NewlySignedClientsPDFView.as_view(),
         name='pdf_newly_signed_clients'),
-
     path(
         'excel/newly-signed-clients/',
         NewlySignedClientsExcelView.as_view(),
@@ -130,6 +131,19 @@ urlpatterns = [
         'newly-signed-clients/',
         NewlySignedClientsReportListView.as_view(),
         name='newly_signed_clients'),
+
+    path(
+        'pdf/start-date-per-week-month/',
+        StartDatePerWeekMonthPDFView.as_view(),
+        name='pdf_start_date_per_week_month'),
+    path(
+        'excel/start-date-per-week-month/',
+        StartDatePerWeekMonthExcelView.as_view(),
+        name='excel_start_date_per_week_month'),
+    path(
+        'start-date-per-week-month/',
+        StartDatePerWeekMonthListView.as_view(),
+        name='start_date_per_week_month'),
 
     path('', IndexView.as_view(), name='index'),
 ]

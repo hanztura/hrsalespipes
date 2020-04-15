@@ -33,6 +33,148 @@ class IndexView(LoginRequiredMixin, TemplateView):
     template_name = 'reports/index.html'
 
 
+class StartDatePerWeekMonthListView(
+        DisplayDateFormatMixin,
+        ContextUrlBuildersMixin,
+        MonthFilterViewMixin,
+        PermissionRequiredWithCustomMessageMixin,
+        ListView):
+    model = JobCandidate
+    template_name = 'reports/start_date_per_week_month.html'
+    permission_required = 'jobs.view_start_date_per_week_month'
+    paginate_by = 200
+    context_urls_filter_fields = ('month',)
+    queryset = JobCandidate.tentative_joining.all()
+
+    TITLE = 'Start date per week/month'
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_start_date_per_week_month')),
+            ('excel_url', reverse('reports:excel_start_date_per_week_month')),
+        )
+        return context_urls
+
+    def get_filter_expression(self, month, year):
+        filter_expression = Q(
+            tentative_date_of_joining__month=month,
+            tentative_date_of_joining__year=year) | Q(
+            tentative_date_of_joining__isnull=True)
+        return filter_expression
+
+    def get_queryset(self):
+        q = super().get_queryset().prefetch_related('pipeline')
+        q = q.select_related('job__client', 'candidate').order_by(
+            'tentative_date_of_joining')
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        q = context['object_list']
+        aggregate_fields = ['pipeline__invoice_amount', ]
+        aggregate_fields = [Sum(field) for field in aggregate_fields]
+        sums = q.aggregate(*aggregate_fields)
+
+        # create context item for aggregate fields
+        for key, value in sums.items():
+            context[key] = value
+
+        context['TITLE'] = self.TITLE
+        return context
+
+
+class StartDatePerWeekMonthPDFView(
+        WeasyTemplateResponseMixin,
+        StartDatePerWeekMonthListView):
+    template_name = 'reports/pdf/start_date_per_week_month.html'
+    pdf_attachment = True
+    pdf_filename = ''
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.pdf_filename = '{}.pdf'.format(self.TITLE)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['COMPANY'] = Setting.objects.first().company_name
+        return context
+
+
+class StartDatePerWeekMonthExcelView(
+        PermissionRequiredWithCustomMessageMixin,
+        View):
+    permission_required = 'jobs.view_start_date_per_week_month'
+    TITLE = 'Start date per week-month'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        today = timezone.localdate()
+        self.month = today.strftime('%Y-%m')
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = \
+            'attachment; filename="{}.xls"'.format(self.TITLE)
+
+        month = request.GET.get('month', self.month)  # 'YYYY-MM'
+        _year, _month = month.split('-')
+        queryset = JobCandidate.tentative_joining.prefetch_related('pipeline')
+        queryset = queryset.select_related(
+            'job__client', 'candidate').order_by(
+            'tentative_date_of_joining')
+        filter_expression = Q(
+            tentative_date_of_joining__month=_month,
+            tentative_date_of_joining__year=_year) | Q(
+            tentative_date_of_joining__isnull=True)
+
+        columns = [
+            'Tentative Date of Joining',
+            'Candidate',
+            'Reference Number',
+            'Client',
+            'Invoice Number',
+            'Invoice Amount',
+        ]
+        values_list = [
+            'tentative_date_of_joining',
+            'candidate__name',
+            'job__reference_number',
+            'job__client__name',
+            'pipeline__invoice_number',
+            'pipeline__invoice_amount',
+        ]
+
+        invoice_amount_index = 5
+        wb = generate_excel(
+            self.TITLE,
+            month,
+            month,
+            columns,
+            JobCandidate,
+            (
+                'job__client',
+                'candidate'
+            ),
+            values_list,
+            (
+                (invoice_amount_index, 'pipeline__invoice_amount'),
+            ),  # aggregate fields
+            invoice_amount_index - 1,  # totals label
+            is_month_filter=True,
+            user=self.request.user,
+            queryset=queryset,
+            date_filter_expression=filter_expression,
+        )
+
+        wb.save(response)
+        return response
+
+
 class MonthlyInvoicesSummaryListView(
         EmployeeFilterMixin,
         DisplayDateFormatMixin,
