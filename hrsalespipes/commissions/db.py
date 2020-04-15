@@ -1,7 +1,7 @@
-from django.db import models
+from system.db import IsDeletedModelManager
 
 
-class UnpaidCommissionManager(models.Manager):
+class UnpaidCommissionManager(IsDeletedModelManager):
     def get_queryset(self):
         return super().get_queryset().filter(
             is_paid=False)
