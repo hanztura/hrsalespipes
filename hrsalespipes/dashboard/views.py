@@ -2,7 +2,7 @@ import json
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import TemplateView
@@ -12,6 +12,7 @@ from dateutil.relativedelta import relativedelta
 from .utils import (
     custom_permissions, template_names, get_data_dashboard_items_number)
 from .models import Dashboard
+from commissions.models import Commission
 from contacts.models import Client
 from jobs.models import Interview, JobCandidate, Job, JobStatus
 from salespipes.models import Pipeline
@@ -53,20 +54,23 @@ class DashboardView(
         user = self.request.user
 
         # queryset to be used by dashboard items
-        all_pipelines = Pipeline.objects.all().select_related(
+        all_pipelines = Pipeline.objects.select_related(
             'status', 'job_candidate__job__client')
-        all_interviews = Interview.objects.all().select_related(
-            'job_candidate__associate', 'job_candidate__consultant')
-        all_jobs = Job.objects.all().select_related('status').order_by(
+        all_interviews = Interview.objects.select_related(
+            'job_candidate__associate', 'job_candidate__consultant',
+            'done_by')
+        all_jobs = Job.objects.select_related('status').order_by(
             '-date')
         newly_signed_clients = Client.newly_signed.all()
+        unpaid_commissions = Commission.unpaid.select_related('employee')
 
         # prepare data for dashboard items
         dashboard_items_number = []
         if self.dashboard_index in [1, 2, 0]:  # dashboard for One Two Three
 
             # cv shared to client
-            cv_sent_to_clients = JobCandidate.cv_sent.all()
+            cv_sent_to_clients = JobCandidate.cv_sent.select_related(
+                'associate', 'consultant')
             if self.dashboard_index == 0:  # Three Dashboard
                 context['data_note'] = \
                     'All employees\' data are used in this dashboard.'
@@ -97,6 +101,8 @@ class DashboardView(
                     all_interviews = all_interviews.filter(done_by=employee)
                     cv_sent_to_clients = cv_sent_to_clients.filter(
                         Q(associate=employee) | Q(consultant=employee))
+                    unpaid_commissions = unpaid_commissions.filter(
+                        employee=employee)
                 else:
                     null_pipeline = Pipeline.objects.none()
                     active_jobs = null_pipeline
@@ -114,6 +120,7 @@ class DashboardView(
                     ytdcp = []
                     all_interviews = Interview.objects.none()
                     cv_sent_to_clients = JobCandidate.objects.none()
+                    unpaid_commissions = Commission.objects.none()
 
             # prepare to be included in context
             active_jobs_id = JobStatus.get_active_status_as_list()
@@ -168,6 +175,16 @@ class DashboardView(
                 cv_sent_url)
 
             newly_signed_clients_url = reverse('reports:newly_signed_clients')
+
+            unpaid_commissions = unpaid_commissions.aggregate(Sum('amount'))
+            unpaid_commissions = unpaid_commissions['amount__sum']
+            if not unpaid_commissions:
+                unpaid_commissions = 0
+
+            unpaid_commissions_url = reverse(
+                'reports:commissions_earned_summary')
+            uc_url_params = '?from=ALL&to=ALL&is_paid=false'
+            unpaid_commissions_url += uc_url_params
 
             data = [
                 {
@@ -225,6 +242,13 @@ class DashboardView(
                     'value': newly_signed_clients.count(),
                     'icon': 'mdi-new-box',
                     'url': newly_signed_clients_url,
+                },
+                {
+                    'type': 'number',
+                    'title': 'Expected Commisisons Pay-out',
+                    'value': round(float(unpaid_commissions)),
+                    'icon': 'mdi-currency-usd',
+                    'url': unpaid_commissions_url,
                 },
             ]
 

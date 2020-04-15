@@ -7,6 +7,7 @@ from django.urls import reverse
 
 from simple_history.models import HistoricalRecords
 
+from .db import UnpaidCommissionManager
 from contacts.models import Employee
 from salespipes.models import Pipeline
 from system.db import IsDeletedAbstractModel
@@ -98,6 +99,9 @@ class Commission(IsDeletedAbstractModel):
     is_paid = models.BooleanField(default=False)
 
     history = HistoricalRecords()
+
+    objects = models.Manager()
+    unpaid = UnpaidCommissionManager()
 
     class Meta:
         ordering = (
