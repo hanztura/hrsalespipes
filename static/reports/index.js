@@ -51,6 +51,11 @@ new Vue({
         title: 'Pipeline Summary'
       },
       {
+        icon: ICONS.ICON_JOBS,
+        href: urlStartDatePerWeekMonth,
+        title: 'Start date per week/month'
+      },
+      {
         icon: 'mdi-briefcase-check',
         href: urlSuccessfulJob,
         title: 'Successful Jobs'
