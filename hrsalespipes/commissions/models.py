@@ -10,7 +10,7 @@ from simple_history.models import HistoricalRecords
 from .db import UnpaidCommissionManager
 from contacts.models import Employee
 from salespipes.models import Pipeline
-from system.db import IsDeletedAbstractModel
+from system.db import IsDeletedAbstractModel, IsDeletedModelManager
 
 
 class Rate(models.Model):
@@ -100,7 +100,7 @@ class Commission(IsDeletedAbstractModel):
 
     history = HistoricalRecords()
 
-    objects = models.Manager()
+    objects = IsDeletedModelManager()
     unpaid = UnpaidCommissionManager()
 
     class Meta:
