@@ -164,7 +164,7 @@ class MonthFilterViewMixin:
         today = timezone.localdate()
         self.month = today.strftime('%Y-%m')
 
-    def get_filter_expression(self, month, year):
+    def get_month_filter_expression(self, month, year):
         filter_expression = Q(date__month=month, date__year=year)
         return filter_expression
 
@@ -176,7 +176,7 @@ class MonthFilterViewMixin:
 
         if month and year:
             try:
-                q = q.filter(self.get_filter_expression(month, year))
+                q = q.filter(self.get_month_filter_expression(month, year))
             except Exception as e:
                 pass
 

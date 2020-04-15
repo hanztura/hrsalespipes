@@ -3,7 +3,7 @@
 <table>
   <thead>
     <tr>
-      <th class="text-center">Date</th>
+      <th class="text-center">Invoice Date</th>
       <th class="text-center">Invoice Number</th>
       <th class="text-center">Job Reference Number</th>
       <th class="text-center">Client</th>
@@ -18,14 +18,14 @@
     {% if object_list %}
       {% for object in object_list %}
       <tr>
-        <td class="text-center"><a href="{% url 'salespipes:detail' object.pk %}" title="view pipeline detail">{{ object.date|date:display_date_format }}</a></td>
+        <td class="text-center"><a href="{% url 'salespipes:detail' object.pk %}" title="view pipeline detail">{{ object.invoice_date|date:display_date_format }}</a></td>
         <td class="text-center">{{ object.invoice_number }}</td>
         <td class="text-center"><a href="{% url 'jobs:detail' object.job_candidate.job_id %}" title="view job detail">{{ object.job_candidate.job.reference_number }}</a></td>
         <td class="text-center">{{ object.job_candidate.job.client.name }}</td>
         <td class="text-center">{{ object.job_candidate.job.client.industry }}</td>
         <td class="text-center"><a href="{% url 'jobs:candidates_detail' object.job_candidate.job_id object.job_candidate_id %}" title="view job candidate detail">{{ object.job_candidate.consultant.name }}</a></td>
         <td class="text-right">{{ object.potential_income|intcomma }}</td>
-        <td class="text-right">{{ object.invoice_amount|intcomma }}</td>
+        <td class="text-right"><a href="{% url 'salespipes:detail' object.pk %}" title="view pipeline detail">{{ object.invoice_amount|intcomma }}</a></td>
         <td class="text-right">{{ object.vat|intcomma }}</td>
       </tr>
       {% endfor %}
