@@ -8,6 +8,9 @@ def create_commission(pipeline):
 
     rates = Rate.objects.all()
     commissions_created = []
+    associate = pipeline.job_candidate.associate
+    consultant = pipeline.job_candidate.consultant
+    is_assoc_consult_same = associate == consultant
 
     for rate in rates:
         rate_details = rate.details.all()
@@ -16,10 +19,13 @@ def create_commission(pipeline):
         commission_base_amount = pipeline.potential_income
         if rate.role_type == 'one':
             # lowest level / associate
-            employee = pipeline.job_candidate.associate
+            if is_assoc_consult_same:
+                continue
+
+            employee = associate
 
         elif rate.role_type == 'two':
-            employee = pipeline.job_candidate.candidate_owner
+            employee = consultant
 
         else:
             employee = None

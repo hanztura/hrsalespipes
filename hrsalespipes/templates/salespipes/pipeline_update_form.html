@@ -70,6 +70,7 @@
         dateLabel: "{{ form.date.label }}",
         date: "{{ form.instance.date|date:'Y-m-d' }}",
         invoiceDate: "{{ form.invoice_date.value|date:'Y-m-d' }}",
+        invoiceNumber: "{{ form.invoice_number.value|default_if_none:'' }}",
         job: '{{ job_id }}',
         jobCandidate: Number('{{ form.job_candidate.value }}'),
         status: '{{ form.status.value|default_if_none:'' }}',
