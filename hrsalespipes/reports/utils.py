@@ -123,7 +123,11 @@ def generate_excel(
                 # filter date
                 if is_month_filter:
                     year, month = date_from.split('-')
-                    data = rows.filter(date__month=month, date__year=year)
+                    if not date_filter_expression:
+                        date_filter_expression = Q(
+                            date__month=month,
+                            date__year=year)
+                    data = rows.filter(date_filter_expression)
                 else:  # two dates
                     if is_datetime:
                         data = rows.filter(
