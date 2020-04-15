@@ -56,7 +56,7 @@ class StartDatePerWeekMonthListView(
         )
         return context_urls
 
-    def get_filter_expression(self, month, year):
+    def get_month_filter_expression(self, month, year):
         filter_expression = Q(
             tentative_date_of_joining__month=month,
             tentative_date_of_joining__year=year) | Q(
@@ -198,6 +198,13 @@ class MonthlyInvoicesSummaryListView(
             ('excel_url', reverse('reports:excel_monthly_invoices_summary')),
         )
         return context_urls
+
+    def get_month_filter_expression(self, month, year):
+        filter_expression = Q(
+            invoice_date__month=month,
+            invoice_date__year=year) | Q(
+            invoice_date__isnull=True)
+        return filter_expression
 
     def get_queryset(self):
         q = super().get_queryset().filter(
