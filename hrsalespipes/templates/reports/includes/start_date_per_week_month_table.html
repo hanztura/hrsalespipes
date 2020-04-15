@@ -4,6 +4,7 @@
   <thead>
     <tr>
       <th class="text-center">Tentative Date of Joining</th>
+      <th class="text-center">Status</th>
       <th class="text-center">Candidate</th>
       <th class="text-center">Reference Number</th>
       <th class="text-center">Client</th>
@@ -16,6 +17,7 @@
       {% for object in object_list %}
       <tr>
         <td class="text-center">{{ object.tentative_date_of_joining|date:display_date_format }}</td>
+        <td class="text-center">{{ object.status.name }}</td>
         <td class="text-center"><a href="{% url 'jobs:candidates_detail' object.job_id object.pk %}" title="view job candidate detail">{{ object.candidate.name }}</a></td>
         <td class="text-center">{{ object.job.reference_number }}</td>
         <td class="text-center">{{ object.job.client.name }}</td>

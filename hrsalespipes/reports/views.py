@@ -65,7 +65,7 @@ class StartDatePerWeekMonthListView(
 
     def get_queryset(self):
         q = super().get_queryset().prefetch_related('pipeline')
-        q = q.select_related('job__client', 'candidate').order_by(
+        q = q.select_related('job__client', 'candidate', 'status').order_by(
             'tentative_date_of_joining')
         return q
 
@@ -125,7 +125,7 @@ class StartDatePerWeekMonthExcelView(
         _year, _month = month.split('-')
         queryset = JobCandidate.tentative_joining.prefetch_related('pipeline')
         queryset = queryset.select_related(
-            'job__client', 'candidate').order_by(
+            'job__client', 'candidate', 'status').order_by(
             'tentative_date_of_joining')
         filter_expression = Q(
             tentative_date_of_joining__month=_month,
@@ -134,6 +134,7 @@ class StartDatePerWeekMonthExcelView(
 
         columns = [
             'Tentative Date of Joining',
+            'Status',
             'Candidate',
             'Reference Number',
             'Client',
@@ -142,6 +143,7 @@ class StartDatePerWeekMonthExcelView(
         ]
         values_list = [
             'tentative_date_of_joining',
+            'status__name',
             'candidate__name',
             'job__reference_number',
             'job__client__name',
