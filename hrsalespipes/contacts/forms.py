@@ -163,7 +163,7 @@ class CandidateUpdateModelForm(ContactUpdateModelForm):
 
     def clean_cv_template(self):
         default = CVTemplate.objects.filter(is_default=True).first()
-        cv_template = getattr(self.cleaned_data, 'cv_template', default)
+        cv_template = self.cleaned_data.get('cv_template', default)
         return cv_template
 
 
