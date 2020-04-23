@@ -15,6 +15,7 @@ Pipeline Summary - Reports
     >
       <v-col cols="12"> <!-- Filter form -->
         <input type="hidden" id="dataConsultantChoices" value="{{ consultants }}">
+        <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
 
         <form id="searchForm" ref="searchForm">
           <v-container fluid>
@@ -26,6 +27,11 @@ Pipeline Summary - Reports
 
                 <v-col cols="12" md="2" class="py-0">
                   {% include "_includes/_text_field_calendar.html" with label="To" name="to" type="date" value=to %}
+                </v-col>
+
+                <v-col cols="12" md="2" class="py-0">
+                  {% include "_includes/_auto_complete.html" with items="statusChoices" label="Status" model="status" item_value="value" item_text="text" prepend_inner_icon="mdi-comment-question" multiple="multiple" %}
+                  <input type="hidden" name="status" v-model="status">
                 </v-col>
 
                 <v-col cols="12" md="2" class="py-0">
@@ -131,9 +137,14 @@ Pipeline Summary - Reports
     <script>
       let TITLE = '{{ TITLE }}';
       let data = {
+        status: '{{ status|default_if_none:'' }}',
         consultant: '{{ consultant_pk|default_if_none:"" }}',
       };
     </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForListWithStatus.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}
