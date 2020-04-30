@@ -17,12 +17,17 @@
     [v-cloak] > * { display:none; }
   </style>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="{% static "vendor/vuetify/vuetify.min.css" %}">
   {% if debug %}
     <link href="{% static "vendor/materialdesignicons.min.css" %}" rel="stylesheet">
   {% else %}
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
   {% endif %}
+
+  
+  {% addtoblock "css" %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendor/vuetify/vuetify.min.css" %}">
+  {% endaddtoblock %} 
+
   {% render_block "css" %}
 
   {% block headblock %}{% endblock headblock %}
@@ -217,14 +222,23 @@
       </v-footer>
     </v-app>
   </div>
+  
+  {% addtoblock "js_first" %}
+    {% if debug %}
+      <script src="{% static "vendor/vue/vue.js" %}"></script>
+    {% else %}
+      <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.min.js"></script>
+    {% endif %}
+  {% endaddtoblock %} 
+  
+  {% addtoblock "js_first" %}
+    {% if debug %}
+      <script src="{% static "vendor/vuetify/vuetify.js" %}"></script>
+    {% else %}
+      <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    {% endif %}
+  {% endaddtoblock %} 
 
-  {% if debug %}
-    <script src="{% static "vendor/vue/vue.js" %}"></script>
-    <script src="{% static "vendor/vuetify/vuetify.js" %}"></script>
-  {% else %}
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-  {% endif %}
 
   <script>
     const ICONS = {
@@ -257,9 +271,17 @@
       isBackupAllowed: {{ perms.backups.view_backup|yesno:'true,false' }},
     };
   </script>
-  <script src="{% static 'js/vueMixins.js' %}"></script>
 
+  
+
+  
+  {% addtoblock "js_first" %}
+    <script src="{% static 'js/vueMixins.js' %}"></script>
+  {% endaddtoblock %} 
+  
+  {% render_block "js_first" %}
   {% render_block "js" %}
+
   {% block script %}{% endblock script %} <!-- fallback -->
 </body>
 </html>
