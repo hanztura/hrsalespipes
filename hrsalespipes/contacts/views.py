@@ -1,9 +1,15 @@
+import uuid
+import requests
+from urllib.parse import urlencode, urlparse
+
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch, Q
-from django.urls import reverse
+from django.http import HttpResponseRedirect, HttpResponse
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, View
 from django.views.generic.base import TemplateView
 
 from .forms import (ClientCreateModelForm,
@@ -12,6 +18,7 @@ from .forms import (ClientCreateModelForm,
                     SupplierUpdateModelForm)
 from .models import Candidate, Client, Supplier, Employee, CVTemplate
 from .utils import FilterNameMixin, DownloadCVBaseView
+from api_integrations.models import LinkedinApi, CreateLinkedinProfile
 from jobs.models import JobCandidate
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.utils import (
@@ -301,3 +308,99 @@ class SupplierDetailView(PermissionRequiredMixin, DetailView):
 class DownloadCVView(PermissionRequiredMixin, DownloadCVBaseView):
     model = Candidate
     permission_required = 'contacts.view_candidate'
+
+
+class CandidateCreateLinkedinRedirectView(PermissionRequiredMixin, View):
+    permission_required = ('contacts.add_candidate')
+
+    def post(self, request, *args, **kwargs):
+        profile_url = request.POST.get('profile_url', None)
+        if profile_url:
+            # check if user has access token
+            user = request.user
+            linkedin_transaction, created = CreateLinkedinProfile.objects.update_or_create(
+                user=user, target_url=profile_url, defaults={
+                    'user': user, 'target_url': profile_url
+                })
+            api_record, created = LinkedinApi.objects.get_or_create(
+                user=user)
+
+            if api_record.expired:
+                # request authorization
+                url = 'https://www.linkedin.com/oauth/v2/authorization?{}'
+                redirect_uri = request.build_absolute_uri(str(
+                    reverse_lazy('linkedin_authorization_redirect_uri')))
+
+                api_record.state = str(uuid.uuid4())
+                api_record.save()
+
+                url = url.format(urlencode({
+                    'response_type': 'code',
+                    'client_id': settings.LINKEDIN_CLIENT_ID,
+                    'redirect_uri': redirect_uri,
+                    'state': api_record.state,
+                    'scope': 'r_liteprofile'
+                }))
+                return HttpResponseRedirect(url)
+                # return HttpResponse(url)
+
+            else:
+                # get profile
+                person_id = urlparse(profile_url).path.split('/')[-2]
+                url = 'https://api.linkedin.com/v2/people/{}'.format(person_id)
+                print(url)
+                headers = {
+                    'Authorization': 'Bearer {}'.format(
+                        api_record.access_token),
+                    'X-RestLi-Protocol-Version': '2.0.0'
+                }
+                response = requests.get(url, headers=headers)
+                print(response.json())
+                return HttpResponse('do something')
+
+        else:
+            return HttpResponse('no linked url provided')
+
+
+class LinkedInAuthorizationRedirect(PermissionRequiredMixin, View):
+    permission_required = ('contacts.add_candidate')
+
+    def get(self, request, *args, **kwargs):
+        code = request.GET.get('code', None)
+        state = request.GET.get('state', None)
+        api_record, created = LinkedinApi.objects.get_or_create(state=state)
+        api_updates = {
+            'state_is_used': True,
+        }
+
+        if code:
+            # get access token if authorized
+            url = 'https://www.linkedin.com/oauth/v2/accessToken'
+            redirect_uri = request.build_absolute_uri(str(
+                reverse_lazy('linkedin_authorization_redirect_uri')))
+            response = requests.post(
+                url,
+                {
+                    'grant_type': 'authorization_code',
+                    'code': code,
+                    'redirect_uri': redirect_uri,
+                    'client_id': settings.LINKEDIN_CLIENT_ID,
+                    'client_secret': settings.LINKEDIN_CLIENT_SECRET
+                })
+            data = response.json()
+            access_token = data['access_token']
+            expires_in = data['expires_in']
+            api_updates['access_token'] = access_token
+            api_updates['expires_in'] = expires_in
+
+            # get user profile
+        else:
+            error = request.GET.get('error', True)
+            error_description = request.GET.get('error_description', '')
+            api_updates['error'] = error
+            api_updates['error_description'] = error_description
+
+        for attr, value in api_updates.items():
+            setattr(api_record, attr, value)
+        api_record.save()
+        return HttpResponse('crate profile now') if code else HttpResponse('error')

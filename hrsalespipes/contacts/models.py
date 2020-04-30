@@ -217,6 +217,7 @@ class Candidate(ContactModel):
         null=True,
         blank=True)
     notes = models.TextField(blank=True)
+    linked_url = models.URLField(blank=True)
 
     history = HistoricalRecords()
 
