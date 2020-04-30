@@ -68,6 +68,40 @@ let fields = {
         v => v == '' || /.+@.+\..+/.test(v) || 'E-mail must be in a valid format',
       ]
     },
+
+    {
+      name: 'current_previous_position',
+      label: 'Current Previous Position',
+      value: data.currentPreviousPosition,
+      fieldType: {
+        value: 'textarea',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+    {
+      name: 'highest_educational_qualification',
+      label: 'Education',
+      value: data.highestEducationalQualification,
+      fieldType: {
+        value: 'textarea',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
+    {
+      name: 'notes',
+      label: 'Notes',
+      value: data.notes,
+      fieldType: {
+        value: 'textarea',
+        type: 'text'
+      },
+      outlined: true,
+      rules: []
+    },
   ] ,
 }
 

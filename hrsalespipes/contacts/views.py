@@ -39,6 +39,17 @@ class CandidateCreateView(
     template_name = 'contacts/candidate_create_form.html'
     permission_required = ('contacts.add_candidate')
     success_msg = 'Candidate created.'
+    populatable_fields = (
+        'name', 'current_previous_position',
+        'highest_educational_qualification', 'notes')
+
+    def dispatch(self, request, *args, **kwargs):
+        for f in self.populatable_fields:
+            setattr(
+                self,
+                'q_{}'.format(f),
+                request.GET.get(f, ''))
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -59,6 +70,10 @@ class CandidateCreateView(
 
         context['employees'] = employees
         context['locations'] = locations
+
+        for f in self.populatable_fields:
+            field_name = 'q_{}'.format(f)
+            context[field_name] = getattr(self, field_name, '')
         return context
 
 
