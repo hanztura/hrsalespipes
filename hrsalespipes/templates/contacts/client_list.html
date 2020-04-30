@@ -14,7 +14,41 @@ Clients - List
       justify="center"
     >
       <v-col cols="12">
-        {% include "_includes/filter_name.html" %}
+        <form id="nameSearchForm" ref="nameSearchForm">
+          <v-container fluid>
+            <v-row>
+
+              <v-col cols="12" md="2" class="py-0">
+                <v-text-field
+                  outlined
+                  dense
+                  label="Search name"
+                  name="name"
+                  clearable
+                  value="{{ search_name|default_if_none:'' }}">
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="2" class="py-0">
+                <v-autocomplete
+                  :items="employees"
+                  label="Business Development Person"
+                  v-model.lazy="bdPerson"
+                  name='bd_person'
+                  prepend-inner-icon="mdi-account-cog"
+                  clearable
+                  dense
+                  outlined>
+                </v-autocomplete>
+              </v-col>
+
+              <v-col cols="12" md="1" class="pa-0">
+                {% include "_includes/_button_search.html" %}
+              </v-col>
+            </v-row>
+          </v-container>
+        </form>
+        <input type="hidden" id="employeesChoices" value="{{ employees }}">
       </v-col>
 
       <v-col cols="12" class="pa-0">
@@ -25,17 +59,16 @@ Clients - List
           <table>
             <thead>
               <th class="text-center">Name</th>
-              <th class="text-center">Industry</th>
               <th class="text-center">Email Address</th>
               <th class="text-center">Contact No.</th>
               <th class="text-center">Validity</th>
+              <th class="text-center" title="Business Development Person">BD Person</th>
               <th class="text-center">Actions</th>
             </thead>
             <tbody>
               {% for client in object_list %}
               <tr>
                 <td class="text-center">{{ client.name }}</td>
-                <td class="text-center">{{ client.industry }}</td>
                 <td class="text-center">
                   {% if client.email_address %}
                     <a href="mailto:{{ client.email_address }}">{{ client.email_address }}</a>
@@ -43,6 +76,7 @@ Clients - List
                 </td>
                 <td class="text-center">{{ client.contact_number}}</td>
                 <td class="text-center">{{ client.validity|date:SYSTEM_SETTINGS.display_date_format }}</td>
+                <td class="text-center">{{ client.business_development_person.name }}</td>
                 <td class="text-center">
                   {% include "_includes/list_action_buttons.html" with edit_href=client.edit_href view_href=client.view_href %}
                 </td>
@@ -67,6 +101,14 @@ Clients - List
     let currentPageLength = {{ paginator.num_pages|default_if_none:0 }};
   </script>
 {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script>
+      let data = {
+        bdPerson: '{{ bd_person|default_if_none:"" }}',
+      };
+    </script>
+  {% endaddtoblock %}
 
 {% addtoblock "js" %}
   <script src="{% static 'contacts/clientList.js' %}"></script>

@@ -209,6 +209,22 @@ class ClientListView(FilterNameMixin, PermissionRequiredMixin, ListView):
     model = Client
     permission_required = ('contacts.view_client')
 
+    def get_queryset(self, **kwargs):
+        q = super().get_queryset(**kwargs)
+        q = q.select_related('business_development_person')
+
+        self.bd_person = self.request.GET.get('bd_person', '')  # owner id
+        if self.bd_person:
+            q = q.filter(business_development_person_id=self.bd_person)
+
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['bd_person'] = self.bd_person
+        context['employees'] = get_objects_as_choices(Employee)
+        return context
+
 
 class ClientUpdateView(
         PermissionRequiredMixin,

@@ -17,7 +17,13 @@ new Vue({
     ],
     page: currentPage,
     pageLength: currentPageLength,
+    employees: [],
+    bdPerson: data.bdPerson
   }),
+
+  beforeMount() {
+    this.setDataChoices('employeesChoices', 'employees');
+  },
 
   mounted(){
     this.updateBreadcrumbs();
