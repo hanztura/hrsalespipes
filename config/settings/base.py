@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'import_export',
     'simple_history',
     'sekizai',
+    'compressor',
 
     'system',
     'commissions',
@@ -188,6 +189,15 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+
+    'compressor.finders.CompressorFinder',
+]
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 LOGIN_URL = 'system:login'
 LOGIN_REDIRECT_URL = 'dashboard:index'

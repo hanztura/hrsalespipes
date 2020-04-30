@@ -1,4 +1,4 @@
-{% load static sekizai_tags %}
+{% load static sekizai_tags custom_sekizai_tags %}
 
 <!DOCTYPE html>
 <html>
@@ -279,7 +279,7 @@
     <script src="{% static 'js/vueMixins.js' %}"></script>
   {% endaddtoblock %} 
   
-  {% render_block "js_first" %}
+  {% custom_render_block "js_first" "js" postprocessor "compressor.contrib.sekizai.compress"   %}
   {% render_block "js" %}
 
   {% block script %}{% endblock script %} <!-- fallback -->
