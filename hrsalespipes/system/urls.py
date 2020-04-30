@@ -2,7 +2,7 @@ from django.contrib.auth.views import LogoutView
 from django.urls import path
 from django.views.generic.base import TemplateView
 
-from .views import LoginView, HomeView, AdminRedirectView
+from .views import LoginView, HomeView, AdminRedirectView, webmanifest
 
 app_name = 'system'
 urlpatterns = [
@@ -13,5 +13,6 @@ urlpatterns = [
     path('go-admin/', AdminRedirectView.as_view(), name='admin'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('site.webmanifest', webmanifest, name="webmanifest"),
     path('', HomeView.as_view(), name='home'),
 ]

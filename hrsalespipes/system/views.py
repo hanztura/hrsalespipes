@@ -1,11 +1,15 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.views import LoginView as LiV
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views import View
 from django.views.generic.base import RedirectView
+
+from .models import Setting
+from .context_processors import get_system_settings
 
 
 class LoginView(LiV):
@@ -41,3 +45,13 @@ class HomeView(View):
 class AdminRedirectView(RedirectView):
     url = '/{}'.format(settings.ADMIN_URL)
     permanent = True
+
+
+def webmanifest(request):
+    webmanifest = render_to_string(
+        'site.webmanifest.json', get_system_settings(request))
+    response = HttpResponse(content=webmanifest)
+    response['Content-Type'] = 'application/manifest+json'
+    response['Content-Disposition'] = 'attachment; filename="%s.webmanifest"' \
+                                      % 'site'
+    return response
