@@ -136,6 +136,19 @@ let fields = {
       outlined: true,
       rules: []
     },
+
+    {
+      name: 'initial_approach_date',
+      label: 'Initial Approach Date',
+      model: 'initialApproachDate',
+      disabled: false,
+      fieldType: {
+        value: 'datetextfield',
+        type: 'date'
+      },
+      outlined: true,
+      rules: []
+    },
     {
       name: 'meeting_arranged',
       label: 'Meeting Arranged',
@@ -302,6 +315,7 @@ new Vue({
     businessDevelopmentPerson: data.businessDevelopmentPerson,
     validity: data.validity,
     signedOn: data.signedOn,
+    initialApproachDate: data.initialApproachDate
   }),
 
   computed: {

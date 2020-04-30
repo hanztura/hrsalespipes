@@ -14,6 +14,7 @@ class Client(ContactModel):
     industry = models.CharField(max_length=64)
     location = models.CharField(max_length=64, blank=False)
     initial_approach = models.TextField(blank=True)
+    initial_approach_date = models.DateField(blank=True, null=True)
     meeting_arranged = models.TextField(blank=True)
     agreement_term = models.DecimalField(
         max_digits=15, decimal_places=5, default=1.0, blank=True)

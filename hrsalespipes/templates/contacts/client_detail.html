@@ -73,6 +73,10 @@ Client Detail - {{ object.name }}
                       <td>{{ object.initial_approach }}</td>
                     </tr>
                     <tr>
+                      <th>Initial Approach Date:</th>
+                      <td>{{ object.initial_approach_date|date:SYSTEM_SETTINGS.display_date_format }}</td>
+                    </tr>
+                    <tr>
                       <th>Meeting Arranged:</th>
                       <td>{{ object.meeting_arranged }}</td>
                     </tr>

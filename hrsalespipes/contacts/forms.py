@@ -187,6 +187,7 @@ class ClientUpdateModelForm(ContactUpdateModelForm):
             'industry',
             'location',
             'initial_approach',
+            'initial_approach_date',
             'meeting_arranged',
             'agreement_term',
             'agreement_fee',

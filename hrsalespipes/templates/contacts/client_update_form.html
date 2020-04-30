@@ -133,6 +133,7 @@
         skypeId: "{{ form.skype_id.value|default_if_none:'' }}",
         msTeamsId: "{{ form.ms_teams_id.value|default_if_none:'' }}",
         initialApproach: "{{ form.initial_approach.value }}",
+        initialApproachDate: "{{ form.instance.initial_approach_date|default_if_none:''|date:'Y-m-d' }}",
         meetingArranged: "{{ form.meeting_arranged.value|escapejs }}",
         agreementTerm: {{ form.instance.agreement_term }},
         agreementTermDisabled: {{ form.agreement_term.field.disabled|yesno:'true,false' }},
