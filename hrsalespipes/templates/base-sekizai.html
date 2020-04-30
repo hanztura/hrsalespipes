@@ -19,11 +19,8 @@
 
   <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"></noscript>
-  {% if debug %}
-    <link href="{% static "vendor/materialdesignicons.min.css" %}" rel="stylesheet">
-  {% else %}
+
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-  {% endif %}
 
   
   {% addtoblock "css" %}
