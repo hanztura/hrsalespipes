@@ -16,7 +16,9 @@
   <style>
     [v-cloak] > * { display:none; }
   </style>
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"></noscript>
   {% if debug %}
     <link href="{% static "vendor/materialdesignicons.min.css" %}" rel="stylesheet">
   {% else %}
@@ -28,7 +30,7 @@
     <link rel="stylesheet" type="text/css" href="{% static "vendor/vuetify/vuetify.min.css" %}">
   {% endaddtoblock %} 
 
-  {% render_block "css" %}
+  {% render_block "css" postprocessor "compressor.contrib.sekizai.compress" %}
 
   {% block headblock %}{% endblock headblock %}
 </head>
@@ -279,8 +281,8 @@
     <script src="{% static 'js/vueMixins.js' %}"></script>
   {% endaddtoblock %} 
   
-  {% custom_render_block "js_first" "js" postprocessor "compressor.contrib.sekizai.compress"   %}
-  {% render_block "js" %}
+  {% custom_render_block "js_first" "js" postprocessor "compressor.contrib.sekizai.compress" %}
+  {% render_block "js" postprocessor "compressor.contrib.sekizai.compress" %}
 
   {% block script %}{% endblock script %} <!-- fallback -->
 </body>
