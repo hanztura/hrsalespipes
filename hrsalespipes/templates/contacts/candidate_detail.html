@@ -9,6 +9,7 @@ Candidate Detail - {{ object.name }}
   <v-container
     fluid>
     <h1>{{ object.name }} - Candidate Detail</h1>
+    <p>Date created: <span>{{ object.created|date:SYSTEM_SETTINGS.display_date_format }}</span></p>
     <v-row
       align="center"
       justify="center"

@@ -1,0 +1,10 @@
+{
+  "Webmanifest": [
+    "Users can activate 'add to homescreen' feature of their mobile device"
+  ],
+
+  "Use of Django Compressor": [
+    "Most of the staticfiles are now compressed.",
+    "Users now don't need to clear cach for any updates."
+  ]
+}

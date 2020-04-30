@@ -14,6 +14,9 @@ import os
 import environ
 import secrets
 
+PROJECT_NAME = 'HRSalesPipes'
+PROJECT_VERSION = '1.1'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
@@ -258,6 +261,3 @@ ICON_CANDIDATES = 'mdi-account-tie'
 ICON_CLIENTS = 'mdi-currency-usd'
 ICON_SUPPLIERS = 'mdi-truck'
 ICON_INTERVIEWS = 'mdi-headphones'
-
-PROJECT_NAME = 'HRSalesPipes'
-PROJECT_VERSION = '1.0'
