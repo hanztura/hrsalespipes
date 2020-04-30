@@ -14,6 +14,7 @@
 
   "Clients": [
     "Enable filter by bd person.",
-    "Show bd person in clients list"
+    "Show bd person in clients list",
+    "New initial approach date field."
   ],
 }
