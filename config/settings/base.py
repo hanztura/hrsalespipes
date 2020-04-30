@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'dashboard',
     'reports',
     'backups',
+    'api_integrations',
 ]
 
 MIDDLEWARE = [
@@ -156,6 +157,8 @@ ADMIN_URL = os.environ.setdefault('HRSALESPIPES_ADMIN_URL', RANDOM_ADMIN_URL)
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
+
+SITE_ID = 1
 
 LANGUAGE_CODE = 'en-us'
 
@@ -261,3 +264,7 @@ ICON_CANDIDATES = 'mdi-account-tie'
 ICON_CLIENTS = 'mdi-currency-usd'
 ICON_SUPPLIERS = 'mdi-truck'
 ICON_INTERVIEWS = 'mdi-headphones'
+
+LINKEDIN_CLIENT_ID = os.environ.get('HRSALESPIPES_LINKEDIN_CLIENT_ID', None)
+LINKEDIN_CLIENT_SECRET = os.environ.get(
+    'HRSALESPIPES_LINKEDIN_CLIENT_SECRET', None)

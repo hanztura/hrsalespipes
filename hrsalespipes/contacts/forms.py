@@ -88,6 +88,12 @@ class ContactUpdateModelForm(FormCleanContactNumber, ModelForm):
 
 class CandidateCreateModelForm(ContactCreateModelForm):
 
+    class Meta:
+        model = default_contact_model
+        fields = default_contact_fields + [
+            'current_previous_position', 'highest_educational_qualification',
+            'notes']
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
 

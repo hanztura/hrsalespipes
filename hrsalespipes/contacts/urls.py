@@ -8,10 +8,18 @@ from .views import (
 
 app_name = 'contacts'
 urlpatterns = [
+    # path(
+    #     'candidates/linked/authorization/',
+    #     LinkedInAuthorizationRedirect.as_view(),
+    #     name='linkedin_authorization_redirect_uri'),
     path(
         'candidates/download-cv/<str:pk>/',
         DownloadCVView.as_view(),
         name='download_cv'),
+    # path(
+    #     'candidates/new/linkedin/',
+    #     CandidateCreateLinkedinRedirectView.as_view(),
+    #     name='candidates_new_linkedin'),
     path(
         'candidates/new/',
         CandidateCreateView.as_view(),
@@ -21,6 +29,7 @@ urlpatterns = [
     path('candidates/<str:pk>/', CandidateDetailView.as_view(),
          name='candidates_detail'),
     path('candidates/', CandidateListView.as_view(), name='candidates_list'),
+
 
     path('clients/new/', ClientCreateView.as_view(), name='clients_new'),
     path('clients/edit/<str:pk>/', ClientUpdateView.as_view(),

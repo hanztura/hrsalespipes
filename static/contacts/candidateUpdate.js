@@ -225,7 +225,7 @@ let fields = {
       label: 'Positiion',
       value: data.currentPreviousPosition,
       fieldType: {
-        value: 'textfield',
+        value: 'textarea',
         type: 'text'
       },
       outlined: true,

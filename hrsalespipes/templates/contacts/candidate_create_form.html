@@ -40,6 +40,11 @@ Candidates - New
                 </template>
 
               <template
+                v-else-if="field.fieldType.value == 'textarea'">
+                  {% include "_includes/model_fields/textarea.html" %}
+                </template>
+
+              <template
                 v-else-if="field.fieldType.value == 'confirmCheckbox'">
                 <v-checkbox
                   v-show="$root[field.needToConfirmModel]"
@@ -66,11 +71,14 @@ Candidates - New
     <script>
       let data = {
         location: '{{ form.location.value|default_if_none:'' }}',
-        name: "{{ form.name.value|default_if_none:'' }}",
+        name: "{{ form.name.value|default_if_none:q_name }}",
         contactNumber: "{{ form.contact_number.value|default_if_none:'' }}",
         emailAddress: "{{ form.email_address.value|default_if_none:'' }}",
         hasConfirmed: {{ form.has_confirmed.value|yesno:'true,false' }},
         needToConfirm: {{ form.need_to_confirm|yesno:'true,false' }},
+        currentPreviousPosition: "{{ form.current_previous_position.value|default_if_none:q_current_previous_position }}",
+        highestEducationalQualification: "{{ form.highest_educational_qualification.value|default_if_none:q_highest_educational_qualification }}",
+        notes: "{{ form.notes.value|default_if_none:q_notes }}"
       };
     </script>
   {% endaddtoblock %}
