@@ -1,0 +1,13 @@
+{
+  "Interviews Report": [
+    "Fixed issue where contanct number is not visible"
+  ],
+
+  "Start Date per week/month report": [
+    "Show associate and consultant."
+  ],
+
+  "Candidates Detail": [
+    "Show licenses validity dates in 'mmm YYYY' format. For example, Jan 2020"
+  ]
+}
