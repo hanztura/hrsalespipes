@@ -1,5 +1,3 @@
-import calendar
-
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import redirect_to_login
 from django.db.models import Q
