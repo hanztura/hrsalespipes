@@ -191,15 +191,15 @@ Candidate Detail - {{ object.name }}
                     </tr>
                     <tr>
                       <th>BLS Validity:</th>
-                      <td>{{ object.bls_validity }}</td>
+                      <td>{{ object.bls_validity|date:'M Y' }}</td>
                     </tr>
                     <tr>
                       <th>ACLS Validity:</th>
-                      <td>{{ object.acls_validity }}</td>
+                      <td>{{ object.acls_validity|date:'M Y' }}</td>
                     </tr>
                     <tr>
                       <th>HAAD/DHA Validity:</th>
-                      <td>{{ object.haad_dha_license_validity }}</td>
+                      <td>{{ object.haad_dha_license_validity|date:'M Y' }}</td>
                     </tr>
                     <tr>
                       <th>HAAD/DHA License Type:</th>
