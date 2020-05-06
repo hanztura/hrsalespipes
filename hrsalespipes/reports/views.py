@@ -1249,22 +1249,22 @@ class InterviewsExcelView(
         date_to = date_to if date_to else self.month_last_day
 
         columns = [
+            'Date/Time',
             'Candidate',
             'Current Location',
             'Nationality',
             'Email Address',
             'Contact Number',
-            'Date/Time',
             'Mode',
             'Conducted by',
         ]
         values_list = [
+            'date_time',
             'job_candidate__candidate__name',
             'job_candidate__candidate__location',
             'job_candidate__candidate__nationality',
             'job_candidate__candidate__email_address',
             'job_candidate__candidate__contact_number',
-            'date_time',
             'mode__name',
             'done_by__name',
         ]
