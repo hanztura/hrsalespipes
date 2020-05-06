@@ -9,5 +9,9 @@
 
   "Candidates Detail": [
     "Show licenses validity dates in 'mmm YYYY' format. For example, Jan 2020"
+  ],
+
+  "Jobs": [
+    "Mass update status of Job records through the admin page."
   ]
 }
