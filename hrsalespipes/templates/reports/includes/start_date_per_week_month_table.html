@@ -8,6 +8,8 @@
       <th class="text-center">Candidate</th>
       <th class="text-center">Reference Number</th>
       <th class="text-center">Client</th>
+      <th class="text-center">Associate</th>
+      <th class="text-center">Consultant</th>
       <th class="text-center">Invoice Number</th>
       <th class="text-center">Invoice Amount</th>
     </tr>
@@ -19,15 +21,17 @@
         <td class="text-center">{{ object.tentative_date_of_joining|date:display_date_format }}</td>
         <td class="text-center">{{ object.status.name }}</td>
         <td class="text-center"><a href="{% url 'jobs:candidates_detail' object.job_id object.pk %}" title="view job candidate detail">{{ object.candidate.name }}</a></td>
-        <td class="text-center">{{ object.job.reference_number }}</td>
+        <td class="text-center"><a href="{% url 'jobs:detail' object.job_id %}" title="view job detail">{{ object.job.reference_number }}</a></td>
         <td class="text-center">{{ object.job.client.name }}</td>
+        <td class="text-center">{{ object.associate.name }}</td>
+        <td class="text-center">{{ object.consultant.name }}</td>
         <td class="text-center"><a href="{% if object.pipeline %}{% url 'salespipes:detail' object.pipeline.pk %}{% else %}#{% endif %}" title="view pipeline detail">{{ object.pipeline.invoice_number|default_if_none:'None' }}</a></td>
         <td class="text-right">{{ object.pipeline.invoice_amount|intcomma }}</td>
       </tr>
       {% endfor %}
     {% else %}
       <tr>
-        <td colspan="6">No data available.</td>
+        <td colspan="9">No data available.</td>
       </tr>
     {% endif %}
   </tbody>
@@ -36,7 +40,7 @@
   {% if object_list %}
   <tfoot>
     <tr>
-      <td class="text-right" colspan="6">TOTALS</td>
+      <td class="text-right" colspan="8">TOTALS</td>
       <td class="text-right"><strong>{{ pipeline__invoice_amount__sum|floatformat:2|intcomma }}</strong></td>
     </tr>
   </tfoot>

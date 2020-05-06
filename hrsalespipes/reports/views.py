@@ -65,7 +65,9 @@ class StartDatePerWeekMonthListView(
 
     def get_queryset(self):
         q = super().get_queryset().prefetch_related('pipeline')
-        q = q.select_related('job__client', 'candidate', 'status').order_by(
+        q = q.select_related(
+            'job__client', 'candidate', 'status', 'associate', 'consultant')
+        q = q.order_by(
             'tentative_date_of_joining')
         return q
 
@@ -138,6 +140,8 @@ class StartDatePerWeekMonthExcelView(
             'Candidate',
             'Reference Number',
             'Client',
+            'Associate',
+            'Consultant',
             'Invoice Number',
             'Invoice Amount',
         ]
@@ -147,11 +151,13 @@ class StartDatePerWeekMonthExcelView(
             'candidate__name',
             'job__reference_number',
             'job__client__name',
+            'associate__name',
+            'consultant__name',
             'pipeline__invoice_number',
             'pipeline__invoice_amount',
         ]
 
-        invoice_amount_index = 5
+        invoice_amount_index = 8
         wb = generate_excel(
             self.TITLE,
             month,
