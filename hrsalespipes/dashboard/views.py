@@ -78,7 +78,7 @@ class DashboardView(
                 (active_jobs, successful_jobs,
                  tpi, tpi_last_month, tpi_ytd,
                  sjatpi, sjpc, sjpc_ytd, sjpp_ytd, tnfipc,
-                 tnfipcp12m, tnfipc_ytd, tnfipi_ytd,
+                 tnfipcp12m, tnfipc_ytd, tnfipi_ytd, tnfipp_ytd,
                  ytdcp) = get_data_dashboard_items_number(
                     all_pipelines, all_jobs=all_jobs)
             else:  # One Two dashboard
@@ -93,7 +93,7 @@ class DashboardView(
                     (active_jobs, successful_jobs,
                      tpi, tpi_last_month, tpi_ytd,
                      sjatpi, sjpc, sjpc_ytd, sjpp_ytd, tnfipc,
-                     tnfipcp12m, tnfipc_ytd, tnfipi_ytd,
+                     tnfipcp12m, tnfipc_ytd, tnfipi_ytd, tnfipp_ytd,
                      ytdcp) = get_data_dashboard_items_number(
                         all_pipelines, employee=employee, all_jobs=all_jobs)
 
@@ -118,6 +118,7 @@ class DashboardView(
                     tnfipcp12m = []
                     tnfipc_ytd = []
                     tnfipi_ytd = []
+                    tnfipp_ytd = []
                     ytdcp = []
                     all_interviews = Interview.objects.none()
                     cv_sent_to_clients = JobCandidate.objects.none()
@@ -343,6 +344,16 @@ class DashboardView(
                         'consultant_leaderboard_dashboard_ytd_label',
                         ''),
                     'value': tnfipc_ytd,
+                    'url': ytdcp_url
+                },
+                {
+                    'code': 'tnfipp_ytd',
+                    'type': 'graph',
+                    'title': getattr(
+                        dashboard_settings,
+                        'ytd_position_performance_label',
+                        ''),
+                    'value': tnfipp_ytd,
                     'url': ytdcp_url
                 },
                 {
