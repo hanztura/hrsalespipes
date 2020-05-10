@@ -7,7 +7,7 @@ new Vue({
     subBreadcrumbs: [
       {
         text: 'Reports',
-        href: '{% url "reports:index" %}'
+        href: URLS.REPORTS
       },
       {
         text: 'Pipeline Summary',
