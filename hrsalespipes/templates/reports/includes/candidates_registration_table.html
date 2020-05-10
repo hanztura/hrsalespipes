@@ -1,0 +1,25 @@
+
+<table>
+  <thead>
+    <tr>
+      <th class="text-center">Date registered</th>
+      <th class="text-center">Name</th>
+      <th class="text-center">Owner</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if object_list %}
+      {% for object in object_list %}
+      <tr>
+        <td class="text-center">{{ object.created|date:display_date_format }}</td>
+        <td class="text-center">{{ object.name }}</td>
+        <td class="text-center">{{ object.candidate_owner__name }}</td>
+      </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td colspan="2">No data available.</td>
+      </tr>
+    {% endif %}
+  </tbody>
+</table>

@@ -15,7 +15,7 @@ from django_weasyprint import WeasyTemplateResponseMixin
 from .helpers import get_successful_jobs_queryset
 from .utils import (
     generate_excel, EmployeeFilterMixin, filter_queryset_by_employee)
-from contacts.models import Employee, Client
+from contacts.models import Employee, Client, Candidate
 from commissions.models import Commission
 from commissions.views import CommissionListView
 from jobs.models import Job, JobCandidate, JobStatus, Interview
@@ -31,6 +31,74 @@ from system.utils import (
 
 class IndexView(LoginRequiredMixin, TemplateView):
     template_name = 'reports/index.html'
+
+
+class CandidatesRegistrationListView(
+        DisplayDateFormatMixin,
+        ContextUrlBuildersMixin,
+        FromToViewFilterMixin,
+        PermissionRequiredWithCustomMessageMixin,
+        ListView):
+    model = Candidate
+    template_name = 'reports/candidates_registration.html'
+    permission_required = 'contacts.view_candidate'
+    paginate_by = 200
+    is_default_date_from_year_beginning = True
+
+    TITLE = 'Candidates Registration'
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', reverse('reports:pdf_candidates_registration')),
+        )
+        return context_urls
+
+    def get_from_to_filter_expression(self, date_from, date_to):
+        expression = Q(created__gte=date_from, created__lte=date_to)
+        return expression
+
+    def get_queryset(self):
+        q = super().get_queryset().select_related('candidate_owner').values(
+            'id', 'name', 'created', 'candidate_owner__name').order_by(
+            '-created', 'name')
+
+        # filter consultant (optional)
+        owner_pk = self.request.GET.get('owner', '')  # employee id
+        self.owner = None
+        if owner_pk:
+            employee = Employee.objects.filter(id=owner_pk)
+            if employee.exists():
+                self.owner = employee.first()
+                q = q.filter(
+                    candidate_owner=self.owner)
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['owner_pk'] = self.owner.pk if self.owner else None
+        context['employees'] = get_objects_as_choices(Employee)
+        context['TITLE'] = self.TITLE
+        return context
+
+
+class CandidatesRegistrationPDFView(
+        WeasyTemplateResponseMixin,
+        CandidatesRegistrationListView):
+    template_name = 'reports/pdf/candidates_registration.html'
+    pdf_attachment = True
+    pdf_filename = ''
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.pdf_filename = '{}.pdf'.format(self.TITLE)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['COMPANY'] = Setting.objects.first().company_name
+        return context
 
 
 class StartDatePerWeekMonthListView(

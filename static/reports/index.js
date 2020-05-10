@@ -11,6 +11,11 @@ new Vue({
     ],
     reports: [
       {
+        icon: ICONS.ICON_CANDIDATES,
+        href: urlCandidatesRegistration,
+        title: 'Candidates Registration',
+      },
+      {
         icon: ICONS.ICON_COMMISSIONS,
         href: urlCommissionEarned,
         title: 'Commissions Earned Summary',

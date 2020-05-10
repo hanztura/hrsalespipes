@@ -26,6 +26,7 @@ Reports
 
   {% addtoblock "js" %}
     <script>
+      let urlCandidatesRegistration = "{% url 'reports:candidates_registration' %}";
       let urlCommissionEarned = "{% url 'reports:commissions_earned_summary' %}";
       let urlCVSent = "{% url 'reports:cv_sent' %}";
       let urlInterviews = "{% url 'reports:interviews' %}";
