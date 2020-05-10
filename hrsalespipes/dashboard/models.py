@@ -39,6 +39,10 @@ class Dashboard(SingletonModel):
         max_length=100,
         blank=True,
         default='Successful job placements per consultant YTD')
+    sjpp_ytd_label = models.CharField(
+        max_length=100,
+        blank=True,
+        default='Successful job placements per position YTD')
     sjatpi_label = models.CharField(
         max_length=100,
         blank=True,

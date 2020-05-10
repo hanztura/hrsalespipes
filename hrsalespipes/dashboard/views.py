@@ -77,7 +77,7 @@ class DashboardView(
 
                 (active_jobs, successful_jobs,
                  tpi, tpi_last_month, tpi_ytd,
-                 sjatpi, sjpc, sjpc_ytd, tnfipc,
+                 sjatpi, sjpc, sjpc_ytd, sjpp_ytd, tnfipc,
                  tnfipcp12m, tnfipc_ytd, tnfipi_ytd,
                  ytdcp) = get_data_dashboard_items_number(
                     all_pipelines, all_jobs=all_jobs)
@@ -92,7 +92,7 @@ class DashboardView(
                 if employee:
                     (active_jobs, successful_jobs,
                      tpi, tpi_last_month, tpi_ytd,
-                     sjatpi, sjpc, sjpc_ytd, tnfipc,
+                     sjatpi, sjpc, sjpc_ytd, sjpp_ytd, tnfipc,
                      tnfipcp12m, tnfipc_ytd, tnfipi_ytd,
                      ytdcp) = get_data_dashboard_items_number(
                         all_pipelines, employee=employee, all_jobs=all_jobs)
@@ -113,6 +113,7 @@ class DashboardView(
                     sjatpi = []
                     sjpc = []
                     sjpc_ytd = []
+                    sjpp_ytd = []
                     tnfipc = []
                     tnfipcp12m = []
                     tnfipc_ytd = []
@@ -322,6 +323,16 @@ class DashboardView(
                         'sjpc_ytd_label',
                         ''),
                     'value': sjpc_ytd,
+                    'url': ytdcp_url
+                },
+                {
+                    'code': 'sjpp_ytd',
+                    'type': 'graph',
+                    'title': getattr(
+                        dashboard_settings,
+                        'sjpp_ytd_label',
+                        ''),
+                    'value': sjpp_ytd,
                     'url': ytdcp_url
                 },
                 {

@@ -83,6 +83,14 @@ def get_data_dashboard_items_number(
     sjatpi = sjatpi.order_by(field_lookup)
     sjatpi = [s for s in sjatpi]
 
+    sj_ytd_per_position = successful_jobs_all_time
+    key_field = 'job_candidate__job__position'
+    sjpp_ytd = sj_ytd_per_position.values(
+        key_field)
+    sjpp_ytd = sjpp_ytd.annotate(value=Count('id')).order_by(
+        key_field)
+    sjpp_ytd = [s for s in sjpp_ytd]
+
     sj_per_consultant_all_time = successful_jobs_all_time
     if employee:
         sj_per_consultant_all_time = sj_per_consultant_all_time.filter(
@@ -106,6 +114,7 @@ def get_data_dashboard_items_number(
     sjpc_ytd = sjpc_ytd.annotate(value=Count('id')).order_by(
         key_field)
     sjpc_ytd = [s for s in sjpc_ytd]
+
 
     # total NFI per consultant this.month
     tnfipc = sj_per_consultant.values(key_field)
@@ -179,6 +188,7 @@ def get_data_dashboard_items_number(
         sjatpi,
         sjpc,
         sjpc_ytd,
+        sjpp_ytd,
         tnfipc,
         tnfipcp12m,
         tnfipc_ytd,

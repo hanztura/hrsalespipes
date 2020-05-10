@@ -187,6 +187,7 @@ new Vue({
     sjatpi: data.sjatpi,
     sjpc: data.sjpc,
     sjpc_ytd: data.sjpc_ytd,
+    sjpp_ytd: data.sjpp_ytd,
     tnfipc_ytd: data.tnfipc_ytd,
     tnfipi_ytd: data.tnfipi_ytd,
     tnfipc: data.tnfipc,
@@ -207,6 +208,11 @@ new Vue({
         sourceId: 'dataSuccessfulJobsPerConsutantYTD',
         dataField: 'sjpc_ytd',
         titleField: 'job_candidate__consultant__name',
+      },
+      {
+        sourceId: 'dataSuccessfulJobsPerPositionYTD',
+        dataField: 'sjpp_ytd',
+        titleField: 'job_candidate__job__position',
       },
       {
         sourceId: 'dataTNFIPerConsultantYTD',
@@ -240,6 +246,7 @@ new Vue({
         this.sjatpi,
         this.sjpc,
         this.sjpc_ytd,
+        this.sjpp_ytd,
         this.ytdcpData,
         this.tnfipi_ytd,
       ]
