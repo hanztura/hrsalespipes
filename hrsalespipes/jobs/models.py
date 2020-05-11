@@ -84,6 +84,12 @@ class Job(TimeStampedModel):
     number_of_positions = models.PositiveSmallIntegerField(
         default=1,
         blank=True)
+    actual_income = models.DecimalField(
+        max_digits=15,
+        decimal_places=2,
+        default=0,
+        null=True,
+        blank=True,)
 
     history = HistoricalRecords()
 
