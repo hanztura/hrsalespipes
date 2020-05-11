@@ -5,6 +5,14 @@ from django.conf import settings
 from django.contrib import admin, messages
 
 
+def get_tuples_as_choices(choices):
+    choices = [{'value': str(data[0]), 'text': data[1]}
+               for data in choices]
+    choices = json.dumps(choices)
+
+    return choices
+
+
 def get_queryset_as_choices(objects):
     objects = [{'value': str(data.pk), 'text': data.name}
                for data in objects]

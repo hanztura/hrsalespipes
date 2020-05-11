@@ -14,7 +14,8 @@ Interviews - Reports
       justify="center"
     >
       <v-col cols="12">
-        {% include "_includes/filter_form.html" %}
+        <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
+        {% include "_includes/filter_form_with_status.html" %}
       </v-col>
 
       <v-col cols='12' class="text-right my-0 py-0">
@@ -33,10 +34,13 @@ Interviews - Reports
   {% addtoblock "js" %}
     <script>
       let reportText = 'Interviews';
+      let data = {
+        status: '{{ status|default_if_none:'' }}',
+      };
     </script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}
-    <script src="{% static 'reports/_generic.js' %}"></script>
+    <script src="{% static 'reports/interviews.js' %}"></script>
   {% endaddtoblock %}
 {% endblock subcontent %}

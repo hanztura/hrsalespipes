@@ -22,6 +22,7 @@ from jobs.models import Job, JobCandidate, JobStatus, Interview
 from system.helpers import get_objects_as_choices
 from salespipes.models import Pipeline
 from salespipes.views import PipelineListView
+from system.helpers import get_tuples_as_choices
 from system.models import Setting, Industry
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin, FromToViewFilterMixin,
@@ -1276,7 +1277,19 @@ class InterviewsReportListView(
     def get_queryset(self):
         q = super().get_queryset()
         q = q.select_related('job_candidate__candidate', 'mode', 'done_by')
+
+        status = self.request.GET.get('status', '')
+        status = status.split(',') if status else []
+        if status:
+            q = q.filter(status__in=status)
         return q
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status'] = self.request.GET.get('status', '')
+        context['status_objects'] = get_tuples_as_choices(
+            Interview.STATUS_CHOICES)
+        return context
 
 
 class InterviewsReportPDFView(
@@ -1319,21 +1332,19 @@ class InterviewsExcelView(
         columns = [
             'Date/Time',
             'Candidate',
-            'Current Location',
-            'Nationality',
             'Email Address',
             'Contact Number',
             'Mode',
+            'Status',
             'Conducted by',
         ]
         values_list = [
             'date_time',
             'job_candidate__candidate__name',
-            'job_candidate__candidate__location',
-            'job_candidate__candidate__nationality',
             'job_candidate__candidate__email_address',
             'job_candidate__candidate__contact_number',
             'mode__name',
+            'status',
             'done_by__name',
         ]
 
