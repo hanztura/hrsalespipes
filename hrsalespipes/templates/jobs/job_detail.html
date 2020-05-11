@@ -1,5 +1,5 @@
 {% extends "jobs/base.html" %}
-{% load static sekizai_tags humanize %}
+{% load static sekizai_tags humanize jobs_tags %}
 
 {% block title %}
 Job Detail - {{ object.reference_number }}
@@ -51,7 +51,11 @@ Job Detail - {{ object.reference_number }}
                     </tr>
                     <tr>
                       <th>{{ JOB_POTENTIAL_INCOME_ALIAS }}:</th>
-                      <td>{{ object.potential_income }}</td>
+                      <td>{{ object.potential_income|intcomma }}</td>
+                    </tr>
+                    <tr>
+                      <th>Actual Revenue:</th>
+                      <td>{% get_total_actual_income object object.candidates.all %}</td>
                     </tr>
                   </tbody>
                 </table>

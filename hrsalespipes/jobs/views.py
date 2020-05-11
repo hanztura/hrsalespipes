@@ -90,7 +90,9 @@ class JobListView(
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.select_related('client', 'status')
-        queryset = queryset.prefetch_related('candidates')
+        queryset = queryset.prefetch_related(
+            'candidates__pipeline',
+            'candidates__status')
 
         # filter by reference number
         self.search = self.request.GET.get('q', '')
@@ -129,17 +131,20 @@ class JobDetailView(
     def get_queryset(self):
         q = super().get_queryset()
         q = q.prefetch_related(
-            'candidates', 'candidates__candidate',
-            'candidates__status', 'candidates__associate',
-            'candidates__pipeline__status', 'status',
-            'candidates__interviews', 'candidates__pipeline__job_candidate__consultant',
-            'candidates__pipeline__job_candidate__associate',)
+            'candidates',
+            'candidates__candidate',
+            'candidates__status',
+            'candidates__associate',
+            'candidates__consultant',
+            'candidates__pipeline__status',
+            'status',
+            'candidates__interviews',)
         return q
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        candidates = self.object.candidates.all()
+        candidates = context['object'].candidates.all()
         pipelines = [candidate.pipeline for candidate in candidates
                      if hasattr(candidate, 'pipeline')]
 
