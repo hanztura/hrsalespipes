@@ -205,7 +205,7 @@
         gender: "{{ form.gender.value|default_if_none:'' }}",
         dependents: "{{ form.dependents.value|default_if_none:''|escapejs }}",
         dateOfBirth: "{{ form.date_of_birth.value|date:'Y-m-d' }}",
-        highestEducationalQualification: "{{ form.highest_educational_qualification.value }}",
+        highestEducationalQualification: "{{ form.highest_educational_qualification.value|escapejs }}",
         currentPreviousPosition: "{{ form.current_previous_position.value|default_if_none:'' }}",
         currentPreviousCompany: "{{ form.current_previous_company.value|default_if_none:'' }}",
         currentPreviousSalary: "{{ form.current_previous_salary.value|default_if_none:''|escapejs }}",
