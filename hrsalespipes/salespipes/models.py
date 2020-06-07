@@ -136,3 +136,16 @@ class Pipeline(TimeStampedModel):
 
     def get_absolute_url(self):
         return self.edit_href
+
+
+class Target(TimeStampedModel):
+    date = models.DateField()
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        default=0)
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return '{} - {}'.format(self.date, self.amount)

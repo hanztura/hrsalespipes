@@ -1,0 +1,43 @@
+{% load humanize %}
+
+<table>
+  <thead>
+    <tr>
+      <th class="text-center">Year</th>
+      <th class="text-center">Month</th>
+      <th class="text-center">Actual Income</th>
+      <th class="text-center">Target Income</th>
+      <th class="text-center">+/- Value</th>
+      <th class="text-center">+/- Percentage</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if object_list %}
+      {% for object in object_list %}
+      <tr>
+        <td class="text-center">{{ object.year }}</td>
+        <td class="text-center">{{ object.month }}</td>
+        <td class="text-center">{{ object.income|intcomma }}</td>
+        <td class="text-center">TODO</td>
+        <td class="text-center">TODO</td>
+        <td class="text-center">TODO</td>
+      </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td colspan="5">No data available.</td>
+      </tr>
+    {% endif %}
+  </tbody>
+
+
+  {% if object_list %}
+  <tfoot>
+    <tr>
+      <td class="text-right" colspan="1">TOTALS</td>
+      <td class="text-right"><strong>{{ amount__sum|floatformat:2|intcomma }}</strong></td>
+      <td class="text-right"><strong>{{ actual_amount__sum|floatformat:2|intcomma }}</strong></td>
+    </tr>
+  </tfoot>
+  {% endif %}
+</table>

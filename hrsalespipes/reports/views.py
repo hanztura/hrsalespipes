@@ -3,6 +3,8 @@ import math
 import xlwt
 
 from django.db.models import Sum, Q, Count
+from django.db.models.functions import (
+    ExtractQuarter, ExtractMonth, ExtractYear)
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse
@@ -20,7 +22,7 @@ from commissions.models import Commission
 from commissions.views import CommissionListView
 from jobs.models import Job, JobCandidate, JobStatus, Interview
 from system.helpers import get_objects_as_choices
-from salespipes.models import Pipeline
+from salespipes.models import Pipeline, Target
 from salespipes.views import PipelineListView
 from system.helpers import get_tuples_as_choices
 from system.models import Setting, Industry
@@ -32,6 +34,40 @@ from system.utils import (
 
 class IndexView(LoginRequiredMixin, TemplateView):
     template_name = 'reports/index.html'
+
+
+class PipelineTargetAnalysisListView(
+        DisplayDateFormatMixin,
+        ContextUrlBuildersMixin,
+        FromToViewFilterMixin,
+        PermissionRequiredWithCustomMessageMixin,
+        ListView):
+    model = Pipeline
+    template_name = 'reports/pipeline_target_analysis.html'
+    permission_required = 'salespipes.view_target'
+    paginate_by = 200
+    TITLE = 'Pipeline Target Analysis'
+
+    def get_context_urls(self):
+        # pdf/excel buttons url builder
+        context_urls = (
+            ('pdf_url', '#'),
+            ('excel_url', '#'),
+        )
+        return context_urls
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['TITLE'] = self.TITLE
+        return context
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.annotate(
+            month=ExtractMonth('invoice_date'),
+            year=ExtractYear('invoice_date'))
+        q = q.values('month', 'year')
+        return q
 
 
 class CandidatesRegistrationListView(

@@ -14,7 +14,8 @@ from .views import (
     NewlySignedClientsPDFView, NewlySignedClientsExcelView,
     StartDatePerWeekMonthListView, StartDatePerWeekMonthPDFView,
     StartDatePerWeekMonthExcelView, JobsDetailListView, JobsDetailPDFView,
-    CandidatesRegistrationListView, CandidatesRegistrationPDFView)
+    CandidatesRegistrationListView, CandidatesRegistrationPDFView,
+    PipelineTargetAnalysisListView)
 
 app_name = 'reports'
 urlpatterns = [
@@ -155,6 +156,10 @@ urlpatterns = [
         StartDatePerWeekMonthListView.as_view(),
         name='start_date_per_week_month'),
 
+    path(
+        'pipeline-target-analysis/',
+        PipelineTargetAnalysisListView.as_view(),
+        name='pipeline_target_analysis'),
 
     path(
         'pdf/candidates-registration/',

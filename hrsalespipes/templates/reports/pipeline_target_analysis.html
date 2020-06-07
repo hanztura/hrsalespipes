@@ -1,0 +1,76 @@
+{% extends "reports/base.html" %}
+{% load static sekizai_tags %}
+
+{% block title %}
+{{ TITLE }} - Reports
+{% endblock title %}
+
+{% block subcontent %}
+  <v-container
+    fluid>
+    <h1>{{ TITLE }}</h1>
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="12"> <!-- Filter form -->
+        <form id="searchForm" ref="searchForm">
+          <v-container fluid>
+            <v-row>
+              {% block form_fields %}
+                <v-col cols="12" md="2" class="py-0">
+                  {% include "_includes/_text_field_calendar.html" with label="From" name="from" type="date" value=from %}
+                </v-col>
+
+                <v-col cols="12" md="2" class="py-0">
+                  {% include "_includes/_text_field_calendar.html" with label="To" name="to" type="date" value=to %}
+                </v-col>
+              {% endblock form_fields %}
+
+              <v-col cols="12" md="1" class="pa-0">
+                  {% include "_includes/_button_search.html" %}
+              </v-col>
+            </v-row>
+          </v-container>
+        </form>
+      </v-col>  <!-- Filter form end -->
+
+      <v-col cols='12' class="text-right my-0 py-0">
+        {% include "reports/includes/buttons_download.html" %}
+      </v-col>
+
+      <v-col cols="12" class="text-center">
+        <v-simple-table>
+          {% include "reports/includes/pipeline_target_analysis_table.html" %}
+        </v-simple-table>
+      </v-col>
+
+      <v-col cols="12">
+        <v-container class="max-width">
+          {% include "_includes/pagination.html" %}
+        </v-container>
+      </v-col> <!-- Pagination -->
+    </v-row>
+  </v-container>  
+
+  {% addtoblock "js" %}
+    <script>
+      let currentPage = {{ page_obj.number|default_if_none:0 }};
+      let currentPageLength = {{ paginator.num_pages|default_if_none:0 }};
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script>
+      let reportText = '{{ TITLE }}';
+    </script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinForPagination.js' %}"></script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'reports/_generic.js' %}"></script>
+  {% endaddtoblock %}
+{% endblock subcontent %}

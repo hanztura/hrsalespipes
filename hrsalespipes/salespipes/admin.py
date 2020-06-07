@@ -3,7 +3,7 @@ from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
 from .forms import StatusModelForm
-from .models import Status, Pipeline
+from .models import Status, Pipeline, Target
 
 
 class StatusAdmin(admin.ModelAdmin):
@@ -15,6 +15,11 @@ class StatusAdmin(admin.ModelAdmin):
         'job_status',
     ]
     list_display = ('name', 'probability', 'should_have_invoice', 'job_status')
+
+
+class TargetAdmin(admin.ModelAdmin):
+    fields = ['date', 'amount', 'notes']
+    list_display = ['id', 'date', 'amount', 'notes']
 
 
 class PipelineAdmin(SimpleHistoryAdmin):
@@ -57,3 +62,4 @@ class PipelineAdmin(SimpleHistoryAdmin):
 
 admin.site.register(Status, StatusAdmin)
 admin.site.register(Pipeline, PipelineAdmin)
+admin.site.register(Target, TargetAdmin)
