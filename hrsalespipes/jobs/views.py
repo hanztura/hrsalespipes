@@ -106,7 +106,7 @@ class JobListView(
         if self.employee:
             queryset = queryset.filter(
                 Q(candidates__associate_id=self.employee) |
-                Q(candidates__consultant_id=self.employee))
+                Q(candidates__consultant_id=self.employee)).distinct()
 
         return queryset
 
