@@ -102,6 +102,7 @@ class Commission(IsDeletedAbstractModel):
 
     objects = IsDeletedModelManager()
     unpaid = UnpaidCommissionManager()
+    default_objects = models.Manager()
 
     class Meta:
         ordering = (
