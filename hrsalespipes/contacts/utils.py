@@ -24,6 +24,7 @@ class ContactModel(TimeStampedModel):
     name = models.CharField(max_length=100)
     contact_number = models.TextField(max_length=32, blank=True)
     alternate_contact_number = models.CharField(max_length=32, blank=True)
+    website = models.URLField(blank=True)
     whatsapp_link = models.URLField(blank=True)
     email_address = models.EmailField(blank=True)
     skype_id = models.CharField(max_length=50, blank=True)

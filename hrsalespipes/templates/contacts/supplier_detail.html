@@ -35,8 +35,8 @@ Supplier Detail - {{ object.name }}
                       <td>{{ object.alternate_contact_number }}</td>
                     </tr>
                     <tr>
-                      <th>Email Address:</th>
-                      <td><a href="mailto:{{ object.email_address }}">{{ object.email_address }}</a></td>
+                      <th>Website:</th>
+                      <td><a href="{{ object.website }}" target="_blank">Open Website <v-icon small>mdi-open-in-new</v-icon></a></td>
                     </tr>
                     <tr>
                       <th>Whatsapp Link:</th>

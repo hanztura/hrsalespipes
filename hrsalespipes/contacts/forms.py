@@ -11,6 +11,7 @@ default_contact_fields = [
     'whatsapp_link',
     'email_address',
     'location',
+    'website'
 ]
 
 
@@ -251,16 +252,11 @@ class SupplierModelForm(ContactCreateModelForm):
 
     class Meta:
         model = Supplier
-        fields = [
-            'name',
-            'contact_number',
+        fields = default_contact_fields + [
             'alternate_contact_number',
-            'email_address',
-            'whatsapp_link',
             'skype_id',
             'ms_teams_id',
             'subscription_validity',
-            'location',
             'point_of_contacts',
             'notes',
         ]

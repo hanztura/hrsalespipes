@@ -49,18 +49,29 @@ let fields = [
     outlined: true,
     rules: []
   },
+  // {
+  //   name: 'email_address',
+  //   label: 'Email Address',
+  //   value: data.emailAddress,
+  //   fieldType: {
+  //     value: 'textfield',
+  //     type: 'email'
+  //   },
+  //   outlined: true,
+  //   rules: [
+  //     v => v == '' || /.+@.+\..+/.test(v) || 'E-mail must be in a valid format',
+  //   ]
+  // },
   {
-    name: 'email_address',
-    label: 'Email Address',
-    value: data.emailAddress,
+    name: 'website',
+    label: 'Website',
+    value: data.website,
     fieldType: {
       value: 'textfield',
-      type: 'email'
+      type: 'url'
     },
     outlined: true,
-    rules: [
-      v => v == '' || /.+@.+\..+/.test(v) || 'E-mail must be in a valid format',
-    ]
+    rules: []
   },
   {
     name: 'skype_id',
