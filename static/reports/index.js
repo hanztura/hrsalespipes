@@ -60,6 +60,11 @@ new Vue({
         href: urlPipelineSummary,
         title: 'Pipeline Summary'
       },
+      // {
+      //   icon: ICONS.ICON_PIPELINE,
+      //   href: urlPipelineTargetSummary,
+      //   title: 'Pipeline Target Analysis'
+      // },
       {
         icon: ICONS.ICON_JOBS,
         href: urlStartDatePerWeekMonth,
