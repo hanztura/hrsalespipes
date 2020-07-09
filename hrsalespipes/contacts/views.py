@@ -1,3 +1,4 @@
+import json
 import uuid
 import requests
 from urllib.parse import urlencode, urlparse
@@ -5,6 +6,7 @@ from urllib.parse import urlencode, urlparse
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch, Q
+from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -121,6 +123,9 @@ class CandidateDetailView(PermissionRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         candidate = context['object']
         context['active_jobs'] = candidate.jobs.all()
+        context['object_in_json'] = json.dumps(
+            model_to_dict(candidate),
+            default=str)
         return context
 
 

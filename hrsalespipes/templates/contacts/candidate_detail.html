@@ -10,12 +10,80 @@ Candidate Detail - {{ object.name }}
     fluid>
     <h1>{{ object.name }} - Candidate Detail</h1>
     <p>Date created: <span>{{ object.created|date:SYSTEM_SETTINGS.display_date_format }}</span></p>
+    <input type="hidden" ref="objectInJSON" value="{{ object_in_json }}">
     <v-row
       align="center"
       justify="center"
     >
+      <v-col cols="12">
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+              class="float-right"
+              @click="isDisplayExpansionPanel = !isDisplayExpansionPanel"
+              v-bind="attrs"
+              v-on="on">[[ displayIcon ]]</v-icon>
+          </template>
+
+          <span>Change Display</span>
+        </v-tooltip>
+      </v-col>
+
       <v-col cols="12" class="text-center">
+        <v-expansion-panels
+          v-if="isDisplayExpansionPanel"
+          multiple
+          v-model="panel">
+          <v-expansion-panel>
+            <v-expansion-panel-header><v-icon small></v-icon>Contact Details</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <contact-detail
+                :object="candidate"></candidate-contact>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-header>Personal</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <contact-personal
+                :object="candidate"></candidate-contact>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-header>Current/Previous Work</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <contact-work
+                :object="candidate"></candidate-contact>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-header>Others</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <contact-others
+                :object="candidate"></candidate-contact>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-header>Medical</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <contact-medical
+                :object="candidate"
+                :is-medical="isMedical"></candidate-contact>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-header>Active Jobs</v-expansion-panel-header>
+            <v-expansion-panel-content>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+
         <v-tabs
+          v-else
           v-model="tab"
           fixed-tabs>
           
@@ -255,7 +323,11 @@ Candidate Detail - {{ object.name }}
         isMedical:  {{object.is_medical|yesno:'true,false'}},
       };
     </script>
-  {% endaddtoblock %}   
+  {% endaddtoblock %} 
+
+  {% addtoblock "js" %}  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+  {% endaddtoblock %}
 
   {% addtoblock "js" %}
     <script src="{% static 'contacts/candidateDetail.js' %}"></script>
