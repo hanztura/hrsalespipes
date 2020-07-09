@@ -36,7 +36,7 @@ Supplier Detail - {{ object.name }}
                     </tr>
                     <tr>
                       <th>Website:</th>
-                      <td><a href="{{ object.website }}" target="_blank">Open Website <v-icon small>mdi-open-in-new</v-icon></a></td>
+                      <td>{% include "_includes/link.html" with href=object.website target="_blank" text="Open Website"  %}</td>
                     </tr>
                     <tr>
                       <th>Whatsapp Link:</th>

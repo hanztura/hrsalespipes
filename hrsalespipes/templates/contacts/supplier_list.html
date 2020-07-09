@@ -25,7 +25,7 @@ Suppliers - List
           <table>
             <thead>
               <th class="text-center">Name</th>
-              <th class="text-center">Email Address</th>
+              <th class="text-center">Website</th>
               <th class="text-center">Contact No.</th>
               <th class="text-center">Actions</th>
             </thead>
@@ -34,8 +34,8 @@ Suppliers - List
               <tr>
                 <td class="text-center">{{ supplier.name }}</td>
                 <td class="text-center">
-                  {% if supplier.email_address %}
-                    <a href="mailto:{{ supplier.email_address }}">{{ supplier.email_address }}</a>
+                  {% if supplier.website %}
+                    {% include "_includes/link.html" with href=supplier.website target="_blank" text="Open Website"  %}
                   {% endif %}
                 </td>
                 <td class="text-center">{{ supplier.contact_number}}</td>
