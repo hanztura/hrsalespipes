@@ -104,7 +104,7 @@ const ContactPersonal = {
           </tr>
           <tr>
             <th>Date of Birth:</th>
-            <td>[[ object.date_of_birth | date('DD-MMM-YYYY') ]]</td>
+            <td>[[ object.date_of_birth | date('MMM-YYYY') ]]</td>
           </tr>
         </tbody>
       </table>
