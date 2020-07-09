@@ -10,12 +10,131 @@ Candidate Detail - {{ object.name }}
     fluid>
     <h1>{{ object.name }} - Candidate Detail</h1>
     <p>Date created: <span>{{ object.created|date:SYSTEM_SETTINGS.display_date_format }}</span></p>
+    <input type="hidden" ref="objectInJSON" value="{{ object_in_json }}">
+    <v-row
+      align="center"
+      justify="end"
+    >
+      <v-col>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              class="float-right"
+              href="{% url 'contacts:candidates_edit' object.pk %}"
+              icon>
+              <v-icon>mdi-square-edit-outline</v-icon>
+            </v-btn>
+          </template>
+
+          <span>Edit</span>
+        </v-tooltip>
+
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              class="float-right"
+              href="{% url 'contacts:download_cv' object.pk %}"
+              icon>
+              <v-icon>mdi-file-download-outline</v-icon>
+            </v-btn>
+          </template>
+
+          <span>Download {{ SYSTEM_SETTINGS.cv_label }}</span>
+        </v-tooltip>
+
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              class="float-right"
+              @click="isDisplayExpansionPanel = !isDisplayExpansionPanel"
+              icon>
+              <v-icon>[[ displayIcon ]]</v-icon>
+            </v-btn>
+          </template>
+
+          <span>Change Display</span>
+        </v-tooltip>
+      </v-col>
+    </v-row>
+
     <v-row
       align="center"
       justify="center"
     >
+
       <v-col cols="12" class="text-center">
+        <v-expansion-panels
+          v-if="isDisplayExpansionPanel"
+          multiple
+          v-model="panel">
+          <v-expansion-panel>
+            <v-expansion-panel-header color="primary white--text">
+              <span><v-icon small class="px-2 white--text">mdi-contacts</v-icon><span>Contact Details</span></span>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <contact-detail
+                :object="candidate"></candidate-contact>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-header color="primary white--text">
+              <span><v-icon small class="px-2 white--text">mdi-account</v-icon><span>Personal</span></span>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <contact-personal
+                :object="candidate"></candidate-contact>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-header color="primary white--text">
+              <span><v-icon small class="px-2 white--text">mdi-undo</v-icon><span>Current/Previous Work</span></span>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <contact-work
+                :object="candidate"></candidate-contact>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-header color="primary white--text">
+              <span><v-icon small class="px-2 white--text">mdi-information</v-icon><span>Others</span></span>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <contact-others
+                :object="candidate"></candidate-contact>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-header color="primary white--text">
+              <span><v-icon small class="px-2 white--text">mdi-medical-bag</v-icon><span>Medical</span></span>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <contact-medical
+                :object="candidate"
+                :is-medical="isMedical"></candidate-contact>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-header color="primary white--text">
+              <span><v-icon small class="px-2 white--text">mdi-briefcase-account</v-icon><span>Active Jobs</span></span>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+
         <v-tabs
+          v-else
           v-model="tab"
           fixed-tabs>
           
@@ -232,18 +351,58 @@ Candidate Detail - {{ object.name }}
           </v-tabs-items>
         </v-tabs>
       </v-col>
+    </v-row>
 
-      <v-col cols="12" class="text-center">
-        <v-btn
-          block
-          color="primary"
-          text
-          outlined
-          href="{% url 'contacts:download_cv' object.pk %}">Download {{ SYSTEM_SETTINGS.cv_label }}</v-btn>
-        <v-btn
-          block
-          color="primary"
-          href="{% url 'contacts:candidates_edit' object.pk %}">Edit</v-btn>
+    <v-row
+      v-show="isDisplayExpansionPanel"
+      align="center"
+      justify="end"
+    >
+      <v-col>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              class="float-right"
+              href="{% url 'contacts:candidates_edit' object.pk %}"
+              icon>
+              <v-icon>mdi-square-edit-outline</v-icon>
+            </v-btn>
+          </template>
+
+          <span>Edit</span>
+        </v-tooltip>
+
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              class="float-right"
+              href="{% url 'contacts:download_cv' object.pk %}"
+              icon>
+              <v-icon>mdi-file-download-outline</v-icon>
+            </v-btn>
+          </template>
+
+          <span>Download {{ SYSTEM_SETTINGS.cv_label }}</span>
+        </v-tooltip>
+
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              class="float-right"
+              @click="isDisplayExpansionPanel = !isDisplayExpansionPanel"
+              icon>
+              <v-icon>[[ displayIcon ]]</v-icon>
+            </v-btn>
+          </template>
+
+          <span>Change Display</span>
+        </v-tooltip>
       </v-col>
     </v-row>
   </v-container>  
@@ -255,7 +414,11 @@ Candidate Detail - {{ object.name }}
         isMedical:  {{object.is_medical|yesno:'true,false'}},
       };
     </script>
-  {% endaddtoblock %}   
+  {% endaddtoblock %} 
+
+  {% addtoblock "js" %}  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+  {% endaddtoblock %}
 
   {% addtoblock "js" %}
     <script src="{% static 'contacts/candidateDetail.js' %}"></script>
