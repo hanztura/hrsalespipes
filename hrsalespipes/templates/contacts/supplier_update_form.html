@@ -112,6 +112,7 @@
         emailAddress: "{{ form.email_address.value }}",
         skypeId: "{{ form.skype_id.value }}",
         msTeamsId: "{{ form.ms_teams_id.value }}",
+        subscriptionValidity: "{{ form.subscription_validity.value|date:'Y-m-d' }}",
         notes: "{{ form.instance.notes|escapejs }}",
         hasConfirmed: {{ form.has_confirmed.value|yesno:'true,false' }},
         needToConfirm: {{ form.need_to_confirm|yesno:'true,false' }},

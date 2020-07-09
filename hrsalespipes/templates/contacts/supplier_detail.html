@@ -59,11 +59,15 @@ Supplier Detail - {{ object.name }}
                       <td>{{ object.location }}</td>
                     </tr>
                     <tr>
+                      <th>Subscription Validity:</th>
+                      <td>{{ object.subscription_validity|date:SYSTEM_SETTINGS.display_date_format }}</td>
+                    </tr>
+                    <tr>
                       <th>Notes:</th>
                       <td>{{ object.notes }}</td>
                     </tr>
 
-                    {% include "contacts/includes/point_of_contacts_table_row.html" %}
+                    {% include "contacts/includes/point_of_contacts_table_row.html" with notes_label="Position" %}
                   </tbody>
                 </table>
               </v-simple-table>

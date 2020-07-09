@@ -56,6 +56,7 @@ class Client(ContactModel):
 
 class Supplier(ContactModel):
     point_of_contacts = models.TextField(blank=True)
+    subscription_validity = models.DateField(null=True, blank=True)
 
     @property
     def edit_href(self):

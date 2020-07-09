@@ -85,6 +85,17 @@ let fields = [
     rules: []
   },
   {
+    name: 'subscription_validity',
+    label: 'Subscription Validity',
+    model: 'subscriptionValidity',
+    fieldType: {
+      value: 'datetextfield',
+      type: 'date'
+    },
+    outlined: true,
+    rules: []
+  },
+  {
     name: 'notes',
     label: 'Notes',
     value: data.notes,
@@ -141,6 +152,7 @@ new Vue({
     ],
     fields: fields,
     pointOfContacts: [],
+    subscriptionValidity: data.subscriptionValidity
   }),
 
   computed: {

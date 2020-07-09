@@ -259,6 +259,7 @@ class SupplierModelForm(ContactCreateModelForm):
             'whatsapp_link',
             'skype_id',
             'ms_teams_id',
+            'subscription_validity',
             'location',
             'point_of_contacts',
             'notes',
