@@ -171,7 +171,7 @@ new Vue({
         name: '',
         number: '',
         email: '',
-        notes: '',
+        notes: '',  // position
       });
     },
     removePoc: function (index) {
