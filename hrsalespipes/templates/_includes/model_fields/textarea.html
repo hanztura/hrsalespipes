@@ -1,4 +1,15 @@
 <v-textarea
+  v-if="field.model"
+  v-model="$data[field.model]"
+  :name="field.name"
+  :label="field.label"
+  :outlined=field.outlined
+  :disabled=field.disabled
+  :value="field.value">
+</v-textarea>
+
+<v-textarea
+  v-else
   :name="field.name"
   :label="field.label"
   :outlined=field.outlined

@@ -1,4 +1,17 @@
 <v-text-field
+  v-if="field.model"
+  :label="field.label"
+  :name="field.name"
+  :value="field.value"
+  v-model.lazy="$data[field.model]"
+  :type="field.fieldType.type"
+  :outlined=field.outlined
+  :disabled=field.disabled
+  :rules="field.rules">
+</v-text-field>
+
+<v-text-field
+  v-else
   :label="field.label"
   :name="field.name"
   :value="field.value"

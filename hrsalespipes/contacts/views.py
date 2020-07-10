@@ -25,7 +25,7 @@ from jobs.models import JobCandidate
 from system.helpers import get_objects_as_choices, ActionMessageViewMixin
 from system.utils import (
     PermissionRequiredWithCustomMessageMixin as PermissionRequiredMixin)
-from system.models import VisaStatus, Location, Nationality, Industry
+from system.models import VisaStatus, Location, Nationality, Industry, Setting
 
 
 class ContactsTemplateView(LoginRequiredMixin, TemplateView):
@@ -130,6 +130,13 @@ class CandidateDetailView(PermissionRequiredMixin, DetailView):
         candidate_as_dict['cv_template'] = candidate.cv_template.name
 
         context['object_in_json'] = json.dumps(candidate_as_dict, default=str)
+        context['url_download_cv'] = reverse_lazy(
+            'contacts:download_cv',
+            args=[candidate.pk])
+
+        setting = Setting.load()
+        context['cv_download_tooltip'] = 'Download {}'.format(
+            setting.cv_label)
         return context
 
 

@@ -16,57 +16,15 @@ Candidate Detail - {{ object.name }}
       justify="end"
     >
       <v-col>
-        <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-              class="float-right"
-              href="{% url 'contacts:candidates_edit' object.pk %}"
-              icon>
-              <v-icon>mdi-square-edit-outline</v-icon>
-            </v-btn>
-          </template>
-
-          <span>Edit</span>
-        </v-tooltip>
-
-        <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-              class="float-right"
-              href="{% url 'contacts:download_cv' object.pk %}"
-              icon>
-              <v-icon>mdi-file-download-outline</v-icon>
-            </v-btn>
-          </template>
-
-          <span>Download {{ SYSTEM_SETTINGS.cv_label }}</span>
-        </v-tooltip>
-
-        <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-              class="float-right"
-              @click="isDisplayExpansionPanel = !isDisplayExpansionPanel"
-              icon>
-              <v-icon>[[ displayIcon ]]</v-icon>
-            </v-btn>
-          </template>
-
-          <span>Change Display</span>
-        </v-tooltip>
+        {% include "_includes/page_action_item.html" with href=object.edit_href icon="mdi-square-edit-outline" tooltip="Edit" %}
+        {% include "_includes/page_action_item.html" with href=url_download_cv icon="mdi-file-download-outline" tooltip=cv_download_tooltip %}
+        {% include "_includes/page_action_item.html" with click_action="isDisplayExpansionPanel = !isDisplayExpansionPanel" icon="[[ displayIcon ]]" tooltip="Change Display" %}
       </v-col>
     </v-row>
 
     <v-row
       align="center"
-      justify="center"
-    >
+      justify="center">
 
       <v-col cols="12" class="text-center">
         <v-expansion-panels
@@ -350,59 +308,6 @@ Candidate Detail - {{ object.name }}
             </v-tab-item>
           </v-tabs-items>
         </v-tabs>
-      </v-col>
-    </v-row>
-
-    <v-row
-      v-show="isDisplayExpansionPanel"
-      align="center"
-      justify="end"
-    >
-      <v-col>
-        <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-              class="float-right"
-              href="{% url 'contacts:candidates_edit' object.pk %}"
-              icon>
-              <v-icon>mdi-square-edit-outline</v-icon>
-            </v-btn>
-          </template>
-
-          <span>Edit</span>
-        </v-tooltip>
-
-        <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-              class="float-right"
-              href="{% url 'contacts:download_cv' object.pk %}"
-              icon>
-              <v-icon>mdi-file-download-outline</v-icon>
-            </v-btn>
-          </template>
-
-          <span>Download {{ SYSTEM_SETTINGS.cv_label }}</span>
-        </v-tooltip>
-
-        <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-              class="float-right"
-              @click="isDisplayExpansionPanel = !isDisplayExpansionPanel"
-              icon>
-              <v-icon>[[ displayIcon ]]</v-icon>
-            </v-btn>
-          </template>
-
-          <span>Change Display</span>
-        </v-tooltip>
       </v-col>
     </v-row>
   </v-container>  

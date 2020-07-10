@@ -4,6 +4,7 @@ let fields = {
       name: 'code',
       label: 'Code',
       value: data.code,
+      model: 'code',
       fieldType: {
         value: 'textfield',
         type: 'text'
@@ -16,6 +17,7 @@ let fields = {
       name: 'contact_number',
       label: 'Contact Number',
       value: data.contactNumber,
+      model: 'contactNumber',
       fieldType: {
         value: 'textfield',
         type: 'text'
@@ -28,6 +30,7 @@ let fields = {
       name: 'alternate_contact_number',
       label: 'Alternate Contact Number',
       value: data.alternateContactNumber,
+      model: 'alternateContactNumber',
       fieldType: {
         value: 'textfield',
         type: 'text'
@@ -40,6 +43,7 @@ let fields = {
       name: 'email_address',
       label: 'Email Address',
       value: data.emailAddress,
+      model: 'emailAddress',
       fieldType: {
         value: 'textfield',
         type: 'email'
@@ -54,6 +58,7 @@ let fields = {
       name: 'skype_id',
       label: 'Skype ID',
       value: data.skypeId,
+      model: 'skypeId',
       fieldType: {
         value: 'textfield',
         type: 'text'
@@ -66,6 +71,7 @@ let fields = {
       name: 'ms_teams_id',
       label: 'MS Teams ID',
       value: data.msTeamsId,
+      model: 'msTeamsId',
       fieldType: {
         value: 'textfield',
         type: 'text'
@@ -95,6 +101,7 @@ let fields = {
       name: 'name',
       label: 'Name',
       value: data.name,
+      model: 'name',
       fieldType: {
         value: 'textfield',
         type: 'text'
@@ -138,6 +145,7 @@ let fields = {
       name: 'languages',
       label: 'Languages',
       value: data.languages,
+      model: 'languages',
       fieldType: {
         value: 'textarea',
       },
@@ -149,6 +157,7 @@ let fields = {
       name: 'preferred_location',
       label: 'Preferred Location',
       value: data.preferredLocation,
+      model: 'preferredLocation',
       fieldType: {
         value: 'textfield',
         type: 'text'
@@ -187,6 +196,7 @@ let fields = {
       name: 'dependents',
       label: 'Dependents',
       value: data.dependents,
+      model: 'dependents',
       fieldType: {
         value: 'textarea',
       },
@@ -198,6 +208,7 @@ let fields = {
       name: 'highest_educational_qualification',
       label: 'Highest Educational Qualificaiton',
       value: data.highestEducationalQualification,
+      model: 'highestEducationalQualification',
       fieldType: {
         value: 'textfield',
         type: 'text'
@@ -224,6 +235,7 @@ let fields = {
       name: 'current_previous_position',
       label: 'Positiion',
       value: data.currentPreviousPosition,
+      model: 'currentPreviousPosition',
       fieldType: {
         value: 'textarea',
         type: 'text'
@@ -236,6 +248,7 @@ let fields = {
       name: 'current_previous_company',
       label: 'Company',
       value: data.currentPreviousCompany,
+      model: 'currentPreviousCompany',
       fieldType: {
         value: 'textfield',
         type: 'text'
@@ -248,6 +261,7 @@ let fields = {
       name: 'current_previous_salary',
       label: 'Current/Previous Salary & Benefits',
       value: data.currentPreviousSalary,
+      model: 'currentPreviousSalary',
       fieldType: {
         value: 'textarea',
         type: 'text'
@@ -260,6 +274,7 @@ let fields = {
       name: 'motivation_for_leaving',
       label: 'Motivation for leaving',
       value: data.motivationForLeaving,
+      model: 'motivationForLeaving',
       fieldType: {
         value: 'textarea',
       },
@@ -271,6 +286,7 @@ let fields = {
       name: 'expected_salary',
       label: 'Expected Salary & Benefits',
       value: data.expectedSalary,
+      model: 'expectedSalary',
       fieldType: {
         value: 'textarea',
         type: 'text'
@@ -300,6 +316,7 @@ let fields = {
       name: 'availability_for_interview',
       label: 'Availability for interview',
       value: data.availabilityForInterview,
+      model: 'visaStatus',
       fieldType: {
         value: 'textfield',
         type: 'text'
@@ -312,6 +329,7 @@ let fields = {
       name: 'notice_period',
       label: 'Notice Period',
       value: data.noticePeriod,
+      model: 'noticePeriod',
       fieldType: {
         value: 'textfield',
         type: 'text'
@@ -357,6 +375,7 @@ let fields = {
       name: 'notes',
       label: 'Notes',
       value: data.notes,
+      model: 'notes',
       fieldType: {
         value: 'textarea',
       },
@@ -384,6 +403,7 @@ let fields = {
       name: 'specialization',
       label: 'Specialization',
       value: data.specialization,
+      model: 'specialization',
       fieldType: {
         value: 'textarea',
       },
@@ -395,6 +415,7 @@ let fields = {
       name: 'other_certifications',
       label: 'Other Certification(s)',
       value: data.otherCertifications,
+      model: 'otherCertifications',
       fieldType: {
         value: 'textarea',
       },
@@ -406,6 +427,7 @@ let fields = {
       name: 'job_title_on_dha_haad',
       label: 'Job Title on DHA/HAAD',
       value: data.jobTitleOnDhaHaad,
+      model: 'jobTitleOnDhaHaad',
       fieldType: {
         value: 'textfield',
         type: 'text'
@@ -532,7 +554,30 @@ new Vue({
         icon: 'mdi-medical-bag',  
       },
     ],
+    panel: [0, 1, 2, 3, 4],
     fields: fields,
+    alternateContactNumber: data.alternateContactNumber,
+    code: data.code,
+    contactNumber: data.contactNumber,
+    emailAddress: data.emailAddress,
+    skypeId: data.skypeId,
+    msTeamsId: data.msTeamsId,
+    name: data.name,
+    languages: data.languages,
+    preferredLocation: data.preferredLocation,
+    dependents: data.dependents,
+    highestEducationalQualification: data.highestEducationalQualification,
+    currentPreviousPosition: data.currentPreviousPosition,
+    currentPreviousCompany: data.currentPreviousCompany,
+    currentPreviousSalary: data.currentPreviousSalary,
+    motivationForLeaving: data.motivationForLeaving,
+    expectedSalary: data.expectedSalary,
+    availabilityForInterview: data.availabilityForInterview,
+    noticePeriod: data.noticePeriod,
+    notes: data.notes,
+    specialization: data.specialization,
+    otherCertifications: data.otherCertifications,
+    jobTitleOnDhaHaad: data.jobTitleOnDhaHaad,
     locations: [],
     location: data.location,
     nationalities: [],

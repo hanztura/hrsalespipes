@@ -12,6 +12,29 @@
     <p>Date created: <span>{{ object.created|date:SYSTEM_SETTINGS.display_date_format }}</span></p>
     <v-row
       align="center"
+      justify="end"
+    >
+      <v-col>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              class="float-right"
+              type="submit"
+              form="form--candidate"
+              icon>
+              <v-icon class="success--text">mdi-content-save-outline</v-icon>
+            </v-btn>
+          </template>
+
+          <span>Save</span>
+        </v-tooltip>
+        {% include "_includes/page_action_item.html" with click_action="isDisplayExpansionPanel = !isDisplayExpansionPanel" icon="[[ displayIcon ]]" tooltip="Change Display" %}
+      </v-col>
+    </v-row>
+    <v-row
+      align="center"
       justify="center"
     >
       <v-col cols="12" class="text-center">
@@ -32,129 +55,39 @@
             {% include "_includes/errors.html" %}
           {% endif %}
 
-            <v-tabs
-              v-model="tab"
-              fixed-tabs
-              class="my-2">
-              {% include "_includes/v_tab.html" %}
-            </v-tabs>
-
-            <v-tabs-items v-model="tab">
-              <v-tab-item id="Contact Details" eager>
-                <div
-                  v-for="(field, index) in fields.contactDetails"
-                  :key="index">
-                    <template
-                      v-if="field.fieldType.value == 'textfield'">
-                        {% include "_includes/model_fields/textfield.html" %}
-                      </template>
-
-                    <template
-                      v-else-if="field.fieldType.value == 'autocomplete'">
-                        {% include "_includes/model_fields/autocomplete.html" %}
-                      </template>
-                </div>
-              </v-tab-item> <!-- Basic -->
-
-              <v-tab-item id="Personal" eager>
-                <div
-                  v-for="(field, index) in fields.personal"
-                  :key="index">
-                    <template
-                      v-if="field.fieldType.value == 'textfield'">
-                        {% include "_includes/model_fields/textfield.html" %}
-                      </template>
-                    <template
-                      v-else-if="field.fieldType.value == 'datetextfield'">
-                        {% include "_includes/model_fields/textfield_date.html" %}
-                      </template>
-
-                    <template
-                      v-else-if="field.fieldType.value == 'textarea'">
-                        {% include "_includes/model_fields/textarea.html" %}
-                      </template>
-
-                    <template
-                      v-else-if="field.fieldType.value == 'select'">
-                        {% include "_includes/model_fields/select.html" %}
-                      </template>
-
-                    <template
-                      v-else-if="field.fieldType.value == 'autocomplete'">
-                        {% include "_includes/model_fields/autocomplete.html" %}
-                    </template>
-
-                    <template
-                      v-else-if="field.fieldType.value == 'confirmCheckbox'">
-                      <v-checkbox
-                        v-show="$root[field.needToConfirmModel]"
-                        v-model="$data[field.model]"
-                        :error="$data[field.needToConfirmModel]"
-                        :label="field.label"
-                        :required="$data[field.needToConfirmModel]"></v-checkbox>
-                      <input
-                        :name="field.name"
-                        :required="$data[field.needToConfirmModel]"
-                        :value="$data[field.model]"
-                        type="hidden">
-                    </template>
-                </div>
-              </v-tab-item>  <!-- Personal -->
-
-              <v-tab-item id="Current/Previous Work" eager>
-                <div
-                  v-for="(field, index) in fields.currentPreviousWork"
-                  :key="index">
-                    <template
-                      v-if="field.fieldType.value == 'textfield'">
-                        {% include "_includes/model_fields/textfield.html" %}
-                      </template>
-
-                    <template
-                      v-else-if="field.fieldType.value == 'textarea'">
-                        {% include "_includes/model_fields/textarea.html" %}
-                      </template>
-                </div>
-              </v-tab-item>  <!-- Work history -->
-
-              <v-tab-item id="Others" eager>
-                <div
-                  v-for="(field, index) in fields.others"
-                  :key="index">
-                    <template
-                      v-if="field.fieldType.value == 'textfield'">
-                        {% include "_includes/model_fields/textfield.html" %}
-                      </template>
-                    <template
-                      v-else-if="field.fieldType.value == 'textarea'">
-                        {% include "_includes/model_fields/textarea.html" %}
-                      </template>
-
-                    <template
-                      v-else-if="field.fieldType.value == 'select'">
-                        {% include "_includes/model_fields/select.html" %}
-                      </template>
-
-                    <template
-                      v-else-if="field.fieldType.value == 'autocomplete'">
-                        {% include "_includes/model_fields/autocomplete.html" %}
-                    </template>
-                </div>
-              </v-tab-item>  <!-- Others -->
-
-              <v-tab-item id="Medical" eager>
-                <v-checkbox v-model="isMedical" label="Medical?"></v-checkbox>
-                <input type="hidden" name="is_medical" :value="isMedical">
-
-                <div v-show="isMedical">
+            <v-expansion-panels
+              v-if="isDisplayExpansionPanel"
+              multiple
+              v-model="panel">
+              <v-expansion-panel>
+                <v-expansion-panel-header color="primary white--text">
+                  <span><v-icon small class="px-2 white--text">mdi-contacts</v-icon><span>Contact Details</span></span>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="pt-2">
                   <div
-                    v-for="(field, index) in fields.medical"
+                    v-for="(field, index) in fields.contactDetails"
                     :key="index">
                       <template
-                        v-if="field.fieldType.value == 'slider'">
-                          {% include "_includes/model_fields/slider.html" %}
+                        v-if="field.fieldType.value == 'textfield'">
+                          {% include "_includes/model_fields/textfield.html" %}
                         </template>
 
+                      <template
+                        v-else-if="field.fieldType.value == 'autocomplete'">
+                          {% include "_includes/model_fields/autocomplete.html" %}
+                        </template>
+                  </div>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+
+              <v-expansion-panel>
+                <v-expansion-panel-header color="primary white--text">
+                  <span><v-icon small class="px-2 white--text">mdi-account</v-icon><span>Personal</span></span>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="pt-2">
+                  <div
+                    v-for="(field, index) in fields.personal"
+                    :key="index">
                       <template
                         v-if="field.fieldType.value == 'textfield'">
                           {% include "_includes/model_fields/textfield.html" %}
@@ -173,15 +106,269 @@
                         v-else-if="field.fieldType.value == 'select'">
                           {% include "_includes/model_fields/select.html" %}
                         </template>
+
+                      <template
+                        v-else-if="field.fieldType.value == 'autocomplete'">
+                          {% include "_includes/model_fields/autocomplete.html" %}
+                      </template>
+
+                      <template
+                        v-else-if="field.fieldType.value == 'confirmCheckbox'">
+                        <v-checkbox
+                          v-show="$root[field.needToConfirmModel]"
+                          v-model="$data[field.model]"
+                          :error="$data[field.needToConfirmModel]"
+                          :label="field.label"
+                          :required="$data[field.needToConfirmModel]"></v-checkbox>
+                        <input
+                          :name="field.name"
+                          :required="$data[field.needToConfirmModel]"
+                          :value="$data[field.model]"
+                          type="hidden">
+                      </template>
                   </div>
-                </div>
-              </v-tab-item>  <!-- Medical -->
-            </v-tabs-items>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
 
+              <v-expansion-panel>
+                <v-expansion-panel-header color="primary white--text">
+                  <span><v-icon small class="px-2 white--text">mdi-undo</v-icon><span>Current/Previous Work</span></span>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="pt-2">
+                  <div
+                    v-for="(field, index) in fields.currentPreviousWork"
+                    :key="index">
+                      <template
+                        v-if="field.fieldType.value == 'textfield'">
+                          {% include "_includes/model_fields/textfield.html" %}
+                        </template>
 
-            <v-input>
-              <v-btn block color="success" type="submit">Save</v-btn>
-            </v-input>
+                      <template
+                        v-else-if="field.fieldType.value == 'textarea'">
+                          {% include "_includes/model_fields/textarea.html" %}
+                        </template>
+                  </div>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+
+              <v-expansion-panel>
+                <v-expansion-panel-header color="primary white--text">
+                  <span><v-icon small class="px-2 white--text">mdi-information</v-icon><span>Others</span></span>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="pt-2">
+                  <div
+                    v-for="(field, index) in fields.others"
+                    :key="index">
+                      <template
+                        v-if="field.fieldType.value == 'textfield'">
+                          {% include "_includes/model_fields/textfield.html" %}
+                        </template>
+                      <template
+                        v-else-if="field.fieldType.value == 'textarea'">
+                          {% include "_includes/model_fields/textarea.html" %}
+                        </template>
+
+                      <template
+                        v-else-if="field.fieldType.value == 'select'">
+                          {% include "_includes/model_fields/select.html" %}
+                        </template>
+
+                      <template
+                        v-else-if="field.fieldType.value == 'autocomplete'">
+                          {% include "_includes/model_fields/autocomplete.html" %}
+                      </template>
+                  </div>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+
+              <v-expansion-panel>
+                <v-expansion-panel-header color="primary white--text">
+                  <span><v-icon small class="px-2 white--text">mdi-medical-bag</v-icon><span>Medical</span></span>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content  class="pt-2">
+                  <v-checkbox v-model="isMedical" label="Medical?"></v-checkbox>
+                  <input type="hidden" name="is_medical" :value="isMedical">
+
+                  <div v-show="isMedical">
+                    <div
+                      v-for="(field, index) in fields.medical"
+                      :key="index">
+                        <template
+                          v-if="field.fieldType.value == 'slider'">
+                            {% include "_includes/model_fields/slider.html" %}
+                          </template>
+
+                        <template
+                          v-if="field.fieldType.value == 'textfield'">
+                            {% include "_includes/model_fields/textfield.html" %}
+                          </template>
+                        <template
+                          v-else-if="field.fieldType.value == 'datetextfield'">
+                            {% include "_includes/model_fields/textfield_date.html" %}
+                          </template>
+
+                        <template
+                          v-else-if="field.fieldType.value == 'textarea'">
+                            {% include "_includes/model_fields/textarea.html" %}
+                          </template>
+
+                        <template
+                          v-else-if="field.fieldType.value == 'select'">
+                            {% include "_includes/model_fields/select.html" %}
+                          </template>
+                    </div>
+                  </div>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+
+            <template v-else>
+              <v-tabs
+                v-model="tab"
+                fixed-tabs
+                class="my-2">
+                {% include "_includes/v_tab.html" %}
+              </v-tabs>
+
+              <v-tabs-items v-model="tab">
+                <v-tab-item id="Contact Details" eager>
+                  <div
+                    v-for="(field, index) in fields.contactDetails"
+                    :key="index">
+                      <template
+                        v-if="field.fieldType.value == 'textfield'">
+                          {% include "_includes/model_fields/textfield.html" %}
+                        </template>
+
+                      <template
+                        v-else-if="field.fieldType.value == 'autocomplete'">
+                          {% include "_includes/model_fields/autocomplete.html" %}
+                        </template>
+                  </div>
+                </v-tab-item> <!-- Basic -->
+
+                <v-tab-item id="Personal" eager>
+                  <div
+                    v-for="(field, index) in fields.personal"
+                    :key="index">
+                      <template
+                        v-if="field.fieldType.value == 'textfield'">
+                          {% include "_includes/model_fields/textfield.html" %}
+                        </template>
+                      <template
+                        v-else-if="field.fieldType.value == 'datetextfield'">
+                          {% include "_includes/model_fields/textfield_date.html" %}
+                        </template>
+
+                      <template
+                        v-else-if="field.fieldType.value == 'textarea'">
+                          {% include "_includes/model_fields/textarea.html" %}
+                        </template>
+
+                      <template
+                        v-else-if="field.fieldType.value == 'select'">
+                          {% include "_includes/model_fields/select.html" %}
+                        </template>
+
+                      <template
+                        v-else-if="field.fieldType.value == 'autocomplete'">
+                          {% include "_includes/model_fields/autocomplete.html" %}
+                      </template>
+
+                      <template
+                        v-else-if="field.fieldType.value == 'confirmCheckbox'">
+                        <v-checkbox
+                          v-show="$root[field.needToConfirmModel]"
+                          v-model="$data[field.model]"
+                          :error="$data[field.needToConfirmModel]"
+                          :label="field.label"
+                          :required="$data[field.needToConfirmModel]"></v-checkbox>
+                        <input
+                          :name="field.name"
+                          :required="$data[field.needToConfirmModel]"
+                          :value="$data[field.model]"
+                          type="hidden">
+                      </template>
+                  </div>
+                </v-tab-item>  <!-- Personal -->
+
+                <v-tab-item id="Current/Previous Work" eager>
+                  <div
+                    v-for="(field, index) in fields.currentPreviousWork"
+                    :key="index">
+                      <template
+                        v-if="field.fieldType.value == 'textfield'">
+                          {% include "_includes/model_fields/textfield.html" %}
+                        </template>
+
+                      <template
+                        v-else-if="field.fieldType.value == 'textarea'">
+                          {% include "_includes/model_fields/textarea.html" %}
+                        </template>
+                  </div>
+                </v-tab-item>  <!-- Work history -->
+
+                <v-tab-item id="Others" eager>
+                  <div
+                    v-for="(field, index) in fields.others"
+                    :key="index">
+                      <template
+                        v-if="field.fieldType.value == 'textfield'">
+                          {% include "_includes/model_fields/textfield.html" %}
+                        </template>
+                      <template
+                        v-else-if="field.fieldType.value == 'textarea'">
+                          {% include "_includes/model_fields/textarea.html" %}
+                        </template>
+
+                      <template
+                        v-else-if="field.fieldType.value == 'select'">
+                          {% include "_includes/model_fields/select.html" %}
+                        </template>
+
+                      <template
+                        v-else-if="field.fieldType.value == 'autocomplete'">
+                          {% include "_includes/model_fields/autocomplete.html" %}
+                      </template>
+                  </div>
+                </v-tab-item>  <!-- Others -->
+
+                <v-tab-item id="Medical" eager>
+                  <v-checkbox v-model="isMedical" label="Medical?"></v-checkbox>
+                  <input type="hidden" name="is_medical" :value="isMedical">
+
+                  <div v-show="isMedical">
+                    <div
+                      v-for="(field, index) in fields.medical"
+                      :key="index">
+                        <template
+                          v-if="field.fieldType.value == 'slider'">
+                            {% include "_includes/model_fields/slider.html" %}
+                          </template>
+
+                        <template
+                          v-if="field.fieldType.value == 'textfield'">
+                            {% include "_includes/model_fields/textfield.html" %}
+                          </template>
+                        <template
+                          v-else-if="field.fieldType.value == 'datetextfield'">
+                            {% include "_includes/model_fields/textfield_date.html" %}
+                          </template>
+
+                        <template
+                          v-else-if="field.fieldType.value == 'textarea'">
+                            {% include "_includes/model_fields/textarea.html" %}
+                          </template>
+
+                        <template
+                          v-else-if="field.fieldType.value == 'select'">
+                            {% include "_includes/model_fields/select.html" %}
+                          </template>
+                    </div>
+                  </div>
+                </v-tab-item>  <!-- Medical -->
+              </v-tabs-items>
+            </template>
         </v-form>
       </v-col>
     </v-row>
@@ -242,6 +429,10 @@
 
   {% addtoblock "js" %}
     <script src="{% static 'js/mixinNeedToConfirm.js' %}"></script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinDisplayChange.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}

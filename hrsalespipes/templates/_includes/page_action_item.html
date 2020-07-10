@@ -1,0 +1,19 @@
+<v-tooltip top>
+  <template v-slot:activator="{ on, attrs }">
+    <v-btn
+      v-bind="attrs"
+      v-on="on"
+      class="float-right"
+      {% if href %}
+      href="{{ href }}"
+      {% endif %}
+      {% if click_action %}
+      @click="{{ click_action }}"
+      {% endif %}
+      icon>
+      <v-icon class="{{ icon_class }}">{{ icon }}</v-icon>
+    </v-btn>
+  </template>
+
+  <span>{{ tooltip }}</span>
+</v-tooltip>
