@@ -123,9 +123,13 @@ class CandidateDetailView(PermissionRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         candidate = context['object']
         context['active_jobs'] = candidate.jobs.all()
-        context['object_in_json'] = json.dumps(
-            model_to_dict(candidate),
-            default=str)
+
+        candidate_as_dict = model_to_dict(candidate)
+        candidate_as_dict['visa_status'] = candidate.visa_status.name
+        candidate_as_dict['candidate_owner'] = candidate.candidate_owner.name
+        candidate_as_dict['cv_template'] = candidate.cv_template.name
+
+        context['object_in_json'] = json.dumps(candidate_as_dict, default=str)
         return context
 
 
