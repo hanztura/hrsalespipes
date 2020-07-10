@@ -221,9 +221,10 @@ let fields = {
       name: 'date_of_birth',
       label: 'Date of Birth',
       model: 'dateOfBirth',
+      monthModel: 'dateOfBirthDate',
       fieldType: {
         value: 'datetextfield',
-        type: 'date'
+        type: 'month'
       },
       outlined: true,
       rules: []
@@ -231,6 +232,19 @@ let fields = {
   ],
 
   currentPreviousWork: [
+    {
+      name: 'medical_experience_in_years',
+      label: 'Years of Experience',
+      model: 'medicalExperience',
+      fieldType: {
+        value: 'slider',
+        min: '0',
+        max: '80',
+        thumbLabel: 'always',
+      },
+      outlined: false,
+      rules: []
+    },
     {
       name: 'current_previous_position',
       label: 'Positiion',
@@ -385,19 +399,6 @@ let fields = {
   ],
 
   medical: [
-    {
-      name: 'medical_experience_in_years',
-      label: 'Medical Exp (Years)',
-      model: 'medicalExperience',
-      fieldType: {
-        value: 'slider',
-        min: '0',
-        max: '80',
-        thumbLabel: 'always',
-      },
-      outlined: false,
-      rules: []
-    },
 
     {
       name: 'specialization',
@@ -424,6 +425,19 @@ let fields = {
     },
 
     {
+      name: 'haad_dha_license_type',
+      label: 'HAAD/DHA Licence Type',
+      items: 'haadDhaLicenseTypes',
+      model: 'haadDhaLicenseType',
+      fieldType: {
+        value: 'select',
+      },
+      dense: true,
+      outlined: true,
+      rules: []
+    },
+
+    {
       name: 'job_title_on_dha_haad',
       label: 'Job Title on DHA/HAAD',
       value: data.jobTitleOnDhaHaad,
@@ -440,9 +454,10 @@ let fields = {
       name: 'bls_validity',
       label: 'BLS Validity',
       model: 'blsValidity',
+      monthModel: 'blsValidityDate',
       fieldType: {
         value: 'datetextfield',
-        type: 'date'
+        type: 'month'
       },
       outlined: true,
       rules: []
@@ -452,23 +467,11 @@ let fields = {
       name: 'acls_validity',
       label: 'ACLS Validity',
       model: 'aclsValidity',
+      monthModel: 'aclsValidityDate',
       fieldType: {
         value: 'datetextfield',
-        type: 'date'
+        type: 'month'
       },
-      outlined: true,
-      rules: []
-    },
-
-    {
-      name: 'haad_dha_license_type',
-      label: 'HAAD/DHA Licence Type',
-      items: 'haadDhaLicenseTypes',
-      model: 'haadDhaLicenseType',
-      fieldType: {
-        value: 'select',
-      },
-      dense: true,
       outlined: true,
       rules: []
     },
@@ -477,9 +480,10 @@ let fields = {
       name: 'haad_dha_license_validity',
       label: 'HAAD/DHA Licence Validity',
       model: 'haadDhaLicenseValidity',
+      monthModel: 'haadDhaLicenseValidityDate',
       fieldType: {
         value: 'datetextfield',
-        type: 'date'
+        type: 'month'
       },
       outlined: true,
       rules: []
@@ -615,11 +619,38 @@ new Vue({
     cvTemplates: [],
     cvTemplate: data.cvTemplate,
     dateOfBirth: data.dateOfBirth,
+    dateOfBirthDate: '',
     blsValidity: data.blsValidity,
+    blsValidityDate: '',
     aclsValidity: data.aclsValidity,
+    aclsValidityDate: '',
     haadDhaLicenseValidity: data.haadDhaLicenseValidity,
+    haadDhaLicenseValidityDate: '',
     dataflowLastUpdate: data.dataflowLastUpdate,
+
+    DATE_SUBMIT_FORMAT: 'YYYY-MM-DD'
   }),
+
+  watch: {
+    blsValidity: function (value) {
+      this.blsValidityDate = this.transformDate(this.blsValidity, this.DATE_SUBMIT_FORMAT)
+    },
+    aclsValidity: function (value) {
+      this.aclsValidityDate = this.transformDate(this.aclsValidity, this.DATE_SUBMIT_FORMAT)
+    },
+    haadDhaLicenseValidity: function (value) {
+      this.haadDhaLicenseValidityDate = this.transformDate(this.haadDhaLicenseValidity, this.DATE_SUBMIT_FORMAT)
+    },
+    dateOfBirth: function (value) {
+      this.dateOfBirthDate = this.transformDate(this.dateOfBirth, this.DATE_SUBMIT_FORMAT)
+    },
+  },
+
+  methods: {
+    transformDate: function (date, format="YYYY-MM") {
+      return moment(date).format(format);
+    }
+  },
 
   beforeMount(){
     this.setDataChoices('dataVisaStatusChoices', 'visaStatusChoices');
@@ -628,6 +659,11 @@ new Vue({
     this.setDataChoices('dataLocationChoices', 'locations');
     this.setDataChoices('dataNationalityChoices', 'nationalities');
     this.updateBreadcrumbs();
+
+    this.blsValidity = this.transformDate(this.blsValidity);
+    this.aclsValidity = this.transformDate(this.aclsValidity);
+    this.haadDhaLicenseValidity = this.transformDate(this.haadDhaLicenseValidity);
+    this.dateOfBirth = this.transformDate(this.dateOfBirth);
   },
 
 });

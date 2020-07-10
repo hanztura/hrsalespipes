@@ -121,6 +121,10 @@ const ContactWork = {
       <table>
         <tbody>
           <tr>
+            <th>Years of Experience:</th>
+            <td>[[ object.medical_experience_in_years ]]</td>
+          </tr>
+          <tr>
             <th>Positiion:</th>
             <td>[[ object.current_previous_position ]]</td>
           </tr>
@@ -196,10 +200,6 @@ const ContactMedical = {
       <table>
         <tbody v-if="isMedical">
           <tr>
-            <th>Medical Experience(years):</th>
-            <td>[[ object.medical_experience_in_years ]]</td>
-          </tr>
-          <tr>
             <th>Specialization:</th>
             <td>[[ object.specialization ]]</td>
           </tr>
@@ -208,24 +208,24 @@ const ContactMedical = {
             <td>[[ object.other_certifications ]]</td>
           </tr>
           <tr>
-            <th>BLS Validity:</th>
-            <td>[[ object.bls_validity | date('MM YYYY') ]]</td>
-          </tr>
-          <tr>
-            <th>ACLS Validity:</th>
-            <td>[[ object.acls_validity | date('MM YYYY') ]]</td>
-          </tr>
-          <tr>
-            <th>HAAD/DHA Validity:</th>
-            <td>[[ object.haad_dha_license_validity | date('MM YYYY') ]]</td>
-          </tr>
-          <tr>
             <th>HAAD/DHA License Type:</th>
             <td>[[ object.haad_dha_license_type ]]</td>
           </tr>
           <tr>
             <th>Job title on DHA/HAAD:</th>
             <td>[[ object.job_title_on_dha_haad ]]</td>
+          </tr>
+          <tr>
+            <th>BLS Validity:</th>
+            <td>[[ object.bls_validity | date('MMM-YYYY') ]]</td>
+          </tr>
+          <tr>
+            <th>ACLS Validity:</th>
+            <td>[[ object.acls_validity | date('MMM-YYYY') ]]</td>
+          </tr>
+          <tr>
+            <th>HAAD/DHA Validity:</th>
+            <td>[[ object.haad_dha_license_validity | date('MMM-YYYY') ]]</td>
           </tr>
           <tr>
             <th>Last update on dataflow:</th>

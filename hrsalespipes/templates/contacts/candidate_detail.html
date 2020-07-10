@@ -16,7 +16,7 @@ Candidate Detail - {{ object.name }}
       justify="end"
     >
       <v-col>
-        {% include "_includes/page_action_item.html" with href=object.edit_href icon="mdi-square-edit-outline" tooltip="Edit" %}
+        {% include "_includes/page_action_item.html" with href=object.edit_href icon="mdi-square-edit-outline" tooltip="Edit" is_prefetched=True %}
         {% include "_includes/page_action_item.html" with href=url_download_cv icon="mdi-file-download-outline" tooltip=cv_download_tooltip %}
         {% include "_includes/page_action_item.html" with click_action="isDisplayExpansionPanel = !isDisplayExpansionPanel" icon="[[ displayIcon ]]" tooltip="Change Display" %}
       </v-col>

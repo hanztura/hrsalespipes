@@ -139,6 +139,11 @@
                     v-for="(field, index) in fields.currentPreviousWork"
                     :key="index">
                       <template
+                        v-if="field.fieldType.value == 'slider'">
+                          {% include "_includes/model_fields/slider.html" %}
+                      </template>
+                      
+                      <template
                         v-if="field.fieldType.value == 'textfield'">
                           {% include "_includes/model_fields/textfield.html" %}
                         </template>
@@ -193,10 +198,6 @@
                     <div
                       v-for="(field, index) in fields.medical"
                       :key="index">
-                        <template
-                          v-if="field.fieldType.value == 'slider'">
-                            {% include "_includes/model_fields/slider.html" %}
-                          </template>
 
                         <template
                           v-if="field.fieldType.value == 'textfield'">
@@ -373,6 +374,10 @@
       </v-col>
     </v-row>
   </v-container>
+
+  {% addtoblock "js" %}  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+  {% endaddtoblock %}
 
   {% addtoblock "js" %}
     <script>

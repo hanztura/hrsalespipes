@@ -1,9 +1,24 @@
-<v-text-field
-  :label="field.label"
-  :outlined=field.outlined
-  :rules="field.rules"
-  :name="field.name"
-  :disabled=field.disabled
-  v-model.lazy="$data[field.model]"
-  type='date'>
-</v-text-field>
+<template v-if="field.fieldType.type == 'month'">
+  <v-text-field
+    :label="field.label"
+    :outlined=field.outlined
+    :rules="field.rules"
+    :disabled=field.disabled
+    v-model.lazy="$data[field.model]"
+    type='month'>
+  </v-text-field>
+  <input type="hidden" :name="field.name" v-model="$data[field.monthModel]">
+</template>
+
+<template v-else>
+  <v-text-field
+    :label="field.label"
+    :outlined=field.outlined
+    :rules="field.rules"
+    :disabled=field.disabled
+    :name="field.name"
+    v-model.lazy="$data[field.model]"
+    type='date'>
+  </v-text-field>
+</template>
+
