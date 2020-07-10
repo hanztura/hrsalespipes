@@ -1,0 +1,18 @@
+{
+  "Candidate": [
+    "User can now choose to view the Candidate Detail/Edit page in horizontal or vertical layout.",
+    "Page actions such as Download CV, Save is now located at the upper right portion of the page.",
+    "DOB, License Dates are now using MM-YYYY format.",
+    "New ability to add multiple online platform ID/url. such as zoom, etc...",
+    "Fixed bug when downloading CV using Medical template",
+    "Years of experience is now general data. Previously only under medical candidates."
+  ],
+
+  "Suppliers Module": [
+    "New field 'website'.",
+    "Hide Email address.",
+    "Person of Contact field 'Notes' renamed to 'Position'",
+    "New field 'Subscription Validity'",
+
+  ],
+}

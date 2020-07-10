@@ -15,7 +15,7 @@ import environ
 import secrets
 
 PROJECT_NAME = 'HRSalesPipes'
-PROJECT_VERSION = '1.13'
+PROJECT_VERSION = '1.14'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(
