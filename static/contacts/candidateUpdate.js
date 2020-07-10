@@ -81,6 +81,12 @@ let fields = {
     },
 
     {
+      fieldType: {
+        value: 'otherOnlineID',
+      },
+    },
+
+    {
       name: 'location',
       label: 'Location',
       items: 'locations',
@@ -308,7 +314,6 @@ let fields = {
       outlined: true,
       rules: []
     },
-
   ],
 
   others: [
@@ -627,28 +632,41 @@ new Vue({
     haadDhaLicenseValidity: data.haadDhaLicenseValidity,
     haadDhaLicenseValidityDate: '',
     dataflowLastUpdate: data.dataflowLastUpdate,
+    otherOnlineIDSource: data.otherOnlineID,
+    otherOnlineID: [],
 
     DATE_SUBMIT_FORMAT: 'YYYY-MM-DD'
   }),
 
+  computed: {
+    otherOnlineIDOutput: function () {
+      if (this.otherOnlineID.length) {
+        return this.stringifyMultipleTextField(this.otherOnlineID, 'platform');
+      }
+
+      return '[]';
+    }
+  },
+
   watch: {
     blsValidity: function (value) {
-      this.blsValidityDate = this.transformDate(this.blsValidity, this.DATE_SUBMIT_FORMAT)
+      this.blsValidityDate = this.transformDate(this.blsValidity, this.DATE_SUBMIT_FORMAT);
     },
     aclsValidity: function (value) {
-      this.aclsValidityDate = this.transformDate(this.aclsValidity, this.DATE_SUBMIT_FORMAT)
+      this.aclsValidityDate = this.transformDate(this.aclsValidity, this.DATE_SUBMIT_FORMAT);
     },
     haadDhaLicenseValidity: function (value) {
-      this.haadDhaLicenseValidityDate = this.transformDate(this.haadDhaLicenseValidity, this.DATE_SUBMIT_FORMAT)
+      this.haadDhaLicenseValidityDate = this.transformDate(this.haadDhaLicenseValidity, this.DATE_SUBMIT_FORMAT);
     },
     dateOfBirth: function (value) {
-      this.dateOfBirthDate = this.transformDate(this.dateOfBirth, this.DATE_SUBMIT_FORMAT)
+      this.dateOfBirthDate = this.transformDate(this.dateOfBirth, this.DATE_SUBMIT_FORMAT);
     },
   },
 
   methods: {
     transformDate: function (date, format="YYYY-MM") {
-      return moment(date).format(format);
+      let _date = moment(date);
+      return _date.isValid() ? _date.format(format) : '';
     }
   },
 
@@ -664,6 +682,8 @@ new Vue({
     this.aclsValidity = this.transformDate(this.aclsValidity);
     this.haadDhaLicenseValidity = this.transformDate(this.haadDhaLicenseValidity);
     this.dateOfBirth = this.transformDate(this.dateOfBirth);
+
+    this.setMultipleTextField(this.otherOnlineIDSource, 'otherOnlineID');
   },
 
 });

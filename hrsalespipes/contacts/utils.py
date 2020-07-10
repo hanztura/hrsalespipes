@@ -29,6 +29,7 @@ class ContactModel(TimeStampedModel):
     email_address = models.EmailField(blank=True)
     skype_id = models.CharField(max_length=50, blank=True)
     ms_teams_id = models.CharField(max_length=200, blank=True)
+    other_online_ids = models.TextField(blank=True)
     location = models.CharField(max_length=64, blank=True)
     notes = models.TextField(blank=True)
 

@@ -1,0 +1,47 @@
+<v-simple-table>
+  <table>
+    <thead>
+      <tr>
+        <th colspan="2">Other Online IDs</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr
+          v-for="(item, k) in otherOnlineID"
+          :key="k">
+          <td colspan="2">
+            <v-row
+              align="center"
+              justify="center">
+                <v-col cols=12 md=5>
+                  <v-text-field
+                    label="Platform"
+                    outlined
+                    v-model.lazy="item.platform">
+                  </v-text-field>
+                </v-col>
+                <v-col cols=12 md=5>
+                  <v-text-field
+                    label="ID/URL"
+                    outlined
+                    v-model.lazy="item.value">
+                  </v-text-field>
+                </v-col>
+                <v-col cols=12 md=2>
+                  <v-btn block icon @click="removeItem(otherOnlineID, k)"><v-icon>mdi-close-circle</v-icon></v-btn>
+                </v-col>
+              </v-row>
+          </td>
+        </tr>
+    </tbody>
+    <tfoot>
+      <tr v-if="!otherOnlineID.length">
+        <td colspan="2">No data.</td>
+      </tr>
+      <tr>
+        <td colspan="2" @click="insertNewItem(otherOnlineID, {platform: '', value: '',})"><v-icon class="px-2">mdi-plus</v-icon>Add {{ title }}</td>
+      </tr>
+    </tfoot>
+  </table>
+</v-simple-table>
+<input type="hidden" name="other_online_ids" :value="otherOnlineIDOutput">

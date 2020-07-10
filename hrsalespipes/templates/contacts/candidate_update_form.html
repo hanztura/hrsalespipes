@@ -75,7 +75,12 @@
                       <template
                         v-else-if="field.fieldType.value == 'autocomplete'">
                           {% include "_includes/model_fields/autocomplete.html" %}
-                        </template>
+                      </template>
+
+                      <template
+                        v-else-if="field.fieldType.value == 'otherOnlineID'">
+                          {% include "contacts/includes/other_online_id_table_edit.html" %}
+                      </template>
                   </div>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -380,6 +385,14 @@
   {% endaddtoblock %}
 
   {% addtoblock "js" %}
+    {% if debug %}
+      <script src="{% static "vendor/lodash/lodash.js" %}"></script>
+    {% else %}
+      <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+    {% endif %}
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
     <script>
       let urlCandidate = '{% url "contacts:candidates_detail" object.pk %}';
       let contactName = '{{ object.name }}';
@@ -390,6 +403,7 @@
         emailAddress: "{{ form.email_address.value }}",
         skypeId: "{{ form.skype_id.value }}",
         msTeamsId: "{{ form.ms_teams_id.value }}",
+        otherOnlineID: "{{ form.instance.other_online_ids|default_if_none:'[]'|escapejs }}",
         name: "{{ form.name.value }}",
         languages: "{{ form.languages.value|escapejs }}",
         preferredLocation: "{{ form.preferred_location.value }}",
@@ -409,10 +423,10 @@
         specialization: "{{ form.specialization.value|escapejs }}",
         otherCertifications: "{{ form.other_certifications.value|escapejs }}",
         jobTitleOnDhaHaad: "{{ form.job_title_on_dha_haad.value|default_if_none:'' }}",
-        blsValidity: "{{ form.bls_validity.value|date:"Y-m-d" }}",
-        aclsValidity: "{{ form.acls_validity.value|date:"Y-m-d" }}",
+        blsValidity: "{{ form.bls_validity.value|default_if_none:''|date:"Y-m-d" }}",
+        aclsValidity: "{{ form.acls_validity.value|default_if_none:''|date:"Y-m-d" }}",
         haadDhaLicenseType: "{{ form.haad_dha_license_type.value }}",
-        haadDhaLicenseValidity: "{{ form.haad_dha_license_validity.value|date:"Y-m-d" }}",
+        haadDhaLicenseValidity: "{{ form.haad_dha_license_validity.value|default_if_none:''|date:"Y-m-d" }}",
         dataflowLastUpdate: "{{ form.dataflow_last_update.value|date:"Y-m-d" }}",
         location: '{{ form.location.value }}',
         industry: '{{ form.industry.value }}',
@@ -438,6 +452,10 @@
 
   {% addtoblock "js" %}
     <script src="{% static 'js/mixinDisplayChange.js' %}"></script>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'js/mixinMultipleTextField.js' %}"></script>
   {% endaddtoblock %}
 
   {% addtoblock "js" %}

@@ -127,6 +127,7 @@ class CandidateUpdateModelForm(ContactUpdateModelForm):
             'whatsapp_link',
             'skype_id',
             'ms_teams_id',
+            'other_online_ids',
             'location',
 
             'current_previous_position',
