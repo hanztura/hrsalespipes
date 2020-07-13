@@ -335,7 +335,7 @@ let fields = {
       name: 'availability_for_interview',
       label: 'Availability for interview',
       value: data.availabilityForInterview,
-      model: 'visaStatus',
+      model: 'availabilityForInterview',
       fieldType: {
         value: 'textfield',
         type: 'text'
