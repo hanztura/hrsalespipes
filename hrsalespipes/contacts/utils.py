@@ -38,7 +38,7 @@ class ContactModel(TimeStampedModel):
         ordering = 'name',
         unique_together = ['name', 'email_address']
 
-    def __str_(self):
+    def __str__(self):
         return self.name
 
 
