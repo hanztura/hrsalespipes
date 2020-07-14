@@ -132,15 +132,15 @@ class JobDetailView(
 
     def get_queryset(self):
         q = super().get_queryset()
+        q = q.select_related('status')
         q = q.prefetch_related(
-            'candidates',
             'candidates__candidate',
             'candidates__status',
             'candidates__associate',
             'candidates__consultant',
             'candidates__pipeline__status',
-            'status',
-            'candidates__interviews',)
+            'candidates__interviews',
+            'assigned_recruiters')
         return q
 
     def get_context_data(self, **kwargs):

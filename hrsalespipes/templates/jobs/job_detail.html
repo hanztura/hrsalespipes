@@ -46,6 +46,14 @@ Job Detail - {{ object.reference_number }}
                       <td>{{ object.position }}</td>
                     </tr>
                     <tr>
+                      <th>Assigned Recruiters:</th>
+                      <td>
+                        {% for recruiter in object.assigned_recruiters.all %}
+                          <p>{{ forloop.counter }}. {{ recruiter.name }}</p>
+                        {% endfor %}
+                      </td>
+                    </tr>
+                    <tr>
                       <th>Location:</th>
                       <td>{{ object.location }}</td>
                     </tr>
