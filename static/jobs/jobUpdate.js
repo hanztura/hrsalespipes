@@ -109,7 +109,7 @@ let fields = [
 
   {
     name: 'potential_income',
-    label: data.potentialIncomeLabel,
+    label: `${data.potentialIncomeLabel} per Position`,
     value: data.potentialIncome,
     fieldType: {
       value: 'textfield',
@@ -119,6 +119,18 @@ let fields = [
     rules: [
       v => !!v || `${data.potentialIncomeLabel} is required`,
     ]
+  },
+
+  {
+    name: 'number_of_positions',
+    label: 'Number of Positions',
+    value: data.numberOfPositions,
+    fieldType: {
+      value: 'textfield',
+      type: 'number'
+    },
+    outlined: true,
+    rules: []
   },
 
 ];

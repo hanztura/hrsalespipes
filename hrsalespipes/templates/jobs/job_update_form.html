@@ -105,6 +105,7 @@
         position: "{{ form.position.value|default_if_none:'' }}",
         potentialIncomeLabel: "{{ form.potential_income.label }}",
         potentialIncome: "{{ form.potential_income.value|default_if_none:0 }}",
+        numberOfPositions: "{{ form.number_of_positions.value|default_if_none:1 }}"
       }
     </script>
   {% endaddtoblock %}

@@ -50,8 +50,12 @@ Job Detail - {{ object.reference_number }}
                       <td>{{ object.location }}</td>
                     </tr>
                     <tr>
-                      <th>{{ JOB_POTENTIAL_INCOME_ALIAS }}:</th>
+                      <th>{{ JOB_POTENTIAL_INCOME_ALIAS }} per Position:</th>
                       <td>{{ object.potential_income|intcomma }}</td>
+                    </tr>
+                    <tr>
+                      <th>Number of Positions:</th>
+                      <td>{{ object.number_of_positions|intcomma }}</td>
                     </tr>
                     <tr>
                       <th>Actual Revenue:</th>

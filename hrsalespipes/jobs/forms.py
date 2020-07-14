@@ -49,7 +49,8 @@ class JobUpdateModelForm(ModelForm):
             'position',
             'location',
             'potential_income',
-            'status'
+            'number_of_positions',
+            'status',
         ]
 
     def __init__(self, *args, **kwargs):
