@@ -151,7 +151,7 @@ let fields = {
     },
     {
       name: 'meeting_arranged',
-      label: 'Meeting Arranged',
+      label: labels.meetingArranged,
       value: data.meetingArranged,
       fieldType: {
         value: 'textarea',
@@ -228,7 +228,7 @@ let fields = {
 
     {
       name: 'notes',
-      label: 'Notes',
+      label: labels.notes,
       value: data.notes,
       fieldType: {
         value: 'textarea',

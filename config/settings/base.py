@@ -268,3 +268,9 @@ ICON_INTERVIEWS = 'mdi-headphones'
 LINKEDIN_CLIENT_ID = os.environ.get('HRSALESPIPES_LINKEDIN_CLIENT_ID', None)
 LINKEDIN_CLIENT_SECRET = os.environ.get(
     'HRSALESPIPES_LINKEDIN_CLIENT_SECRET', None)
+
+# custom field names
+CLIENTS_MEETING_ARRANGED = os.environ.setdefault(
+    'HRSALESPIPES_CLIENTS_MEETING_ARRANGED', 'Meeting Arranged')
+CLIENTS_NOTES = os.environ.setdefault(
+    'HRSALESPIPES_CLIENTS_NOTES', 'Notes')

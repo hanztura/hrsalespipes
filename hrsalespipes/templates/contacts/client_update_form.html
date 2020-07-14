@@ -123,6 +123,10 @@
     <script>
       let urlClient = '{% url "contacts:clients_detail" object.pk %}';
       let contactName = '{{ object.name }}';
+      let labels = {
+        meetingArranged: '{{ label_meeting_arranged }}',
+        notes: '{{ label_notes }}'
+      }
       let data = {
         name: "{{ form.name.value|default_if_none:'' }}",
         location: '{{ form.location.value|default_if_none:'' }}',

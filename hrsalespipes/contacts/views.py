@@ -285,6 +285,9 @@ class ClientUpdateView(
         context['locations'] = get_objects_as_choices(Location)
         context['industries'] = get_objects_as_choices(Industry)
         context['employees'] = get_objects_as_choices(Employee)
+
+        context['label_meeting_arranged'] = settings.CLIENTS_MEETING_ARRANGED
+        context['label_notes'] = settings.CLIENTS_NOTES
         return context
 
     def get_success_url(self):
