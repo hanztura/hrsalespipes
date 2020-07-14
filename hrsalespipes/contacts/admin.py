@@ -132,10 +132,11 @@ admin.site.register(CVTemplate, CVTemplateAdmin)
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Candidate, CandidateAdmin)
 admin.site.register(Client, ClientAdmin)
+admin.site.register(Supplier, SupplierAdmin)
 
 # only enable import export if allowed
 situational_admin_items = (
     # (Client, ClientAdmin),
-    (Supplier, SupplierAdmin),
+    # (Supplier, SupplierAdmin),
 )
 register_optional_admin_items(situational_admin_items)
