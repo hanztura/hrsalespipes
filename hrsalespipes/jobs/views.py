@@ -67,6 +67,8 @@ class JobUpdateView(
         status_objects = JobStatus.objects.values()
         status_objects = [status for status in status_objects]
         context['job_status_objects'] = json.dumps(status_objects)
+
+        context['employees'] = get_objects_as_choices(Employee)
         return context
 
     def get_success_url(self):

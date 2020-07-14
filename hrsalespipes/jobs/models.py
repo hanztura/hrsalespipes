@@ -90,6 +90,8 @@ class Job(TimeStampedModel):
         default=0,
         null=True,
         blank=True,)
+    assigned_recruiters = models.ManyToManyField(
+        Employee, blank=True)
 
     history = HistoricalRecords()
 

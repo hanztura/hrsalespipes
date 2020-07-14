@@ -32,7 +32,9 @@ class JobResource(resources.ModelResource):
             'position',
             'location',
             'potential_income',
+            'number_of_positions',
             'status',
+            'assigned_recruiters'
         )
 
 
@@ -40,8 +42,19 @@ class JobAdmin(
         ImportExportModelAdmin,
         SimpleHistoryAdmin):
     resource_class = JobResource
-    readonly_fields = JobResource.Meta.fields
+    # readonly_fields = JobResource.Meta.fields
     list_display = ['id', 'reference_number', 'date', 'status']
+    fields = (
+        'reference_number',
+        'date',
+        'client',
+        'position',
+        'location',
+        'potential_income',
+        'number_of_positions',
+        'status',
+        'assigned_recruiters'
+    )
 
     def get_actions(self, request):
         actions = super().get_actions(request)

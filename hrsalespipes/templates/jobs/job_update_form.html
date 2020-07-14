@@ -1,5 +1,5 @@
 {% extends "jobs/base.html" %}
-{% load static sekizai_tags %}
+{% load static sekizai_tags custom_tags %}
 
 {% block title %}
 {{ object.reference_number }} - Update Job
@@ -23,6 +23,7 @@
           <input type="hidden" id="dataClientChoices" value="{{ clients }}">
           <input type="hidden" id="dataLocationChoices" value="{{ locations }}">
           <input type="hidden" id="dataStatusChoices" value="{{ job_status_objects }}">
+          <input type="hidden" id="dataEmployeeChoices" value="{{ employees }}">
 
           {% if form.errors %}
             {% include "_includes/errors.html" %}
@@ -51,18 +52,28 @@
                 type='date'>
               </v-text-field>
 
-              <v-autocomplete
-                v-else-if="field.fieldType.value == 'autocomplete'"
-                :items="$data[field.items]"
-                :item-text="field.itemText"
-                :item-value="field.itemValue"
-                :label="field.label"
-                v-model.lazy="$data[field.model]"
-                :name='field.name'
-                :dense="field.dense"
-                :outlined="field.outlined"
-                :rules="field.rules">
-              </v-autocomplete>
+              <template v-else-if="field.fieldType.value == 'autocomplete'">
+                <v-autocomplete
+                  :multiple="field.fieldType.isMultiple"
+                  :items="$data[field.items]"
+                  :item-text="field.itemText"
+                  :item-value="field.itemValue"
+                  :label="field.label"
+                  v-model.lazy="$data[field.model]"
+                  :name='field.name'
+                  :dense="field.dense"
+                  :outlined="field.outlined"
+                  :rules="field.rules">
+                </v-autocomplete>
+                <template v-if="field.fieldType.isMultiple">
+                  <input
+                    v-for="(item, index) in $data[field.model]"
+                    :key="`${field.label}-${index}`"
+                    :name="field.fieldType.name"
+                    :value="item"
+                    type="hidden">
+                </template>
+              </template>
 
               <template
                 v-else-if="field.fieldType.value == 'confirmCheckbox'">
@@ -105,7 +116,8 @@
         position: "{{ form.position.value|default_if_none:'' }}",
         potentialIncomeLabel: "{{ form.potential_income.label }}",
         potentialIncome: "{{ form.potential_income.value|default_if_none:0 }}",
-        numberOfPositions: "{{ form.number_of_positions.value|default_if_none:1 }}"
+        numberOfPositions: "{{ form.number_of_positions.value|default_if_none:1 }}",
+        assignedRecruiters: '{% many_to_many_uuid_to_string form.assigned_recruiters.value %}',
       }
     </script>
   {% endaddtoblock %}

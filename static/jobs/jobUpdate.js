@@ -91,6 +91,23 @@ let fields = [
   },
 
   {
+    name: '',
+    label: 'Assigned Recruiters',
+    items: 'employeesChoices',
+    itemText: 'text',
+    itemValue: 'value',
+    model: 'assignedRecruiters',
+    fieldType: {
+      value: 'autocomplete',
+      isMultiple: true,
+      name: 'assigned_recruiters'
+    },
+    dense: true,
+    outlined: true,
+    rules: []
+  },
+
+  {
     name: 'location',
     label: 'Location',
     items: 'locations',
@@ -167,6 +184,8 @@ new Vue({
     status: data.status,
     hasConfirmed: data.hasConfirmed,
     date: data.date,
+    assignedRecruiters: JSON.parse(data.assignedRecruiters),
+    employeesChoices: []
   }),
 
   computed: {
@@ -193,12 +212,13 @@ new Vue({
       let initialStatusIsOpen = this.initialStatusIsOpen;
 
       return close && hasNotConfirmed && initialStatusIsOpen;
-    }
+    },
   },
   beforeMount(){
     this.setDataChoices('dataClientChoices', 'clients');
     this.setDataChoices('dataLocationChoices', 'locations');
     this.setDataChoices('dataStatusChoices', 'statusChoices');
+    this.setDataChoices('dataEmployeeChoices', 'employeesChoices');
     this.updateBreadcrumbs();
   },
 
