@@ -14,6 +14,8 @@
       justify="center"
     >
       <v-col cols="12">
+        <input type="hidden" id="dataEmployeeChoices" value="{{ employees }}">
+
         <form id="searchForm" ref="searchForm">
           <v-container fluid>
             <v-row>
@@ -29,6 +31,10 @@
                   value="{{ month|default_if_none:'' }}">
                 </v-text-field>
               </v-col>
+
+                <v-col cols="12" md="2" class="py-0">
+                  {% include "_includes/_auto_complete.html" with label="Recruiters" item_value="value" item_text="text" name="recruiters" items="employeeChoices" model="recruiters" prepend_inner_icon="mdi-account-cog" multiple="multiple" %}
+                </v-col>
 
               <v-col cols="12" md="3" class="pa-0">
                 {% include "_includes/_button_search.html" %}
@@ -66,6 +72,9 @@
   {% addtoblock "js" %}
     <script>
       let reportText = '{{ TITLE }}';
+      let data = {
+        recruiters: '{{ recruiters|default_if_none:'' }}'
+      };
     </script>
   {% endaddtoblock %}
 
@@ -74,6 +83,6 @@
   {% endaddtoblock %}
 
   {% addtoblock "js" %}
-    <script src="{% static 'reports/_generic.js' %}"></script>
+    <script src="{% static 'reports/startDatePerWeekMonth.js' %}"></script>
   {% endaddtoblock %}
 {% endblock subcontent %}

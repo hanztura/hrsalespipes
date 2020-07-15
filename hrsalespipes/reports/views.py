@@ -148,7 +148,7 @@ class StartDatePerWeekMonthListView(
     template_name = 'reports/start_date_per_week_month.html'
     permission_required = 'jobs.view_start_date_per_week_month'
     paginate_by = 200
-    context_urls_filter_fields = ('month',)
+    context_urls_filter_fields = ('month', 'recruiters')
     queryset = JobCandidate.tentative_joining.all()
 
     TITLE = 'Start date per week/month'
@@ -174,6 +174,14 @@ class StartDatePerWeekMonthListView(
             'job__client', 'candidate', 'status', 'associate', 'consultant')
         q = q.order_by(
             'tentative_date_of_joining')
+
+        # filter recruiter (assoc/consultant)
+        recruiters = self.request.GET.get('recruiters', '')
+        recruiters = recruiters.split(',') if recruiters else []
+        if recruiters:
+            assoc_filter = Q(associate_id__in=recruiters)
+            consult_filter = Q(consultant_id__in=recruiters)
+            q = q.filter(assoc_filter | consult_filter)
         return q
 
     def get_context_data(self, **kwargs):
@@ -189,6 +197,8 @@ class StartDatePerWeekMonthListView(
             context[key] = value
 
         context['TITLE'] = self.TITLE
+        context['employees'] = get_objects_as_choices(Employee)
+        context['recruiters'] = self.request.GET.get('recruiters', '')
         return context
 
 
@@ -234,6 +244,15 @@ class StartDatePerWeekMonthExcelView(
         queryset = queryset.select_related(
             'job__client', 'candidate', 'status').order_by(
             'tentative_date_of_joining')
+
+        # filter recruiter (assoc/consultant)
+        recruiters = self.request.GET.get('recruiters', '')
+        recruiters = recruiters.split(',') if recruiters else []
+        if recruiters:
+            assoc_filter = Q(associate_id__in=recruiters)
+            consult_filter = Q(consultant_id__in=recruiters)
+            queryset = queryset.filter(assoc_filter | consult_filter)
+
         filter_expression = Q(
             tentative_date_of_joining__month=_month,
             tentative_date_of_joining__year=_year) | Q(
