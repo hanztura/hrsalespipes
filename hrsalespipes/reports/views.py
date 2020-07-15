@@ -2,7 +2,7 @@ import calendar
 import math
 import xlwt
 
-from django.db.models import Sum, Q, Count
+from django.db.models import Sum, Q, Count, Prefetch
 from django.db.models.functions import (
     ExtractQuarter, ExtractMonth, ExtractYear)
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -917,14 +917,30 @@ class JobsDetailListView(
     def get_queryset(self):
         q = super().get_queryset()
         q = q.select_related('client', 'status')
-        q = q.prefetch_related(
-            'candidates__candidate', 'candidates__status',
-            'candidates__associate', 'candidates__consultant')
+
+        # filter recruiter (assoc/consultant)
+        recruiters = self.request.GET.get('recruiters', '')
+        recruiters = recruiters.split(',') if recruiters else []
+        if recruiters:
+            assoc_filter = Q(associate_id__in=recruiters)
+            consult_filter = Q(consultant_id__in=recruiters)
+            candidates = JobCandidate.objects.filter(
+                assoc_filter | consult_filter)
+
+        else:
+            candidates = JobCandidate.objects.all()
+
+        candidates = candidates.select_related(
+            'candidate', 'status', 'associate', 'consultant')
+
+        q = q.prefetch_related(Prefetch('candidates', queryset=candidates))
         return q
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['recruiters'] = self.request.GET.get('recruiters', '')
         context['status_objects'] = get_objects_as_choices(JobStatus)
+        context['employees'] = get_objects_as_choices(Employee)
         return context
 
 

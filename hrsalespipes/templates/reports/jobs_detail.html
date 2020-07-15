@@ -15,7 +15,36 @@ Jobs Detail - Reports
     >
       <v-col cols="12">
         <input type="hidden" id="dataStatusChoices" value="{{ status_objects }}">
-        {% include "_includes/filter_form_with_status.html" %}
+        <input type="hidden" id="dataEmployeeChoices" value="{{ employees }}">
+
+        <form id="searchForm" ref="searchForm">
+          <v-container fluid>
+            <v-row>
+              {% block form_fields %}
+                <v-col cols="12" md="2" class="py-0">
+                  {% include "_includes/_text_field_calendar.html" with label="From" name="from" type="date" value=from %}
+                </v-col>
+
+                <v-col cols="12" md="2" class="py-0">
+                  {% include "_includes/_text_field_calendar.html" with label="To" name="to" type="date" value=to %}
+                </v-col>
+
+                <v-col cols="12" md="2" class="py-0">
+                  {% include "_includes/_auto_complete.html" with items="statusChoices" label="Status" model="status" item_value="value" item_text="text" prepend_inner_icon="mdi-comment-question" multiple="multiple" %}
+                  <input type="hidden" name="status" v-model="status">
+                </v-col>
+
+                <v-col cols="12" md="2" class="py-0">
+                  {% include "_includes/_auto_complete.html" with label="Recruiters" item_value="value" item_text="text" name="recruiters" items="employeeChoices" model="recruiters" prepend_inner_icon="mdi-account-cog" multiple="multiple" %}
+                </v-col>
+              {% endblock form_fields %}
+
+              <v-col cols="12" md="1" class="pa-0">
+                  {% include "_includes/_button_search.html" %}
+              </v-col>
+            </v-row>
+          </v-container>
+        </form>
       </v-col>
 
       <v-col cols='12' class="text-right my-0 py-0">
@@ -49,6 +78,7 @@ Jobs Detail - Reports
       let reportText = 'Jobs Detail';
       let data = {
         status: '{{ status|default_if_none:'' }}',
+        recruiters: '{{ recruiters|default_if_none:'' }}'
       };
     </script>
   {% endaddtoblock %}
@@ -58,6 +88,6 @@ Jobs Detail - Reports
   {% endaddtoblock %}
 
   {% addtoblock "js" %}
-    <script src="{% static 'reports/jobsSummary.js' %}"></script>
+    <script src="{% static 'reports/jobsDetail.js' %}"></script>
   {% endaddtoblock %}
 {% endblock subcontent %}
