@@ -248,10 +248,10 @@ new Vue({
       return [
         this.tnfipc_ytd,
         this.tnfipc,
-        this.tnfipcp12m,
+        // this.tnfipcp12m,
         this.sjatpi,
         this.sjpc,
-        this.sjpc_ytd,
+        // this.sjpc_ytd,
         this.sjpp_ytd,
         this.tnfipp_ytd,
         this.ytdcpData,
