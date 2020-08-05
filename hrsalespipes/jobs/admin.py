@@ -43,7 +43,14 @@ class JobAdmin(
         SimpleHistoryAdmin):
     resource_class = JobResource
     # readonly_fields = JobResource.Meta.fields
-    list_display = ['id', 'reference_number', 'date', 'status']
+    list_display = [
+        'id',
+        'reference_number',
+        'date',
+        'position',
+        'client',
+        'status',
+    ]
     fields = (
         'reference_number',
         'date',
@@ -55,6 +62,10 @@ class JobAdmin(
         'status',
         'assigned_recruiters'
     )
+    search_fields = [
+        'reference_number',
+        'position'
+    ]
 
     def get_actions(self, request):
         actions = super().get_actions(request)
