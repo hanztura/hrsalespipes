@@ -11,3 +11,5 @@ db/
 
 docs/_build/
 staticfiles/
+
+frontend/node_modules/
