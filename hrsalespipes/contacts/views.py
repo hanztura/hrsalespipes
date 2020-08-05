@@ -125,9 +125,12 @@ class CandidateDetailView(PermissionRequiredMixin, DetailView):
         context['active_jobs'] = candidate.jobs.all()
 
         candidate_as_dict = model_to_dict(candidate)
-        candidate_as_dict['visa_status'] = candidate.visa_status.name
-        candidate_as_dict['candidate_owner'] = candidate.candidate_owner.name
-        candidate_as_dict['cv_template'] = candidate.cv_template.name
+        candidate_as_dict['visa_status'] = getattr(
+            candidate.visa_status, 'name', '')
+        candidate_as_dict['candidate_owner'] = getattr(
+            candidate.candidate_owner, 'name', '')
+        candidate_as_dict['cv_template'] = getattr(
+            candidate.cv_template, 'name', '')
 
         context['object_in_json'] = json.dumps(candidate_as_dict, default=str)
         context['url_download_cv'] = reverse_lazy(
