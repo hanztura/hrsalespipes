@@ -264,7 +264,7 @@ Install Project Requirements
 ****************************
 
     Weasy requirement
-        sudo apt-get install build-essential python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
+        sudo apt-get install build-essential python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info libpq-dev
 
     With or without Python virtual environment install the Django project requirements:
         pip install -r config/requirements/base.txt
@@ -281,7 +281,7 @@ Set-up Postgresql Database
     ALTER ROLE your_username SET client_encoding TO 'utf8';
     ALTER ROLE your_username SET default_transaction_isolation TO 'read committed';
     ALTER ROLE your_username SET timezone TO 'UTC';
-    GRANT ALL PRIVILEGES ON DATABASE database_name TO your_username;            
+    GRANT ALL PRIVILEGES ON DATABASE database_name TO your_username;
 
 Set-up Gunicorn
 ***************
