@@ -198,8 +198,11 @@ class Candidate(ContactModel):
         max_length=5,
         blank=True,
         choices=(
-        ('HAAD', 'HAAD'),
-        ('DHA', 'DHA')))
+            ('HAAD', 'HAAD'),
+            ('DHA', 'DHA'),
+            ('SCHS', 'SCHS'),
+        )
+    )
     job_title_on_dha_haad = models.CharField(max_length=250, blank=True)
     dataflow_last_update = models.DateField(null=True, blank=True)
 

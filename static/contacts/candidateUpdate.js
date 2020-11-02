@@ -431,7 +431,7 @@ let fields = {
 
     {
       name: 'haad_dha_license_type',
-      label: 'HAAD/DHA Licence Type',
+      label: 'HAAD/DHA/SCHS Licence Type',
       items: 'haadDhaLicenseTypes',
       model: 'haadDhaLicenseType',
       fieldType: {
@@ -619,6 +619,10 @@ new Vue({
       {
         text: 'DHA',
         value: 'DHA'
+      },
+      {
+        text: 'SCHS',
+        value: 'SCHS'
       },
     ],
     cvTemplates: [],
