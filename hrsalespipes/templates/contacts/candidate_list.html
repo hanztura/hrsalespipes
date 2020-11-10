@@ -15,6 +15,7 @@ Candidates - List
     >
       <v-col cols="12">
         <input type="hidden" id="ownersChoices" value="{{ owners }}">
+        <input type="hidden" id="visaStatusChoices" value="{{ visa_status_choices }}">
         <form id="nameSearchForm" ref="nameSearchForm">
           <v-container fluid>
             <v-row
@@ -87,6 +88,11 @@ Candidates - List
               </v-col>
 
               <v-col cols="12" md="3" class="py-0">
+                {% include "_includes/_auto_complete.html" with model='visaStatus' label="Visa Status" items='visaStatusChoices' item_value='value' item_text='text' multiple='multiple' prepend_inner_icon="mdi-airplane" %}
+                <input type="hidden" name="visa_status_id__in" :value="visaStatus">
+              </v-col>
+
+              <v-col cols="12" md="3" class="py-0">
                 <v-select
                   multiple
                   outlined
@@ -154,6 +160,7 @@ Candidates - List
               <th class="text-center">Languages</th>
               <th class="text-center" title="Current/Previous Position">Position</th>
               <th class="text-center" title="Current/Previous Company">Company</th>
+              <th class="text-center">Visa Status</th>
               <th class="text-center">Age</th>
               <th class="text-center">Owner</th>
               <th class="text-center">Actions</th>
@@ -166,6 +173,7 @@ Candidates - List
                 <td>{{ candidate.languages }}</td>
                 <td>{{ candidate.current_previous_position }}</td>
                 <td>{{ candidate.current_previous_company }}</td>
+                <td>{{ candidate.visa_status.name }}</td>
                 <td>{{ candidate.age }}</td>
                 <td>{{ candidate.candidate_owner }}</td>
                 <td>
@@ -205,9 +213,10 @@ Candidates - List
     <script>
       let data = {
         owner: '{{ owners_query|default_if_none:"" }}',
+        visaStatus: '{{ visa_status_query|default_if_none:"" }}',
         isMale: "{{ search_is_male|default_if_none:''}}",
         ageRange: "{{ search_age_range|default_if_none:'' }}",
-        stringsToTransform: ['owner', 'isMale'],
+        stringsToTransform: ['owner', 'isMale', 'visaStatus'],
       };
     </script>
   {% endaddtoblock %}

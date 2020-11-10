@@ -22,6 +22,8 @@ new Vue({
     owner: data.owner,
     ageRange: data.ageRange,
     isMale: data.isMale,
+    visaStatusChoices: [],
+    visaStatus: data.visaStatus,
   }),
 
   computed: {
@@ -40,6 +42,7 @@ new Vue({
 
   beforeMount() {
     this.setDataChoices('ownersChoices', 'owners');
+    this.setDataChoices('visaStatusChoices', 'visaStatusChoices');
     this.transformAgeRange();
   },
 

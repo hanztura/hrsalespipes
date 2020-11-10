@@ -18,7 +18,8 @@ class CandidateFilter(django_filters.FilterSet):
         fields = {
             'name': ['icontains', ],
             'candidate_owner_id': ['in', ],
-            'current_previous_company': ['icontains', ]
+            'current_previous_company': ['icontains', ],
+            'visa_status_id': ['in', ],
         }
 
     def languages_filter(self, queryset, name, value):

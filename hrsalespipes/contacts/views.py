@@ -152,7 +152,7 @@ class CandidateListView(
 
     def get_queryset(self, **kwargs):
         q = super().get_queryset(**kwargs)
-        q = q.select_related('candidate_owner')
+        q = q.select_related('candidate_owner', 'visa_status')
 
         # set object attribute from query params
         query_params = (
@@ -165,6 +165,7 @@ class CandidateListView(
 
             ('positions', 'positions'),
             ('current_previous_company', 'current_previous_company__icontains'),
+            ('visa_status', 'visa_status_id__in'),
         )
         for param in query_params:
             name = param[0]
@@ -178,6 +179,8 @@ class CandidateListView(
         context = super().get_context_data()
         context['owners'] = get_objects_as_choices(Employee)
         context['owners_query'] = self.owners
+        context['visa_status_choices'] = get_objects_as_choices(VisaStatus)
+        context['visa_status_query'] = self.visa_status
         context['search_languages'] = self.languages
         context['search_nationalities'] = self.nationalities
         context['search_is_male'] = self.is_male
