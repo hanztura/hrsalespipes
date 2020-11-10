@@ -175,7 +175,7 @@ Candidates - List
                 <td>{{ candidate.current_previous_company }}</td>
                 <td>{{ candidate.visa_status.name }}</td>
                 <td>{{ candidate.age }}</td>
-                <td>{{ candidate.candidate_owner }}</td>
+                <td title="{{ candidate.candidate_owner.name }}">{{ candidate.candidate_owner.abbr }}</td>
                 <td>
                   {% include "_includes/list_action_buttons.html" with edit_href=candidate.edit_href view_href=candidate.view_href %}
                 </td>
@@ -192,7 +192,7 @@ Candidates - List
         </v-container>
       </v-col> <!-- Pagination -->
     </v-row>
-  </v-container>  
+  </v-container>
 
   {% addtoblock "js" %}
     {% if debug %}

@@ -19,14 +19,15 @@ class EmployeeResource(resources.ModelResource):
             'alternate_contact_number',
             'email_address',
             'user',
-            'is_active'
+            'is_active',
+            'abbreviation',
         )
 
 
 class EmployeeAdmin(
         ImportExportModelAdmin):
     resource_class = EmployeeResource
-    list_display = ['name', 'is_active']
+    list_display = ['name', 'abbreviation', 'is_active']
 
 
 class ClientResource(resources.ModelResource):

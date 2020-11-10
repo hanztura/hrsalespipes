@@ -78,9 +78,20 @@ class Employee(ContactModel):
         null=True,
         blank=True)
     is_active = models.BooleanField(default=True)
+    abbreviation = models.CharField(max_length=10, blank=True)
 
     def __str__(self):
         return self.name
+
+    @property
+    def computed_abbr(self):
+        names = self.name.split()
+        abbr = "".join([name[0].upper() for name in names])
+        return abbr
+
+    @property
+    def abbr(self):
+        return self.abbreviation if self.abbreviation else self.computed_abbr
 
 
 class CVTemplate(models.Model):
