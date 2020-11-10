@@ -105,6 +105,27 @@ Candidates - List
               </v-col>
 
               <v-col cols="12" md="3" class="py-0">
+                <v-text-field
+                  outlined
+                  dense
+                  label="Current/Previous Salary"
+                  prepend-inner-icon="mdi-currency-usd"
+                  name="current_salary"
+                  clearable
+                  value="{{ search_current_salary|default_if_none:'' }}"
+                  title='For example, a user can type a search value of "8,000" or "8000". Then the app will return entries with Current/Previous Salary partially having these sample values:
+AED 8000 (or any other currency)
+AED 8,000 (or any other currency)
+USD 8000 (or any other currency)
+USD 8,000 (or any other currency)
+8000
+8,000
+18,000 (other amount having 8000 as part of it)
+18000 (other amount having 8000 as part of it)'>
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="3" class="py-0">
                 <v-select
                   multiple
                   outlined
@@ -174,6 +195,7 @@ Candidates - List
               <th class="text-center" title="Current/Previous Company">Company</th>
               <th class="text-center">Visa Status</th>
               <th class="text-center">Notice Period</th>
+              <th class="text-center">Current/Previous Salary</th>
               <th class="text-center">Age</th>
               <th class="text-center">Owner</th>
               <th class="text-center">Actions</th>
@@ -181,13 +203,14 @@ Candidates - List
             <tbody>
               {% for candidate in object_list %}
               <tr>
-                <td>{% include "_includes/icon_male_female.html" with is_male=candidate.is_male %}{{ candidate.name }}</td>
+                <td title="view details">{% include "_includes/icon_male_female.html" with is_male=candidate.is_male %}<a href="{{ candidate.view_href }}">{{ candidate.name }}</a></td>
                 <td>{{ candidate.nationality }}</td>
                 <td>{{ candidate.languages }}</td>
                 <td>{{ candidate.current_previous_position }}</td>
                 <td>{{ candidate.current_previous_company }}</td>
                 <td>{{ candidate.visa_status.name }}</td>
                 <td>{{ candidate.notice_period }}</td>
+                <td>{{ candidate.current_previous_salary }}</td>
                 <td>{{ candidate.age }}</td>
                 <td title="{{ candidate.candidate_owner.name }}">{{ candidate.candidate_owner.abbr }}</td>
                 <td>

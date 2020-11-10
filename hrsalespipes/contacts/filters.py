@@ -2,6 +2,7 @@ import django_filters
 
 from django.db.models import Q
 from django.utils import timezone
+from django.contrib.humanize.templatetags.humanize import intcomma
 
 from .models import Candidate
 
@@ -13,6 +14,7 @@ class CandidateFilter(django_filters.FilterSet):
     age_range = django_filters.CharFilter(method='age_range_filter')
     positions = django_filters.CharFilter(method='positions_filter')
     notice_period = django_filters.CharFilter(method='notice_period_filter')
+    current_salary = django_filters.CharFilter(method='current_salary_filter')
 
     class Meta:
         model = Candidate
@@ -42,34 +44,17 @@ class CandidateFilter(django_filters.FilterSet):
             self.filter_expression_multi_value_string('notice_period', value))
 
     def languages_filter(self, queryset, name, value):
-        if value:
-            # multiple or expressions
-            filter_expression = self.filter_expression_multi_value_string(
-                'languages', value)
-
-            queryset = queryset.filter(filter_expression)
-
-        return queryset
+        return queryset if not value else queryset.filter(
+            self.filter_expression_multi_value_string('languages', value))
 
     def positions_filter(self, queryset, name, value):
-        if value:
-            # multiple or expressions
-            filter_expression = self.filter_expression_multi_value_string(
-                'current_previous_position', value)
-
-            queryset = queryset.filter(filter_expression)
-
-        return queryset
+        return queryset if not value else queryset.filter(
+            self.filter_expression_multi_value_string(
+                'current_previous_position', value))
 
     def nationalities_filter(self, queryset, name, value):
-        if value:
-            # multiple or expressions
-            filter_expression = self.filter_expression_multi_value_string(
-                'nationality', value)
-
-            queryset = queryset.filter(filter_expression)
-
-        return queryset
+        return queryset if not value else queryset.filter(
+            self.filter_expression_multi_value_string('nationality', value))
 
     def is_male_filter(self, queryset, name, value):
         is_male = value
@@ -101,5 +86,19 @@ class CandidateFilter(django_filters.FilterSet):
             youngest_dob = today.replace(day=31, month=12, year=youngest_year)
             queryset = queryset.filter(
                 date_of_birth__range=(oldest_dob, youngest_dob))
+
+        return queryset
+
+    def current_salary_filter(self, queryset, name, value):
+        if value:
+            values = [value, intcomma(value, use_l10n=False)]
+            print(values)
+            # multiple or expressions
+            filter_expression = Q()
+            for val in values:
+                filter_expression |= Q(
+                    current_previous_salary__contains=val.strip())
+
+            queryset = queryset.filter(filter_expression)
 
         return queryset
