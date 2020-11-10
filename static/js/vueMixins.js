@@ -50,7 +50,9 @@ const DASHBOARD_URL = URLS.DASHBOARD;
 
 Vue.mixin({
   delimiters: ['[[', ']]'],
+
   data: () => ({
+    drawer: null,
     navigationDrawerItems: NAVIGATION_DRAWER_ITEMS,
     navigationDrawerItemsNonAuthenticatedUsers: [
       {
@@ -77,6 +79,13 @@ Vue.mixin({
     isCommissionAllowed: PERMISSIONS.isCommissionAllowed,
     isBackupAllowed: PERMISSIONS.isBackupAllowed,
   }),
+
+  watch: {
+    drawer: function (newValue, oldValue){
+      localStorage.setItem('drawer' ,JSON.stringify(newValue));
+    }
+  },
+
   methods: {
     updateNavigationDrawerItems() {
 
@@ -112,7 +121,17 @@ Vue.mixin({
 
         url = `${url}&page=${this.page}`;
         location.href = url;
-    }
+    },
 
+    setInitialDrawer(){
+      let drawer = JSON.parse(localStorage.getItem('drawer'));
+
+      this.$set(this, 'drawer', drawer)
+    },
+
+  },
+
+  beforeMount() {
+    this.setInitialDrawer();
   }
 });
