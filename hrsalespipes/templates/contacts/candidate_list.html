@@ -48,6 +48,31 @@ Candidates - List
                 <v-text-field
                   outlined
                   dense
+                  label="Positions (comma separated)"
+                  prepend-inner-icon="mdi-briefcase-account"
+                  name="positions"
+                  clearable
+                  value="{{ search_positions|default_if_none:'' }}">
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="3" class="py-0">
+                <v-text-field
+                  outlined
+                  dense
+                  label="Company"
+                  title="Current/Previous Company"
+                  prepend-inner-icon="mdi-office-building"
+                  name="current_previous_company__icontains"
+                  clearable
+                  value="{{ search_current_previous_company|default_if_none:'' }}">
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="3" class="py-0">
+                <v-text-field
+                  outlined
+                  dense
                   label="Name"
                   prepend-inner-icon="{{ ICON_CANDIDATES }}"
                   name="name__icontains"
@@ -116,7 +141,7 @@ Candidates - List
           </v-container>
         </form>
       </v-col>
-  
+
       <v-col cols="12" class="pa-0">
         <v-btn absolute right color="primary" href="{% url 'contacts:candidates_new' %}">New</v-btn>
       </v-col>
@@ -127,23 +152,23 @@ Candidates - List
               <th class="text-center">Name</th>
               <th class="text-center">Nationality</th>
               <th class="text-center">Languages</th>
+              <th class="text-center" title="Current/Previous Position">Position</th>
+              <th class="text-center" title="Current/Previous Company">Company</th>
               <th class="text-center">Age</th>
-              <th class="text-center">Gender</th>
               <th class="text-center">Owner</th>
               <th class="text-center">Actions</th>
             </thead>
             <tbody>
               {% for candidate in object_list %}
               <tr>
-                <td class="text-center">{{ candidate.name }}</td>
-                <td class="text-center">{{ candidate.nationality }}</td>
-                <td class="text-center">{{ candidate.languages }}</td>
-                <td class="text-center">{{ candidate.age }}</td>
-                <td class="text-center">
-                  {% include "_includes/icon_male_female.html" with is_male=candidate.is_male %}
-                </td>
-                <td class="text-center">{{ candidate.candidate_owner }}</td>
-                <td class="text-center">
+                <td>{% include "_includes/icon_male_female.html" with is_male=candidate.is_male %}{{ candidate.name }}</td>
+                <td>{{ candidate.nationality }}</td>
+                <td>{{ candidate.languages }}</td>
+                <td>{{ candidate.current_previous_position }}</td>
+                <td>{{ candidate.current_previous_company }}</td>
+                <td>{{ candidate.age }}</td>
+                <td>{{ candidate.candidate_owner }}</td>
+                <td>
                   {% include "_includes/list_action_buttons.html" with edit_href=candidate.edit_href view_href=candidate.view_href %}
                 </td>
               </tr>

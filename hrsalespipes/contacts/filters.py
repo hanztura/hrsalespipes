@@ -11,12 +11,14 @@ class CandidateFilter(django_filters.FilterSet):
     nationalities = django_filters.CharFilter(method='nationalities_filter')
     is_male = django_filters.CharFilter(method='is_male_filter')
     age_range = django_filters.CharFilter(method='age_range_filter')
+    positions = django_filters.CharFilter(method='positions_filter')
 
     class Meta:
         model = Candidate
         fields = {
             'name': ['icontains', ],
             'candidate_owner_id': ['in', ],
+            'current_previous_company': ['icontains', ]
         }
 
     def languages_filter(self, queryset, name, value):
@@ -27,6 +29,19 @@ class CandidateFilter(django_filters.FilterSet):
             filter_expression = Q()
             for language in languages:
                 filter_expression |= Q(languages__icontains=language.strip())
+
+            queryset = queryset.filter(filter_expression)
+
+        return queryset
+
+    def positions_filter(self, queryset, name, value):
+        positions = value
+        positions = positions.split(',') if positions else []
+        if positions:
+            # multiple or expressions
+            filter_expression = Q()
+            for position in positions:
+                filter_expression |= Q(current_previous_position__icontains=position.strip())
 
             queryset = queryset.filter(filter_expression)
 

@@ -144,7 +144,6 @@ class CandidateDetailView(PermissionRequiredMixin, DetailView):
 
 
 class CandidateListView(
-        # FilterNameMixin,
         PermissionRequiredMixin,
         ListView):
     model = Candidate
@@ -163,6 +162,9 @@ class CandidateListView(
             ('is_male', 'is_male'),
             ('age_range', 'age_range'),
             ('name', 'name__icontains'),
+
+            ('positions', 'positions'),
+            ('current_previous_company', 'current_previous_company__icontains'),
         )
         for param in query_params:
             name = param[0]
@@ -181,6 +183,8 @@ class CandidateListView(
         context['search_is_male'] = self.is_male
         context['search_age_range'] = self.age_range
         context['search_name'] = self.name
+        context['search_positions'] = self.positions
+        context['search_current_previous_company'] = self.current_previous_company
         return context
 
 
