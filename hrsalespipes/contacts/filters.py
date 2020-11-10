@@ -15,6 +15,7 @@ class CandidateFilter(django_filters.FilterSet):
     positions = django_filters.CharFilter(method='positions_filter')
     notice_period = django_filters.CharFilter(method='notice_period_filter')
     current_salary = django_filters.CharFilter(method='current_salary_filter')
+    expected_salary = django_filters.CharFilter(method='expected_salary_filter')
 
     class Meta:
         model = Candidate
@@ -26,13 +27,18 @@ class CandidateFilter(django_filters.FilterSet):
         }
 
     @classmethod
-    def filter_expression_multi_value_string(cls, field, value):
-        values = value.split(',') if value else []
+    def filter_expression_multi_value_string(
+            cls, field, value, expression='icontains', split=True):
+        if split:
+            values = value.split(',') if value else []
+        else:
+            values = value if value else []
+
         if values:
             # multiple or expressions
             filter_expression = Q()
             for val in values:
-                lookup = '{}__icontains'.format(field)
+                lookup = '{}__{}'.format(field, expression)
                 filter_expression |= Q(**{
                     lookup: val.strip()
                 })
@@ -90,15 +96,35 @@ class CandidateFilter(django_filters.FilterSet):
         return queryset
 
     def current_salary_filter(self, queryset, name, value):
-        if value:
-            values = [value, intcomma(value, use_l10n=False)]
-            print(values)
-            # multiple or expressions
-            filter_expression = Q()
-            for val in values:
-                filter_expression |= Q(
-                    current_previous_salary__contains=val.strip())
+        if value.find(','):
+            value = [value.replace(',', ''), value]
+        else:
+            try:
+                value = [value, intcomma(value, use_l10n=False)]
+            except Exception as e:
+                value = None
 
-            queryset = queryset.filter(filter_expression)
+        return queryset if not value else queryset.filter(
+            self.filter_expression_multi_value_string(
+                'current_previous_salary',
+                value,
+                'contains',  # expression
+                False,  # split
+            ))
 
-        return queryset
+    def expected_salary_filter(self, queryset, name, value):
+        if value.find(','):
+            value = [value.replace(',', ''), value]
+        else:
+            try:
+                value = [value, intcomma(value, use_l10n=False)]
+            except Exception as e:
+                value = None
+
+        return queryset if not value else queryset.filter(
+            self.filter_expression_multi_value_string(
+                'expected_salary',
+                value,
+                'contains',  # expression
+                False,  # split
+            ))

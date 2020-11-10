@@ -169,6 +169,7 @@ class CandidateListView(
             ('visa_status', 'visa_status_id__in'),
             ('notice_period', 'notice_period'),
             ('current_salary', 'current_salary'),
+            ('expected_salary', 'expected_salary'),
         )
         for param in query_params:
             name = param[0]
@@ -193,6 +194,7 @@ class CandidateListView(
         context['search_current_previous_company'] = self.current_previous_company
         context['search_notice_period'] = self.notice_period
         context['search_current_salary'] = self.current_salary
+        context['search_expected_salary'] = self.expected_salary
         return context
 
 
