@@ -50,7 +50,7 @@ Candidates - List
                   dense
                   label="Name"
                   prepend-inner-icon="{{ ICON_CANDIDATES }}"
-                  name="name"
+                  name="name__icontains"
                   clearable
                   value="{{ search_name|default_if_none:'' }}">
                 </v-text-field>
@@ -58,7 +58,7 @@ Candidates - List
 
               <v-col cols="12" md="3" class="py-0">
                 {% include "_includes/_auto_complete.html" with model='owner' label="Owner" items='owners' item_value='value' item_text='text' multiple='multiple' prepend_inner_icon="mdi-account-cog" %}
-                <input type="hidden" name="owners" :value="owner">
+                <input type="hidden" name="candidate_owner_id__in" :value="owner">
               </v-col>
 
               <v-col cols="12" md="3" class="py-0">

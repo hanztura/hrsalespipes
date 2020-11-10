@@ -5,15 +5,15 @@ from urllib.parse import urlencode, urlparse
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Prefetch, Q
+from django.db.models import Prefetch
 from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse, reverse_lazy
-from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView, View
 from django.views.generic.base import TemplateView
 
+from .filters import CandidateFilter
 from .forms import (ClientCreateModelForm,
                     CandidateUpdateModelForm, ClientUpdateModelForm,
                     SupplierModelForm, CandidateCreateModelForm,
@@ -144,78 +144,32 @@ class CandidateDetailView(PermissionRequiredMixin, DetailView):
 
 
 class CandidateListView(
-        FilterNameMixin,
+        # FilterNameMixin,
         PermissionRequiredMixin,
         ListView):
     model = Candidate
     permission_required = ('contacts.view_candidate')
+    paginate_by = 25
 
     def get_queryset(self, **kwargs):
         q = super().get_queryset(**kwargs)
         q = q.select_related('candidate_owner')
 
-        owners = self.request.GET.get('owners', '')  # owner id
-        self.owners = owners
-        owners = owners.split(',') if owners else []
-        if owners:
-            q = q.filter(candidate_owner_id__in=owners)
+        # set object attribute from query params
+        query_params = (
+            ('owners', 'candidate_owner_id__in'),
+            ('languages', 'languages'),
+            ('nationalities', 'nationalities'),
+            ('is_male', 'is_male'),
+            ('age_range', 'age_range'),
+            ('name', 'name__icontains'),
+        )
+        for param in query_params:
+            name = param[0]
+            value = self.request.GET.get(param[1], '')
+            setattr(self, name, value)
 
-        # filter one or more languages
-        languages = self.request.GET.get('languages', '')
-        self.languages = languages
-        languages = languages.split(',') if languages else []
-        if languages:
-            # multiple or expressions
-            filter_expression = Q()
-            for language in languages:
-                filter_expression |= Q(languages__icontains=language.strip())
-
-            q = q.filter(filter_expression)
-
-        # filter one or more nationalities
-        nationalities = self.request.GET.get('nationalities', '')
-        self.nationalities = nationalities
-        nationalities = nationalities.split(',') if nationalities else []
-        if nationalities:
-            # multiple or expressions
-            filter_expression = Q()
-            for nationality in nationalities:
-                filter_expression |= Q(
-                    nationality__icontains=nationality.strip())
-
-            q = q.filter(filter_expression)
-
-        # filter is_male
-        is_male = self.request.GET.get('is_male', '')
-        self.is_male = is_male
-        is_male = is_male.split(',') if is_male else []
-        if is_male:
-            # multiple or expressions
-            filter_expression = Q()
-            possible_values = {
-                'None': None,
-                'true': True,
-                'false': False
-            }
-            for value in is_male:
-                filter_expression |= Q(
-                    is_male=possible_values[value])
-
-            q = q.filter(filter_expression)
-
-        # filter age range
-        age_range = self.request.GET.get('age_range', '')
-        self.age_range = age_range
-        age_range = age_range.split(',') if age_range else []
-        if age_range and age_range != ['0', '100']:
-            today = timezone.localdate()
-            oldest_year = today.year - int(age_range[1])  # oldest
-            youngest_year = today.year - int(age_range[0])  # youngest
-            oldest_dob = today.replace(day=1, month=1, year=oldest_year)
-            youngest_dob = today.replace(day=31, month=12, year=youngest_year)
-            q = q.filter(
-                date_of_birth__range=(oldest_dob, youngest_dob))
-
+        q = CandidateFilter(self.request.GET, q).qs
         return q
 
     def get_context_data(self):
@@ -226,6 +180,7 @@ class CandidateListView(
         context['search_nationalities'] = self.nationalities
         context['search_is_male'] = self.is_male
         context['search_age_range'] = self.age_range
+        context['search_name'] = self.name
         return context
 
 
