@@ -155,6 +155,7 @@ class CandidateListView(
         q = q.select_related('candidate_owner', 'visa_status')
 
         # set object attribute from query params
+        # ( attribute_name, query_name )
         query_params = (
             ('owners', 'candidate_owner_id__in'),
             ('languages', 'languages'),
@@ -166,6 +167,7 @@ class CandidateListView(
             ('positions', 'positions'),
             ('current_previous_company', 'current_previous_company__icontains'),
             ('visa_status', 'visa_status_id__in'),
+            ('notice_period', 'notice_period'),
         )
         for param in query_params:
             name = param[0]
@@ -188,6 +190,7 @@ class CandidateListView(
         context['search_name'] = self.name
         context['search_positions'] = self.positions
         context['search_current_previous_company'] = self.current_previous_company
+        context['search_notice_period'] = self.notice_period
         return context
 
 

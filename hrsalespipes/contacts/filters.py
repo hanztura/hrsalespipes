@@ -12,6 +12,7 @@ class CandidateFilter(django_filters.FilterSet):
     is_male = django_filters.CharFilter(method='is_male_filter')
     age_range = django_filters.CharFilter(method='age_range_filter')
     positions = django_filters.CharFilter(method='positions_filter')
+    notice_period = django_filters.CharFilter(method='notice_period_filter')
 
     class Meta:
         model = Candidate
@@ -22,41 +23,49 @@ class CandidateFilter(django_filters.FilterSet):
             'visa_status_id': ['in', ],
         }
 
-    def languages_filter(self, queryset, name, value):
-        languages = value
-        languages = languages.split(',') if languages else []
-        if languages:
+    @classmethod
+    def filter_expression_multi_value_string(cls, field, value):
+        values = value.split(',') if value else []
+        if values:
             # multiple or expressions
             filter_expression = Q()
-            for language in languages:
-                filter_expression |= Q(languages__icontains=language.strip())
+            for val in values:
+                lookup = '{}__icontains'.format(field)
+                filter_expression |= Q(**{
+                    lookup: val.strip()
+                })
+
+        return filter_expression
+
+    def notice_period_filter(self, queryset, name, value):
+        return queryset if not value else queryset.filter(
+            self.filter_expression_multi_value_string('notice_period', value))
+
+    def languages_filter(self, queryset, name, value):
+        if value:
+            # multiple or expressions
+            filter_expression = self.filter_expression_multi_value_string(
+                'languages', value)
 
             queryset = queryset.filter(filter_expression)
 
         return queryset
 
     def positions_filter(self, queryset, name, value):
-        positions = value
-        positions = positions.split(',') if positions else []
-        if positions:
+        if value:
             # multiple or expressions
-            filter_expression = Q()
-            for position in positions:
-                filter_expression |= Q(current_previous_position__icontains=position.strip())
+            filter_expression = self.filter_expression_multi_value_string(
+                'current_previous_position', value)
 
             queryset = queryset.filter(filter_expression)
 
         return queryset
 
     def nationalities_filter(self, queryset, name, value):
-        nationalities = value
-        nationalities = nationalities.split(',') if nationalities else []
-        if nationalities:
+        if value:
             # multiple or expressions
-            filter_expression = Q()
-            for nationality in nationalities:
-                filter_expression |= Q(
-                    nationality__icontains=nationality.strip())
+            filter_expression = self.filter_expression_multi_value_string(
+                'nationality', value)
 
             queryset = queryset.filter(filter_expression)
 

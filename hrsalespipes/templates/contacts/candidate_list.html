@@ -61,6 +61,18 @@ Candidates - List
                 <v-text-field
                   outlined
                   dense
+                  label="Notice Period (comma separated)"
+                  prepend-inner-icon="mdi-calendar-clock"
+                  name="notice_period"
+                  clearable
+                  value="{{ search_notice_period|default_if_none:'' }}">
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="3" class="py-0">
+                <v-text-field
+                  outlined
+                  dense
                   label="Company"
                   title="Current/Previous Company"
                   prepend-inner-icon="mdi-office-building"
@@ -161,6 +173,7 @@ Candidates - List
               <th class="text-center" title="Current/Previous Position">Position</th>
               <th class="text-center" title="Current/Previous Company">Company</th>
               <th class="text-center">Visa Status</th>
+              <th class="text-center">Notice Period</th>
               <th class="text-center">Age</th>
               <th class="text-center">Owner</th>
               <th class="text-center">Actions</th>
@@ -174,6 +187,7 @@ Candidates - List
                 <td>{{ candidate.current_previous_position }}</td>
                 <td>{{ candidate.current_previous_company }}</td>
                 <td>{{ candidate.visa_status.name }}</td>
+                <td>{{ candidate.notice_period }}</td>
                 <td>{{ candidate.age }}</td>
                 <td title="{{ candidate.candidate_owner.name }}">{{ candidate.candidate_owner.abbr }}</td>
                 <td>
