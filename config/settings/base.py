@@ -280,3 +280,4 @@ CLIENTS_NOTES = os.environ.setdefault(
 
 # django-request
 REQUEST_IGNORE_USERNAME = ['admin', ]
+REQUEST_LOG_IP = False
