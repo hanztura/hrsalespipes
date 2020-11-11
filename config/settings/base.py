@@ -81,6 +81,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'system.middleware.RemoteAddrMiddleware',
     'request.middleware.RequestMiddleware',  # https://django-request.readthedocs.io/en/latest/index.html
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -280,4 +281,4 @@ CLIENTS_NOTES = os.environ.setdefault(
 
 # django-request
 REQUEST_IGNORE_USERNAME = ['admin', ]
-REQUEST_LOG_IP = False
+REQUEST_LOG_IP = os.environ.setdefault('REQUEST_LOG_IP', True) in ('True', True)
