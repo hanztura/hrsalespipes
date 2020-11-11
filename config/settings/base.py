@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
 
     'django_extensions',
     'guardian',
@@ -61,6 +62,7 @@ INSTALLED_APPS = [
     'simple_history',
     'sekizai',
     'compressor',
+    'request',
 
     'system',
     'commissions',
@@ -79,6 +81,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'request.middleware.RequestMiddleware',  # https://django-request.readthedocs.io/en/latest/index.html
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
@@ -274,3 +277,6 @@ CLIENTS_MEETING_ARRANGED = os.environ.setdefault(
     'HRSALESPIPES_CLIENTS_MEETING_ARRANGED', 'Meeting Arranged')
 CLIENTS_NOTES = os.environ.setdefault(
     'HRSALESPIPES_CLIENTS_NOTES', 'Notes')
+
+# django-request
+REQUEST_IGNORE_USERNAME = ['admin', ]
