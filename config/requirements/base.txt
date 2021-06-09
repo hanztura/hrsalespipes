@@ -14,7 +14,7 @@ django-sekizai==1.1.0
 django-simple-captcha==0.5.12
 django-simple-history==2.8.0
 django-weasyprint==0.5.5
-Django==2.2.13
+Django==2.2.22
 djangorestframework==3.11.0
 docxtpl==0.6.3
 psycopg2==2.8.4
